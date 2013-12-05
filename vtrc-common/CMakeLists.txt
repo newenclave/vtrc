@@ -7,8 +7,8 @@ file(GLOB headers *.h)
 list(APPEND common_src ${headers})
 
 include_directories(
-	${PROJECT_SOURCE_DIR} 
-	)
+    ${PROJECT_SOURCE_DIR} 
+    )
 
 add_library(${lib_name} STATIC ${common_src})
 #add_dependencies(${lib_name} vtrc_proto_lib_s)
