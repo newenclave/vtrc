@@ -41,8 +41,9 @@ public:
     template <typename IterT>
     static size_t size_length( IterT begin, const IterT &end )
     {
-        size_t length = 0;
-        unsigned char last = 0xFF;
+        size_t        length = 0x00;
+        unsigned char last   = 0x80;
+
         for( ;(begin != end) && (last & 0x80); ++begin ) {
             ++length;
             last = static_cast<unsigned char>(*begin);
@@ -71,9 +72,9 @@ public:
     template <typename IterT>
     static size_type unpack( IterT begin, const IterT &end )
     {
-        size_type res   = 0x00;
-        unsigned  shift = 0x00;
-        unsigned  last  = 0xFF;
+        size_type     res   = 0x00;
+        unsigned      shift = 0x00;
+        unsigned char last  = 0x80;
 
         for( ;(begin != end) && (last & 0x80); ++begin, shift += 7 ) {
             last = (*begin);
