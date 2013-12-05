@@ -50,12 +50,12 @@ namespace vtrc { namespace common { namespace policies {
 
         static std::string pack( size_type size )
         {
-            std::string res(max_length, '\0');
+            char res[max_length];
             for( size_t current =  max_length; current > 0; --current ) {
                 res[current-1] = static_cast<char>( size & 0xFF );
                 size >>= 8;
             }
-            return res;
+            return std::string( &res[0], &res[max_length] );
         }
 
         template <typename IterT>
