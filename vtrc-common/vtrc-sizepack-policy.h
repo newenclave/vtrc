@@ -7,7 +7,7 @@
 #include <boost/static_assert.hpp>
 
 template <typename SizeType>
-struct packer_policy {
+struct size_packer_policy {
 
 private:
     BOOST_STATIC_ASSERT( 
@@ -20,13 +20,18 @@ public:
     static const size_t max_length = (sizeof(SizeType) << 3) / 7 + 1;
 
     template <typename IterT>
-    static bool enough_for_size( IterT begin, const IterT &end )
+    static size_t size_length( IterT begin, const IterT &end )
     {
-        for( ;begin!=end && !(*begin & 0x80); ++begin );
-        return begin!=end;
+        size_t length = 0;
+        unsigned char last = 0xFF;
+        for( ;(begin != end) && (last & 0x80); ++begin ) {
+            ++length;
+            last = static_cast<unsigned char>(*begin);
+        }
+        return (last & 0x80) ? 0 : length;
     }
 
-    static size_t packed_size( size_t input )
+    static size_t packed_length( size_t input )
     {
         size_t res = 0;
         while( input ) ++res, input >>= 7;
@@ -38,15 +43,25 @@ public:
         std::string res;
         res.reserve(sizeof(size_type));
         for( ;size > 0x7F; size >>= 7 ) {
-            char next = static_cast<char>(size & 0x7F) | 0x80;
-            res.push_back(next);
+            res.push_back(static_cast<char>(size & 0x7F) | 0x80);
         }
         res.push_back(static_cast<char>(size));
         return res;
     }
 
-    //static size_type unpack( )
+    template <typename IterT>
+    static size_type unpack( IterT begin, const IterT &end )
+    {
+        size_type res   = 0x00;
+        unsigned  shift = 0x00;
+        unsigned  last  = 0xFF;
 
+        for( ;(begin != end) && (last & 0x80); ++begin, shift += 7 ) {
+            last = (*begin);
+            res |= ( static_cast<size_type>( last & 0x7f ) << shift);
+        }
+        return res;
+    }
 };
 
 #endif
