@@ -24,7 +24,6 @@ size_packer_policy {
 }
 */
 
-
 template <typename SizeType>
 struct varint_packer_policy {
 
@@ -78,7 +77,7 @@ public:
 
         for( ;(begin != end) && (last & 0x80); ++begin, shift += 7 ) {
             last = (*begin);
-            res |= ( static_cast<size_type>( last & 0x7F ) << shift);
+            res |= ( static_cast<size_type>(last & 0x7F) << shift);
         }
         return res;
     }
