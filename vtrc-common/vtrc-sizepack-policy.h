@@ -31,7 +31,7 @@ public:
         return (last & 0x80) ? 0 : length;
     }
 
-    static size_t packed_length( size_t input )
+    static size_t packed_length( size_type input )
     {
         size_t res = 0;
         while( input ) ++res, input >>= 7;
