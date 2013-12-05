@@ -3,15 +3,34 @@
 
 #include <string>
 
-#include <limits> 
+#include <limits>
 #include <boost/static_assert.hpp>
 
+/*
+size_packer_policy {
+
+    type    size_type
+    size_t  max_length;
+
+    template <typename IterT>
+    static size_t size_length( IterT begin, const IterT &end );
+
+    template <typename IterT>
+    static size_type unpack( IterT begin, const IterT &end )
+
+    static size_t packed_length( size_type input )
+    static std::string pack( size_type size )
+
+}
+*/
+
+
 template <typename SizeType>
-struct size_packer_policy {
+struct varint_packer_policy {
 
 private:
-    BOOST_STATIC_ASSERT( 
-        !std::numeric_limits<SizeType>::is_signed 
+    BOOST_STATIC_ASSERT(
+        !std::numeric_limits<SizeType>::is_signed
     );
 public:
 
@@ -58,7 +77,7 @@ public:
 
         for( ;(begin != end) && (last & 0x80); ++begin, shift += 7 ) {
             last = (*begin);
-            res |= ( static_cast<size_type>( last & 0x7f ) << shift);
+            res |= ( static_cast<size_type>( last & 0x7F ) << shift);
         }
         return res;
     }
