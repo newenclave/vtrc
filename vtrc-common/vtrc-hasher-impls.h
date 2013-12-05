@@ -3,7 +3,16 @@
 
 #include <string>
 
-namespace vtrc { namespace common { namespace hasher {
+
+
+namespace vtrc { namespace common { 
+	
+	struct hasher_iface;
+	
+namespace hasher { 
+	namespace  fake {
+		hasher_iface *create( );
+	}
 
 }}}
 

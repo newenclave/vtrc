@@ -19,4 +19,4 @@ get_target_property(${lib_name}_LOCATION ${lib_name} LOCATION)
 
 set(${lib_name}_DEFINITIONS "-DSTATIC" PARENT_SCOPE)
 set(${lib_name}_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE)
-set(${lib_name}_LIBRARIES ${${lib_name}_location} PARENT_SCOPE)
+set(${lib_name}_LIBRARIES ${${lib_name}_LOCATION} PARENT_SCOPE)
