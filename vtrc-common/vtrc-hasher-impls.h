@@ -14,6 +14,8 @@ namespace hasher {
 		hasher_iface *create( );
 	}
 
-}}}
+}
+
+}}
 
 #endif // VTRC_HASHER_IFACE_H

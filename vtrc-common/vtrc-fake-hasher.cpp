@@ -11,14 +11,15 @@ namespace vtrc { namespace common {  namespace hasher {
 				return 0;
 			}
 			
-			std::string get_data_hash(const void *data, size_t length) const
+			std::string get_data_hash(const void * /*data*/, size_t /*length*/) const
 			{
 				static const std::string fh;
 				return fh;
 			}
 			
-			bool check_data_hash( const void *data, size_t length,
-                                      const void *hash) const
+			bool check_data_hash( const void * /*data*/, 
+							 size_t /*length*/,
+							 const void * /*hash*/) const
 			{
 				return true;
 			}
