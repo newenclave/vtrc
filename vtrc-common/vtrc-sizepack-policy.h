@@ -24,63 +24,112 @@ size_packer_policy {
 }
 */
 
-template <typename SizeType>
-struct varint_packer_policy {
+namespace vtrc { namespace common { namespace policies {
 
-private:
-    BOOST_STATIC_ASSERT(
-        !std::numeric_limits<SizeType>::is_signed
-    );
-public:
+    template <typename SizeType>
+    struct fixint_policy {
+    private:
+        BOOST_STATIC_ASSERT(
+            !std::numeric_limits<SizeType>::is_signed
+        );
+    public:
 
-    typedef SizeType size_type;
+        typedef SizeType size_type;
+        static const size_t max_length = sizeof(SizeType);
 
-    static const size_t max_length = (sizeof(SizeType) << 3) / 7 + 1;
-
-    template <typename IterT>
-    static size_t size_length( IterT begin, const IterT &end )
-    {
-        size_t        length = 0x00;
-        unsigned char last   = 0x80;
-
-        for( ;(begin != end) && (last & 0x80); ++begin ) {
-            ++length;
-            last = static_cast<unsigned char>(*begin);
+        template <typename IterT>
+        static size_t size_length( IterT begin, const IterT &end )
+        {
+            return std::distance(begin, end) >= max_length ? max_length : 0;
         }
-        return (last & 0x80) ? 0 : length;
-    }
 
-    static size_t packed_length( size_type input )
-    {
-        size_t res = 0;
-        while( input ) ++res, input >>= 7;
-        return res;
-    }
-
-    static std::string pack( size_type size )
-    {
-        std::string res;
-        res.reserve(sizeof(size_type));
-        for( ;size > 0x7F; size >>= 7 ) {
-            res.push_back(static_cast<char>(size & 0x7F) | 0x80);
+        static size_t packed_length( size_type input )
+        {
+            return max_length;
         }
-        res.push_back(static_cast<char>(size));
-        return res;
-    }
 
-    template <typename IterT>
-    static size_type unpack( IterT begin, const IterT &end )
-    {
-        size_type     res   = 0x00;
-        unsigned      shift = 0x00;
-        unsigned char last  = 0x80;
-
-        for( ;(begin != end) && (last & 0x80); ++begin, shift += 7 ) {
-            last = (*begin);
-            res |= ( static_cast<size_type>(last & 0x7F) << shift);
+        static std::string pack( size_type size )
+        {
+            std::string res(max_length, '\0');
+            for( size_t current =  max_length; current > 0; --current ) {
+                res[current-1] = static_cast<char>( size & 0xFF );
+                size >>= 8;
+            }
+            return res;
         }
-        return res;
-    }
-};
+
+        template <typename IterT>
+        static size_type unpack( IterT begin, const IterT &end )
+        {
+            size_type  res   = 0x00;
+            for(size_t cur=max_length; cur>0 && begin!=end; --cur, ++begin) {
+                res |= static_cast<size_type>(
+                            static_cast<unsigned char>(*begin))
+                                            << ((cur - 1) << 3);
+            }
+            return res;
+        }
+    };
+
+    template <typename SizeType>
+    struct varint_policy {
+
+    private:
+        BOOST_STATIC_ASSERT(
+            !std::numeric_limits<SizeType>::is_signed
+        );
+    public:
+
+        typedef SizeType size_type;
+
+        static const size_t max_length = (sizeof(SizeType) << 3) / 7 + 1;
+
+        template <typename IterT>
+        static size_t size_length( IterT begin, const IterT &end )
+        {
+            size_t        length = 0x00;
+            unsigned char last   = 0x80;
+
+            for( ;(begin != end) && (last & 0x80); ++begin ) {
+                ++length;
+                last = static_cast<unsigned char>(*begin);
+            }
+            return (last & 0x80) ? 0 : length;
+        }
+
+        static size_t packed_length( size_type input )
+        {
+            size_t res = 0;
+            while( input ) ++res, input >>= 7;
+            return res;
+        }
+
+        static std::string pack( size_type size )
+        {
+            std::string res;
+            res.reserve(sizeof(size_type));
+            for( ;size > 0x7F; size >>= 7 ) {
+                res.push_back(static_cast<char>(size & 0x7F) | 0x80);
+            }
+            res.push_back(static_cast<char>(size));
+            return res;
+        }
+
+        template <typename IterT>
+        static size_type unpack( IterT begin, const IterT &end )
+        {
+            size_type     res   = 0x00;
+            unsigned      shift = 0x00;
+            unsigned char last  = 0x80;
+
+            for( ;(begin != end) && (last & 0x80); ++begin, shift += 7 ) {
+                last = (*begin);
+                res |= ( static_cast<size_type>(last & 0x7F) << shift);
+            }
+            return res;
+        }
+    };
+
+}}}
 
 #endif
