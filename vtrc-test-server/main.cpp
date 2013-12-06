@@ -4,6 +4,8 @@
 
 #include "vtrc-common/vtrc-hasher-iface.h"
 
+
+
 int main( )
 {
 	return 0;

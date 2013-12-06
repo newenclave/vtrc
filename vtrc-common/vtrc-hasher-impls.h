@@ -13,7 +13,6 @@ namespace hasher {
 	namespace  fake {
 		hasher_iface *create( );
 	}
-
 }
 
 }}
