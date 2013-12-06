@@ -26,8 +26,11 @@ namespace vtrc { namespace common {
         ~thread_poll( );
 
         size_t size( ) const;
-
+        void stop_one( );
         void stop( );
+
+        void add_thread( );
+        void add_threads( size_t count );
 
         void join_all( );
 

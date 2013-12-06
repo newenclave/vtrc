@@ -173,6 +173,11 @@ namespace vtrc { namespace common {
         return impl_->size( );
     }
 
+    void thread_poll::stop_one( )
+    {
+        impl_->stop_one( );
+    }
+
     void thread_poll::stop( )
     {
         impl_->stop( );
@@ -181,6 +186,16 @@ namespace vtrc { namespace common {
     void thread_poll::join_all( )
     {
         impl_->join_all( );
+    }
+
+    void thread_poll::add_thread( )
+    {
+        impl_->inc( );
+    }
+
+    void thread_poll::add_threads( size_t count )
+    {
+        impl_->add(count);
     }
 
     boost::asio::io_service &thread_poll::get_io_service( )

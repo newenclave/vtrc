@@ -3,8 +3,10 @@
 #include <boost/atomic.hpp>
 #include <boost/thread.hpp>
 
+#include <stdlib.h>
 
 #include "vtrc-server/vtrc-application-iface.h"
+#include "vtrc-common/vtrc-thread-poll.h"
 
 namespace ba = boost::asio;
 
@@ -28,7 +30,13 @@ void print( )
 
 int main( )
 {
-    main_app mapp;
+
+    vtrc::common::thread_poll poll( 100 );
+
+    while( poll.size( ) ) {
+        sleep( 1 );
+        poll.stop_one( );
+    }
 
 	return 0;
 }
