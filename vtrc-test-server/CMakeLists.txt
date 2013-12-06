@@ -17,7 +17,7 @@ include_directories(${PROJECT_SOURCE_DIR})
 message( "-- Set dependencies for " ${exe_name} )
 foreach( dep ${dependencies} )
     
-    message( "\tadd dependence: " ${dep} )
+    message( "\tAdd dependence: " ${dep} )
     
     add_dependencies(       ${exe_name} ${dep}      )
     add_definitions(        ${${dep}_DEFINITIONS}   )

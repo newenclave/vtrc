@@ -22,7 +22,7 @@ list(APPEND dependencies
 message( "-- Set dependencies for " ${lib_name} )
 foreach( dep ${dependencies} )
     
-    message( "\tadd dependence: " ${dep} )
+    message( "\tAdd dependence: " ${dep} )
     
     add_dependencies(       ${lib_name} ${dep}      )
     add_definitions(        ${${dep}_DEFINITIONS}   )
