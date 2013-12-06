@@ -1,5 +1,8 @@
 #include <iostream>
 #include <boost/asio.hpp>
+#include <boost/atomic.hpp>
+#include <boost/thread.hpp>
+
 
 #include "vtrc-server/vtrc-application-iface.h"
 
@@ -17,9 +20,14 @@ public:
     }
 };
 
-int main( )
+void print( )
 {
 
+    std::cout << "hello\n";
+}
+
+int main( )
+{
     main_app mapp;
 
 	return 0;
