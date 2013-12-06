@@ -31,12 +31,15 @@ void print( )
 int main( )
 {
 
-    vtrc::common::thread_poll poll( 100 );
+    vtrc::common::thread_poll poll( 10 );
 
-    while( poll.size( ) ) {
+    size_t count = 5;
+    while( count-- ) {
         sleep( 1 );
         poll.stop_one( );
+        std::cout << "Drop one\n";
     }
-
+    poll.join_all( );
+    std::cout << "Stop!\n";
 	return 0;
 }
