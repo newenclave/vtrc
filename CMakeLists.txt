@@ -12,7 +12,4 @@ find_package( Protobuf REQUIRED)
 
 add_subdirectory(vtrc-common)
 add_subdirectory(vtrc-server)
-
-if( BUILD_TESTS ) 
-    add_subdirectory(vtrc-test-server)
-endif( )
+add_subdirectory(vtrc-test-server)
