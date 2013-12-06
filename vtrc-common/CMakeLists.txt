@@ -15,7 +15,24 @@ endforeach( )
 include_directories( ${PROJECT_SOURCE_DIR} )
 
 add_library(${lib_name} STATIC ${lib_src})
-#add_dependencies(${lib_name} vtrc_proto_s)
+
+list(APPEND dependencies  
+    Boost
+    PROTOBUF
+    )
+
+message( "-- Set dependencies for " ${lib_name} )
+foreach( dep ${dependencies} )
+    
+    message( "\tadd dependence: " ${dep} )
+    
+    add_dependencies(       ${lib_name} ${dep}      )
+    add_definitions(        ${${dep}_DEFINITIONS}   )
+    include_directories(    ${${dep}_INCLUDE_DIRS}  )
+    target_link_libraries(  ${lib_name} ${${dep}_LIBRARIES} )
+    
+endforeach(dep)
+
 
 set_target_properties(${lib_name} PROPERTIES COMPILE_DEFINITIONS "STATIC")
 get_target_property(${lib_name}_LOCATION ${lib_name} LOCATION)

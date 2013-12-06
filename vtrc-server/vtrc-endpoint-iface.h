@@ -1,6 +1,8 @@
 #ifndef VTRC_ENDPOINT_IFACE_H
 #define VTRC_ENDPOINT_IFACE_H
 
+#include <string>
+
 namespace vtrc { namespace server {
 
     struct application_iface;
