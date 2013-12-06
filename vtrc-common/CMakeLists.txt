@@ -12,9 +12,7 @@ foreach( src_dir ${src_dirs} )
     list(APPEND lib_src ${headers})
 endforeach( )
 
-include_directories(
-    ${PROJECT_SOURCE_DIR} 
-    )
+include_directories( ${PROJECT_SOURCE_DIR} )
 
 add_library(${lib_name} STATIC ${lib_src})
 #add_dependencies(${lib_name} vtrc_proto_s)
