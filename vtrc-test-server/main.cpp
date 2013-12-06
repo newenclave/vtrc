@@ -33,13 +33,10 @@ int main( )
 
     vtrc::common::thread_poll poll( 10 );
 
-    size_t count = 5;
-    while( count-- ) {
-        sleep( 1 );
-        poll.stop_one( );
-        std::cout << "Drop one\n";
-    }
-    poll.join_all( );
+    size_t count = poll.size( );
+
+    sleep( 5 );
+    poll.stop( );
     std::cout << "Stop!\n";
 	return 0;
 }

@@ -90,7 +90,7 @@ namespace vtrc { namespace common {
             return new_context;
         }
 
-        void stop_one( )
+        void interrupt_one( )
         {
             ios_->post( interrupt::raise );
         }
@@ -173,9 +173,9 @@ namespace vtrc { namespace common {
         return impl_->size( );
     }
 
-    void thread_poll::stop_one( )
+    void thread_poll::interrupt_one( )
     {
-        impl_->stop_one( );
+        impl_->interrupt_one( );
     }
 
     void thread_poll::stop( )
