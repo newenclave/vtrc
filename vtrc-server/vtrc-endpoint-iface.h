@@ -14,7 +14,6 @@ namespace vtrc { namespace server {
 
         virtual std::string str( ) const = 0;
 
-        virtual void init ( ) = 0;
         virtual void start( ) = 0;
         virtual void stop ( ) = 0;
     };

@@ -29,9 +29,6 @@ namespace vtrc { namespace server { namespace endpoints {
                 return "tcp/";
             }
 
-            void init ( )
-            {}
-
             void start( )
             {}
 

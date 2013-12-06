@@ -26,7 +26,7 @@ namespace vtrc { namespace common {
             return *info_;
         }
 
-        bool before(const type_info_wrap& rhs) const
+        bool before(const type_rtti_wrapper& rhs) const
         {
             return !!info_->before(*rhs.info_);
         }
@@ -39,7 +39,7 @@ namespace vtrc { namespace common {
 
     inline bool operator < (const type_rtti_wrapper& left, 
                             const type_rtti_wrapper& right)
-    { return lhs.before(rhs); }
+    { return left.before(right); }
 
 }}
 
