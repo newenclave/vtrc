@@ -1,17 +1,22 @@
 
 set(lib_name vtrc_common_s)
 
-aux_source_directory(. common_src)
-aux_source_directory(./hash common_src)
+list(APPEND src_dirs 
+        .
+        ./hash
+    )
 
-file(GLOB headers *.h)
-list(APPEND common_src ${headers})
+foreach( src_dir ${src_dirs} )
+    aux_source_directory(${src_dir} lib_src)
+    file(GLOB headers ${src_dir}/*.h)
+    list(APPEND lib_src ${headers})
+endforeach( )
 
 include_directories(
     ${PROJECT_SOURCE_DIR} 
     )
 
-add_library(${lib_name} STATIC ${common_src})
+add_library(${lib_name} STATIC ${lib_src})
 #add_dependencies(${lib_name} vtrc_proto_s)
 
 set_target_properties(${lib_name} PROPERTIES COMPILE_DEFINITIONS "STATIC")

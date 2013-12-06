@@ -12,6 +12,9 @@ list(APPEND dependencies
     PROTOBUF
     )
 
+include_directories(${PROJECT_SOURCE_DIR})
+
+message( "-- Set dependencies for " ${exe_name} )
 foreach( dep ${dependencies} )
     
     message( "\tadd dependence: " ${dep} )
