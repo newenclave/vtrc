@@ -32,7 +32,5 @@ set_target_properties(${exe_name} PROPERTIES COMPILE_DEFINITIONS "STATIC")
 
 if(WIN32)
     target_link_libraries(${exe_name} ws2_32.lib)
-else(WIN32)
-    #target_link_libraries(${exe_name} ${Boost_LIBRARIES})
 endif(WIN32)
 
