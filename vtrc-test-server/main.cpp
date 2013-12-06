@@ -3,6 +3,7 @@
 #include <google/protobuf/descriptor.h>
 
 #include "vtrc-common/vtrc-hasher-iface.h"
+#include "vtrc-common/vtrc-rtti-wrapper.h"
 
 
 
