@@ -40,7 +40,7 @@ namespace vtrc { namespace common { namespace policies {
         template <typename IterT>
         static size_t size_length( IterT begin, const IterT &end )
         {
-            return std::distance(begin, end) >= max_length ? max_length : 0;
+            return std::distance(begin, end) < max_length ? 0 : max_length;
         }
 
         static size_t packed_length( size_type input )
