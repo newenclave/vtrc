@@ -26,11 +26,9 @@ foreach( dep ${dependencies} )
     
 endforeach(dep)
 
-
-set_target_properties(${exe_name} PROPERTIES COMPILE_DEFINITIONS "STATIC")
-#target_link_libraries(${exe_name} ${PROTOBUF_LIBRARIES})
-
 if(WIN32)
     target_link_libraries(${exe_name} ws2_32.lib)
 endif(WIN32)
+
+set_target_properties(${exe_name} PROPERTIES COMPILE_DEFINITIONS "STATIC")
 
