@@ -31,12 +31,10 @@ void print( )
 int main( )
 {
 
-    vtrc::common::thread_poll poll( 10 );
+    boost::asio::ip::address addr =
+            boost::asio::ip::address::from_string( "ff::1" );
 
-    size_t count = poll.size( );
+    std::cout << addr.to_string() << "\n";
 
-    sleep( 5 );
-    poll.stop( );
-    std::cout << "Stop!\n";
 	return 0;
 }
