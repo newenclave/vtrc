@@ -7,6 +7,7 @@
 
 #include "vtrc-server/vtrc-application-iface.h"
 #include "vtrc-common/vtrc-thread-poll.h"
+#include "vtrc-common/vtrc-sizepack-policy.h"
 
 namespace ba = boost::asio;
 
@@ -30,11 +31,12 @@ void print( )
 
 int main( )
 {
+    typedef vtrc::common::policies::varint_policy<unsigned> packer;
+    std::string test = packer::pack( 45000 );
 
-    boost::asio::ip::address addr =
-            boost::asio::ip::address::from_string( "ff::1" );
-
-    std::cout << addr.to_string() << "\n";
+    std::cout << "size: " << packer::packed_length( 45000 ) << "\n";
+    std::cout << "res size: " << test.size( ) << "\n";
+    std::cout << packer::unpack( test.begin(), test.end() ) << "\n";
 
 	return 0;
 }
