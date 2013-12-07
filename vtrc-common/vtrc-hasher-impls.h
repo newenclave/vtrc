@@ -1,5 +1,5 @@
-#ifndef VTRC_HASHER_IFACE_H
-#define VTRC_HASHER_IFACE_H
+#ifndef VTRC_HASHER_IMPLS_H
+#define VTRC_HASHER_IMPLS_H
 
 #include <string>
 
@@ -17,4 +17,4 @@ namespace hasher {
 
 }}
 
-#endif // VTRC_HASHER_IFACE_H
+#endif // VTRC_HASHER_IMPLS_H
