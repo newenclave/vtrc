@@ -75,7 +75,7 @@ struct message_packer {
         std::string unpacked( packer_->unpack_data(data, length) );
         const size_t hash_size(hasher_->hash_size( ));
         if( unpacked.size( ) < hash_size ) {
-            throw std::length_error( "bad data length" );
+            throw std::runtime_error( "bad data length" );
         }
         if( !hasher_->check_data_hash( unpacked.c_str( ) + hash_size,
                                        length - hash_size,
@@ -87,14 +87,18 @@ struct message_packer {
     }
 };
 
+
 int main( )
 {
     typedef vtrc::common::policies::varint_policy<unsigned> packer;
-    std::string test = packer::pack( 45000 );
+    message_packer messpack;
+    std::string output;
 
-    std::cout << "size: " << packer::packed_length( 45000 ) << "\n";
-    std::cout << "res size: " << test.size( ) << "\n";
-    std::cout << packer::unpack( test.begin(), test.end() ) << "\n";
+    std::string message(messpack.pack_message("1234567890", 10));
+
+    size_t len = message.size( );
+    output += packer::pack( len );
+    output += message;
 
 	return 0;
 }
