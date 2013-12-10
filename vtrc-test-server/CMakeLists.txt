@@ -6,8 +6,8 @@ set( exe_name vtrc_test_server)
 add_executable(${exe_name} ${src_dir})
 
 list(APPEND dependencies  
-    vtrc_common_s
     vtrc_server_s
+    vtrc_common_s
     Boost
     PROTOBUF
     )
