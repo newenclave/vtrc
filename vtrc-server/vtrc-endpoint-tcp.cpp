@@ -5,6 +5,9 @@
 #include "vtrc-endpoint-iface.h"
 #include "vtrc-application-iface.h"
 
+#include "protocol/vtrc-auth.pb.h"
+#include "vtrc-common/vtrc-sizepack-policy.h"
+
 namespace vtrc { namespace server { namespace endpoints {
     
     namespace {
@@ -71,6 +74,12 @@ namespace vtrc { namespace server { namespace endpoints {
                 if( error ) {
                     delete sock;
                 } else {
+                    vtrc_auth::init_hello hello;
+                    hello.set_hello_message( "Hello there!" );
+                    std::string serialized(hello.SerializeAsString());
+                    std::string data(common::policies::varint_policy<uint>::pack(serialized.size()));
+                    data.append( serialized.begin(), serialized.end());
+                    sock->write_some( basio::buffer( data ) );
                     sock->close( );
                     start_accept( );
                 }
