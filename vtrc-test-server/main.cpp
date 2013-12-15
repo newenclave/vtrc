@@ -15,6 +15,8 @@
 #include "vtrc-common/vtrc-hasher-iface.h"
 #include "vtrc-common/vtrc-hasher-impls.h"
 
+#include "vtrc-errors.pb.h"
+
 namespace ba = boost::asio;
 
 class main_app: public vtrc::server::application_iface
@@ -53,13 +55,13 @@ private:
 
 int main( )
 {
+
+    vtrc_errors::VTRC_ERROR_NO_ERROR;
     main_app app;
-    vtrc::common::thread_poll poll(app.get_io_service( ));
+    vtrc::common::thread_poll poll(app.get_io_service( ), 4);
 
     boost::shared_ptr<vtrc::server::endpoint_iface> tcp_ep
             (vtrc::server::endpoints::tcp::create(app, "0.0.0.0", 44667));
-
-    poll.add_threads( 4 );
 
     tcp_ep->start( );
 

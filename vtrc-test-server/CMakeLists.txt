@@ -8,13 +8,14 @@ add_executable(${exe_name} ${src_dir})
 list(APPEND dependencies  
     vtrc_server_s
     vtrc_common_s
+    vtrc_protocol_base_s
     Boost
     PROTOBUF
     )
 
 include_directories(${PROJECT_SOURCE_DIR})
 
-message( "-- Set dependencies for " ${exe_name} )
+message( "-- Seting up dependencies for " ${exe_name} )
 foreach( dep ${dependencies} )
     
     message( "\tAdd dependence: " ${dep} )

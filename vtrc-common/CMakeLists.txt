@@ -21,7 +21,7 @@ list(APPEND dependencies
     PROTOBUF
     )
 
-message( "-- Set dependencies for " ${lib_name} )
+message( "-- Seting up dependencies for " ${lib_name} )
 foreach( dep ${dependencies} )
     
     message( "\tAdd dependence: " ${dep} )

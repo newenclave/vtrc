@@ -1,0 +1,7 @@
+
+package vtrc_errors;
+
+
+enum errors_numbers {
+    VTRC_ERROR_NO_ERROR = 0;
+}
