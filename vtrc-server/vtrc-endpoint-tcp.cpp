@@ -24,16 +24,20 @@ namespace vtrc { namespace server { namespace endpoints {
                 return app_;
             }
 
-            std::string str( ) const
+            std::string string( ) const
             {
                 return "tcp/";
             }
 
             void start( )
-            {}
+            {
+                app_.on_endpoint_started( this );
+            }
 
             void stop ( )
-            {}
+            {
+                app_.on_endpoint_stopped( this );
+            }
         };
     }
 

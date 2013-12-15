@@ -6,6 +6,7 @@
 #include <stdlib.h>
 
 #include "vtrc-server/vtrc-application-iface.h"
+#include "vtrc-server/vtrc-endpoint-iface.h"
 #include "vtrc-common/vtrc-thread-poll.h"
 #include "vtrc-common/vtrc-sizepack-policy.h"
 #include "vtrc-common/vtrc-hasher-iface.h"
@@ -23,82 +24,28 @@ public:
     {
         return ios_;
     }
-};
-
-void print( )
-{
-
-    std::cout << "hello\n";
-}
-
-struct data_packer {
-
-    std::string pack_data( const void *data, size_t length )
+    void on_endpoint_started( vtrc::server::endpoint_iface *ep )
     {
-        return std::string( static_cast<const char *>(data),
-                            static_cast<const char *>(data) + length);
+        std::cout << "Start endpoint: " << ep->string( ) << "\n";
     }
 
-    std::string unpack_data( const void *data, size_t length )
+    void on_endpoint_stopped( vtrc::server::endpoint_iface *ep )
     {
-        return std::string( static_cast<const char *>(data),
-                            static_cast<const char *>(data) + length);
-    }
-
-};
-
-struct message_packer {
-    vtrc::common::hasher_iface *hasher_;
-    data_packer                *packer_;
-
-    message_packer( )
-        :hasher_(vtrc::common::hasher::fake::create( ))
-        ,packer_(new data_packer)
-    {
-
-    }
-    ~message_packer( )
-    {
-        delete hasher_;
-        delete packer_;
-    }
-
-    std::string pack_message( const void *data, size_t length )
-    {
-        std::string result(hasher_->get_data_hash(data, length));
-        std::string packed( packer_->pack_data(data, length) );
-        return result.append( packed.begin(), packed.end() );
-    }
-
-    std::string unpack_message( const void *data, size_t length )
-    {
-        std::string unpacked( packer_->unpack_data(data, length) );
-        const size_t hash_size(hasher_->hash_size( ));
-        if( unpacked.size( ) < hash_size ) {
-            throw std::runtime_error( "bad data length" );
-        }
-        if( !hasher_->check_data_hash( unpacked.c_str( ) + hash_size,
-                                       length - hash_size,
-                                       unpacked.c_str( )) )
-        {
-            throw std::runtime_error( "bad data hash" );
-        }
-        return std::string( unpacked.begin()+hash_size, unpacked.end( ) );
+        std::cout << "Stop endpoint: " << ep->string( ) << "\n";
     }
 };
 
 
 int main( )
 {
-    typedef vtrc::common::policies::varint_policy<unsigned> packer;
-    message_packer messpack;
-    std::string output;
+    main_app app;
+    vtrc::common::thread_poll poll;
 
-    std::string message(messpack.pack_message("1234567890", 10));
+    poll.add_threads( 4 );
 
-    size_t len = message.size( );
-    output += packer::pack( len );
-    output += message;
+
+
+    poll.join_all( );
 
 	return 0;
 }
