@@ -1,4 +1,4 @@
-set(lib_name vtrc_protocol_base_s)
+set(lib_name vtrc_protocol_s)
 
 file(GLOB protofiles *.proto)
 

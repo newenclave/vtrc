@@ -15,6 +15,7 @@ add_library(${lib_name} STATIC ${lib_src})
 
 list(APPEND dependencies  
     vtrc_common_s
+    vtrc_protocol_s
     Boost
     PROTOBUF
     )

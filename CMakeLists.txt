@@ -24,7 +24,7 @@ find_package( Boost 1.50 COMPONENTS
                 REQUIRED)
 find_package( Protobuf REQUIRED)
 
-add_subdirectory(vtrc-protocol-base)
+#add_subdirectory(vtrc-protocol)
 add_subdirectory(vtrc-common)
 add_subdirectory(vtrc-server)
 add_subdirectory(vtrc-test-server)

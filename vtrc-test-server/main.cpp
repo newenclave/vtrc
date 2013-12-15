@@ -15,7 +15,7 @@
 #include "vtrc-common/vtrc-hasher-iface.h"
 #include "vtrc-common/vtrc-hasher-impls.h"
 
-#include "vtrc-errors.pb.h"
+#include "protocol/vtrc-errors.pb.h"
 
 namespace ba = boost::asio;
 
