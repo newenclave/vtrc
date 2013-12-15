@@ -78,7 +78,7 @@ namespace vtrc { namespace server { namespace endpoints {
                     vtrc_auth::init_hello hello;
                     hello.set_hello_message( "0000000000" );
                     std::string serialized(hello.SerializeAsString());
-                    std::string data(common::policies::varint_policy<uint>::pack(serialized.size()));
+                    std::string data(common::policies::varint_policy<unsigned>::pack(serialized.size()));
                     data.append( serialized.begin(), serialized.end());
                     sock->write_some( basio::buffer( data ) );
                     sock->close( );
