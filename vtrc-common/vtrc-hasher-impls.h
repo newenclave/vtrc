@@ -3,8 +3,6 @@
 
 #include <string>
 
-
-
 namespace vtrc { namespace common { 
 	
 	struct hasher_iface;
