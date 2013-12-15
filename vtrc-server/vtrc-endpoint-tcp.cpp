@@ -1,6 +1,7 @@
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <sstream>
+#include <algorithm>
 
 #include "vtrc-endpoint-iface.h"
 #include "vtrc-application-iface.h"
@@ -75,7 +76,7 @@ namespace vtrc { namespace server { namespace endpoints {
                     delete sock;
                 } else {
                     vtrc_auth::init_hello hello;
-                    hello.set_hello_message( "Hello there!" );
+                    hello.set_hello_message( "0000000000" );
                     std::string serialized(hello.SerializeAsString());
                     std::string data(common::policies::varint_policy<uint>::pack(serialized.size()));
                     data.append( serialized.begin(), serialized.end());
