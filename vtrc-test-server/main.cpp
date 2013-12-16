@@ -29,7 +29,9 @@ public:
     {
         return ios_;
     }
+
 private:
+
     void on_endpoint_started( vtrc::server::endpoint_iface *ep )
     {
         std::cout << "Start endpoint: " << ep->string( ) << "\n";
@@ -56,7 +58,6 @@ private:
 int main( )
 {
 
-    vtrc_errors::VTRC_ERROR_NO_ERROR;
     main_app app;
     vtrc::common::thread_poll poll(app.get_io_service( ), 4);
 
