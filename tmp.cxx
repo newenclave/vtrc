@@ -111,7 +111,6 @@ struct message_packer {
 };
 
 
-
 typedef vtrc::common::policies::varint_policy<size_t> size_packer_type;
 
 class message_unpack {
@@ -135,7 +134,8 @@ public:
 
             size_t result_size = size_packer_type::unpack( start, end );
 
-            if( result_size > std::distance( start, end ) - size_length ) break;
+            if( result_size > (std::distance( start, end ) - size_length) )
+                break;
 
             std::advance(start, size_length);
             std::deque<char>::iterator string_end(start);
@@ -168,7 +168,9 @@ int main( )
     unpacker.append_data(data.begin(), data.end());
     unpacker.unpack( unpack );
 
-    std::copy(unpack.begin(), unpack.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
+    std::copy(unpack.begin(),
+              unpack.end(),
+              std::ostream_iterator<std::string>(std::cout, "\n"));
 
     std::cout << "\n========\n";
 
@@ -181,7 +183,9 @@ int main( )
     char append[] = {'1'};
     unpacker.append_data( &append[0], &app[1] );
     unpacker.unpack( unpack );
-    std::copy(unpack.begin(), unpack.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
+    std::copy(unpack.begin(),
+              unpack.end(),
+              std::ostream_iterator<std::string>(std::cout, "\n"));
 
     std::cout << std::endl;
     return 0;

@@ -8,5 +8,4 @@ namespace vtrc { namespace common {
     };
 }}
 
-
 #endif // VTRC_TRANSFORMER_IFACE_H
