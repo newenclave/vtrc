@@ -29,7 +29,6 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $Id: sha2.h,v 1.3 2012/08/31 11:01:41 a.vinogradov Exp $
  */
 
 #ifndef __SHA2_H__

@@ -29,7 +29,6 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $Id: sha2.c,v 1.1 2012/08/29 10:32:14 a.vinogradov Exp $
  */
 
 #include <string.h>	/* memcpy()/memset() or bcopy()/bzero() */
