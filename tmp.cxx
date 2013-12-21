@@ -111,8 +111,83 @@ struct message_packer {
 };
 
 
+typedef vtrc::common::policies::varint_policy<size_t> size_packer_type;
+
+class message_unpack {
+    std::deque<char> data_;
+public:
+    template <typename IterType>
+    void append_data( const IterType left, const IterType right )
+    {
+        data_.insert(data_.end(), left, right);
+    }
+
+    void unpack( std::list<std::string> &unpacked )
+    {
+        std::list<std::string> tmp;
+
+        std::deque<char>::iterator start(data_.begin());
+
+        const std::deque<char>::iterator end(data_.end());
+
+        while( size_t size_length = size_packer_type::size_length( start, end )) {
+
+            size_t result_size = size_packer_type::unpack( start, end );
+
+            if( result_size > (std::distance( start, end ) - size_length) )
+                break;
+
+            std::advance(start, size_length);
+            std::deque<char>::iterator string_end(start);
+            std::advance(string_end, result_size);
+            tmp.push_back( std::string(start, string_end));
+            start = string_end;
+        }
+        data_.erase( data_.begin(), start );
+        unpacked.swap( tmp );
+    }
+
+    std::deque<char> &get_data( ) { return data_; }
+
+};
+
+
 int main( )
 {
+    std::string data;
+    data.append(size_packer_type::pack( 10 ));
+    data.append("1234567890");
+    data.append(size_packer_type::pack( 20 ));
+    data.append("12345678901234567890");
+    data.append(size_packer_type::pack( 12 ));
+    data.append("1234567890!?");
+
+    message_unpack unpacker;
+    std::list<std::string> unpack;
+
+    unpacker.append_data(data.begin(), data.end());
+    unpacker.unpack( unpack );
+
+    std::copy(unpack.begin(),
+              unpack.end(),
+              std::ostream_iterator<std::string>(std::cout, "\n"));
+
+    std::cout << "\n========\n";
+
+    std::copy(unpacker.get_data().begin(),
+              unpacker.get_data().end(),
+              std::ostream_iterator<char>(std::cout, " "));
+
+    std::cout << "\n========\n";
+
+    char append[] = {'1'};
+    unpacker.append_data( &append[0], &app[1] );
+    unpacker.unpack( unpack );
+    std::copy(unpack.begin(),
+              unpack.end(),
+              std::ostream_iterator<std::string>(std::cout, "\n"));
+
+    std::cout << std::endl;
     return 0;
 }
 
