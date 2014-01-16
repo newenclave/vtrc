@@ -14,12 +14,12 @@ set(Boost_USE_STATIC_LIBS     ON)
 set(Boost_USE_MULTITHREADED   ON)
 set(Boost_USE_STATIC_RUNTIME  ON)
 
-find_package( Boost 1.50 COMPONENTS 
-                    system 
+find_package( Boost 1.50 COMPONENTS
+                    system
                     chrono
-                    date_time 
-                    regex 
-                    thread 
+                    date_time
+                    regex
+                    thread
                     atomic
                 REQUIRED)
 find_package( Protobuf REQUIRED)
