@@ -28,3 +28,5 @@ find_package( Protobuf REQUIRED)
 add_subdirectory(vtrc-common)
 add_subdirectory(vtrc-server)
 add_subdirectory(vtrc-test-server)
+add_subdirectory(vtrc-client-base)
+
