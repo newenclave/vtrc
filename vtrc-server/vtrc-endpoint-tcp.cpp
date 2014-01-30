@@ -5,9 +5,11 @@
 
 #include "vtrc-endpoint-iface.h"
 #include "vtrc-application-iface.h"
+#include "vtrc-connection-iface.h"
 
 #include "protocol/vtrc-auth.pb.h"
 #include "vtrc-common/vtrc-sizepack-policy.h"
+#include "vtrc-common/vtrc-enviroment.h"
 
 namespace vtrc { namespace server { namespace endpoints {
 
@@ -17,6 +19,49 @@ namespace vtrc { namespace server { namespace endpoints {
         namespace bsys  = boost::system;
 
         namespace bip   = basio::ip;
+
+        struct tcp_connection: public connection_iface {
+
+            endpoint_iface       &endpoint_;
+            application_iface    &app_;
+            basio::io_service    &ios_;
+
+            common::enviroment    env_;
+
+            boost::shared_ptr<bip::tcp::socket> sock_;
+
+            tcp_connection(endpoint_iface &endpoint, bip::tcp::socket *sock)
+                :endpoint_(endpoint)
+                ,app_(endpoint_.application( ))
+                ,ios_(app_.get_io_service())
+                ,sock_(sock)
+            {}
+
+            bool ready( ) const
+            {
+                sock_->is_open( );
+            }
+
+            endpoint_iface &endpoint( )
+            {
+                return endpoint_;
+            }
+
+            const char *name( ) const
+            {
+                return "<null>";
+            }
+
+            void close( )
+            {
+                sock_->close( );
+            }
+
+            common::enviroment &get_enviroment( )
+            {
+                return env_;
+            }
+        };
 
         struct endpoint_tcp: public endpoint_iface {
 
@@ -80,6 +125,8 @@ namespace vtrc { namespace server { namespace endpoints {
             }
 
         };
+
+
     }
 
     namespace tcp {

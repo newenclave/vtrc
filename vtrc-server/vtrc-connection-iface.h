@@ -3,7 +3,7 @@
 
 namespace vtrc {
 
-    class enviroment;
+    namespace common { class enviroment; }
 
 namespace server {
 
@@ -16,7 +16,7 @@ namespace server {
         virtual endpoint_iface &endpoint( )     = 0;
         virtual const char *name( ) const       = 0;
         virtual void close( )                   = 0;
-        virtual enviroment &get_enviroment( )   = 0;
+        virtual common::enviroment &get_enviroment( )   = 0;
     };
 
 }}
