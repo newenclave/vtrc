@@ -2,11 +2,13 @@
 #include <boost/asio.hpp>
 #include <boost/atomic.hpp>
 #include <boost/thread.hpp>
+#include <boost/thread/shared_mutex.hpp>
 
 #include <stdlib.h>
 
 #include "vtrc-server/vtrc-application-iface.h"
 #include "vtrc-server/vtrc-endpoint-iface.h"
+#include "vtrc-server/vtrc-connection-iface.h"
 #include "vtrc-server/vtrc-endpoint-tcp.h"
 
 #include "vtrc-common/vtrc-thread-poll.h"
@@ -22,9 +24,24 @@ namespace ba = boost::asio;
 class main_app: public vtrc::server::application_iface
 {
     ba::io_service ios_;
+
+    typedef
+    std::map <
+        vtrc::server::connection_iface *,
+        boost::weak_ptr<vtrc::server::connection_iface>
+    > connection_map_type;
+
+    connection_map_type connections_;
+    boost::shared_mutex connections_lock_;
+
+    typedef boost::unique_lock<boost::shared_mutex> unique_lock;
+    typedef boost::shared_lock<boost::shared_mutex> shared_lock;
+
 public:
+
     main_app( )
     {}
+
     ba::io_service &get_io_service( )
     {
         return ios_;
@@ -53,6 +70,25 @@ private:
             throw;
         }
     }
+
+    void on_new_connection_accepted(
+                                boost::shared_ptr<vtrc::server::connection_iface> connection )
+    {
+        unique_lock l( connections_lock_ );
+        connections_.insert( std::make_pair(connection.get(), connection ) );
+    }
+
+    void on_new_connection_ready( const vtrc::server::connection_iface* connection )
+    {
+        ;;;
+    }
+
+    void on_connection_die( vtrc::server::connection_iface* connection )
+    {
+        unique_lock l( connections_lock_ );
+        connections_.erase( connection );
+    }
+
 };
 
 int main( )
