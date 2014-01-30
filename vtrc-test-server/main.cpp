@@ -28,7 +28,7 @@ class main_app: public vtrc::server::application_iface
     typedef
     std::map <
         vtrc::server::connection_iface *,
-        boost::weak_ptr<vtrc::server::connection_iface>
+        boost::shared_ptr<vtrc::server::connection_iface>
     > connection_map_type;
 
     connection_map_type connections_;
@@ -72,13 +72,15 @@ private:
     }
 
     void on_new_connection_accepted(
-                                boost::shared_ptr<vtrc::server::connection_iface> connection )
+                    vtrc::server::connection_iface* connection )
     {
         unique_lock l( connections_lock_ );
-        connections_.insert( std::make_pair(connection.get(), connection ) );
+        connections_.insert( std::make_pair(connection,
+              boost::shared_ptr<vtrc::server::connection_iface>(connection) ) );
     }
 
-    void on_new_connection_ready( const vtrc::server::connection_iface* connection )
+    void on_new_connection_ready(
+                            vtrc::server::connection_iface* connection )
     {
         ;;;
     }
