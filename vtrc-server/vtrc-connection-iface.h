@@ -1,17 +1,22 @@
 #ifndef VTRC_CONNECTION_IFACE_H
 #define VTRC_CONNECTION_IFACE_H
 
-namespace vtrc { namespace server {
+namespace vtrc {
+
+    class enviroment;
+
+namespace server {
 
     struct endpoint_iface;
 
     struct connection_iface {
         virtual ~connection_iface( ) { }
         //
-        virtual bool ready( ) const         = 0;
-        virtual endpoint_iface &endpoint( ) = 0;
-        virtual const char *name( ) const   = 0;
-        virtual void close( )               = 0;
+        virtual bool ready( ) const             = 0;
+        virtual endpoint_iface &endpoint( )     = 0;
+        virtual const char *name( ) const       = 0;
+        virtual void close( )                   = 0;
+        virtual enviroment &get_enviroment( )   = 0;
     };
 
 }}

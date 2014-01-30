@@ -3,6 +3,10 @@
 
 #include <string>
 
+//namespace google { namespace protobuf {
+//    class Message;
+//}}
+
 namespace vtrc { namespace common {
 
     class enviroment {
