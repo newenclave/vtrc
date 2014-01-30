@@ -120,6 +120,14 @@ namespace vtrc { namespace server { namespace endpoints {
                 if( error ) {
                     delete sock;
                 } else {
+                    try {
+                        tcp_connection *new_conn
+                                    (new tcp_connection(*this, sock));
+                        app_.on_new_connection_accepted( new_conn );
+                        app_.on_new_connection_ready( new_conn );
+                    } catch( ... ) {
+                        ;;;
+                    }
                     start_accept( );
                 }
             }
