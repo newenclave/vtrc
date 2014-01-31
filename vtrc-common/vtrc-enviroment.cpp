@@ -19,6 +19,7 @@ namespace vtrc { namespace common {
         mutable boost::shared_mutex data_lock_;
 
         enviroment_impl( ) {}
+
         enviroment_impl( const data_type &other_data )
             :data_(other_data)
         {}
