@@ -17,7 +17,7 @@ namespace vtrc { namespace common {
             info_ = &typeid(null_info);
         }
 
-        type_rtti_wrapper(const std::type_info &info)
+        explicit type_rtti_wrapper(const std::type_info &info)
           :info_(&info)
         {}
 
@@ -37,7 +37,7 @@ namespace vtrc { namespace common {
         }
     };
 
-    inline bool operator < (const type_rtti_wrapper& left, 
+    inline bool operator < (const type_rtti_wrapper& left,
                             const type_rtti_wrapper& right)
     { return left.before(right); }
 
