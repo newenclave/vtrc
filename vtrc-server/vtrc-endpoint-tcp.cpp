@@ -127,6 +127,7 @@ namespace vtrc { namespace server { namespace endpoints {
             void read_handler( const bsys::error_code &error, size_t bytes )
             {
                 if( !error ) {
+                    std::cout << "got " << bytes << "\n";
                     start_reading( );
                 } else {
                     close( );
