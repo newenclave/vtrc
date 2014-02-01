@@ -129,7 +129,7 @@ int main( )
 
     std::cout << "packed: '" << p << "'\n";
 
-    collector->append( p.c_str( ), p.size( ) );
+    collector->append( p.c_str( ), p.size( ) - 2 );
     collector->process( );
 
     std::cout << "unpacked: '" << collector->messages( ).size( ) << "'\n";
@@ -138,7 +138,6 @@ int main( )
         vtrc_auth::init_hello t;
         t.ParseFromString(collector->messages( )[i]);
         std::cout << t.DebugString( ) << "\n";
-
     }
 
     return 0;
