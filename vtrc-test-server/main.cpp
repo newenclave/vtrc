@@ -102,7 +102,7 @@ int main( )
 {
 
     vtrc::common::data_queue::queue_base_sptr pack
-            (vtrc::common::data_queue::fixint::create_serializer(1000));
+            (vtrc::common::data_queue::varint::create_serializer(1000));
 
     vtrc::common::data_queue::queue_base_sptr collector
             (vtrc::common::data_queue::varint::create_parser(1000));

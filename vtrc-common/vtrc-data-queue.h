@@ -34,17 +34,17 @@ namespace vtrc { namespace common { namespace data_queue {
     typedef boost::shared_ptr<queue_base> queue_base_sptr;
 
     namespace varint {
-        queue_base *create_parser( size_t max_valid_length );
+        queue_base *create_parser    ( size_t max_valid_length );
         queue_base *create_serializer( size_t max_valid_length );
     }
 
     namespace fixint {
-        queue_base *create_parser( size_t max_valid_length );
+        queue_base *create_parser    ( size_t max_valid_length );
         queue_base *create_serializer( size_t max_valid_length );
     }
 
     namespace fixint64 {
-        queue_base *create_parser( size_t max_valid_length );
+        queue_base *create_parser    ( size_t max_valid_length );
         queue_base *create_serializer( size_t max_valid_length );
     }
 
