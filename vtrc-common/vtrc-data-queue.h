@@ -43,11 +43,6 @@ namespace vtrc { namespace common { namespace data_queue {
         queue_base *create_serializer( size_t max_valid_length );
     }
 
-    namespace fixint64 {
-        queue_base *create_parser    ( size_t max_valid_length );
-        queue_base *create_serializer( size_t max_valid_length );
-    }
-
 }}}
 
 #endif // VTRC_DATA_QUEUE_H

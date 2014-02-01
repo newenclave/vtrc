@@ -202,16 +202,4 @@ namespace vtrc { namespace common { namespace data_queue {
         }
     }
 
-    namespace fixint64 {
-        typedef vtrc::common::policies::fixint_policy<uint64_t> policy_type;
-        queue_base *create_parser( size_t max_valid_length )
-        {
-            return new parser_impl<policy_type>(max_valid_length);
-        }
-        queue_base *create_serializer( size_t max_valid_length )
-        {
-            return new serializer_impl<policy_type>(max_valid_length);
-        }
-    }
-
 }}}
