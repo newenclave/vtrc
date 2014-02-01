@@ -155,30 +155,47 @@ public:
 
 template <typename SizePackPolicy>
 class data_unpacker: public data_collector {
+
+    const size_t maximum_valid_length;
+
 public:
+
+    data_unpacker( size_t maximum_valid )
+        :maximum_valid_length(maximum_valid)
+    {}
+
     void process( )
     {
-        typedef SizePackPolicy spp;
-        size_t next = 1;
-        while( next = spp::size_length(data_.begin( ), data_.end( ))) {
-            if( next > spp::max_length )
-                throw std::length_error( "invalid serialized stream" );
-            size_t len = SizePackPolicy::unpack(data_.begin( ), data_.end( ));
+        typedef SizePackPolicy SPP;
+        size_t next;
+        bool valid_data = true;
+        while( valid_data &&
+             ( next = SPP::size_length(data_.begin( ), data_.end( ))) )
+        {
+
+            if( next > SPP::max_length )
+                throw std::length_error( "The serialized data is invalid" );
+
+            size_t len = SPP::unpack(data_.begin( ), data_.end( ));
+
+            if( len > maximum_valid_length )
+                throw std::length_error( "Message is too long" );
+
             if( (len + next) <= data_.size( ) ) {
 
-                std::deque<char>::iterator b(data_.begin());
-                std::deque<char>::iterator n(b);
-                std::deque<char>::iterator e(b);
+                std::deque<char>::iterator b( data_.begin( ) );
+                std::deque<char>::iterator n( b );
+                std::deque<char>::iterator e( b );
 
-                std::advance(n, next );
-                std::advance(e, len + next );
+                std::advance( n, next );
+                std::advance( e, len + next );
 
                 std::string mess( n, e );
                 packed_.push_back( mess );
                 data_.erase( b, e );
 
             } else {
-                next = 0;
+                valid_data = false;
             }
         }
 
@@ -190,8 +207,20 @@ int main( )
 {
 
     data_packer< vtrc::common::policies::varint_policy<size_t> > collector;
-    data_unpacker< vtrc::common::policies::varint_policy<size_t> > unpacker;
+    data_unpacker< vtrc::common::policies::varint_policy<size_t> > unpacker(1000);
 
+    collector.append( "123456796", 9 );
+    collector.append( "123456796", 9 );
+    collector.append( "123456796", 9 );
+    collector.append( "123456796", 9 );
+    collector.append( "123456796", 9 );
+    collector.append( "123456796", 9 );
+    collector.append( "123456796", 9 );
+    collector.append( "123456796", 9 );
+    collector.append( "123456796", 9 );
+    collector.append( "123456796", 9 );
+    collector.append( "123456796", 9 );
+    collector.append( "123456796", 9 );
     collector.append( "123456796", 9 );
     collector.append( "123456796", 9 );
     collector.append( "123456796", 9 );
@@ -201,11 +230,16 @@ int main( )
     std::cout << collector.size( ) << " " << collector.data_size( ) << "\n";
 
 
-    unpacker.append( collector.front( ).c_str(), collector.front( ).size( ));
-    unpacker.process( );
-    std::cout << unpacker.size( ) << ": " << unpacker.front( ).size( ) << "\n";
+    try {
+        unpacker.append( collector.front( ).c_str(), collector.front( ).size( ));
+        unpacker.process( );
+        std::cout << unpacker.size( ) << ": " << unpacker.front( ).size( ) << "\n";
 
-    std::cout << unpacker.front( ) << "\n";
+        std::cout << unpacker.front( ) << "\n";
+
+    } catch( const std::exception &ex ) {
+        std::cout << "error: " << ex.what( ) << "\n";
+    }
 
     return 0;
 
