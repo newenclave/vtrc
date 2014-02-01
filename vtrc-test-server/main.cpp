@@ -95,8 +95,119 @@ private:
 
 };
 
+class data_collector {
+
+protected:
+
+    std::deque<char>        data_;
+    std::deque<std::string> packed_;
+
+public:
+
+    virtual ~data_collector( ) { }
+
+    void append( const char *data, size_t length )
+    {
+        data_.insert( data_.end( ), data, data + length );
+    }
+
+    size_t data_size( ) const
+    {
+        return data_.size( );
+    }
+
+    size_t size( ) const
+    {
+        return packed_.size( );
+    }
+
+    void grab_all( std::deque<std::string> &messages )
+    {
+        std::deque<std::string> tmp;
+        packed_.swap( tmp );
+        messages.swap( tmp );
+    }
+
+    std::string &front( )
+    {
+        packed_.front( );
+    }
+
+    void pop_front( )
+    {
+        packed_.pop_front( );
+    }
+
+    virtual void process( ) = 0;
+};
+
+template <typename SizePackPolicy>
+class data_packer: public data_collector {
+public:
+    void process( )
+    {
+        std::string new_data( SizePackPolicy::pack( data_.size( ) ) );
+        new_data.insert( new_data.end( ), data_.begin( ), data_.end( ) );
+        packed_.push_back( new_data );
+        data_.clear( );
+    }
+};
+
+template <typename SizePackPolicy>
+class data_unpacker: public data_collector {
+public:
+    void process( )
+    {
+        typedef SizePackPolicy spp;
+        size_t next = 1;
+        while( next = spp::size_length(data_.begin( ), data_.end( ))) {
+            if( next > spp::max_length )
+                throw std::length_error( "invalid serialized stream" );
+            size_t len = SizePackPolicy::unpack(data_.begin( ), data_.end( ));
+            if( (len + next) <= data_.size( ) ) {
+
+                std::deque<char>::iterator b(data_.begin());
+                std::deque<char>::iterator n(b);
+                std::deque<char>::iterator e(b);
+
+                std::advance(n, next );
+                std::advance(e, len + next );
+
+                std::string mess( n, e );
+                packed_.push_back( mess );
+                data_.erase( b, e );
+
+            } else {
+                next = 0;
+            }
+        }
+
+    }
+};
+
+
 int main( )
 {
+
+    data_packer< vtrc::common::policies::varint_policy<size_t> > collector;
+    data_unpacker< vtrc::common::policies::varint_policy<size_t> > unpacker;
+
+    collector.append( "123456796", 9 );
+    collector.append( "123456796", 9 );
+    collector.append( "123456796", 9 );
+
+    collector.process( );
+
+    std::cout << collector.size( ) << " " << collector.data_size( ) << "\n";
+
+
+    unpacker.append( collector.front( ).c_str(), collector.front( ).size( ));
+    unpacker.process( );
+    std::cout << unpacker.size( ) << ": " << unpacker.front( ).size( ) << "\n";
+
+    std::cout << unpacker.front( ) << "\n";
+
+    return 0;
 
     main_app app;
     vtrc::common::thread_poll poll(app.get_io_service( ), 4);
