@@ -20,6 +20,7 @@
 #include "vtrc-common/vtrc-data-queue.h"
 
 #include "protocol/vtrc-errors.pb.h"
+#include "protocol/vtrc-auth.pb.h"
 
 namespace ba = boost::asio;
 
@@ -107,28 +108,38 @@ int main( )
     vtrc::common::data_queue::queue_base_sptr collector
             (vtrc::common::data_queue::varint::create_parser(1000));
 
-    pack->append( "123456789", 9 );
-    pack->append( "123456789", 9 );
-    pack->append( "123456789", 9 );
-    pack->append( "123456789", 9 );
-    pack->append( "123456789", 9 );
-    pack->append( "123456789", 9 );
-    pack->append( "123456789", 9 );
-    pack->append( "123456789", 9 );
-    pack->append( "123456789", 9 );
-    pack->append( "123456789", 9 );
-    pack->append( "123456789", 9 );
+    vtrc_auth::init_hello t;
 
+    t.set_hello_message( "123" );
+
+    std::string ser(t.SerializeAsString());
+
+    pack->append( ser.c_str( ), ser.size( ) );
     pack->process( );
 
-    std::string p = pack->messages( ).front( );
+    pack->append( ser.c_str( ), ser.size( ) );
+    pack->process( );
+
+    pack->append( ser.c_str( ), ser.size( ) );
+    pack->process( );
+
+    std::string p;
+    for( size_t i=0; i<pack->messages( ).size( ); ++i )
+        p += pack->messages( )[i];
 
     std::cout << "packed: '" << p << "'\n";
 
     collector->append( p.c_str( ), p.size( ) );
     collector->process( );
 
-    std::cout << "unpacked: '" << collector->messages( ).front( ) << "'\n";
+    std::cout << "unpacked: '" << collector->messages( ).size( ) << "'\n";
+    for( size_t i=0; i<collector->messages( ).size( ); ++i )
+    {
+        vtrc_auth::init_hello t;
+        t.ParseFromString(collector->messages( )[i]);
+        std::cout << t.DebugString( ) << "\n";
+
+    }
 
     return 0;
 

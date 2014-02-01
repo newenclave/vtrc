@@ -1,5 +1,5 @@
 package vtrc_auth;
 
 message init_hello {
-    optional string hello_message = 1;
+    optional string hello_message  = 1;
 }
