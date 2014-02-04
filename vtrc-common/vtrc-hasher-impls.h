@@ -12,6 +12,12 @@ namespace hasher {
     namespace  fake {
         hasher_iface *create( );
     }
+
+    namespace sha2 {
+        hasher_iface *create256( );
+        hasher_iface *create384( );
+        hasher_iface *create512( );
+    }
 }
 
 }}
