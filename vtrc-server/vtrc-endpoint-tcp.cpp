@@ -11,6 +11,8 @@
 #include "protocol/vtrc-auth.pb.h"
 #include "vtrc-common/vtrc-sizepack-policy.h"
 #include "vtrc-common/vtrc-enviroment.h"
+#include "vtrc-common/vtrc-hasher-iface.h"
+#include "vtrc-common/vtrc-hasher-impls.h"
 
 namespace vtrc { namespace server { namespace endpoints {
 
@@ -39,6 +41,8 @@ namespace vtrc { namespace server { namespace endpoints {
 
             std::vector<char>                   read_buff_;
 
+            boost::shared_ptr<vtrc::common::hasher_iface> hasher_;
+
             tcp_connection(endpoint_iface &endpoint, bip::tcp::socket *sock)
                 :endpoint_(endpoint)
                 ,app_(endpoint_.application( ))
@@ -46,6 +50,7 @@ namespace vtrc { namespace server { namespace endpoints {
                 ,write_dispatcher_(ios_)
                 ,sock_(sock)
                 ,read_buff_(4096)
+                ,hasher_(vtrc::common::hasher::fake::create( ))
             {
                 start_reading( );
             }
@@ -93,9 +98,11 @@ namespace vtrc { namespace server { namespace endpoints {
                         );
             }
 
-            void write_impl( const std::string data )
+            void write_impl( std::string data )
             {
                 bool empty = write_queue_.empty( );
+                data.append( hasher_->get_data_hash( data.c_str( ),
+                                                     data.size( ) ) );
                 write_queue_.push_back( data );
                 if( empty ) {
                     async_write( );
