@@ -102,46 +102,6 @@ private:
 int main( )
 {
 
-    vtrc::common::data_queue::queue_base_sptr pack
-            (vtrc::common::data_queue::varint::create_serializer(1000));
-
-    vtrc::common::data_queue::queue_base_sptr collector
-            (vtrc::common::data_queue::varint::create_parser(1000));
-
-    vtrc_auth::init_hello t;
-
-    t.set_hello_message( "123" );
-
-    std::string ser(t.SerializeAsString());
-
-    pack->append( ser.c_str( ), ser.size( ) );
-    pack->process( );
-
-    pack->append( ser.c_str( ), ser.size( ) );
-    pack->process( );
-
-    pack->append( ser.c_str( ), ser.size( ) );
-    pack->process( );
-
-    std::string p;
-    for( size_t i=0; i<pack->messages( ).size( ); ++i )
-        p += pack->messages( )[i];
-
-    std::cout << "packed: '" << p << "'\n";
-
-    collector->append( p.c_str( ), p.size( ) - 2 );
-    collector->process( );
-
-    std::cout << "unpacked: '" << collector->messages( ).size( ) << "'\n";
-    for( size_t i=0; i<collector->messages( ).size( ); ++i )
-    {
-        vtrc_auth::init_hello t;
-        t.ParseFromString(collector->messages( )[i]);
-        std::cout << t.DebugString( ) << "\n";
-    }
-
-    return 0;
-
     main_app app;
     vtrc::common::thread_poll poll(app.get_io_service( ), 4);
 
