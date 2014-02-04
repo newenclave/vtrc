@@ -1,3 +1,4 @@
+#include <memory.h>
 
 #include "vtrc-hasher-iface.h"
 #include "hash/sha2-traits.h"
@@ -17,7 +18,7 @@ namespace vtrc { namespace common {  namespace hasher {
             std::string get_data_hash(const void *data,
                                       size_t      length ) const
             {
-                HashTraits::context_type context;
+                typename HashTraits::context_type context;
                 HashTraits::init( &context );
                 HashTraits::update( &context,
                     reinterpret_cast<const u_int8_t *>(data), length );
@@ -35,7 +36,6 @@ namespace vtrc { namespace common {  namespace hasher {
             }
 
         };
-
     }
 
     namespace sha2 {
