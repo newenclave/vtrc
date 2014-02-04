@@ -13,6 +13,7 @@
 #include "vtrc-common/vtrc-enviroment.h"
 #include "vtrc-common/vtrc-hasher-iface.h"
 #include "vtrc-common/vtrc-hasher-impls.h"
+#include "vtrc-common/vtrc-data-queue.h"
 
 namespace vtrc { namespace server { namespace endpoints {
 
@@ -41,7 +42,8 @@ namespace vtrc { namespace server { namespace endpoints {
 
             std::vector<char>                   read_buff_;
 
-            boost::shared_ptr<vtrc::common::hasher_iface> hasher_;
+            boost::shared_ptr<common::hasher_iface> hasher_;
+            common::data_queue::queue_base_sptr     queue_;
 
             tcp_connection(endpoint_iface &endpoint, bip::tcp::socket *sock)
                 :endpoint_(endpoint)
@@ -50,7 +52,8 @@ namespace vtrc { namespace server { namespace endpoints {
                 ,write_dispatcher_(ios_)
                 ,sock_(sock)
                 ,read_buff_(4096)
-                ,hasher_(vtrc::common::hasher::fake::create( ))
+                ,hasher_(common::hasher::fake::create( ))
+                ,queue_(common::data_queue::varint::create_parser( 16 * 1024 ))
             {
                 start_reading( );
             }
@@ -98,12 +101,15 @@ namespace vtrc { namespace server { namespace endpoints {
                         );
             }
 
-            void write_impl( std::string data )
+            void write_impl( const std::string data )
             {
                 bool empty = write_queue_.empty( );
-                data.append( hasher_->get_data_hash( data.c_str( ),
-                                                     data.size( ) ) );
-                write_queue_.push_back( data );
+                std::string result(queue_->pack_size( data.size( ) ));
+                result.append( hasher_->get_data_hash( data.c_str( ),
+                                                       data.size( ) ) );
+                result.append( data.begin( ), data.end( ) );
+                write_queue_.push_back( result );
+
                 if( empty ) {
                     async_write( );
                 }

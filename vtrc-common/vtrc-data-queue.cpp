@@ -108,6 +108,11 @@ namespace vtrc { namespace common { namespace data_queue {
                 :maximim_valid_(maximim_valid)
             {}
 
+            std::string pack_size( size_t size ) const
+            {
+                return SizePackPolicy::pack( size );
+            }
+
             void process( )
             {
                 typedef SizePackPolicy SSP;
@@ -134,6 +139,11 @@ namespace vtrc { namespace common { namespace data_queue {
             parser_impl( size_t maximim_valid )
                 :maximim_valid_(maximim_valid)
             {}
+
+            std::string pack_size( size_t size ) const
+            {
+                return SizePackPolicy::pack( size );
+            }
 
             void process( )
             {

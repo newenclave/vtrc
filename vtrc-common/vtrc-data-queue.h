@@ -28,6 +28,8 @@ namespace vtrc { namespace common { namespace data_queue {
         message_queue_type          &messages( );
         const message_queue_type    &messages( ) const;
 
+        /// TODO: fix it!
+        virtual std::string pack_size( size_t size ) const = 0;
         virtual void process( ) = 0;
     };
 
