@@ -7,6 +7,10 @@ namespace boost { namespace asio {
     class io_service;
 }}
 
+namespace google { namespace protobuf {
+    class Service;
+}}
+
 namespace vtrc { namespace server {
 
     struct endpoint_iface;
@@ -29,6 +33,9 @@ namespace vtrc { namespace server {
 
         virtual void on_connection_die(
                             connection_iface* connection ) = 0;
+
+        virtual google::protobuf::Service *create_service(
+                const std::string &name, connection_iface* connection ) = 0;
 
     };
 

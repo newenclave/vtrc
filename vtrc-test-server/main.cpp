@@ -96,6 +96,12 @@ private:
         std::cout << "connection die\n";
     }
 
+    google::protobuf::Service *create_service(
+            const std::string &name, vtrc::server::connection_iface* connection)
+    {
+        return NULL;
+    }
+
 };
 
 
