@@ -29,7 +29,6 @@ namespace vtrc { namespace server {
         boost::shared_ptr<common::transformer_iface>    transformer_;
         common::data_queue::queue_base_sptr             queue_;
 
-
         protocol_layer_impl( connection_iface *c )
             :connection_(c)
             ,hasher_(common::hasher::fake::create( ))
