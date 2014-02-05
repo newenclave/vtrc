@@ -80,7 +80,6 @@ private:
         unique_lock l( connections_lock_ );
         connections_.insert( std::make_pair(connection,
               boost::shared_ptr<vtrc::server::connection_iface>(connection) ) );
-        connection->write( "hello!", 6 );
         std::cout << "connection accepted\n";
     }
 

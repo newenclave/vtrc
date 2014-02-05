@@ -21,6 +21,7 @@ namespace vtrc { namespace server {
     public:
 
         void init( );
+        void read_data( const char *data, size_t length );
 
     };
 

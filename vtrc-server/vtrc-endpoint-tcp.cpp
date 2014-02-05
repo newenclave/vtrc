@@ -1,5 +1,6 @@
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
+#include <boost/make_shared.hpp>
 #include <sstream>
 #include <deque>
 #include <algorithm>
@@ -14,6 +15,8 @@
 #include "vtrc-common/vtrc-hasher-iface.h"
 #include "vtrc-common/vtrc-hasher-impls.h"
 #include "vtrc-common/vtrc-data-queue.h"
+
+#include "vtrc-protocol-layer.h"
 
 namespace vtrc { namespace server { namespace endpoints {
 
@@ -45,6 +48,8 @@ namespace vtrc { namespace server { namespace endpoints {
             boost::shared_ptr<common::hasher_iface> hasher_;
             common::data_queue::queue_base_sptr     queue_;
 
+            boost::shared_ptr<protocol_layer>       protocol_;
+
             tcp_connection(endpoint_iface &endpoint, bip::tcp::socket *sock)
                 :endpoint_(endpoint)
                 ,app_(endpoint_.application( ))
@@ -55,7 +60,9 @@ namespace vtrc { namespace server { namespace endpoints {
                 ,hasher_(common::hasher::fake::create( ))
                 ,queue_(common::data_queue::varint::create_parser( 16 * 1024 ))
             {
+                protocol_ = boost::make_shared<protocol_layer>(this);
                 start_reading( );
+                protocol_ ->init( );
             }
 
             bool ready( ) const
@@ -109,11 +116,7 @@ namespace vtrc { namespace server { namespace endpoints {
             void write_impl( const std::string data )
             {
                 bool empty = write_queue_.empty( );
-                std::string result(queue_->pack_size( data.size( ) ));
-                result.append( hasher_->get_data_hash( data.c_str( ),
-                                                       data.size( ) ) );
-                result.append( data.begin( ), data.end( ) );
-                write_queue_.push_back( result );
+                write_queue_.push_back( data );
 
                 if( empty ) {
                     async_write( );
@@ -146,6 +149,7 @@ namespace vtrc { namespace server { namespace endpoints {
             {
                 if( !error ) {
                     std::cout << "got " << bytes << "\n";
+                    protocol_->read_data( &read_buff_[0], bytes );
                     start_reading( );
                 } else {
                     close( );
