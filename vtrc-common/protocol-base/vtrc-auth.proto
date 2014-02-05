@@ -7,7 +7,7 @@ enum hash_variant {
 
 enum transformer_variant {
     TRANSFORM_NONE       = 0;
-    TRANSFORM_SIMPLE_XOR = 2;
+    TRANSFORM_SIMPLE_XOR = 1;
 };
 
 message init_protocol {
