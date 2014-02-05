@@ -1,5 +1,18 @@
 package vtrc_auth;
 
-message init_hello {
-    optional string hello_message  = 1;
+enum hash_variant {
+    HASH_NONE       = 0;
+    HASH_SHA2_256   = 1;
+};
+
+enum transformer_variant {
+    TRANSFORM_NONE       = 0;
+    TRANSFORM_SIMPLE_XOR = 2;
+};
+
+message init_protocol {
+    optional string hello_message       = 1;
+    repeated uint32 hash_supported      = 2; // @hash_variant
+    repeated uint32 transform_supported = 3; // @transformer_variant
 }
+

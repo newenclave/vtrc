@@ -83,6 +83,11 @@ namespace vtrc { namespace server { namespace endpoints {
                 return env_;
             }
 
+            boost::asio::io_service &get_io_service( )
+            {
+                return ios_;
+            }
+
             void write( const char *data, size_t length )
             {
                 write_dispatcher_.post(
