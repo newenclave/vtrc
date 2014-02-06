@@ -12,9 +12,15 @@ namespace vtrc { namespace common {
     };
 
 
-    namespace transformers { namespace none {
-        transformer_iface *create( );
-    }}
+    namespace transformers {
+        namespace none {
+            transformer_iface *create( );
+        }
+
+        namespace erseefor {
+            transformer_iface *create( const char *key, size_t keysize );
+        }
+    }
 }}
 
 #endif // VTRC_TRANSFORMER_IFACE_H

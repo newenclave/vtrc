@@ -25,9 +25,9 @@ namespace vtrc { namespace server {
 
         connection_iface *connection_;
         protocol_layer   *parent_;
-        boost::shared_ptr<common::hasher_iface>         hasher_;
-        boost::shared_ptr<common::transformer_iface>    transformer_;
-        common::data_queue::queue_base_sptr             queue_;
+        boost::shared_ptr<common::hasher_iface>      hasher_;
+        boost::shared_ptr<common::transformer_iface> transformer_;
+        common::data_queue::queue_base_sptr          queue_;
 
         protocol_layer_impl( connection_iface *c )
             :connection_(c)
@@ -40,15 +40,16 @@ namespace vtrc { namespace server {
 
         void init( )
         {
-            vtrc_auth::init_protocol hello_message;
-            hello_message.set_hello_message( "Tervetuloa!" );
+            vtrc_auth::init_protocol hello_mess;
+            hello_mess.set_hello_message( "Tervetuloa!" );
 
-            hello_message.add_hash_supported( vtrc_auth::HASH_NONE );
-            hello_message.add_hash_supported( vtrc_auth::HASH_SHA2_256 );
+            hello_mess.add_hash_supported( vtrc_auth::HASH_NONE );
+            hello_mess.add_hash_supported( vtrc_auth::HASH_SHA2_256 );
 
-            hello_message.add_transform_supported( vtrc_auth::TRANSFORM_NONE );
+            hello_mess.add_transform_supported( vtrc_auth::TRANSFORM_NONE );
+            hello_mess.add_transform_supported( vtrc_auth::TRANSFORM_ERSEEFOR );
 
-            std::string data(hello_message.SerializeAsString( ));
+            std::string data(hello_mess.SerializeAsString( ));
             std::string result(queue_->pack_size( data.size( ) ));
 
             result.append( hasher_->get_data_hash( data.c_str( ),
