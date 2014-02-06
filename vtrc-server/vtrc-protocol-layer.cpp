@@ -1,5 +1,7 @@
 
 #include <boost/asio.hpp>
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
 
 #include "vtrc-protocol-layer.h"
 #include "vtrc-connection-iface.h"
@@ -17,23 +19,51 @@ namespace vtrc { namespace server {
 
     namespace {
         static const size_t maximum_message_length = 1024 * 1024;
+        enum init_stage_enum {
+             stage_begin             = 1
+            ,stage_client_select     = 2
+            ,stage_client_ready      = 3
+        };
     }
 
     namespace data_queue = common::data_queue;
 
     struct protocol_layer::protocol_layer_impl {
 
+        typedef protocol_layer_impl this_type;
+
         connection_iface *connection_;
         protocol_layer   *parent_;
         boost::shared_ptr<common::hasher_iface>      hasher_;
         boost::shared_ptr<common::transformer_iface> transformer_;
         common::data_queue::queue_base_sptr          queue_;
+        init_stage_enum                              init_stages_;
+
+        typedef boost::function<void (void)> stage_function_type;
+        stage_function_type  stage_function_;
 
         protocol_layer_impl( connection_iface *c )
             :connection_(c)
             ,hasher_(common::hasher::fake::create( ))
             ,transformer_(common::transformers::none::create( ))
             ,queue_(data_queue::varint::create_parser(maximum_message_length))
+            ,init_stages_(stage_begin)
+        {
+            stage_function_ =
+                    boost::bind( &this_type::on_client_selection, this );
+        }
+
+        void on_timer( boost::system::error_code const &error )
+        {
+
+        }
+
+        void on_client_selection( )
+        {
+
+        }
+
+        void on_ready( )
         {
 
         }
@@ -70,6 +100,7 @@ namespace vtrc { namespace server {
                                            next_data.size( ) );
                 queue_->append( &next_data[0], next_data.size( ));
                 queue_->process( );
+                stage_function_( );
             }
         }
     };
