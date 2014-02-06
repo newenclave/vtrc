@@ -11,9 +11,39 @@ enum transformer_variant {
     TRANSFORM_ERSEEFOR   = 2;
 };
 
+message error_info {
+    optional uint32 code        = 1;
+    optional string description = 2;
+}
+
 message init_protocol {
-    optional string hello_message       = 1;
-    repeated uint32 hash_supported      = 2; // @hash_variant
-    repeated uint32 transform_supported = 3; // @transformer_variant
+
+    optional string     hello_message   = 1;
+    optional bool       ready           = 2 [default = true];
+    optional error_info error           = 3;
+
+    repeated uint32 hash_supported      = 4; // @hash_variant
+    repeated uint32 transform_supported = 5; // @transformer_variant
+}
+
+message client_selection {
+
+    optional string     hello_message   = 1;
+    optional bool       ready           = 2 [default = true];
+    optional error_info error           = 3;
+
+    optional uint32     hash            = 4; // default HASH_NONE
+    optional uint32     transform       = 5; // default TRANSFORM_NONE
+}
+
+message transformer_setup {
+
+    optional string     opt_message = 1;
+    optional bool       ready       = 2;
+    optional error_info error       = 3;
+
+    optional bytes  salt1           = 4;
+    optional bytes  salt2           = 5;
+    optional bytes  session_key     = 6;
 }
 
