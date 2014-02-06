@@ -17,6 +17,8 @@
 
 namespace vtrc { namespace server {
 
+    namespace gpb = google::protobuf;
+
     namespace {
         static const size_t maximum_message_length = 1024 * 1024;
         enum init_stage_enum {
@@ -66,6 +68,33 @@ namespace vtrc { namespace server {
         void on_ready( )
         {
 
+        }
+
+        void on_rcp_call_ready( )
+        {
+
+        }
+
+        bool check_message( const std::string &mess )
+        {
+            const size_t hash_length = hasher_->hash_size( );
+            const size_t diff_len = mess.size( ) - hash_length;
+
+            bool result = false;
+
+            if( mess.size( ) >= hash_length ) {
+                result = hasher_->
+                        check_data_hash( mess.c_str( ) + hash_length, diff_len,
+                                         mess.c_str( ) );
+            }
+            return result;
+        }
+
+        void parse_message( const std::string &block, gpb::Message &mess )
+        {
+            const size_t hash_length = hasher_->hash_size( );
+            const size_t diff_len = block.size( ) - hash_length;
+            mess.ParseFromArray( block.c_str( ) + hash_length, diff_len );
         }
 
         void init( )
