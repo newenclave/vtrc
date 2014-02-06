@@ -148,8 +148,13 @@ namespace vtrc { namespace server { namespace endpoints {
             void read_handler( const bsys::error_code &error, size_t bytes )
             {
                 if( !error ) {
-                    std::cout << "got " << bytes << "\n";
-                    protocol_->read_data( &read_buff_[0], bytes );
+                    try {
+                        protocol_->process_data( &read_buff_[0], bytes );
+                    } catch( const std::exception & /*ex*/ ) {
+                        close( );
+                        app_.on_connection_die( this ); // delete
+                        return;
+                    }
                     start_reading( );
                 } else {
                     close( );

@@ -56,13 +56,13 @@ namespace vtrc { namespace server {
                                                    data.size( ) ) );
             result.append( data.begin( ), data.end( ) );
 
-            transformer_->transform_data( data.empty() ? NULL : &data[0],
+            transformer_->transform_data( data.empty( ) ? NULL : &data[0],
                                           data.size( ) );
 
             connection_->write( data.c_str( ), data.size( ) );
         }
 
-        void read_data( const char *data, size_t length )
+        void process_data( const char *data, size_t length )
         {
             if( length > 0 ) {
                 std::string next_data(data, data + length);
@@ -90,9 +90,9 @@ namespace vtrc { namespace server {
         impl_->init( );
     }
 
-    void protocol_layer::read_data( const char *data, size_t length )
+    void protocol_layer::process_data( const char *data, size_t length )
     {
-        impl_->read_data( data, length );
+        impl_->process_data( data, length );
     }
 
 }}
