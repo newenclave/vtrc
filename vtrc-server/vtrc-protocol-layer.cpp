@@ -75,7 +75,7 @@ namespace vtrc { namespace server {
 
         }
 
-        bool check_message( const std::string &mess )
+        bool check_message_hash( const std::string &mess )
         {
             const size_t hash_length = hasher_->hash_size( );
             const size_t diff_len = mess.size( ) - hash_length;
