@@ -1,5 +1,7 @@
 package vtrc_auth;
 
+// index 51200
+
 enum hash_variant {
     HASH_NONE       = 0;
 

@@ -1,13 +1,21 @@
 
 package vtrc_errors;
 
+import "google/protobuf/descriptor.proto";
+
+// index 51000
+
+extend google.protobuf.EnumValueOptions {
+    optional string error_description = 51000 [default = "Unknown error"];
+}
+
 enum errors_numbers {
-    VTRC_ERROR_NO_ERROR = 0;
+    ERROR_NO_ERROR = 0 [(error_description) = "No error"];
 }
 
 message error_container {
     optional uint32 code        = 1;
     optional uint32 system_code = 2;
-    optional string description = 3;
+    optional string additional  = 3;
 }
 
