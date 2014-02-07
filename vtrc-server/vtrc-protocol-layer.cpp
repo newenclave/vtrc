@@ -114,7 +114,7 @@ namespace vtrc { namespace server {
             mess.ParseFromArray( block.c_str( ) + hash_length, diff_len );
         }
 
-        void init( )
+        vtrc_auth::init_protocol first_message( )
         {
             vtrc_auth::init_protocol hello_mess;
             hello_mess.set_hello_message( "Tervetuloa!" );
@@ -127,8 +127,14 @@ namespace vtrc { namespace server {
 
             hello_mess.add_transform_supported( vtrc_auth::TRANSFORM_NONE );
             hello_mess.add_transform_supported( vtrc_auth::TRANSFORM_ERSEEFOR );
+        }
+
+        void init( )
+        {
+            static const vtrc_auth::init_protocol hello_mess(first_message( ));
 
             std::string data(hello_mess.SerializeAsString( ));
+
             write(data.c_str( ), data.size( ));
         }
 

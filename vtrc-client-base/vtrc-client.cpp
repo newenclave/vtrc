@@ -6,12 +6,26 @@ namespace vtrc { namespace client {
     namespace gpb = google::protobuf;
 
     struct vtrc_client::vtrc_client_impl {
+
         basio::io_service   &ios_;
         vtrc_client         *parent_;
 
         vtrc_client_impl( basio::io_service &ios )
             :ios_(ios)
         {}
+
+        void connect( const std::string &address,
+                                   const std::string &service )
+        {
+
+        }
+
+        void async_connect( const std::string &address,
+                            const std::string &service,
+                            success_function closure )
+        {
+
+        }
 
     };
 
@@ -34,7 +48,14 @@ namespace vtrc { namespace client {
     void vtrc_client::connect( const std::string &address,
                                const std::string &service )
     {
+        impl_->connect( address, service );
+    }
 
+    void vtrc_client::async_connect( const std::string &address,
+                            const std::string &service,
+                            success_function closure )
+    {
+        impl_->async_connect( address, service, closure );
     }
 
 }}

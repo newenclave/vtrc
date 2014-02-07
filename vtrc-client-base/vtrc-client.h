@@ -2,8 +2,15 @@
 #define VTRC_CLIENT_H
 
 #include <boost/shared_ptr.hpp>
+#include <boost/function.hpp>
 
-namespace boost { namespace asio {
+namespace boost {
+
+namespace system {
+    class error_code;
+}
+
+namespace asio {
     class io_service;
 }}
 
@@ -12,6 +19,10 @@ namespace google { namespace protobuf {
 }}
 
 namespace vtrc { namespace client {
+
+    typedef boost::function <
+        void (const boost::system::error_code &)
+    > success_function;
 
     class vtrc_client {
 
@@ -24,6 +35,9 @@ namespace vtrc { namespace client {
         ~vtrc_client( );
         boost::shared_ptr<google::protobuf::RpcChannel> get_channel( );
         void connect( const std::string &address, const std::string &service );
+        void async_connect( const std::string &address,
+                            const std::string &service,
+                            success_function   closure);
 
     };
 
