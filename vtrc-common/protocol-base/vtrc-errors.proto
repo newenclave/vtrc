@@ -4,3 +4,10 @@ package vtrc_errors;
 enum errors_numbers {
     VTRC_ERROR_NO_ERROR = 0;
 }
+
+message error_container {
+    optional uint32 code        = 1;
+    optional uint32 system_code = 2;
+    optional string description = 3;
+}
+

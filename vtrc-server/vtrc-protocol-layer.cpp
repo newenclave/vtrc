@@ -60,9 +60,26 @@ namespace vtrc { namespace server {
 
         }
 
+        void write( const char *data, size_t length )
+        {
+            std::string result(queue_->pack_size( length ));
+
+            result.append( hasher_->get_data_hash( data, length ) );
+            result.append( data, data + length );
+
+            transformer_->transform_data( result.empty( ) ? NULL : &result[0],
+                                          result.size( ) );
+
+            connection_->write( result.c_str( ), result.size( ));
+        }
+
         void on_client_selection( )
         {
-
+            bool check = check_message_hash( queue_->messages( ).front( ) );
+            if( !check ) {
+                std::cout << "bad hash\n";
+                connection_->close( );
+            }
         }
 
         void on_ready( )
@@ -112,16 +129,7 @@ namespace vtrc { namespace server {
             hello_mess.add_transform_supported( vtrc_auth::TRANSFORM_ERSEEFOR );
 
             std::string data(hello_mess.SerializeAsString( ));
-            std::string result(queue_->pack_size( data.size( ) ));
-
-            result.append( hasher_->get_data_hash( data.c_str( ),
-                                                   data.size( ) ) );
-            result.append( data.begin( ), data.end( ) );
-
-            transformer_->transform_data( data.empty( ) ? NULL : &data[0],
-                                          data.size( ) );
-
-            connection_->write( data.c_str( ), data.size( ) );
+            write(data.c_str( ), data.size( ));
         }
 
         void process_data( const char *data, size_t length )
@@ -132,7 +140,8 @@ namespace vtrc { namespace server {
                                            next_data.size( ) );
                 queue_->append( &next_data[0], next_data.size( ));
                 queue_->process( );
-                stage_function_( );
+                if( !queue_->messages( ).empty( ) )
+                    stage_function_( );
             }
         }
     };
