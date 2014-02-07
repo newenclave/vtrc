@@ -39,7 +39,7 @@ message client_selection {
     optional bool       ready           = 2 [default = true];
     optional error_info error           = 3;
 
-    optional uint32     hash            = 4; // default HASH_NONE
+    optional uint32     hash            = 4 [default = 1]; // HASH_CRC_32
     optional uint32     transform       = 5; // default TRANSFORM_NONE
 }
 
