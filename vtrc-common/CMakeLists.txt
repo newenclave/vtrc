@@ -3,7 +3,7 @@ set(lib_name vtrc_common_s)
 
 include_directories( ${PROJECT_SOURCE_DIR} )
 
-list(APPEND src_dirs 
+list(APPEND src_dirs
         .
         ./hash
     )
@@ -59,25 +59,27 @@ foreach(next_proto ${protofiles})
 
 endforeach()
 
+include_directories( ${GENERATED_FILES_DIR} )
+
 ##################################################
 
 add_library(${lib_name} STATIC ${lib_src})
 
-list(APPEND dependencies  
+list(APPEND dependencies
     Boost
     PROTOBUF
     )
 
 message( "-- Seting up dependencies for " ${lib_name} )
 foreach( dep ${dependencies} )
-    
+
     message( "\tAdd dependence: " ${dep} )
-    
+
     add_dependencies(       ${lib_name} ${dep}      )
     add_definitions(        ${${dep}_DEFINITIONS}   )
     include_directories(    ${${dep}_INCLUDE_DIRS}  )
     target_link_libraries(  ${lib_name} ${${dep}_LIBRARIES} )
-    
+
 endforeach(dep)
 
 

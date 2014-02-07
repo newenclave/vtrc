@@ -46,7 +46,7 @@ namespace vtrc { namespace server {
 
         protocol_layer_impl( connection_iface *c )
             :connection_(c)
-            ,hasher_(common::hasher::fake::create( ))
+            ,hasher_(common::hasher::create_default( ))
             ,transformer_(common::transformers::none::create( ))
             ,queue_(data_queue::varint::create_parser(maximum_message_length))
             ,init_stages_(stage_begin)
