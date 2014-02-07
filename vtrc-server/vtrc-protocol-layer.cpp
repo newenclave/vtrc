@@ -103,6 +103,8 @@ namespace vtrc { namespace server {
             hello_mess.set_hello_message( "Tervetuloa!" );
 
             hello_mess.add_hash_supported( vtrc_auth::HASH_NONE );
+            hello_mess.add_hash_supported( vtrc_auth::HASH_CRC_16 );
+            hello_mess.add_hash_supported( vtrc_auth::HASH_CRC_32 );
             hello_mess.add_hash_supported( vtrc_auth::HASH_SHA2_256 );
 
             hello_mess.add_transform_supported( vtrc_auth::TRANSFORM_NONE );

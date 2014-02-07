@@ -18,6 +18,11 @@ namespace hasher {
         hasher_iface *create384( );
         hasher_iface *create512( );
     }
+
+    namespace crc {
+        hasher_iface *create16( );
+        hasher_iface *create32( );
+    }
 }
 
 }}
