@@ -54,6 +54,8 @@ namespace vtrc { namespace hash {
     HASH_TRAIT_DEFINE( SHA384 );
     HASH_TRAIT_DEFINE( SHA512 );
 
+#undef HASH_TRAIT_DEFINE
+
 }}
 
 #endif // SHA2TRAITS_H

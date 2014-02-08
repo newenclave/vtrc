@@ -5,7 +5,6 @@ package vtrc_rpc_lowlevel;
 
 message lowlevel_unit {
 
-
     // --- //
     optional bytes request  = 20;
     optional bytes response = 21;

@@ -96,6 +96,11 @@ namespace vtrc { namespace server { namespace endpoints {
                 }
             }
 
+            void send_message( const char *data, size_t length )
+            {
+
+            }
+
         };
 
         struct endpoint_tcp: public endpoint_iface {

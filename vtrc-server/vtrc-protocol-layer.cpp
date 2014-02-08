@@ -2,6 +2,7 @@
 #include <boost/asio.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
+#include <boost/thread.hpp>
 
 #include "vtrc-protocol-layer.h"
 
@@ -43,6 +44,8 @@ namespace vtrc { namespace server {
 
         typedef boost::function<void (void)> stage_function_type;
         stage_function_type  stage_function_;
+
+        boost::mutex                                 write_locker_;
 
         protocol_layer_impl( common::transport_iface *c )
             :connection_(c)
@@ -98,6 +101,7 @@ namespace vtrc { namespace server {
 
         void write( const char *data, size_t length )
         {
+            boost::mutex::scoped_lock l(write_locker_); // fix it
             std::string result(make_message(data, length));
             connection_->write( result.c_str( ), result.size( ));
         }
@@ -162,6 +166,12 @@ namespace vtrc { namespace server {
                     stage_function_( );
             }
         }
+
+        void send_data( const char *data, size_t length )
+        {
+            write( data, length );
+        }
+
     };
 
     protocol_layer::protocol_layer( common::transport_iface *connection )
@@ -183,6 +193,11 @@ namespace vtrc { namespace server {
     void protocol_layer::process_data( const char *data, size_t length )
     {
         impl_->process_data( data, length );
+    }
+
+    void protocol_layer::send_data( const char *data, size_t length )
+    {
+        impl_->send_data( data, length );
     }
 
 }}

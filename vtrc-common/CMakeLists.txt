@@ -22,6 +22,8 @@ set( GENERATED_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR} )
 set( GENERATED_FILES_OUTPUT ${GENERATED_FILES_DIR}/protocol )
 file(MAKE_DIRECTORY ${GENERATED_FILES_OUTPUT})
 
+include_directories( ${GENERATED_FILES_DIR} )
+
 foreach(next_proto ${protofiles})
 
     get_filename_component(out_FILE ${next_proto} NAME_WE)
@@ -58,8 +60,6 @@ foreach(next_proto ${protofiles})
     list( APPEND lib_src ${next_proto})
 
 endforeach()
-
-include_directories( ${GENERATED_FILES_DIR} )
 
 ##################################################
 

@@ -20,6 +20,8 @@ namespace vtrc { namespace common {
         virtual common::enviroment      &get_enviroment( ) = 0;
         virtual boost::asio::io_service &get_io_service( ) = 0;
 
+        virtual void send_message( const char *data, size_t length ) = 0;
+
     };
 
 }}
