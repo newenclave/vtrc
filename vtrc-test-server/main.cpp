@@ -15,7 +15,6 @@
 #include "vtrc-common/vtrc-sizepack-policy.h"
 
 #include "vtrc-common/vtrc-hasher-iface.h"
-#include "vtrc-common/vtrc-hasher-impls.h"
 
 #include "vtrc-common/vtrc-data-queue.h"
 

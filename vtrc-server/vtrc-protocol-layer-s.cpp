@@ -9,7 +9,6 @@
 #include "vtrc-monotonic-timer.h"
 #include "vtrc-data-queue.h"
 #include "vtrc-hasher-iface.h"
-#include "vtrc-hasher-impls.h"
 #include "vtrc-transformer-iface.h"
 
 #include "vtrc-transport-iface.h"

@@ -2,8 +2,6 @@
 #include <memory.h>
 
 #include "vtrc-hasher-iface.h"
-#include "vtrc-hasher-impls.h"
-
 #include "protocol/vtrc-auth.pb.h"
 
 namespace vtrc { namespace common {  namespace hasher {

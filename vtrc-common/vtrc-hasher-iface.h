@@ -19,6 +19,29 @@ namespace vtrc { namespace common {
 
     typedef boost::shared_ptr<hasher_iface> hasher_iface_sptr;
 
+    namespace hasher {
+
+        namespace  fake {
+            hasher_iface *create( );
+        }
+
+        namespace sha2 {
+            hasher_iface *create256( );
+            hasher_iface *create384( );
+            hasher_iface *create512( );
+        }
+
+        namespace crc {
+            hasher_iface *create16( );
+            hasher_iface *create32( );
+            hasher_iface *create64( );
+        }
+
+        hasher_iface *create_by_index( unsigned var );
+        hasher_iface *create_default( );
+
+    }
+
 }}
 
 #endif // VTRC_HASHER_IFACE_H
