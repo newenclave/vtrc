@@ -5,19 +5,19 @@
 
 namespace vtrc { namespace common {
 
-    class type_rtti_wrapper
+    class rtti_wrapper
     {
         const std::type_info* info_;
 
     public:
 
-        type_rtti_wrapper()
+        rtti_wrapper()
         {
             struct null_info {};
             info_ = &typeid(null_info);
         }
 
-        explicit type_rtti_wrapper(const std::type_info &info)
+        explicit rtti_wrapper(const std::type_info &info)
           :info_(&info)
         {}
 
@@ -26,7 +26,7 @@ namespace vtrc { namespace common {
             return *info_;
         }
 
-        bool before(const type_rtti_wrapper& rhs) const
+        bool before(const rtti_wrapper& rhs) const
         {
             return !!info_->before(*rhs.info_);
         }
@@ -37,8 +37,8 @@ namespace vtrc { namespace common {
         }
     };
 
-    inline bool operator < (const type_rtti_wrapper& left,
-                            const type_rtti_wrapper& right)
+    inline bool operator < (const rtti_wrapper& left,
+                            const rtti_wrapper& right)
     { return left.before(right); }
 
 }}
