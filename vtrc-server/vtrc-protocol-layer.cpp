@@ -36,7 +36,7 @@ namespace vtrc { namespace server {
 
         connection_iface *connection_;
         protocol_layer   *parent_;
-        boost::shared_ptr<common::hasher_iface>      hasher_;
+        common::hasher_iface_sptr                    hasher_;
         boost::shared_ptr<common::transformer_iface> transformer_;
         common::data_queue::queue_base_sptr          queue_;
         init_stage_enum                              init_stages_;

@@ -5,7 +5,7 @@ namespace vtrc { namespace common {
 
     namespace {
 
-        static const size_t drop_key_init = 4017;
+        static const size_t drop_key_init = 3072;
 
         struct transformer_erseefor: public transformer_iface {
 
