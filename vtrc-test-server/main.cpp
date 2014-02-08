@@ -8,9 +8,9 @@
 
 #include "vtrc-server/vtrc-application-iface.h"
 #include "vtrc-server/vtrc-endpoint-iface.h"
-#include "vtrc-server/vtrc-connection-iface.h"
 #include "vtrc-server/vtrc-endpoint-tcp.h"
 
+#include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-thread-poll.h"
 #include "vtrc-common/vtrc-sizepack-policy.h"
 
@@ -30,8 +30,8 @@ class main_app: public vtrc::server::application_iface
 
     typedef
     std::map <
-        vtrc::server::connection_iface *,
-        boost::shared_ptr<vtrc::server::connection_iface>
+        vtrc::common::connection_iface *,
+        boost::shared_ptr<vtrc::common::connection_iface>
     > connection_map_type;
 
     connection_map_type connections_;
@@ -75,21 +75,21 @@ private:
     }
 
     void on_new_connection_accepted(
-                    vtrc::server::connection_iface* connection )
+                    vtrc::common::connection_iface* connection )
     {
         unique_lock l( connections_lock_ );
         connections_.insert( std::make_pair(connection,
-              boost::shared_ptr<vtrc::server::connection_iface>(connection) ) );
+              boost::shared_ptr<vtrc::common::connection_iface>(connection) ) );
         std::cout << "connection accepted\n";
     }
 
     void on_new_connection_ready(
-                            vtrc::server::connection_iface* connection )
+                            vtrc::common::connection_iface* connection )
     {
         std::cout << "connection ready\n";
     }
 
-    void on_connection_die( vtrc::server::connection_iface* connection )
+    void on_connection_die( vtrc::common::connection_iface* connection )
     {
         unique_lock l( connections_lock_ );
         connections_.erase( connection );
@@ -97,7 +97,7 @@ private:
     }
 
     google::protobuf::Service *create_service(
-            const std::string &name, vtrc::server::connection_iface* connection)
+            const std::string &name, vtrc::common::connection_iface* connection)
     {
         return NULL;
     }

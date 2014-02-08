@@ -16,6 +16,8 @@
 #include "vtrc-common/vtrc-hasher-impls.h"
 #include "vtrc-common/vtrc-data-queue.h"
 
+#include "vtrc-common/vtrc-transport-tcp.h"
+
 #include "vtrc-protocol-layer.h"
 
 namespace vtrc { namespace server { namespace endpoints {
@@ -27,7 +29,7 @@ namespace vtrc { namespace server { namespace endpoints {
 
         namespace bip   = basio::ip;
 
-        struct tcp_connection: public connection_iface {
+        struct tcp_connection: public common::transport_tcp {
 
             typedef tcp_connection this_type;
 
@@ -35,24 +37,15 @@ namespace vtrc { namespace server { namespace endpoints {
             application_iface                  &app_;
             basio::io_service                  &ios_;
 
-            basio::io_service::strand           write_dispatcher_;
-            std::deque<std::string>             write_queue_;
-
-            common::enviroment                  env_;
-
-            boost::shared_ptr<bip::tcp::socket> sock_;
-            std::string                         name_;
-
             std::vector<char>                   read_buff_;
 
             boost::shared_ptr<protocol_layer>   protocol_;
 
             tcp_connection(endpoint_iface &endpoint, bip::tcp::socket *sock)
-                :endpoint_(endpoint)
+                :common::transport_tcp(sock)
+                ,endpoint_(endpoint)
                 ,app_(endpoint_.application( ))
                 ,ios_(app_.get_io_service( ))
-                ,write_dispatcher_(ios_)
-                ,sock_(sock)
                 ,read_buff_(4096)
             {
                 protocol_ = boost::make_shared<protocol_layer>(this);
@@ -62,7 +55,7 @@ namespace vtrc { namespace server { namespace endpoints {
 
             bool ready( ) const
             {
-                sock_->is_open( );
+                get_socket( ).is_open( );
             }
 
             endpoint_iface &endpoint( )
@@ -70,70 +63,16 @@ namespace vtrc { namespace server { namespace endpoints {
                 return endpoint_;
             }
 
-            const char *name( ) const
+            void on_write_error( const bsys::error_code & /*error*/ )
             {
-                return "<null>";
-            }
-
-            void close( )
-            {
-                sock_->close( );
-            }
-
-            common::enviroment &get_enviroment( )
-            {
-                return env_;
-            }
-
-            boost::asio::io_service &get_io_service( )
-            {
-                return ios_;
-            }
-
-            void write( const char *data, size_t length )
-            {
-                write_dispatcher_.post(
-                       boost::bind( &this_type::write_impl, this,
-                                    std::string( data, data + length )));
-            }
-
-            void async_write( )
-            {
-                sock_->async_send(
-                        basio::buffer( write_queue_.front( ) ),
-                        write_dispatcher_.wrap(
-                                boost::bind( &this_type::write_handler, this,
-                                     basio::placeholders::error,
-                                     basio::placeholders::bytes_transferred ))
-                        );
-            }
-
-            void write_impl( const std::string data )
-            {
-                bool empty = write_queue_.empty( );
-                write_queue_.push_back( data );
-
-                if( empty ) {
-                    async_write( );
-                }
-            }
-
-            void write_handler( const bsys::error_code &error, size_t bytes )
-            {
-                if( !error ) {
-                    write_queue_.pop_front( );
-                    if( !write_queue_.empty( ) )
-                        async_write( );
-                } else {
-                    close( );
-                    app_.on_connection_die( this ); // delete
-                }
+                close( );
+                app_.on_connection_die( this ); // delete
             }
 
             void start_reading( )
             {
-                sock_->async_read_some(
-                        basio::buffer( &read_buff_[0], read_buff_.size() ),
+                get_socket( ).async_read_some(
+                        basio::buffer( &read_buff_[0], read_buff_.size( ) ),
                         boost::bind( &this_type::read_handler, this,
                              basio::placeholders::error,
                              basio::placeholders::bytes_transferred)
@@ -155,12 +94,6 @@ namespace vtrc { namespace server { namespace endpoints {
                     close( );
                     app_.on_connection_die( this ); // delete
                 }
-            }
-
-            void on_read( const boost::system::error_code &error,
-                                  const char *data, size_t length )
-            {
-                ///
             }
 
         };

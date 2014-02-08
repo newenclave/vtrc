@@ -4,13 +4,14 @@
 #include <boost/bind.hpp>
 
 #include "vtrc-protocol-layer.h"
-#include "vtrc-connection-iface.h"
 
 #include "vtrc-common/vtrc-monotonic-timer.h"
 #include "vtrc-common/vtrc-data-queue.h"
 #include "vtrc-common/vtrc-hasher-iface.h"
 #include "vtrc-common/vtrc-hasher-impls.h"
 #include "vtrc-common/vtrc-transformer-iface.h"
+
+#include "vtrc-common/vtrc-transport-iface.h"
 
 #include "protocol/vtrc-errors.pb.h"
 #include "protocol/vtrc-auth.pb.h"
@@ -34,8 +35,8 @@ namespace vtrc { namespace server {
 
         typedef protocol_layer_impl this_type;
 
-        connection_iface *connection_;
-        protocol_layer   *parent_;
+        common::transport_iface *connection_;
+        protocol_layer          *parent_;
         common::hasher_iface_sptr                    hasher_;
         boost::shared_ptr<common::transformer_iface> transformer_;
         common::data_queue::queue_base_sptr          queue_;
@@ -43,7 +44,7 @@ namespace vtrc { namespace server {
         typedef boost::function<void (void)> stage_function_type;
         stage_function_type  stage_function_;
 
-        protocol_layer_impl( connection_iface *c )
+        protocol_layer_impl( common::transport_iface *c )
             :connection_(c)
             ,hasher_(common::hasher::create_default( ))
             ,transformer_(common::transformers::none::create( ))
@@ -163,7 +164,7 @@ namespace vtrc { namespace server {
         }
     };
 
-    protocol_layer::protocol_layer( connection_iface *connection )
+    protocol_layer::protocol_layer( common::transport_iface *connection )
         :impl_(new protocol_layer_impl(connection))
     {
         impl_->parent_ = this;

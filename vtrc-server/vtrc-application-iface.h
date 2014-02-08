@@ -11,7 +11,13 @@ namespace google { namespace protobuf {
     class Service;
 }}
 
-namespace vtrc { namespace server {
+namespace vtrc {
+
+    namespace common {
+        struct connection_iface;
+    }
+
+namespace server {
 
     struct endpoint_iface;
     struct connection_iface;
@@ -26,16 +32,17 @@ namespace vtrc { namespace server {
         virtual void on_endpoint_exception( endpoint_iface * /*ep*/ ) { }
 
         virtual void on_new_connection_accepted(
-                            connection_iface* connection ) = 0;
+                            common::connection_iface* connection ) = 0;
 
         virtual void on_new_connection_ready(
-                            connection_iface* connection ) = 0;
+                            common::connection_iface* connection ) = 0;
 
         virtual void on_connection_die(
-                            connection_iface* connection ) = 0;
+                            common::connection_iface* connection ) = 0;
 
         virtual google::protobuf::Service *create_service(
-                const std::string &name, connection_iface* connection ) = 0;
+                const std::string &name,
+                common::connection_iface* connection ) = 0;
 
     };
 

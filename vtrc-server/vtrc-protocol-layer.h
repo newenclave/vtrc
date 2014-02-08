@@ -1,7 +1,13 @@
 #ifndef VTRCP_ROTOCOL_LAYER_H
 #define VTRCP_ROTOCOL_LAYER_H
 
-namespace vtrc { namespace server {
+namespace vtrc {
+
+    namespace common {
+        struct transport_iface;
+    }
+
+namespace server {
 
     struct connection_iface;
 
@@ -15,7 +21,7 @@ namespace vtrc { namespace server {
 
     public:
 
-        protocol_layer( connection_iface *connection );
+        protocol_layer( common::transport_iface *connection );
         ~protocol_layer( );
 
     public:
