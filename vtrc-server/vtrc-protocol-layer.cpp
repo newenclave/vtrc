@@ -6,13 +6,13 @@
 
 #include "vtrc-protocol-layer.h"
 
-#include "vtrc-common/vtrc-monotonic-timer.h"
-#include "vtrc-common/vtrc-data-queue.h"
-#include "vtrc-common/vtrc-hasher-iface.h"
-#include "vtrc-common/vtrc-hasher-impls.h"
-#include "vtrc-common/vtrc-transformer-iface.h"
+#include "vtrc-monotonic-timer.h"
+#include "vtrc-data-queue.h"
+#include "vtrc-hasher-iface.h"
+#include "vtrc-hasher-impls.h"
+#include "vtrc-transformer-iface.h"
 
-#include "vtrc-common/vtrc-transport-iface.h"
+#include "vtrc-transport-iface.h"
 
 #include "protocol/vtrc-errors.pb.h"
 #include "protocol/vtrc-auth.pb.h"
@@ -38,14 +38,14 @@ namespace vtrc { namespace server {
 
         common::transport_iface *connection_;
         protocol_layer          *parent_;
-        common::hasher_iface_sptr                    hasher_;
+        common::hasher_iface_sptr            hasher_;
         boost::shared_ptr<common::transformer_iface> transformer_;
-        common::data_queue::queue_base_sptr          queue_;
+        data_queue::queue_base_sptr          queue_;
 
         typedef boost::function<void (void)> stage_function_type;
         stage_function_type  stage_function_;
 
-        boost::mutex                                 write_locker_;
+        boost::mutex                                 write_locker_; // use strand!
 
         protocol_layer_impl( common::transport_iface *c )
             :connection_(c)

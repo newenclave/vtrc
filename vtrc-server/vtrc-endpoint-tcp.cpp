@@ -10,6 +10,7 @@
 #include "vtrc-connection-iface.h"
 
 #include "protocol/vtrc-auth.pb.h"
+
 #include "vtrc-common/vtrc-sizepack-policy.h"
 #include "vtrc-common/vtrc-enviroment.h"
 #include "vtrc-common/vtrc-hasher-iface.h"

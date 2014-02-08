@@ -3,13 +3,12 @@
 
 namespace vtrc {
 
-    namespace common {
-        struct transport_iface;
-    }
+namespace common {
+    struct transport_iface;
+}
 
 namespace server {
 
-    struct connection_iface;
 
     class protocol_layer {
 
