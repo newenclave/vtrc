@@ -45,7 +45,7 @@ namespace vtrc { namespace common {
         const transformer_iface &get_transformer( ) const;
         /* delete this part */
 
-        void set_hash_transformer( hasher_iface *new_hasher,
+        void set_hasher_transformer( hasher_iface *new_hasher,
                                    transformer_iface *new_transformer );
 
     };

@@ -169,7 +169,7 @@ namespace vtrc { namespace common {
         return impl_->get_transformer( );
     }
 
-    void protocol_layer::set_hash_transformer( hasher_iface *new_hasher,
+    void protocol_layer::set_hasher_transformer( hasher_iface *new_hasher,
                                         transformer_iface *new_transformer )
     {
         impl_->set_hash_transformer( new_hasher, new_transformer );
