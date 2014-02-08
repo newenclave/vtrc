@@ -39,7 +39,6 @@ namespace vtrc { namespace server {
         common::hasher_iface_sptr                    hasher_;
         boost::shared_ptr<common::transformer_iface> transformer_;
         common::data_queue::queue_base_sptr          queue_;
-        init_stage_enum                              init_stages_;
 
         typedef boost::function<void (void)> stage_function_type;
         stage_function_type  stage_function_;
@@ -49,7 +48,6 @@ namespace vtrc { namespace server {
             ,hasher_(common::hasher::create_default( ))
             ,transformer_(common::transformers::none::create( ))
             ,queue_(data_queue::varint::create_parser(maximum_message_length))
-            ,init_stages_(stage_begin)
         {
             stage_function_ =
                     boost::bind( &this_type::on_client_selection, this );
@@ -60,16 +58,46 @@ namespace vtrc { namespace server {
 
         }
 
-        void write( const char *data, size_t length )
+        bool check_message_hash( const std::string &mess )
         {
-            std::string result(queue_->pack_size( length ));
+            const size_t hash_length = hasher_->hash_size( );
+            const size_t diff_len    = mess.size( ) - hash_length;
+
+            bool result = false;
+
+            if( mess.size( ) >= hash_length ) {
+                result = hasher_->
+                        check_data_hash( mess.c_str( ) + hash_length,
+                                         diff_len,
+                                         mess.c_str( ) );
+            }
+            return result;
+        }
+
+        std::string make_message( const std::string &src )
+        {
+            return make_message( src.c_str( ), src.size( ) );
+        }
+
+        std::string make_message( const char *data, size_t length )
+        {
+            /* here is:
+             *  < packed_size(data_length+hash_length) >< hash(data) >< data >
+            */
+            std::string result
+                    (queue_->pack_size( length + hasher_->hash_size( )));
 
             result.append( hasher_->get_data_hash( data, length ) );
             result.append( data, data + length );
 
             transformer_->transform_data( result.empty( ) ? NULL : &result[0],
                                           result.size( ) );
+            return result;
+        }
 
+        void write( const char *data, size_t length )
+        {
+            std::string result(make_message(data, length));
             connection_->write( result.c_str( ), result.size( ));
         }
 
@@ -92,29 +120,14 @@ namespace vtrc { namespace server {
 
         }
 
-        bool check_message_hash( const std::string &mess )
-        {
-            const size_t hash_length = hasher_->hash_size( );
-            const size_t diff_len = mess.size( ) - hash_length;
-
-            bool result = false;
-
-            if( mess.size( ) >= hash_length ) {
-                result = hasher_->
-                        check_data_hash( mess.c_str( ) + hash_length, diff_len,
-                                         mess.c_str( ) );
-            }
-            return result;
-        }
-
         void parse_message( const std::string &block, gpb::Message &mess )
         {
             const size_t hash_length = hasher_->hash_size( );
-            const size_t diff_len = block.size( ) - hash_length;
+            const size_t diff_len    = block.size( ) - hash_length;
             mess.ParseFromArray( block.c_str( ) + hash_length, diff_len );
         }
 
-        vtrc_auth::init_protocol first_message( )
+        std::string first_message( )
         {
             vtrc_auth::init_protocol hello_mess;
             hello_mess.set_hello_message( "Tervetuloa!" );
@@ -127,14 +140,12 @@ namespace vtrc { namespace server {
 
             hello_mess.add_transform_supported( vtrc_auth::TRANSFORM_NONE );
             hello_mess.add_transform_supported( vtrc_auth::TRANSFORM_ERSEEFOR );
+            return hello_mess.SerializeAsString( );
         }
 
         void init( )
         {
-            static const vtrc_auth::init_protocol hello_mess(first_message( ));
-
-            std::string data(hello_mess.SerializeAsString( ));
-
+            static const std::string data(first_message( ));
             write(data.c_str( ), data.size( ));
         }
 

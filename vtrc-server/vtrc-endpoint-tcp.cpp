@@ -45,10 +45,7 @@ namespace vtrc { namespace server { namespace endpoints {
 
             std::vector<char>                   read_buff_;
 
-            boost::shared_ptr<common::hasher_iface> hasher_;
-            common::data_queue::queue_base_sptr     queue_;
-
-            boost::shared_ptr<protocol_layer>       protocol_;
+            boost::shared_ptr<protocol_layer>   protocol_;
 
             tcp_connection(endpoint_iface &endpoint, bip::tcp::socket *sock)
                 :endpoint_(endpoint)
@@ -57,8 +54,6 @@ namespace vtrc { namespace server { namespace endpoints {
                 ,write_dispatcher_(ios_)
                 ,sock_(sock)
                 ,read_buff_(4096)
-                ,hasher_(common::hasher::fake::create( ))
-                ,queue_(common::data_queue::varint::create_parser( 16 * 1024 ))
             {
                 protocol_ = boost::make_shared<protocol_layer>(this);
                 start_reading( );

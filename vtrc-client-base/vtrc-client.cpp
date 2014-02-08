@@ -22,7 +22,7 @@ namespace vtrc { namespace client {
 
         void async_connect( const std::string &address,
                             const std::string &service,
-                            success_function closure )
+                            success_function   closure )
         {
 
         }
