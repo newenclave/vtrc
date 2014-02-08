@@ -3,6 +3,8 @@
 
 #include <stdlib.h>
 
+#include "vtrc-common/vtrc-protocol-layer.h"
+
 namespace vtrc {
 
 namespace common {
@@ -11,10 +13,10 @@ namespace common {
 
 namespace client {
 
-    class protocol_layer {
+    class protocol_layer: common::protocol_layer {
 
-        struct protocol_layer_impl;
-        protocol_layer_impl *impl_;
+        struct protocol_layer_c_impl;
+        protocol_layer_c_impl *impl_;
 
         protocol_layer( const protocol_layer& other );
         protocol_layer operator = ( const protocol_layer& other );

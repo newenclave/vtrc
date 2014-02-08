@@ -1,4 +1,5 @@
 #include <boost/asio.hpp>
+#include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include "vtrc-client-tcp.h"
@@ -8,6 +9,9 @@ namespace vtrc { namespace client {
     namespace ba = boost::asio;
 
     struct client_tcp::client_tcp_impl  {
+
+        typedef client_tcp_impl this_type;
+
         boost::asio::io_service &ios_;
         client_tcp *parent_;
 
@@ -28,15 +32,28 @@ namespace vtrc { namespace client {
             sock( ).connect( ep );
         }
 
+        typedef boost::function <
+                    void (const boost::system::error_code &)
+                > closure_type;
+
+        void on_connect( const boost::system::error_code &err,
+                         closure_type closure )
+        {
+            if( !err ) {
+                std::cout << err.message() << "\n";
+            }
+            closure( err );
+        }
+
         void async_connect( const std::string &address,
                             const std::string &service,
-                            boost::function <
-                                    void (const boost::system::error_code &)
-                                >   closure )
+                            closure_type closure )
         {
             ba::ip::tcp::endpoint ep(ba::ip::address::from_string(address),
                     boost::lexical_cast<unsigned short>(service) );
-            sock( ).async_connect( ep, closure );
+            sock( ).async_connect( ep,
+                    boost::bind( &this_type::on_connect, this,
+                                 ba::placeholders::error, closure) );
         }
 
         void send_message( const char *data, size_t length )

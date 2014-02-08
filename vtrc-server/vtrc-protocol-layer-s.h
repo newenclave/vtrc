@@ -1,6 +1,8 @@
 #ifndef VTRCP_ROTOCOL_LAYER_S_H
 #define VTRCP_ROTOCOL_LAYER_S_H
 
+#include "vtrc-common/vtrc-protocol-layer.h"
+
 namespace vtrc {
 
 namespace common {
@@ -9,10 +11,10 @@ namespace common {
 
 namespace server {
 
-    class protocol_layer {
+    class protocol_layer: public common::protocol_layer {
 
-        struct protocol_layer_impl;
-        protocol_layer_impl *impl_;
+        struct protocol_layer_s_impl;
+        protocol_layer_s_impl *impl_;
 
         protocol_layer( const protocol_layer& other );
         protocol_layer operator = ( const protocol_layer& other );

@@ -32,9 +32,9 @@ namespace vtrc { namespace server {
 
     namespace data_queue = common::data_queue;
 
-    struct protocol_layer::protocol_layer_impl {
+    struct protocol_layer::protocol_layer_s_impl {
 
-        typedef protocol_layer_impl this_type;
+        typedef protocol_layer_s_impl this_type;
 
         common::transport_iface *connection_;
         protocol_layer          *parent_;
@@ -47,7 +47,7 @@ namespace vtrc { namespace server {
 
         boost::mutex  write_locker_; // use strand!
 
-        protocol_layer_impl( common::transport_iface *c )
+        protocol_layer_s_impl( common::transport_iface *c )
             :connection_(c)
             ,hasher_(common::hasher::create_default( ))
             ,transformer_(common::transformers::none::create( ))
@@ -175,7 +175,8 @@ namespace vtrc { namespace server {
     };
 
     protocol_layer::protocol_layer( common::transport_iface *connection )
-        :impl_(new protocol_layer_impl(connection))
+        :common::protocol_layer(connection)
+        ,impl_(new protocol_layer_s_impl(connection))
     {
         impl_->parent_ = this;
     }
