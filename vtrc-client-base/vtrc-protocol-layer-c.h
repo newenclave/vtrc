@@ -13,13 +13,13 @@ namespace common {
 
 namespace client {
 
-    class protocol_layer: common::protocol_layer {
+    class protocol_layer: public common::protocol_layer {
 
         struct protocol_layer_c_impl;
         protocol_layer_c_impl *impl_;
 
         protocol_layer( const protocol_layer& other );
-        protocol_layer operator = ( const protocol_layer& other );
+        protocol_layer &operator = ( const protocol_layer& other );
 
     public:
 
@@ -29,9 +29,7 @@ namespace client {
     public:
 
         void init( );
-        void process_data( const char *data, size_t length );
-
-        void send_data( const char *data, size_t length );
+        void data_ready( );
 
     };
 

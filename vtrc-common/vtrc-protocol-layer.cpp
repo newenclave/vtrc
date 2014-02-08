@@ -40,8 +40,9 @@ namespace vtrc { namespace common {
                 queue_->append( &next_data[0], next_data.size( ));
                 queue_->process( );
 
-                //if( !queue_->messages( ).empty( ) )
-                //stage_function_( );
+                if( !queue_->messages( ).empty( ) ) {
+                    parent_->data_ready( );
+                }
             }
 
         }

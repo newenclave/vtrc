@@ -29,6 +29,8 @@ namespace vtrc { namespace common {
     public:
 
         virtual void init( ) = 0;
+        virtual void data_ready( ) = 0;
+
         void process_data( const char *data, size_t length );
         void send_data( const char *data, size_t length );
 

@@ -125,19 +125,9 @@ namespace vtrc { namespace server {
             write(data.c_str( ), data.size( ));
         }
 
-        void process_data( const char *data, size_t length )
+        void data_ready( )
         {
-            if( length > 0 ) {
-                std::string next_data(data, data + length);
-                parent_->get_transformer( ).revert_data( &next_data[0],
-                                            next_data.size( ) );
-                parent_->get_data_queue( )
-                        .append( &next_data[0], next_data.size( ));
-                parent_->get_data_queue( )
-                        .process( );
-                if( !parent_->get_data_queue( ).messages( ).empty( ) )
-                    stage_function_( );
-            }
+            stage_function_( );
         }
 
     };
@@ -157,6 +147,11 @@ namespace vtrc { namespace server {
     void protocol_layer::init( )
     {
         impl_->init( );
+    }
+
+    void protocol_layer::data_ready( )
+    {
+        impl_->data_ready( );
     }
 
 }}

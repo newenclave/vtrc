@@ -27,6 +27,7 @@ namespace server {
     public:
 
         void init( );
+        void data_ready( );
 
     };
 

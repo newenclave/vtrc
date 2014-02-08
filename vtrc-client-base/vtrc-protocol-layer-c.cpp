@@ -18,13 +18,15 @@ namespace vtrc { namespace client {
         {}
 
         void init( )
-        {}
+        {
 
-        void process_data( const char *data, size_t length )
-        {}
+        }
 
-        void send_data( const char *data, size_t length )
-        {}
+        void data_ready( )
+        {
+            size_t count = parent_->get_data_queue( ).messages( ).size( );
+            std::cout << "recv : " << count << " messages" << std::endl;
+        }
 
     };
 
@@ -45,14 +47,10 @@ namespace vtrc { namespace client {
         impl_->init( );
     }
 
-    void protocol_layer::process_data( const char *data, size_t length )
+    void protocol_layer::data_ready( )
     {
-        impl_->process_data( data, length );
-    }
-
-    void protocol_layer::send_data( const char *data, size_t length )
-    {
-        impl_->send_data( data, length );
+        std::cout << "data ready\n";
+        impl_->data_ready( );
     }
 
 }}
