@@ -24,6 +24,7 @@ namespace hasher {
         hasher_iface *create32( );
         hasher_iface *create64( );
     }
+
     hasher_iface *create_by_index( unsigned var );
     hasher_iface *create_default( );
 

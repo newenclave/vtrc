@@ -38,10 +38,16 @@ namespace vtrc { namespace common {
         const std::string &get( const std::string &name ) const
         {
             const static std::string empty_;
+            return get(name, empty_);
+        }
+
+        const std::string &get( const std::string &name,
+                                const std::string &default_value ) const
+        {
             shared_lock l(data_lock_);
             data_type::const_iterator f(data_.find(name));
             if( f == data_.end( ) ) {
-                return empty_;
+                return default_value;
             } else {
                 return f->second;
             }
@@ -70,6 +76,12 @@ namespace vtrc { namespace common {
     const std::string &enviroment::get( const std::string &name ) const
     {
         return impl_->get( name );
+    }
+
+    const std::string &enviroment::get( const std::string &name,
+                                        const std::string &default_value ) const
+    {
+        return impl_->get( name, default_value );
     }
 
 }}

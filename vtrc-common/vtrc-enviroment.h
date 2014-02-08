@@ -12,7 +12,7 @@ namespace vtrc { namespace common {
     class enviroment {
 
         struct enviroment_impl;
-        enviroment_impl *impl_;
+        enviroment_impl  *impl_;
 
     public:
 
@@ -22,6 +22,8 @@ namespace vtrc { namespace common {
 
         void set( const std::string &name, const std::string &value );
         const std::string &get( const std::string &name ) const;
+        const std::string &get( const std::string &name,
+                                const std::string &default_value ) const;
     };
 
 }}

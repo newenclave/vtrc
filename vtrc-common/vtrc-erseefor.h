@@ -11,13 +11,13 @@ namespace vtrc { namespace common { namespace crypt {
         typedef unsigned char uchar_type;
 
         uchar_type state_[256];
-        uchar_type si2_;
         uchar_type si1_;
+        uchar_type si2_;
 
         static inline
         void swap_bytes(uchar_type &a, uchar_type &b)
         {
-            uchar_type t;
+            uchar_type
             t = a;
             a = b;
             b = t;

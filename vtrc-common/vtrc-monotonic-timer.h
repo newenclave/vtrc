@@ -44,9 +44,8 @@ namespace vtrc { namespace common { namespace timer {
         }
     };
 
-    typedef  boost::asio::basic_deadline_timer<
-                boost::chrono::steady_clock,
-                monotonic_traits > monotonic;
+    typedef  boost::asio::basic_deadline_timer< boost::chrono::steady_clock,
+                                                monotonic_traits > monotonic;
 
 }}}
 
