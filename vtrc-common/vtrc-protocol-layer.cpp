@@ -1,3 +1,5 @@
+#include <boost/thread.hpp>
+
 #include "vtrc-protocol-layer.h"
 
 #include "vtrc-data-queue.h"
@@ -19,6 +21,8 @@ namespace vtrc { namespace common {
         hasher_iface_sptr            hasher_;
         transformer_iface_sptr       transformer_;
         data_queue::queue_base_sptr  queue_;
+
+        boost::mutex                 write_locker_; // use strand!
 
         protocol_layer_impl( transport_iface *c )
             :connection_(c)
@@ -67,6 +71,14 @@ namespace vtrc { namespace common {
         const transformer_iface &get_transformer( ) const
         {
             return *transformer_;
+        }
+
+        void set_hash_transformer( hasher_iface *new_hasher,
+                                   transformer_iface *new_transformer )
+        {
+            boost::mutex::scoped_lock l( write_locker_ );
+            hasher_.reset(new_hasher);
+            transformer_.reset(new_transformer);
         }
 
     };
@@ -120,6 +132,12 @@ namespace vtrc { namespace common {
     const transformer_iface &protocol_layer::get_transformer( ) const
     {
         return impl_->get_transformer( );
+    }
+
+    void protocol_layer::set_hash_transformer( hasher_iface *new_hasher,
+                                        transformer_iface *new_transformer )
+    {
+        impl_->set_hash_transformer( new_hasher, new_transformer );
     }
 
 }}
