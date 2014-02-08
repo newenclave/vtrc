@@ -32,6 +32,7 @@ namespace vtrc { namespace common {
         void process_data( const char *data, size_t length );
         void send_data( const char *data, size_t length );
 
+        /* delete this part */
         hasher_iface &get_hasher( );
         const hasher_iface &get_hasher( ) const;
 
@@ -40,6 +41,7 @@ namespace vtrc { namespace common {
 
         transformer_iface &get_transformer( );
         const transformer_iface &get_transformer( ) const;
+        /* delete this part */
 
         void set_hash_transformer( hasher_iface *new_hasher,
                                    transformer_iface *new_transformer );

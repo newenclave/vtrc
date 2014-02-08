@@ -29,8 +29,6 @@ namespace server {
         void init( );
         void process_data( const char *data, size_t length );
 
-        void send_data( const char *data, size_t length );
-
     };
 
 }}

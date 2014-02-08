@@ -38,7 +38,7 @@ namespace vtrc { namespace common {
 
         void send_data( const char *data, size_t length )
         {
-
+            make_and_write( data, length );
         }
 
         // --------------- sett ----------------- //
@@ -71,6 +71,30 @@ namespace vtrc { namespace common {
         const transformer_iface &get_transformer( ) const
         {
             return *transformer_;
+        }
+
+        std::string make_message( const char *data, size_t length )
+        {
+            /* here is:
+             *  < packed_size(data_length+hash_length) >< hash(data) >< data >
+            */
+            std::string result(queue_->pack_size(
+                                length + parent_->get_hasher( ).hash_size( )));
+
+            result.append( hasher_->get_data_hash(data, length ));
+            result.append( data, data + length );
+
+            transformer_->transform_data(
+                        result.empty( ) ? NULL : &result[0],
+                                          result.size( ) );
+            return result;
+        }
+
+        void make_and_write( const char *data, size_t length )
+        {
+            boost::mutex::scoped_lock l( write_locker_ );
+            std::string result(make_message(data, length));
+            connection_->write( result.c_str( ), result.size( ));
         }
 
         void set_hash_transformer( hasher_iface *new_hasher,

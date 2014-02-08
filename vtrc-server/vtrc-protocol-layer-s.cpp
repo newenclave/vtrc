@@ -70,34 +70,9 @@ namespace vtrc { namespace server {
             return result;
         }
 
-        std::string make_message( const std::string &src )
-        {
-            return make_message( src.c_str( ), src.size( ) );
-        }
-
-        std::string make_message( const char *data, size_t length )
-        {
-            /* here is:
-             *  < packed_size(data_length+hash_length) >< hash(data) >< data >
-            */
-            std::string result
-                    (parent_->get_data_queue( )
-                     .pack_size( length + parent_->get_hasher( ).hash_size( )));
-
-            result.append( parent_->get_hasher( ).get_data_hash(data, length ));
-            result.append( data, data + length );
-
-            parent_->get_transformer().transform_data(
-                        result.empty( ) ? NULL : &result[0],
-                                          result.size( ) );
-            return result;
-        }
-
         void write( const char *data, size_t length )
         {
-            boost::mutex::scoped_lock l(write_locker_); // fix it
-            std::string result(make_message(data, length));
-            connection_->write( result.c_str( ), result.size( ));
+            parent_->send_data( data, length );
         }
 
         void on_client_selection( )
@@ -191,11 +166,6 @@ namespace vtrc { namespace server {
     void protocol_layer::process_data( const char *data, size_t length )
     {
         impl_->process_data( data, length );
-    }
-
-    void protocol_layer::send_data( const char *data, size_t length )
-    {
-        impl_->send_data( data, length );
     }
 
 
