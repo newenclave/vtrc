@@ -18,6 +18,7 @@ namespace vtrc { namespace common {
 
         enviroment( );
         enviroment( const enviroment &other );
+        enviroment &operator = ( const enviroment &other );
         ~enviroment( );
 
         void set( const std::string &name, const std::string &value );
