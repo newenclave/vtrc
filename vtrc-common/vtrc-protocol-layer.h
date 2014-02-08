@@ -5,6 +5,12 @@
 
 namespace vtrc { namespace common {
 
+    namespace data_queue {
+        struct queue_base;
+    }
+
+    struct hasher_iface;
+    struct transformer_iface;
     struct transport_iface;
 
     class protocol_layer {
@@ -25,6 +31,15 @@ namespace vtrc { namespace common {
         virtual void init( ) = 0;
         void process_data( const char *data, size_t length );
         void send_data( const char *data, size_t length );
+
+        hasher_iface &get_hasher( );
+        const hasher_iface &get_hasher( ) const;
+
+        data_queue::queue_base &get_data_queue( );
+        const data_queue::queue_base &get_data_queue( ) const;
+
+        transformer_iface &get_transformer( );
+        const transformer_iface &get_transformer( ) const;
 
     };
 }}

@@ -37,20 +37,13 @@ namespace vtrc { namespace server {
 
         common::transport_iface *connection_;
         protocol_layer          *parent_;
-        common::hasher_iface_sptr            hasher_;
-        boost::shared_ptr<common::transformer_iface> transformer_;
-        data_queue::queue_base_sptr          queue_;
 
         typedef boost::function<void (void)> stage_function_type;
         stage_function_type  stage_function_;
 
         boost::mutex  write_locker_; // use strand!
-
         protocol_layer_s_impl( common::transport_iface *c )
             :connection_(c)
-            ,hasher_(common::hasher::create_default( ))
-            ,transformer_(common::transformers::none::create( ))
-            ,queue_(data_queue::varint::create_parser(maximum_message_length))
         {
             stage_function_ =
                     boost::bind( &this_type::on_client_selection, this );
@@ -63,14 +56,14 @@ namespace vtrc { namespace server {
 
         bool check_message_hash( const std::string &mess )
         {
-            const size_t hash_length = hasher_->hash_size( );
+            const size_t hash_length = parent_->get_hasher( ).hash_size( );
             const size_t diff_len    = mess.size( ) - hash_length;
 
             bool result = false;
 
             if( mess.size( ) >= hash_length ) {
-                result = hasher_->
-                        check_data_hash( mess.c_str( ) + hash_length,
+                result = parent_->get_hasher( ).
+                         check_data_hash( mess.c_str( ) + hash_length,
                                          diff_len,
                                          mess.c_str( ) );
             }
@@ -88,12 +81,14 @@ namespace vtrc { namespace server {
              *  < packed_size(data_length+hash_length) >< hash(data) >< data >
             */
             std::string result
-                    (queue_->pack_size( length + hasher_->hash_size( )));
+                    (parent_->get_data_queue( )
+                     .pack_size( length + parent_->get_hasher( ).hash_size( )));
 
-            result.append( hasher_->get_data_hash( data, length ) );
+            result.append( parent_->get_hasher( ).get_data_hash(data, length ));
             result.append( data, data + length );
 
-            transformer_->transform_data( result.empty( ) ? NULL : &result[0],
+            parent_->get_transformer().transform_data(
+                        result.empty( ) ? NULL : &result[0],
                                           result.size( ) );
             return result;
         }
@@ -107,7 +102,8 @@ namespace vtrc { namespace server {
 
         void on_client_selection( )
         {
-            bool check = check_message_hash( queue_->messages( ).front( ) );
+            bool check = check_message_hash(
+                        parent_->get_data_queue( ).messages( ).front( ) );
             if( !check ) {
                 std::cout << "bad hash\n";
                 connection_->close( );
@@ -126,7 +122,7 @@ namespace vtrc { namespace server {
 
         void parse_message( const std::string &block, gpb::Message &mess )
         {
-            const size_t hash_length = hasher_->hash_size( );
+            const size_t hash_length = parent_->get_hasher( ).hash_size( );
             const size_t diff_len    = block.size( ) - hash_length;
             mess.ParseFromArray( block.c_str( ) + hash_length, diff_len );
         }
@@ -157,11 +153,13 @@ namespace vtrc { namespace server {
         {
             if( length > 0 ) {
                 std::string next_data(data, data + length);
-                transformer_->revert_data( &next_data[0],
-                                           next_data.size( ) );
-                queue_->append( &next_data[0], next_data.size( ));
-                queue_->process( );
-                if( !queue_->messages( ).empty( ) )
+                parent_->get_transformer( ).revert_data( &next_data[0],
+                                            next_data.size( ) );
+                parent_->get_data_queue( )
+                        .append( &next_data[0], next_data.size( ));
+                parent_->get_data_queue( )
+                        .process( );
+                if( !parent_->get_data_queue( ).messages( ).empty( ) )
                     stage_function_( );
             }
         }
