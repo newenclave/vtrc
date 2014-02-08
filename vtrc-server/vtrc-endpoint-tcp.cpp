@@ -157,6 +157,12 @@ namespace vtrc { namespace server { namespace endpoints {
                 }
             }
 
+            void on_read( const boost::system::error_code &error,
+                                  const char *data, size_t length )
+            {
+                ///
+            }
+
         };
 
         struct endpoint_tcp: public endpoint_iface {

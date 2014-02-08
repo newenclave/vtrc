@@ -11,7 +11,6 @@
 
 namespace boost { namespace asio {
     class io_service;
-
 }}
 
 namespace vtrc {
@@ -23,10 +22,11 @@ namespace server {
     struct endpoint_iface;
 
     struct connection_iface: public common::transport_iface {
+
         virtual ~connection_iface( ) { }
-        //
-        virtual bool ready( ) const                             = 0;
-        virtual endpoint_iface &endpoint( )                     = 0;
+
+        virtual bool ready( ) const         = 0;
+        virtual endpoint_iface &endpoint( ) = 0;
     };
 
 }}
