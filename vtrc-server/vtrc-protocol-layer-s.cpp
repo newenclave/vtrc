@@ -4,7 +4,7 @@
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
 
-#include "vtrc-protocol-layer.h"
+#include "vtrc-protocol-layer-s.h"
 
 #include "vtrc-monotonic-timer.h"
 #include "vtrc-data-queue.h"
@@ -45,7 +45,7 @@ namespace vtrc { namespace server {
         typedef boost::function<void (void)> stage_function_type;
         stage_function_type  stage_function_;
 
-        boost::mutex                                 write_locker_; // use strand!
+        boost::mutex  write_locker_; // use strand!
 
         protocol_layer_impl( common::transport_iface *c )
             :connection_(c)

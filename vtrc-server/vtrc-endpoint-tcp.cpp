@@ -19,7 +19,7 @@
 
 #include "vtrc-common/vtrc-transport-tcp.h"
 
-#include "vtrc-protocol-layer.h"
+#include "vtrc-protocol-layer-s.h"
 
 namespace vtrc { namespace server { namespace endpoints {
 

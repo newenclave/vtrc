@@ -1,5 +1,7 @@
-#ifndef VTRCP_ROTOCOL_LAYER_H
-#define VTRCP_ROTOCOL_LAYER_H
+#ifndef VTRC_CLIENT_PROTOCOL_LAYER_C_H
+#define VTRC_CLIENT_PROTOCOL_LAYER_C_H
+
+#include <stdlib.h>
 
 namespace vtrc {
 
@@ -7,8 +9,7 @@ namespace common {
     struct transport_iface;
 }
 
-namespace server {
-
+namespace client {
 
     class protocol_layer {
 
@@ -35,5 +36,4 @@ namespace server {
 }}
 
 
-
-#endif // VTRCP_ROTOCOL_LAYER_H
+#endif // VTRCPROTOCOLLAYER_H

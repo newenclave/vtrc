@@ -1,5 +1,6 @@
+
 #include "vtrc-client.h"
-#include "vtrc-common/vtrc-transport-iface.h"
+#include "vtrc-client-tcp.h"
 
 #include <boost/asio.hpp>
 
@@ -8,25 +9,11 @@ namespace vtrc { namespace client {
     namespace basio = boost::asio;
     namespace gpb = google::protobuf;
 
-//    ba::ip::tcp::resolver resolver(service());
-//    ba::ip::tcp::resolver::query query(addr, serv);
-//    ba::ip::tcp::resolver::iterator iterator;
-//    try {
-//        iterator = resolver.resolve(query);
-//        handle().connect(*iterator);
-//    } catch( const std::exception &ex ) {
-//        ex;
-//        ba::ip::tcp::endpoint ep(ba::ip::address::from_string(addr),
-//                boost::lexical_cast<unsigned short>(serv) );
-//        handle().connect( ep );
-//    }
-
-
     struct vtrc_client::vtrc_client_impl {
 
-        basio::io_service                         &ios_;
-        vtrc_client                               *parent_;
-        boost::shared_ptr<common::transport_iface> transport_;
+        basio::io_service                          &ios_;
+        vtrc_client                                *parent_;
+        boost::shared_ptr<common::connection_iface> connection_;
 
         vtrc_client_impl( basio::io_service &ios )
             :ios_(ios)
@@ -35,18 +22,18 @@ namespace vtrc { namespace client {
         void connect( const std::string &address,
                       const std::string &service )
         {
-//            basio::ip::tcp::socket *sock = new basio::ip::tcp::socket(ios_);
-//            basio::ip::tcp::endpoint ep(ba::ip::address::from_string(address),
-//                            boost::lexical_cast<unsigned short>(service) );
-//            sock->connect( ep );
-
+            boost::shared_ptr<client_tcp> new_client(new client_tcp( ios_ ));
+            new_client->connect( address, service );
+            connection_ = new_client;
         }
 
         void async_connect( const std::string &address,
                             const std::string &service,
                             success_function   closure )
         {
-
+            boost::shared_ptr<client_tcp> new_client(new client_tcp( ios_ ));
+            new_client->async_connect( address, service, closure );
+            connection_ = new_client;
         }
 
     };
