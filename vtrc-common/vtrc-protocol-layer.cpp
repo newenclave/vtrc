@@ -33,6 +33,16 @@ namespace vtrc { namespace common {
 
         void process_data( const char *data, size_t length )
         {
+            if( length > 0 ) {
+                std::string next_data(data, data + length);
+                transformer_->revert_data( &next_data[0],
+                                            next_data.size( ) );
+                queue_->append( &next_data[0], next_data.size( ));
+                queue_->process( );
+
+                //if( !queue_->messages( ).empty( ) )
+                //stage_function_( );
+            }
 
         }
 

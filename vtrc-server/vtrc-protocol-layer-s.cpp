@@ -159,11 +159,5 @@ namespace vtrc { namespace server {
         impl_->init( );
     }
 
-    void protocol_layer::process_data( const char *data, size_t length )
-    {
-        impl_->process_data( data, length );
-    }
-
-
 }}
 
