@@ -42,6 +42,7 @@ namespace vtrc { namespace server {
         stage_function_type  stage_function_;
 
         boost::mutex  write_locker_; // use strand!
+
         protocol_layer_s_impl( common::transport_iface *c )
             :connection_(c)
         {
@@ -107,10 +108,10 @@ namespace vtrc { namespace server {
             vtrc_auth::init_protocol hello_mess;
             hello_mess.set_hello_message( "Tervetuloa!" );
 
-            hello_mess.add_hash_supported( vtrc_auth::HASH_NONE );
-            hello_mess.add_hash_supported( vtrc_auth::HASH_CRC_16 );
-            hello_mess.add_hash_supported( vtrc_auth::HASH_CRC_32 );
-            hello_mess.add_hash_supported( vtrc_auth::HASH_CRC_64 );
+            hello_mess.add_hash_supported( vtrc_auth::HASH_NONE     );
+            hello_mess.add_hash_supported( vtrc_auth::HASH_CRC_16   );
+            hello_mess.add_hash_supported( vtrc_auth::HASH_CRC_32   );
+            hello_mess.add_hash_supported( vtrc_auth::HASH_CRC_64   );
             hello_mess.add_hash_supported( vtrc_auth::HASH_SHA2_256 );
 
             hello_mess.add_transform_supported( vtrc_auth::TRANSFORM_NONE );
@@ -137,11 +138,6 @@ namespace vtrc { namespace server {
                 if( !parent_->get_data_queue( ).messages( ).empty( ) )
                     stage_function_( );
             }
-        }
-
-        void send_data( const char *data, size_t length )
-        {
-            write( data, length );
         }
 
     };
