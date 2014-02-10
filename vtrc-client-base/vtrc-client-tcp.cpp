@@ -34,7 +34,7 @@ namespace vtrc { namespace client {
 
         void init(  )
         {
-            protocol_.reset(new protocol_layer( parent_ ));
+            protocol_.reset(new client::protocol_layer( parent_ ));
             start_reading( );
         }
 

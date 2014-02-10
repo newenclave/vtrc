@@ -50,7 +50,7 @@ namespace vtrc { namespace server { namespace endpoints {
                 ,env_(endpoint_.get_enviroment( ))
                 ,read_buff_(4096)
             {
-                protocol_ = boost::make_shared<protocol_layer>
+                protocol_ = boost::make_shared<server::protocol_layer>
                                                        (boost::ref(app_), this);
                 start_reading( );
                 protocol_ ->init( );

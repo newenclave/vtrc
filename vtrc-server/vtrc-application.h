@@ -38,6 +38,7 @@ namespace server {
         common::enviroment      &get_enviroment( );
         boost::asio::io_service &get_io_service( );
 
+        /** TODO: fix it **/
         virtual void on_endpoint_started( endpoint_iface * /*ep*/ ) { }
         virtual void on_endpoint_stopped( endpoint_iface * /*ep*/ ) { }
         virtual void on_endpoint_exception( endpoint_iface * /*ep*/ ) { }
@@ -50,6 +51,7 @@ namespace server {
 
         virtual void on_connection_die(
                             common::connection_iface* connection ) = 0;
+        /** TODO: fix it **/
 
         virtual google::protobuf::Service *create_service(
                             const std::string &name,
