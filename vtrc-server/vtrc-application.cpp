@@ -59,8 +59,7 @@ namespace vtrc { namespace server {
 
     boost::asio::io_service &application::get_io_service( )
     {
-
+        return impl_->get_io_service( );
     }
-
 
 }}

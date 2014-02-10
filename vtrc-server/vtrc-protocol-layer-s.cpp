@@ -35,7 +35,7 @@ namespace vtrc { namespace server {
 
         typedef protocol_layer_s_impl this_type;
 
-        application       &app_;
+        application             &app_;
         common::transport_iface *connection_;
         protocol_layer          *parent_;
 
