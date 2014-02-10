@@ -104,10 +104,10 @@ namespace vtrc { namespace client {
                 }
                 start_reading( );
             } else {
+                std::cout << "error close\n";
                 parent_->close( );
             }
         }
-
     };
 
     client_tcp::client_tcp( boost::asio::io_service &ios, vtrc_client *client )
