@@ -89,11 +89,6 @@ namespace vtrc { namespace server {
             }
         }
 
-        void on_ready( )
-        {
-
-        }
-
         void on_rcp_call_ready( )
         {
 
@@ -133,6 +128,16 @@ namespace vtrc { namespace server {
             stage_function_( );
         }
 
+        bool ready( ) const
+        {
+            return true;
+        }
+
+        void on_ready( )
+        {
+            //return true;
+        }
+
     };
 
     protocol_layer::protocol_layer( application       &a,
@@ -153,9 +158,14 @@ namespace vtrc { namespace server {
         impl_->init( );
     }
 
-    void protocol_layer::data_ready( )
+    void protocol_layer::on_data_ready( )
     {
         impl_->data_ready( );
+    }
+
+    bool protocol_layer::ready( ) const
+    {
+        return impl_->ready( );
     }
 
 }}

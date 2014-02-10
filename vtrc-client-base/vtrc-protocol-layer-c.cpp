@@ -28,6 +28,17 @@ namespace vtrc { namespace client {
             std::cout << "recv : " << count << " messages" << std::endl;
         }
 
+        bool ready( ) const
+        {
+            return true;
+        }
+
+        void on_ready( )
+        {
+            ;;;
+        }
+
+
     };
 
     protocol_layer::protocol_layer( common::transport_iface *connection )
@@ -47,10 +58,15 @@ namespace vtrc { namespace client {
         impl_->init( );
     }
 
-    void protocol_layer::data_ready( )
+    void protocol_layer::on_data_ready( )
     {
         std::cout << "data ready\n";
         impl_->data_ready( );
+    }
+
+    bool protocol_layer::ready( ) const
+    {
+        return impl_->ready( );
     }
 
 }}

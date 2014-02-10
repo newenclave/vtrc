@@ -41,7 +41,7 @@ namespace vtrc { namespace common {
                 queue_->process( );
 
                 if( !queue_->messages( ).empty( ) ) {
-                    parent_->data_ready( );
+                    parent_->on_data_ready( );
                 }
             }
 

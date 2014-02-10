@@ -28,13 +28,18 @@ namespace vtrc { namespace common {
 
     public:
 
-        virtual void init( ) = 0;
-        virtual void data_ready( ) = 0;
+        virtual void init( )            = 0;
+        virtual bool ready( ) const     = 0;
 
         void process_data( const char *data, size_t length );
         void send_data( const char *data, size_t length );
 
-        /* delete this part */
+    protected:
+
+        virtual void on_data_ready( )   = 0;
+
+        /* ==== delete this part ==== */
+
         hasher_iface &get_hasher( );
         const hasher_iface &get_hasher( ) const;
 
@@ -43,7 +48,8 @@ namespace vtrc { namespace common {
 
         transformer_iface &get_transformer( );
         const transformer_iface &get_transformer( ) const;
-        /* delete this part */
+
+        /* ==== delete this part ==== */
 
         void set_hasher_transformer( hasher_iface *new_hasher,
                                    transformer_iface *new_transformer );

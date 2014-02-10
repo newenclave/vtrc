@@ -29,7 +29,11 @@ namespace client {
     public:
 
         void init( );
-        void data_ready( );
+        bool ready( ) const;
+
+    private:
+
+        void on_data_ready( );
 
     };
 
