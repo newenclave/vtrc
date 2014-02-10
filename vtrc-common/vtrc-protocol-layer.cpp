@@ -152,8 +152,8 @@ namespace vtrc { namespace common {
                                    transformer_iface *new_transformer )
         {
             boost::mutex::scoped_lock l( write_locker_ );
-            hasher_.reset(new_hasher);
-            transformer_.reset(new_transformer);
+            if(new_hasher)      hasher_.reset(new_hasher);
+            if(new_transformer) transformer_.reset(new_transformer);
         }
 
     };

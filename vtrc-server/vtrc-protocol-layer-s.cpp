@@ -44,13 +44,17 @@ namespace vtrc { namespace server {
 
         boost::mutex  write_locker_; // use strand!
 
-        protocol_layer_s_impl( application       &a,
-                               common::transport_iface *c )
+        protocol_layer_s_impl( application &a, common::transport_iface *c )
             :app_(a)
             ,connection_(c)
         {
             stage_function_ =
                     boost::bind( &this_type::on_client_selection, this );
+        }
+
+        void drop_first( )
+        {
+            parent_->get_data_queue( ).messages( ).pop_front( );
         }
 
         void on_timer( boost::system::error_code const &error )
@@ -68,19 +72,46 @@ namespace vtrc { namespace server {
             parent_->send_data( data, length );
         }
 
+        void send_proto_message( const gpb::Message &mess ) const
+        {
+            std::string s(mess.SerializeAsString( ));
+            parent_->send_data( s.c_str( ), s.size( ) );
+        }
+
         void on_client_selection( )
         {
-            bool check = check_message_hash(
-                        parent_->get_data_queue( ).messages( ).front( ) );
+            std::string &mess(parent_->get_data_queue( ).messages( ).front( ));
+            bool check = check_message_hash(mess);
             if( !check ) {
                 std::cout << "bad hash\n";
                 connection_->close( );
             }
+            vtrc_auth::client_selection cs;
+            parse_message( mess, cs );
+
+            std::cout << cs.DebugString( ) << "\n";
+            drop_first( );
+
+            parent_->set_hasher_transformer(
+                        common::hasher::create_by_index( cs.hash() ),
+                        NULL);
+
+            vtrc_auth::transformer_setup ts;
+
+            ts.set_ready( true );
+            ts.set_opt_message( "good" );
+
+            send_proto_message( ts );
+
+            stage_function_ =
+                    boost::bind( &this_type::on_rcp_call_ready, this );
+
         }
 
         void on_rcp_call_ready( )
         {
-
+            std::cout << "ready\n";
+            connection_->close( );
         }
 
         void parse_message( const std::string &block, gpb::Message &mess )
