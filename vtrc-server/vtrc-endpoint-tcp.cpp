@@ -6,7 +6,7 @@
 #include <algorithm>
 
 #include "vtrc-endpoint-iface.h"
-#include "vtrc-application-iface.h"
+#include "vtrc-application.h"
 #include "vtrc-connection-iface.h"
 
 #include "protocol/vtrc-auth.pb.h"
@@ -34,7 +34,7 @@ namespace vtrc { namespace server { namespace endpoints {
             typedef tcp_connection this_type;
 
             endpoint_iface                     &endpoint_;
-            application_iface                  &app_;
+            application                  &app_;
             basio::io_service                  &ios_;
 
             std::vector<char>                   read_buff_;
@@ -44,11 +44,12 @@ namespace vtrc { namespace server { namespace endpoints {
             tcp_connection(endpoint_iface &endpoint, bip::tcp::socket *sock)
                 :common::transport_tcp(sock)
                 ,endpoint_(endpoint)
-                ,app_(endpoint_.application( ))
+                ,app_(endpoint_.get_application( ))
                 ,ios_(app_.get_io_service( ))
                 ,read_buff_(4096)
             {
-                protocol_ = boost::make_shared<protocol_layer>(this);
+                protocol_ = boost::make_shared<protocol_layer>
+                                                       (boost::ref(app_), this);
                 start_reading( );
                 protocol_ ->init( );
             }
@@ -107,13 +108,13 @@ namespace vtrc { namespace server { namespace endpoints {
 
             typedef endpoint_tcp this_type;
 
-            application_iface    &app_;
+            application    &app_;
             basio::io_service    &ios_;
 
             bip::tcp::endpoint    endpoint_;
             bip::tcp::acceptor    acceptor_;
 
-            endpoint_tcp( application_iface &app,
+            endpoint_tcp( application &app,
                           const std::string &address,
                           unsigned short port )
                 :app_(app)
@@ -122,7 +123,7 @@ namespace vtrc { namespace server { namespace endpoints {
                 ,acceptor_(ios_, endpoint_)
             {}
 
-            application_iface &application( )
+            application &get_application( )
             {
                 return app_;
             }
@@ -178,7 +179,7 @@ namespace vtrc { namespace server { namespace endpoints {
     }
 
     namespace tcp {
-        endpoint_iface *create( application_iface &app,
+        endpoint_iface *create( application &app,
                                 const std::string &address,
                                 unsigned short service )
         {

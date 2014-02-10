@@ -6,7 +6,7 @@
 
 #include <stdlib.h>
 
-#include "vtrc-server/vtrc-application-iface.h"
+#include "vtrc-server/vtrc-application.h"
 #include "vtrc-server/vtrc-endpoint-iface.h"
 #include "vtrc-server/vtrc-endpoint-tcp.h"
 
@@ -23,7 +23,7 @@
 
 namespace ba = boost::asio;
 
-class main_app: public vtrc::server::application_iface
+class main_app: public vtrc::server::application
 {
     ba::io_service ios_;
 

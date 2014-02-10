@@ -4,10 +4,10 @@
 namespace vtrc { namespace server {
 
     struct endpoint_iface;
-    struct application_iface;
+    class application;
 
     namespace endpoints { namespace tcp {
-        endpoint_iface *create( application_iface &app,
+        endpoint_iface *create( application &app,
                                 const std::string &address,
                                 unsigned short service );
     }}

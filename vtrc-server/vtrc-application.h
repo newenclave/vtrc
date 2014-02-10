@@ -15,6 +15,7 @@ namespace vtrc {
 
     namespace common {
         struct connection_iface;
+        struct enviroment;
     }
 
 namespace server {
@@ -22,9 +23,19 @@ namespace server {
     struct endpoint_iface;
     struct connection_iface;
 
-    struct application_iface {
+    class application {
 
-        virtual ~application_iface( ) { }
+        struct application_impl;
+        friend struct application_impl;
+        application_impl  *impl_;
+
+    public:
+
+        application( );
+        virtual ~application( );
+
+        common::enviroment &get_enviroment( );
+
         virtual boost::asio::io_service &get_io_service( ) = 0;
 
         virtual void on_endpoint_started( endpoint_iface * /*ep*/ ) { }
@@ -41,8 +52,8 @@ namespace server {
                             common::connection_iface* connection ) = 0;
 
         virtual google::protobuf::Service *create_service(
-                const std::string &name,
-                common::connection_iface* connection ) = 0;
+                            const std::string &name,
+                            common::connection_iface* connection ) = 0;
 
     };
 

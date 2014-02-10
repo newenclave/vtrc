@@ -35,6 +35,7 @@ namespace vtrc { namespace server {
 
         typedef protocol_layer_s_impl this_type;
 
+        application       &app_;
         common::transport_iface *connection_;
         protocol_layer          *parent_;
 
@@ -43,8 +44,10 @@ namespace vtrc { namespace server {
 
         boost::mutex  write_locker_; // use strand!
 
-        protocol_layer_s_impl( common::transport_iface *c )
-            :connection_(c)
+        protocol_layer_s_impl( application       &a,
+                               common::transport_iface *c )
+            :app_(a)
+            ,connection_(c)
         {
             stage_function_ =
                     boost::bind( &this_type::on_client_selection, this );
@@ -132,9 +135,10 @@ namespace vtrc { namespace server {
 
     };
 
-    protocol_layer::protocol_layer( common::transport_iface *connection )
+    protocol_layer::protocol_layer( application       &a,
+                                    common::transport_iface *connection )
         :common::protocol_layer(connection)
-        ,impl_(new protocol_layer_s_impl(connection))
+        ,impl_(new protocol_layer_s_impl(a, connection))
     {
         impl_->parent_ = this;
     }

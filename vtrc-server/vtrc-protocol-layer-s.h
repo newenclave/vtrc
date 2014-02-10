@@ -11,6 +11,8 @@ namespace common {
 
 namespace server {
 
+    class application;
+
     class protocol_layer: public common::protocol_layer {
 
         struct protocol_layer_s_impl;
@@ -21,7 +23,8 @@ namespace server {
 
     public:
 
-        protocol_layer( common::transport_iface *connection );
+        protocol_layer( application &app,
+                        common::transport_iface *connection);
         ~protocol_layer( );
 
     public:

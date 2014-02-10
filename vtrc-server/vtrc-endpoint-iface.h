@@ -5,12 +5,12 @@
 
 namespace vtrc { namespace server {
 
-    struct application_iface;
+    class application;
 
     struct endpoint_iface {
 
         virtual ~endpoint_iface( ) { }
-        virtual application_iface &application( ) = 0;
+        virtual application &get_application( ) = 0;
 
         virtual std::string string( ) const = 0;
 
