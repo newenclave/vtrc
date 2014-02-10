@@ -3,6 +3,10 @@
 
 #include <stdlib.h>
 
+namespace google { namespace protobuf {
+    class Message;
+}}
+
 namespace vtrc { namespace common {
 
     namespace data_queue {
@@ -38,6 +42,10 @@ namespace vtrc { namespace common {
 
         virtual void on_data_ready( )   = 0;
 
+        bool check_message( const std::string &mess );
+        void parse_message( const std::string &mess,
+                            google::protobuf::Message &result );
+
         /* ==== delete this part ==== */
 
         hasher_iface &get_hasher( );
@@ -52,7 +60,7 @@ namespace vtrc { namespace common {
         /* ==== delete this part ==== */
 
         void set_hasher_transformer( hasher_iface *new_hasher,
-                                   transformer_iface *new_transformer );
+                                     transformer_iface *new_transformer );
 
     };
 }}

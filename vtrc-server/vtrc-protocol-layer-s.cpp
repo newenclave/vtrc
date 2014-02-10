@@ -60,18 +60,7 @@ namespace vtrc { namespace server {
 
         bool check_message_hash( const std::string &mess )
         {
-            const size_t hash_length = parent_->get_hasher( ).hash_size( );
-            const size_t diff_len    = mess.size( ) - hash_length;
-
-            bool result = false;
-
-            if( mess.size( ) >= hash_length ) {
-                result = parent_->get_hasher( ).
-                         check_data_hash( mess.c_str( ) + hash_length,
-                                         diff_len,
-                                         mess.c_str( ) );
-            }
-            return result;
+            return parent_->check_message( mess );
         }
 
         void write( const char *data, size_t length )
@@ -96,9 +85,7 @@ namespace vtrc { namespace server {
 
         void parse_message( const std::string &block, gpb::Message &mess )
         {
-            const size_t hash_length = parent_->get_hasher( ).hash_size( );
-            const size_t diff_len    = block.size( ) - hash_length;
-            mess.ParseFromArray( block.c_str( ) + hash_length, diff_len );
+            parent_->parse_message( block, mess );
         }
 
         std::string first_message( )

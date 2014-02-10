@@ -1,5 +1,7 @@
 #include <boost/thread.hpp>
 
+#include <google/protobuf/message.h>
+
 #include "vtrc-protocol-layer.h"
 
 #include "vtrc-data-queue.h"
@@ -35,6 +37,10 @@ namespace vtrc { namespace common {
         {
             if( length > 0 ) {
                 std::string next_data(data, data + length);
+
+                /*
+                 * message = revert( message )
+                */
                 transformer_->revert_data( &next_data[0],
                                             next_data.size( ) );
                 queue_->append( &next_data[0], next_data.size( ));
@@ -45,6 +51,11 @@ namespace vtrc { namespace common {
                 }
             }
 
+        }
+
+        void drop_first( )
+        {
+            queue_->messages( ).pop_front( );
         }
 
         void send_data( const char *data, size_t length )
@@ -84,16 +95,45 @@ namespace vtrc { namespace common {
             return *transformer_;
         }
 
+        void parse_message( const std::string &mess,
+                            google::protobuf::Message &result )
+        {
+            const size_t hash_length = hasher_->hash_size( );
+            const size_t diff_len    = mess.size( ) - hash_length;
+            result.ParseFromArray( mess.c_str( ) + hash_length, diff_len );
+        }
+
+        bool check_message( const std::string &mess )
+        {
+            const size_t hash_length = parent_->get_hasher( ).hash_size( );
+            const size_t diff_len    = mess.size( ) - hash_length;
+
+            bool result = false;
+
+            if( mess.size( ) >= hash_length ) {
+                result = hasher_->
+                         check_data_hash( mess.c_str( ) + hash_length,
+                                          diff_len,
+                                          mess.c_str( ) );
+            }
+            return result;
+        }
+
         std::string make_message( const char *data, size_t length )
         {
             /* here is:
-             *  < packed_size(data_length+hash_length) >< hash(data) >< data >
+             *  message =
+             *  <packed_size(data_length+hash_length)><hash(data)><data>
             */
             std::string result(queue_->pack_size(
                                 length + parent_->get_hasher( ).hash_size( )));
 
             result.append( hasher_->get_data_hash(data, length ));
             result.append( data, data + length );
+
+            /*
+             * message = transform( message )
+            */
 
             transformer_->transform_data(
                         result.empty( ) ? NULL : &result[0],
@@ -137,6 +177,17 @@ namespace vtrc { namespace common {
     void protocol_layer::send_data( const char *data, size_t length )
     {
         impl_->send_data( data, length );
+    }
+
+    bool protocol_layer::check_message( const std::string &mess )
+    {
+        return impl_->check_message( mess );
+    }
+
+    void protocol_layer::parse_message( const std::string &mess,
+                                        google::protobuf::Message &result )
+    {
+        impl_->parse_message(mess, result);
     }
 
     hasher_iface &protocol_layer::get_hasher( )
