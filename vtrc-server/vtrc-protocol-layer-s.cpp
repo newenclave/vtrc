@@ -90,6 +90,7 @@ namespace vtrc { namespace server {
             parse_message( mess, cs );
 
             std::cout << cs.DebugString( ) << "\n";
+
             drop_first( );
 
             parent_->set_hasher_transformer(

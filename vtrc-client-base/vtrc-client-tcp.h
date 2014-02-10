@@ -11,6 +11,8 @@ namespace boost { namespace asio {
 
 namespace vtrc { namespace client {
 
+    class vtrc_client;
+
     class client_tcp: public vtrc::common::transport_tcp {
 
         struct client_tcp_impl;
@@ -18,7 +20,7 @@ namespace vtrc { namespace client {
 
     public:
 
-        client_tcp( boost::asio::io_service &ios );
+        client_tcp( boost::asio::io_service &ios, vtrc_client *client );
         ~client_tcp( );
 
         void connect( const std::string &address,

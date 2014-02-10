@@ -55,11 +55,14 @@ namespace vtrc { namespace client {
             std::cout << "Message check: " << check << "\n";
             vtrc_auth::transformer_setup transformer_proto;
 
-            //if( check ) {
+            if( check ) {
                 parent_->parse_message( mess, transformer_proto );
                 std::cout << "transformer Message is: "
                           << transformer_proto.DebugString( ) << "\n";
-            //}
+            }
+
+            send_proto_message( transformer_proto );
+
             drop_first( );
 
         }

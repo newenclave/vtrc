@@ -5,6 +5,8 @@
 #include "vtrc-client-tcp.h"
 #include "vtrc-protocol-layer-c.h"
 
+#include "vtrc-client.h"
+
 namespace vtrc { namespace client {
 
     namespace basio = boost::asio;
@@ -18,11 +20,14 @@ namespace vtrc { namespace client {
         client_tcp              *parent_;
         std::vector<char>        read_buff_;
 
+        vtrc_client             *client_;
+
         boost::shared_ptr<protocol_layer> protocol_;
 
-        client_tcp_impl( boost::asio::io_service &ios )
+        client_tcp_impl( boost::asio::io_service &ios, vtrc_client *client )
             :ios_(ios)
             ,read_buff_(4096)
+            ,client_(client)
         {
 
         }
@@ -105,9 +110,9 @@ namespace vtrc { namespace client {
 
     };
 
-    client_tcp::client_tcp( boost::asio::io_service &ios )
+    client_tcp::client_tcp( boost::asio::io_service &ios, vtrc_client *client )
         :common::transport_tcp(new boost::asio::ip::tcp::socket(ios))
-        ,impl_(new client_tcp_impl(ios))
+        ,impl_(new client_tcp_impl(ios, client))
     {
         impl_->parent_ = this;
     }

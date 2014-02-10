@@ -22,7 +22,8 @@ namespace vtrc { namespace client {
         void connect( const std::string &address,
                       const std::string &service )
         {
-            boost::shared_ptr<client_tcp> new_client(new client_tcp( ios_ ));
+            boost::shared_ptr<client_tcp>
+                                  new_client(new client_tcp( ios_, parent_ ));
             new_client->connect( address, service );
             connection_ = new_client;
         }
@@ -31,7 +32,8 @@ namespace vtrc { namespace client {
                             const std::string &service,
                             success_function   closure )
         {
-            boost::shared_ptr<client_tcp> new_client(new client_tcp( ios_ ));
+            boost::shared_ptr<client_tcp>
+                                   new_client(new client_tcp( ios_ , parent_));
             new_client->async_connect( address, service, closure );
             connection_ = new_client;
         }
