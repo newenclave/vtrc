@@ -25,8 +25,6 @@ namespace ba = boost::asio;
 
 class main_app: public vtrc::server::application
 {
-    ba::io_service ios_;
-
     typedef
     std::map <
         vtrc::common::connection_iface *,
@@ -43,11 +41,6 @@ public:
 
     main_app( )
     {}
-
-    ba::io_service &get_io_service( )
-    {
-        return ios_;
-    }
 
 private:
 

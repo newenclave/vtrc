@@ -34,8 +34,9 @@ namespace vtrc { namespace server { namespace endpoints {
             typedef tcp_connection this_type;
 
             endpoint_iface                     &endpoint_;
-            application                  &app_;
+            application                        &app_;
             basio::io_service                  &ios_;
+            common::enviroment                  env_;
 
             std::vector<char>                   read_buff_;
 
@@ -46,6 +47,7 @@ namespace vtrc { namespace server { namespace endpoints {
                 ,endpoint_(endpoint)
                 ,app_(endpoint_.get_application( ))
                 ,ios_(app_.get_io_service( ))
+                ,env_(endpoint_.get_enviroment( ))
                 ,read_buff_(4096)
             {
                 protocol_ = boost::make_shared<protocol_layer>
@@ -108,17 +110,19 @@ namespace vtrc { namespace server { namespace endpoints {
 
             typedef endpoint_tcp this_type;
 
-            application    &app_;
-            basio::io_service    &ios_;
+            application             &app_;
+            basio::io_service       &ios_;
+            common::enviroment       env_;
 
-            bip::tcp::endpoint    endpoint_;
-            bip::tcp::acceptor    acceptor_;
+            bip::tcp::endpoint       endpoint_;
+            bip::tcp::acceptor       acceptor_;
 
             endpoint_tcp( application &app,
                           const std::string &address,
                           unsigned short port )
                 :app_(app)
-                ,ios_(app.get_io_service( ))
+                ,ios_(app_.get_io_service( ))
+                ,env_(app_.get_enviroment())
                 ,endpoint_(bip::address::from_string(address), port)
                 ,acceptor_(ios_, endpoint_)
             {}
@@ -126,6 +130,11 @@ namespace vtrc { namespace server { namespace endpoints {
             application &get_application( )
             {
                 return app_;
+            }
+
+            common::enviroment &get_enviroment( )
+            {
+                return env_;
             }
 
             std::string string( ) const

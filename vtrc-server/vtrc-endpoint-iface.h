@@ -3,7 +3,13 @@
 
 #include <string>
 
-namespace vtrc { namespace server {
+namespace vtrc {
+
+    namespace common {
+        class enviroment;
+    }
+
+namespace server {
 
     class application;
 
@@ -11,6 +17,7 @@ namespace vtrc { namespace server {
 
         virtual ~endpoint_iface( ) { }
         virtual application &get_application( ) = 0;
+        virtual common::enviroment &get_enviroment( ) = 0;
 
         virtual std::string string( ) const = 0;
 

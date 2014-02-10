@@ -32,11 +32,11 @@ namespace server {
     public:
 
         application( );
+        application( boost::asio::io_service &ios );
         virtual ~application( );
 
-        common::enviroment &get_enviroment( );
-
-        virtual boost::asio::io_service &get_io_service( ) = 0;
+        common::enviroment      &get_enviroment( );
+        boost::asio::io_service &get_io_service( );
 
         virtual void on_endpoint_started( endpoint_iface * /*ep*/ ) { }
         virtual void on_endpoint_stopped( endpoint_iface * /*ep*/ ) { }
