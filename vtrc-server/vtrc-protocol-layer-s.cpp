@@ -76,6 +76,19 @@ namespace vtrc { namespace server {
             parent_->send_data( s.c_str( ), s.size( ) );
         }
 
+        void get_init_messages( gpb::Message &result )
+        {
+//            std::string &mess(parent_->get_data_queue( ).messages( ).front( ));
+//            bool check = check_message_hash(mess);
+//            if( !check ) {
+//                std::cout << "bad hash\n";
+//                connection_->close( );
+//            }
+//            vtrc_auth::client_selection cs;
+//            parse_message( mess, cs );
+
+        }
+
         void on_client_selection( )
         {
             std::string &mess(parent_->get_data_queue( ).messages( ).front( ));
