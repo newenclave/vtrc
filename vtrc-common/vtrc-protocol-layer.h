@@ -20,7 +20,7 @@ namespace vtrc { namespace common {
     class protocol_layer {
 
         struct protocol_layer_impl;
-        protocol_layer_impl *impl_;
+        protocol_layer_impl  *impl_;
 
         protocol_layer( const protocol_layer& other );
         protocol_layer &operator = ( const protocol_layer& other );

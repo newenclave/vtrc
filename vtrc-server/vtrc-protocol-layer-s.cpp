@@ -42,8 +42,6 @@ namespace vtrc { namespace server {
         typedef boost::function<void (void)> stage_function_type;
         stage_function_type  stage_function_;
 
-        boost::mutex  write_locker_; // use strand!
-
         protocol_layer_s_impl( application &a, common::transport_iface *c )
             :app_(a)
             ,connection_(c)
@@ -150,11 +148,6 @@ namespace vtrc { namespace server {
         bool ready( ) const
         {
             return true;
-        }
-
-        void on_ready( )
-        {
-            //return true;
         }
 
     };
