@@ -8,7 +8,7 @@ namespace vtrc { namespace common {
     class exception: public std::exception {
     public:
         exception( unsigned code, const std::string &additional );
-        exception( const std::string & what );
+        exception( unsigned code );
         const char what( ) const;
     };
 
