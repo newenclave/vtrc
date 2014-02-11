@@ -8,20 +8,19 @@ namespace vtrc { namespace common {
     class rtti_wrapper
     {
         const std::type_info* info_;
+        struct null_info { };
 
     public:
 
-        rtti_wrapper()
-        {
-            struct null_info {};
-            info_ = &typeid(null_info);
-        }
-
-        explicit rtti_wrapper(const std::type_info &info)
-          :info_(&info)
+        rtti_wrapper( )
+            :info_(&typeid(null_info))
         {}
 
-        const std::type_info& get() const
+        explicit rtti_wrapper(const std::type_info &info)
+            :info_(&info)
+        {}
+
+        const std::type_info& get( ) const
         {
             return *info_;
         }
