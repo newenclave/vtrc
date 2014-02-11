@@ -65,16 +65,6 @@ namespace vtrc { namespace common {
 
         // --------------- sett ----------------- //
 
-        hasher_iface &get_hasher( )
-        {
-            return *hasher_;
-        }
-
-        const hasher_iface &get_hasher( ) const
-        {
-            return *hasher_;
-        }
-
         data_queue::queue_base &get_data_queue( )
         {
             return *queue_;
@@ -83,16 +73,6 @@ namespace vtrc { namespace common {
         const data_queue::queue_base &get_data_queue( ) const
         {
             return *queue_;
-        }
-
-        transformer_iface &get_transformer( )
-        {
-            return *transformer_;
-        }
-
-        const transformer_iface &get_transformer( ) const
-        {
-            return *transformer_;
         }
 
         void parse_message( const std::string &mess,
@@ -105,7 +85,10 @@ namespace vtrc { namespace common {
 
         bool check_message( const std::string &mess )
         {
-            const size_t hash_length = parent_->get_hasher( ).hash_size( );
+
+            boost::mutex::scoped_lock l( write_locker_ );
+
+            const size_t hash_length = hasher_->hash_size( );
             const size_t diff_len    = mess.size( ) - hash_length;
 
             bool result = false;
@@ -126,7 +109,7 @@ namespace vtrc { namespace common {
              *  <packed_size(data_length+hash_length)><hash(data)><data>
             */
             std::string result(queue_->pack_size(
-                                length + parent_->get_hasher( ).hash_size( )));
+                                length + hasher_->hash_size( )));
 
             result.append( hasher_->get_data_hash(data, length ));
             result.append( data, data + length );
@@ -136,8 +119,8 @@ namespace vtrc { namespace common {
             */
 
             transformer_->transform_data(
-                        result.empty( ) ? NULL : &result[0],
-                                          result.size( ) );
+                            result.empty( ) ? NULL : &result[0],
+                                            result.size( ) );
             return result;
         }
 
@@ -154,6 +137,11 @@ namespace vtrc { namespace common {
             boost::mutex::scoped_lock l( write_locker_ );
             if(new_hasher)      hasher_.reset(new_hasher);
             if(new_transformer) transformer_.reset(new_transformer);
+        }
+
+        void pop_message( )
+        {
+            queue_->messages( ).pop_front( );
         }
 
     };
@@ -190,16 +178,6 @@ namespace vtrc { namespace common {
         impl_->parse_message(mess, result);
     }
 
-    hasher_iface &protocol_layer::get_hasher( )
-    {
-        return impl_->get_hasher( );
-    }
-
-    const hasher_iface &protocol_layer::get_hasher( ) const
-    {
-        return impl_->get_hasher( );
-    }
-
     data_queue::queue_base &protocol_layer::get_data_queue( )
     {
         return impl_->get_data_queue( );
@@ -210,20 +188,15 @@ namespace vtrc { namespace common {
         return impl_->get_data_queue( );
     }
 
-    transformer_iface &protocol_layer::get_transformer( )
-    {
-        return impl_->get_transformer( );
-    }
-
-    const transformer_iface &protocol_layer::get_transformer( ) const
-    {
-        return impl_->get_transformer( );
-    }
-
     void protocol_layer::set_hasher_transformer( hasher_iface *new_hasher,
                                         transformer_iface *new_transformer )
     {
         impl_->set_hash_transformer( new_hasher, new_transformer );
+    }
+
+    void protocol_layer::pop_message( )
+    {
+        impl_->pop_message( );
     }
 
 }}

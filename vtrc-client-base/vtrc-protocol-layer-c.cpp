@@ -37,9 +37,9 @@ namespace vtrc { namespace client {
 
         }
 
-        void drop_first( )
+        void pop_message( )
         {
-            parent_->get_data_queue( ).messages( ).pop_front( );
+            parent_->pop_message( );
         }
 
         void send_proto_message( const gpb::Message &mess ) const
@@ -63,7 +63,7 @@ namespace vtrc { namespace client {
 
             send_proto_message( transformer_proto );
 
-            drop_first( );
+            pop_message( );
 
         }
 
@@ -78,7 +78,7 @@ namespace vtrc { namespace client {
                 parent_->parse_message( mess, init_proto );
                 std::cout << "Message is: " << init_proto.DebugString( ) << "\n";
             //}
-            drop_first( );
+            pop_message( );
 
             vtrc_auth::client_selection select;
             select.set_hash( vtrc_auth::HASH_CRC_64 );

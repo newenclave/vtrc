@@ -39,8 +39,8 @@ namespace server {
         boost::asio::io_service &get_io_service( );
 
         /** TODO: fix it **/
-        virtual void on_endpoint_started( endpoint_iface * /*ep*/ ) { }
-        virtual void on_endpoint_stopped( endpoint_iface * /*ep*/ ) { }
+        virtual void on_endpoint_started(   endpoint_iface * /*ep*/ ) { }
+        virtual void on_endpoint_stopped(   endpoint_iface * /*ep*/ ) { }
         virtual void on_endpoint_exception( endpoint_iface * /*ep*/ ) { }
 
         virtual void on_new_connection_accepted(

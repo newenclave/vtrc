@@ -46,16 +46,12 @@ namespace vtrc { namespace common {
         void parse_message( const std::string &mess,
                             google::protobuf::Message &result );
 
-        /* ==== delete this part ==== */
+        void pop_message( );
 
-        hasher_iface &get_hasher( );
-        const hasher_iface &get_hasher( ) const;
+        /* ==== delete this part ==== */
 
         data_queue::queue_base &get_data_queue( );
         const data_queue::queue_base &get_data_queue( ) const;
-
-        transformer_iface &get_transformer( );
-        const transformer_iface &get_transformer( ) const;
 
         /* ==== delete this part ==== */
 

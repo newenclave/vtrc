@@ -31,6 +31,7 @@ namespace server {
 
         void init( );
         bool ready( ) const;
+
     private:
 
         void on_data_ready( );

@@ -50,9 +50,9 @@ namespace vtrc { namespace server {
                     boost::bind( &this_type::on_client_selection, this );
         }
 
-        void drop_first( )
+        void pop_message( )
         {
-            parent_->get_data_queue( ).messages( ).pop_front( );
+            parent_->pop_message( );
         }
 
         void on_timer( boost::system::error_code const &error )
@@ -89,7 +89,7 @@ namespace vtrc { namespace server {
 
             std::cout << cs.DebugString( ) << "\n";
 
-            drop_first( );
+            pop_message( );
 
             parent_->set_hasher_transformer(
                         common::hasher::create_by_index( cs.hash() ),
