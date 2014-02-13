@@ -96,6 +96,7 @@ namespace vtrc { namespace server {
             if( !check ) {
                 std::cout << "bad hash\n";
                 connection_->close( );
+                return;
             }
             vtrc_auth::client_selection cs;
             parse_message( mess, cs );
@@ -105,7 +106,7 @@ namespace vtrc { namespace server {
             pop_message( );
 
             parent_->set_hasher_transformer(
-                        common::hasher::create_by_index( cs.hash() ),
+                        common::hasher::create_by_index( cs.hash( ) ),
                         NULL);
 
             vtrc_auth::transformer_setup ts;
@@ -165,7 +166,7 @@ namespace vtrc { namespace server {
 
     };
 
-    protocol_layer::protocol_layer( application       &a,
+    protocol_layer::protocol_layer( application &a,
                                     common::transport_iface *connection )
         :common::protocol_layer(connection)
         ,impl_(new protocol_layer_s_impl(a, connection))
