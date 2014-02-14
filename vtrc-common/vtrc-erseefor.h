@@ -28,7 +28,7 @@ namespace vtrc { namespace common { namespace crypt {
 
     public:
 
-        ~erseefor( ) /*throw()*/
+        ~erseefor( ) /* throw( ) */
         { }
 
         erseefor( )

@@ -1,11 +1,34 @@
 package vtrc_rpc_lowlevel;
 
+import "vtrc-errors.proto";
 
 // index 51100
 
+message message_info {
+    enum message_type_enum {
+        MESSAGE_CALL    = 0;
+        MESSAGE_EVENT   = 1;
+        MESSAGE_SERVICE = 2;
+    }
+    optional uint32 message_type                = 1 [default = 0];
+                                                 // @message_type_enum
+    optional vtrc_errors.error_container error  = 2;
+    optional bool wait_for_response             = 3;
+}
+
+message call_info {
+    optional string service = 1;
+    optional string method  = 2;
+}
+
 message lowlevel_unit {
 
+    // --- header --- //
+    optional uint64 id               =  1;
+    optional message_info    info    =  2;
+    optional call_info       call    =  3;
+
     // --- //
-    optional bytes request  = 20;
-    optional bytes response = 21;
+    optional bytes request           = 20;
+    optional bytes response          = 21;
 }
