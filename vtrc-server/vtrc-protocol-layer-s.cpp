@@ -21,7 +21,6 @@ namespace vtrc { namespace server {
     namespace gpb = google::protobuf;
 
     namespace {
-        static const size_t maximum_message_length = 1024 * 1024;
         enum init_stage_enum {
              stage_begin             = 1
             ,stage_client_select     = 2

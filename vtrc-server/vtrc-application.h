@@ -22,6 +22,7 @@ namespace server {
 
     struct endpoint_iface;
     struct connection_iface;
+    struct connection_list;
 
     class application {
 
@@ -38,24 +39,23 @@ namespace server {
         common::enviroment      &get_enviroment( );
         boost::asio::io_service &get_io_service( );
 
+        boost::shared_ptr<connection_list> get_clients( );
+
         /** TODO: fix it **/
         virtual void on_endpoint_started(   endpoint_iface * /*ep*/ ) { }
         virtual void on_endpoint_stopped(   endpoint_iface * /*ep*/ ) { }
         virtual void on_endpoint_exception( endpoint_iface * /*ep*/ ) { }
 
         virtual void on_new_connection_accepted(
-                            common::connection_iface* connection ) = 0;
+                common::connection_iface* connection ) { };
 
         virtual void on_new_connection_ready(
-                            common::connection_iface* connection ) = 0;
+                            common::connection_iface* connection ) { };
 
         virtual void on_connection_die(
-                            common::connection_iface* connection ) = 0;
-        /** TODO: fix it **/
+                            common::connection_iface* connection ) { };
 
-        virtual google::protobuf::Service *create_service(
-                            const std::string &name,
-                            common::connection_iface* connection ) = 0;
+        /** TODO: fix it **/
 
     };
 
