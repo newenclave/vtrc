@@ -35,7 +35,7 @@ namespace vtrc { namespace common {
 
         const char *name( ) const
         {
-            return "";
+            return "tcp";
         }
 
         void close( )

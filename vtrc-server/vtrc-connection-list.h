@@ -28,6 +28,9 @@ namespace server {
         > client_predic;
 
 
+        connection_list( );
+        ~connection_list( );
+
         void store( common::connection_iface *connection );
         void drop ( common::connection_iface *connection );
 

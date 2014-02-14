@@ -25,17 +25,6 @@ namespace ba = boost::asio;
 
 class main_app: public vtrc::server::application
 {
-    typedef
-    std::map <
-        vtrc::common::connection_iface *,
-        boost::shared_ptr<vtrc::common::connection_iface>
-    > connection_map_type;
-
-    connection_map_type connections_;
-    boost::shared_mutex connections_lock_;
-
-    typedef boost::unique_lock<boost::shared_mutex> unique_lock;
-    typedef boost::shared_lock<boost::shared_mutex> shared_lock;
 
 public:
 
@@ -69,9 +58,6 @@ private:
     void on_new_connection_accepted(
                     vtrc::common::connection_iface* connection )
     {
-        unique_lock l( connections_lock_ );
-        connections_.insert( std::make_pair(connection,
-              boost::shared_ptr<vtrc::common::connection_iface>(connection) ) );
         std::cout << "connection accepted\n";
     }
 
@@ -83,8 +69,6 @@ private:
 
     void on_connection_die( vtrc::common::connection_iface* connection )
     {
-        unique_lock l( connections_lock_ );
-        connections_.erase( connection );
         std::cout << "connection die\n";
     }
 

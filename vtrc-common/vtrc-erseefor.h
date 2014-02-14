@@ -69,7 +69,7 @@ namespace vtrc { namespace common { namespace crypt {
         }
 
         template <typename ItrType>
-        void transform( ItrType b, const ItrType& e )
+        void transform( ItrType b, const ItrType e )
         {
             uchar_type  k = 0;
 

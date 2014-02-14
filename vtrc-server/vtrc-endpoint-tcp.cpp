@@ -8,6 +8,7 @@
 #include "vtrc-endpoint-iface.h"
 #include "vtrc-application.h"
 #include "vtrc-connection-iface.h"
+#include "vtrc-connection-list.h"
 
 #include "protocol/vtrc-auth.pb.h"
 
@@ -58,7 +59,7 @@ namespace vtrc { namespace server { namespace endpoints {
 
             bool ready( ) const
             {
-                get_socket( ).is_open( );
+                protocol_->ready( );
             }
 
             endpoint_iface &endpoint( )
@@ -69,7 +70,7 @@ namespace vtrc { namespace server { namespace endpoints {
             void on_write_error( const bsys::error_code & /*error*/ )
             {
                 close( );
-                app_.on_connection_die( this ); // delete
+                app_.get_clients( )->drop(this); // delete
             }
 
             void start_reading( )
@@ -89,13 +90,13 @@ namespace vtrc { namespace server { namespace endpoints {
                         protocol_->process_data( &read_buff_[0], bytes );
                     } catch( const std::exception & /*ex*/ ) {
                         close( );
-                        app_.on_connection_die( this ); // delete
+                        app_.get_clients( )->drop(this); // delete
                         return;
                     }
                     start_reading( );
                 } else {
                     close( );
-                    app_.on_connection_die( this ); // delete
+                    app_.get_clients( )->drop(this); // delete
                 }
             }
 
@@ -173,7 +174,7 @@ namespace vtrc { namespace server { namespace endpoints {
                     try {
                         tcp_connection *new_conn
                                     (new tcp_connection(*this, sock));
-                        app_.on_new_connection_accepted( new_conn );
+                        app_.get_clients( )->store( new_conn );
                         app_.on_new_connection_ready( new_conn );
                     } catch( ... ) {
                         ;;;

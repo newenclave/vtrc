@@ -63,6 +63,15 @@ namespace vtrc { namespace server {
         }
     };
 
+    connection_list::connection_list()
+        :impl_(new connection_list_impl)
+    {}
+
+    connection_list::~connection_list()
+    {
+        delete impl_;
+    }
+
     void connection_list::store( common::connection_iface *connection )
     {
         impl_->store( connection );
