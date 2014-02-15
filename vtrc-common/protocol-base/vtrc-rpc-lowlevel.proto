@@ -4,6 +4,7 @@ import "vtrc-errors.proto";
 
 // index 51100
 
+
 message message_info {
     enum message_type_enum {
         MESSAGE_CALL    = 0;
@@ -32,3 +33,4 @@ message lowlevel_unit {
     optional bytes request           = 20;
     optional bytes response          = 21;
 }
+

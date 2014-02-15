@@ -1,8 +1,11 @@
 #include <iostream>
 #include <boost/asio.hpp>
+#include <google/protobuf/descriptor.h>
+#include <google/protobuf/service.h>
 
 #include "vtrc-common/vtrc-thread-poll.h"
 #include "vtrc-client-base/vtrc-client.h"
+#include "protocol/vtrc-rpc-lowlevel.pb.h"
 
 void on_connect( const boost::system::error_code &err )
 {
@@ -12,6 +15,7 @@ void on_connect( const boost::system::error_code &err )
 }
 
 using namespace vtrc;
+
 
 int main( )
 {
