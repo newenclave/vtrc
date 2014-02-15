@@ -20,10 +20,6 @@ namespace server {
     public:
 
         typedef boost::function <
-                void (common::connection_iface *)
-        > client_call;
-
-        typedef boost::function <
                 bool (common::connection_iface *)
         > client_predic;
 
@@ -34,7 +30,6 @@ namespace server {
         void store( common::connection_iface *connection );
         void drop ( common::connection_iface *connection );
 
-        void foreach_while(client_call func);
         size_t foreach_while(client_predic func);
 
     };

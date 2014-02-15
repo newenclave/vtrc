@@ -17,8 +17,8 @@ message message_info {
 }
 
 message call_info {
-    optional string service = 1;
-    optional string method  = 2;
+    optional bytes service = 1;
+    optional bytes method  = 2;
 }
 
 message lowlevel_unit {

@@ -37,16 +37,6 @@ namespace vtrc { namespace server {
             if( f != clients_.end( )) clients_.erase( f );
         }
 
-        void foreach_client(client_call func)
-        {
-            shared_lock l(clients_lock_);
-            for(client_map_type::iterator b(clients_.begin()),
-                                          e(clients_.end()); b!=e; ++b )
-            {
-                func( b->first );
-            }
-        }
-
         size_t foreach_while(client_predic func)
         {
             shared_lock l(clients_lock_);
@@ -65,7 +55,7 @@ namespace vtrc { namespace server {
 
     connection_list::connection_list()
         :impl_(new connection_list_impl)
-    {}
+    { }
 
     connection_list::~connection_list()
     {
@@ -80,11 +70,6 @@ namespace vtrc { namespace server {
     void connection_list::drop ( common::connection_iface *connection )
     {
         impl_->drop( connection );
-    }
-
-    void connection_list::foreach_while(client_call func)
-    {
-        impl_->foreach_client( func );
     }
 
     size_t connection_list::foreach_while(client_predic func)

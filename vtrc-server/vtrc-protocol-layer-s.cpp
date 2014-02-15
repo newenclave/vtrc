@@ -15,6 +15,7 @@
 
 #include "protocol/vtrc-errors.pb.h"
 #include "protocol/vtrc-auth.pb.h"
+#include "protocol/vtrc-rpc-lowlevel.pb.h"
 
 namespace vtrc { namespace server {
 
@@ -37,6 +38,7 @@ namespace vtrc { namespace server {
         application             &app_;
         common::transport_iface *connection_;
         protocol_layer          *parent_;
+        bool                     ready_;
 
         typedef boost::function<void (void)> stage_function_type;
         stage_function_type  stage_function_;
@@ -44,6 +46,7 @@ namespace vtrc { namespace server {
         protocol_layer_s_impl( application &a, common::transport_iface *c )
             :app_(a)
             ,connection_(c)
+            ,ready_(false)
         {
             stage_function_ =
                     boost::bind( &this_type::on_client_selection, this );
@@ -75,19 +78,6 @@ namespace vtrc { namespace server {
             parent_->send_data( s.c_str( ), s.size( ) );
         }
 
-        void get_init_messages( gpb::Message &result )
-        {
-//            std::string &mess(parent_->get_data_queue( ).messages( ).front( ));
-//            bool check = check_message_hash(mess);
-//            if( !check ) {
-//                std::cout << "bad hash\n";
-//                connection_->close( );
-//            }
-//            vtrc_auth::client_selection cs;
-//            parse_message( mess, cs );
-
-        }
-
         void on_client_selection( )
         {
             std::string &mess(parent_->get_data_queue( ).messages( ).front( ));
@@ -113,17 +103,39 @@ namespace vtrc { namespace server {
             ts.set_ready( true );
             ts.set_opt_message( "good" );
 
-            send_proto_message( ts );
-
             stage_function_ =
                     boost::bind( &this_type::on_rcp_call_ready, this );
 
+            send_proto_message( ts );
+
+        }
+
+        void get_pop_message( gpb::Message &capsule )
+        {
+            std::string &mess(parent_->get_data_queue( ).messages( ).front( ));
+            bool check = check_message_hash(mess);
+            if( !check ) {
+                std::runtime_error("bad hash");
+                connection_->close( );
+                return;
+            }
+            parse_message( mess, capsule );
+            pop_message( );
         }
 
         void on_rcp_call_ready( )
         {
-            std::cout << "ready\n";
-            connection_->close( );
+            while( !parent_->get_data_queue( ).messages( ).empty( ) ) {
+                vtrc_rpc_lowlevel::lowlevel_unit llu;
+                get_pop_message( llu );
+                try {
+                    std::cout << llu.DebugString( ) << "\n";
+                } catch( const std::exception &ex ) {
+                    std::cout << "Error rpc: " << ex.what( ) << "\n";
+                }
+            }
+
+            //connection_->close( );
         }
 
         void parse_message( const std::string &block, gpb::Message &mess )
