@@ -1,10 +1,15 @@
 #include <iostream>
+#include <stdlib.h>
+
 #include <boost/asio.hpp>
+#include <boost/make_shared.hpp>
+#include <boost/chrono.hpp>
+
 #include <boost/atomic.hpp>
 #include <boost/thread.hpp>
 #include <boost/thread/shared_mutex.hpp>
 
-#include <stdlib.h>
+#include <boost/thread/condition_variable.hpp>
 
 #include "vtrc-server/vtrc-application.h"
 #include "vtrc-server/vtrc-endpoint-iface.h"
@@ -80,10 +85,8 @@ private:
 
 };
 
-
 int main( )
 {
-
     main_app app;
     vtrc::common::thread_poll poll(app.get_io_service( ), 4);
 
