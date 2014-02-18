@@ -22,9 +22,11 @@
 #include "vtrc-common/vtrc-hasher-iface.h"
 
 #include "vtrc-common/vtrc-data-queue.h"
+#include "vtrc-common/vtrc-conditional-queues.h"
 
 #include "protocol/vtrc-errors.pb.h"
 #include "protocol/vtrc-auth.pb.h"
+
 
 namespace ba = boost::asio;
 
