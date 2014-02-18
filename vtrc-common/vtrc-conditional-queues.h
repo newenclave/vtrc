@@ -88,7 +88,7 @@ namespace vtrc { namespace common {
             return store_.size( );
         }
 
-        size_t queue_size( const key_type &key )  const
+        size_t queue_size( const key_type &key ) const
         {
             unique_lock lck(lock_);
             typename map_type::const_iterator f(at(key));
