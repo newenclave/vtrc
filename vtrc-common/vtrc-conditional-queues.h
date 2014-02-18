@@ -163,7 +163,7 @@ namespace vtrc { namespace common {
             value->canceled_ = false;
 
             value->cond_.wait( lck,
-                boost::bind( &this_type::queue_empty, value ));
+                               boost::bind( &this_type::queue_empty, value ));
 
             if( !value->canceled_ && !value->data_.empty( ) ) {
                 std::swap( result, value->data_.front( ) );
@@ -182,7 +182,7 @@ namespace vtrc { namespace common {
             value->canceled_ = false;
 
             value->cond_.wait( lck,
-                boost::bind( &this_type::queue_empty, value ));
+                               boost::bind( &this_type::queue_empty, value ));
 
             if( !value->canceled_ ) {
                 queue_type tmp;
@@ -206,10 +206,10 @@ namespace vtrc { namespace common {
             value->canceled_ = false;
 
             bool res = value->cond_.timed_wait( lck, period,
-                    boost::bind( &this_type::queue_empty, value ) );
+                                boost::bind( &this_type::queue_empty, value ) );
 
             if( res ) {
-                std::deque<std::string> tmp;
+                queue_type tmp;
                 tmp.swap( value->data_ );
                 result.swap( tmp );
             }
@@ -234,10 +234,10 @@ namespace vtrc { namespace common {
             value->canceled_ = false;
 
             bool res = value->cond_.wait_for( lck, duration,
-                   boost::bind( &this_type::queue_empty, value ));
+                                boost::bind( &this_type::queue_empty, value ));
 
             if( res ) {
-                std::deque<std::string> tmp;
+                queue_type tmp;
                 tmp.swap( value->data_ );
                 result.swap( tmp );
             }
