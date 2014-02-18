@@ -64,13 +64,10 @@ namespace vtrc { namespace common {
             return f;
         }
 
-        static bool queue_empty( hold_value_type_sptr value )
+        static bool queue_empty_predic( hold_value_type_sptr value )
         {
             return (!value->data_.empty( )) || value->canceled_;
         }
-
-        conditional_queues( const conditional_queues &other );
-        conditional_queues& operator = (const conditional_queues &other);
 
         static void pop_all( hold_value_type_sptr &value, queue_type &result )
         {
@@ -78,6 +75,16 @@ namespace vtrc { namespace common {
             tmp.swap( value->data_ );
             result.swap( tmp );
         }
+
+        static wait_result cancel_res2wait_res ( bool canceled, bool waitres )
+        {
+            return canceled ? READ_CANCELED
+                            : ( waitres ? READ_SUCCESS
+                                        : READ_TIMEOUT);
+        }
+
+        conditional_queues( const conditional_queues &other );
+        conditional_queues& operator = (const conditional_queues &other);
 
     public:
 
@@ -171,7 +178,7 @@ namespace vtrc { namespace common {
             value->canceled_ = false;
 
             value->cond_.wait( lck,
-                               boost::bind( &this_type::queue_empty, value ));
+                          boost::bind( &this_type::queue_empty_predic, value ));
 
             return value->canceled_ ? READ_CANCELED : READ_SUCCESS;
         }
@@ -185,14 +192,14 @@ namespace vtrc { namespace common {
             value->canceled_ = false;
 
             value->cond_.wait( lck,
-                               boost::bind( &this_type::queue_empty, value ));
+                          boost::bind( &this_type::queue_empty_predic, value ));
 
             if( !value->canceled_ && !value->data_.empty( ) ) {
                 std::swap( result, value->data_.front( ) );
                 value->data_.pop_front( );
             }
 
-            return value->canceled_ ? READ_CANCELED : READ_SUCCESS;
+            return cancel_res2wait_res( value->canceled_, true );
         }
 
         wait_result read_queue( const key_type &key, queue_type &result )
@@ -204,15 +211,13 @@ namespace vtrc { namespace common {
             value->canceled_ = false;
 
             value->cond_.wait( lck,
-                               boost::bind( &this_type::queue_empty, value ));
+                          boost::bind( &this_type::queue_empty_predic, value ));
 
             if( !value->canceled_ ) {
-                queue_type tmp;
-                tmp.swap( value->data_ );
-                result.swap( tmp );
+                pop_all( value, result );
             }
 
-            return value->canceled_ ? READ_CANCELED : READ_SUCCESS;
+            return cancel_res2wait_res( value->canceled_, true );
         }
 
         bool queue_exists( const key_type &key ) const
@@ -224,7 +229,7 @@ namespace vtrc { namespace common {
 #if defined BOOST_THREAD_USES_DATETIME
 
         template <typename TimeType>
-        wait_result wait_queue( const key_type &key, const TimeType &period )
+        wait_result wait_queue( const key_type &key, const TimeType &tt )
         {
             unique_lock lck(lock_);
             typename map_type::iterator f(at(key));
@@ -233,17 +238,15 @@ namespace vtrc { namespace common {
 
             value->canceled_ = false;
 
-            bool res = value->cond_.timed_wait( lck, period,
-                                boost::bind( &this_type::queue_empty, value ) );
+            bool res = value->cond_.timed_wait( lck, tt,
+                          boost::bind( &this_type::queue_empty_predic, value ));
 
-            return value->canceled_
-                ? READ_CANCELED
-                : (res ? READ_SUCCESS : READ_TIMEOUT);
+            return cancel_res2wait_res( value->canceled_, res );
         }
 
         template <typename TimeType>
         wait_result read_queue( const key_type &key, queue_type &result,
-                                const TimeType &period )
+                                const TimeType &tt )
         {
             unique_lock lck(lock_);
             typename map_type::iterator f(at(key));
@@ -252,16 +255,14 @@ namespace vtrc { namespace common {
 
             value->canceled_ = false;
 
-            bool res = value->cond_.timed_wait( lck, period,
-                                boost::bind( &this_type::queue_empty, value ) );
+            bool res = value->cond_.timed_wait( lck, tt,
+                          boost::bind( &this_type::queue_empty_predic, value ));
 
             if( res ) {
                 pop_all( value, result );
             }
 
-            return value->canceled_
-                ? READ_CANCELED
-                : (res ? READ_SUCCESS : READ_TIMEOUT);
+            return cancel_res2wait_res( value->canceled_, res );
         }
 
 #endif
@@ -280,10 +281,9 @@ namespace vtrc { namespace common {
             value->canceled_ = false;
 
             bool res = value->cond_.wait_for( lck, duration,
-                                boost::bind( &this_type::queue_empty, value ));
+                          boost::bind( &this_type::queue_empty_predic, value ));
 
-            return value->canceled_
-                ? READ_CANCELED : (res ? READ_SUCCESS : READ_TIMEOUT);
+            return cancel_res2wait_res( value->canceled_, res );
         }
 
         template <class Rep, class Period>
@@ -298,14 +298,13 @@ namespace vtrc { namespace common {
             value->canceled_ = false;
 
             bool res = value->cond_.wait_for( lck, duration,
-                                boost::bind( &this_type::queue_empty, value ));
+                          boost::bind( &this_type::queue_empty_predic, value ));
 
             if( res ) {
                 pop_all( value, result );
             }
 
-            return value->canceled_
-                ? READ_CANCELED : (res ? READ_SUCCESS : READ_TIMEOUT);
+            return cancel_res2wait_res( value->canceled_, res );
         }
 #endif
 
