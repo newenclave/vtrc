@@ -141,7 +141,7 @@ namespace vtrc { namespace common {
             }
         }
 
-        void cancel_queue( const key_type &key )
+        void cancel( const key_type &key )
         {
             unique_lock lck(lock_);
             typename map_type::iterator f(at( key ));
