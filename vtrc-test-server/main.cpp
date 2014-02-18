@@ -103,7 +103,7 @@ int main( )
     std::deque<std::string> data;
 
     cm_type_d::wait_result rr =
-            d.read_queue( 10, data, boost::posix_time::microsec(1000));
+            d.read_queue( 10, data, boost::chrono::microseconds(1000));
 
     std::cout << rr << "\n";
 
