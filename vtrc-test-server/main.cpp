@@ -1,6 +1,9 @@
 #include <iostream>
 #include <stdlib.h>
 
+#include <vector>
+#include <queue>
+
 #include <boost/asio.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/chrono.hpp>
@@ -89,6 +92,22 @@ private:
 
 int main( )
 {
+
+    typedef vtrc::common::conditional_queues<int, std::string>  cm_type_d;
+
+    cm_type_d d;
+
+    d.add_queue( 10 );
+    //d.write_queue( 10, "1234" );
+
+    std::deque<std::string> data;
+
+    cm_type_d::wait_result rr =
+            d.read_queue( 10, data, boost::chrono::milliseconds(3000));
+
+    std::cout << rr << "\n";
+
+    return 0;
     main_app app;
     vtrc::common::thread_poll poll(app.get_io_service( ), 4);
 

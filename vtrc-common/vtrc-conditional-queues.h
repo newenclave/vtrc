@@ -19,7 +19,7 @@ namespace vtrc { namespace common {
         typedef QueueValueType                  queue_value_type;
         typedef std::deque<queue_value_type>    queue_type;
 
-        enum read_result {
+        enum wait_result {
              READ_TIMEOUT  = 0
             ,READ_SUCCESS
             ,READ_CANCELED
@@ -154,7 +154,22 @@ namespace vtrc { namespace common {
             f->second->cond_.notify_all( );
         }
 
-        read_result read( const key_type &key, queue_value_type &result )
+        wait_result wait_queue( const key_type &key )
+        {
+            unique_lock lck(lock_);
+            typename map_type::iterator f(at( key ));
+
+            hold_value_type_sptr value( f->second );
+
+            value->canceled_ = false;
+
+            value->cond_.wait( lck,
+                               boost::bind( &this_type::queue_empty, value ));
+
+            return value->canceled_ ? READ_CANCELED : READ_SUCCESS;
+        }
+
+        wait_result read( const key_type &key, queue_value_type &result )
         {
             unique_lock lck(lock_);
             typename map_type::iterator f(at( key ));
@@ -173,7 +188,7 @@ namespace vtrc { namespace common {
             return value->canceled_ ? READ_CANCELED : READ_SUCCESS;
         }
 
-        read_result read_queue( const key_type &key, queue_type &result )
+        wait_result read_queue( const key_type &key, queue_type &result )
         {
             unique_lock lck(lock_);
             typename map_type::iterator f(at( key ));
@@ -193,9 +208,33 @@ namespace vtrc { namespace common {
             return value->canceled_ ? READ_CANCELED : READ_SUCCESS;
         }
 
+        bool queue_exists( const key_type &key ) const
+        {
+            unique_lock lck(lock_);
+            return store_.find( key ) != store_.end( );
+        }
+
 #if defined BOOST_THREAD_USES_DATETIME
         template <typename TimeType>
-        read_result read_queue( const key_type &key, queue_type &result,
+        wait_result wait_queue( const key_type &key, const TimeType &period )
+        {
+            unique_lock lck(lock_);
+            typename map_type::iterator f(at(key));
+
+            hold_value_type_sptr value( f->second );
+
+            value->canceled_ = false;
+
+            bool res = value->cond_.timed_wait( lck, period,
+                                boost::bind( &this_type::queue_empty, value ) );
+
+            return value->canceled_
+                ? READ_CANCELED
+                : (res ? READ_SUCCESS : READ_TIMEOUT);
+        }
+
+        template <typename TimeType>
+        wait_result read_queue( const key_type &key, queue_type &result,
                                 const TimeType &period )
         {
             unique_lock lck(lock_);
@@ -218,12 +257,31 @@ namespace vtrc { namespace common {
                 ? READ_CANCELED
                 : (res ? READ_SUCCESS : READ_TIMEOUT);
         }
+
 #endif
 
 #ifdef BOOST_THREAD_USES_CHRONO
 
         template <class Rep, class Period>
-        read_result read_queue( const key_type &key, queue_type &result,
+        wait_result wait_queue( const key_type &key,
+                         const boost::chrono::duration<Rep, Period>& duration )
+        {
+            unique_lock lck(lock_);
+            typename map_type::iterator f(at(key));
+
+            hold_value_type_sptr value( f->second );
+
+            value->canceled_ = false;
+
+            bool res = value->cond_.wait_for( lck, duration,
+                                boost::bind( &this_type::queue_empty, value ));
+
+            return value->canceled_
+                ? READ_CANCELED : (res ? READ_SUCCESS : READ_TIMEOUT);
+        }
+
+        template <class Rep, class Period>
+        wait_result read_queue( const key_type &key, queue_type &result,
                          const boost::chrono::duration<Rep, Period>& duration )
         {
             unique_lock lck(lock_);
@@ -247,15 +305,9 @@ namespace vtrc { namespace common {
         }
 #endif
 
-        bool queue_exists( const key_type &key ) const
-        {
-            unique_lock lck(lock_);
-            return store_.find( key ) != store_.end( );
-        }
-
     };
 
 }}
 
-#endif // VTRCCONDITIONALQUEUES_H
+#endif // VTRC_CONDITIONAL_QUEUES_H
 
