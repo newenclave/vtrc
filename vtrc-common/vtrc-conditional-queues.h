@@ -72,6 +72,13 @@ namespace vtrc { namespace common {
         conditional_queues( const conditional_queues &other );
         conditional_queues& operator = (const conditional_queues &other);
 
+        static void pop_all( hold_value_type_sptr &value, queue_type &result )
+        {
+            queue_type tmp;
+            tmp.swap( value->data_ );
+            result.swap( tmp );
+        }
+
     public:
 
         conditional_queues( )
@@ -215,6 +222,7 @@ namespace vtrc { namespace common {
         }
 
 #if defined BOOST_THREAD_USES_DATETIME
+
         template <typename TimeType>
         wait_result wait_queue( const key_type &key, const TimeType &period )
         {
@@ -248,9 +256,7 @@ namespace vtrc { namespace common {
                                 boost::bind( &this_type::queue_empty, value ) );
 
             if( res ) {
-                queue_type tmp;
-                tmp.swap( value->data_ );
-                result.swap( tmp );
+                pop_all( value, result );
             }
 
             return value->canceled_
@@ -260,7 +266,7 @@ namespace vtrc { namespace common {
 
 #endif
 
-#ifdef BOOST_THREAD_USES_CHRONO
+#if defined BOOST_THREAD_USES_CHRONO
 
         template <class Rep, class Period>
         wait_result wait_queue( const key_type &key,
@@ -295,9 +301,7 @@ namespace vtrc { namespace common {
                                 boost::bind( &this_type::queue_empty, value ));
 
             if( res ) {
-                queue_type tmp;
-                tmp.swap( value->data_ );
-                result.swap( tmp );
+                pop_all( value, result );
             }
 
             return value->canceled_
