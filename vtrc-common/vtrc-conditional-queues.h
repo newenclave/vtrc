@@ -20,9 +20,9 @@ namespace vtrc { namespace common {
         typedef std::deque<queue_value_type>    queue_type;
 
         enum wait_result {
-             READ_TIMEOUT  = 0
-            ,READ_SUCCESS
-            ,READ_CANCELED
+             WAIT_RESULT_TIMEOUT  = 0
+            ,WAIT_RESULT_SUCCESS
+            ,WAIT_RESULT_CANCELED
         };
 
     private:
@@ -78,9 +78,71 @@ namespace vtrc { namespace common {
 
         static wait_result cancel_res2wait_res ( bool canceled, bool waitres )
         {
-            return canceled ? READ_CANCELED
-                            : ( waitres ? READ_SUCCESS
-                                        : READ_TIMEOUT);
+            return canceled ? WAIT_RESULT_CANCELED
+                            : ( waitres ? WAIT_RESULT_SUCCESS
+                                        : WAIT_RESULT_TIMEOUT);
+        }
+
+        template <typename WaitFunc>
+        wait_result wait_queue_impl( const key_type &key, WaitFunc call_wait )
+        {
+            unique_lock lck(lock_);
+            typename map_type::iterator f(at(key));
+
+            hold_value_type_sptr value( f->second );
+
+            value->canceled_ = false;
+
+            bool res = call_wait( lck, value );
+
+            return cancel_res2wait_res( value->canceled_, res );
+        }
+
+        template <typename WaitFunc>
+        wait_result read_queue_impl( const key_type &key,  queue_type &result,
+                                     WaitFunc call_wait )
+        {
+            unique_lock lck(lock_);
+            typename map_type::iterator f(at(key));
+
+            hold_value_type_sptr value( f->second );
+
+            value->canceled_ = false;
+
+            bool res = call_wait( lck, value );
+
+            if( res ) pop_all( value, result );
+
+            return cancel_res2wait_res( value->canceled_, res );
+        }
+
+        template <typename WaitFunc>
+        wait_result read_impl( const key_type &key,  queue_value_type &result,
+                               WaitFunc call_wait )
+        {
+            unique_lock lck(lock_);
+            typename map_type::iterator f(at(key));
+
+            hold_value_type_sptr value( f->second );
+
+            value->canceled_ = false;
+
+            bool res = call_wait( lck, value );
+
+            if( !value->canceled_ && !value->data_.empty( ) ) {
+                std::swap( result, value->data_.front( ) );
+                value->data_.pop_front( );
+            }
+
+            return cancel_res2wait_res( value->canceled_, res );
+        }
+
+        static bool cond_wait( unique_lock &lck,
+                        hold_value_type_sptr &value )
+        {
+            value->cond_.wait( lck,
+                          boost::bind( &this_type::queue_empty_predic, value ));
+            return true;
         }
 
         conditional_queues( const conditional_queues &other );
@@ -170,54 +232,20 @@ namespace vtrc { namespace common {
 
         wait_result wait_queue( const key_type &key )
         {
-            unique_lock lck(lock_);
-            typename map_type::iterator f(at( key ));
-
-            hold_value_type_sptr value( f->second );
-
-            value->canceled_ = false;
-
-            value->cond_.wait( lck,
-                          boost::bind( &this_type::queue_empty_predic, value ));
-
-            return value->canceled_ ? READ_CANCELED : READ_SUCCESS;
+            return wait_queue_impl( key,
+                        boost::bind( &this_type::cond_wait, _1, _2) );
         }
 
         wait_result read( const key_type &key, queue_value_type &result )
         {
-            unique_lock lck(lock_);
-            typename map_type::iterator f(at( key ));
-            hold_value_type_sptr value( f->second );
-
-            value->canceled_ = false;
-
-            value->cond_.wait( lck,
-                          boost::bind( &this_type::queue_empty_predic, value ));
-
-            if( !value->canceled_ && !value->data_.empty( ) ) {
-                std::swap( result, value->data_.front( ) );
-                value->data_.pop_front( );
-            }
-
-            return cancel_res2wait_res( value->canceled_, true );
+            return read_impl( key, result,
+                        boost::bind( &this_type::cond_wait, _1, _2 ) );
         }
 
         wait_result read_queue( const key_type &key, queue_type &result )
         {
-            unique_lock lck(lock_);
-            typename map_type::iterator f(at( key ));
-            hold_value_type_sptr value( f->second );
-
-            value->canceled_ = false;
-
-            value->cond_.wait( lck,
-                          boost::bind( &this_type::queue_empty_predic, value ));
-
-            if( !value->canceled_ ) {
-                pop_all( value, result );
-            }
-
-            return cancel_res2wait_res( value->canceled_, true );
+            return read_queue_impl( key, result,
+                        boost::bind( &this_type::cond_wait, _1, _2) );
         }
 
         bool queue_exists( const key_type &key ) const
@@ -228,83 +256,86 @@ namespace vtrc { namespace common {
 
 #if defined BOOST_THREAD_USES_DATETIME
 
+    private:
+
+        template <typename TimeType>
+        static bool cond_timed_wait( unique_lock &lck,
+                        hold_value_type_sptr &value,
+                        const TimeType &tt)
+        {
+            return value->cond_.timed_wait( lck, tt,
+                          boost::bind( &this_type::queue_empty_predic, value ));
+        }
+
+    public:
+
         template <typename TimeType>
         wait_result wait_queue( const key_type &key, const TimeType &tt )
         {
-            unique_lock lck(lock_);
-            typename map_type::iterator f(at(key));
+            return wait_queue_impl( key,
+                        boost::bind( &this_type::cond_timed_wait<TimeType>,
+                                     _1, _2, boost::cref(tt) ) );
+        }
 
-            hold_value_type_sptr value( f->second );
-
-            value->canceled_ = false;
-
-            bool res = value->cond_.timed_wait( lck, tt,
-                          boost::bind( &this_type::queue_empty_predic, value ));
-
-            return cancel_res2wait_res( value->canceled_, res );
+        template <typename TimeType>
+        wait_result read( const key_type &key, queue_value_type &result,
+                                const TimeType &tt )
+        {
+            return read_impl( key, result,
+                        boost::bind( &this_type::cond_timed_wait<TimeType>,
+                                        _1, _2, boost::cref(tt) ) );
         }
 
         template <typename TimeType>
         wait_result read_queue( const key_type &key, queue_type &result,
                                 const TimeType &tt )
         {
-            unique_lock lck(lock_);
-            typename map_type::iterator f(at(key));
-
-            hold_value_type_sptr value( f->second );
-
-            value->canceled_ = false;
-
-            bool res = value->cond_.timed_wait( lck, tt,
-                          boost::bind( &this_type::queue_empty_predic, value ));
-
-            if( res ) {
-                pop_all( value, result );
-            }
-
-            return cancel_res2wait_res( value->canceled_, res );
+            return read_queue_impl( key, result,
+                        boost::bind( &this_type::cond_timed_wait<TimeType>,
+                                        _1, _2, boost::cref(tt) ) );
         }
 
 #endif
 
 #if defined BOOST_THREAD_USES_CHRONO
 
+    private:
+
+        template <class Rep, class Period>
+        static bool cond_wait_for( unique_lock &lck,
+                        hold_value_type_sptr &value,
+                        const boost::chrono::duration<Rep, Period>& duration)
+        {
+            return value->cond_.wait_for( lck, duration,
+                        boost::bind( &this_type::queue_empty_predic, value ));
+        }
+
+    public:
         template <class Rep, class Period>
         wait_result wait_queue( const key_type &key,
                          const boost::chrono::duration<Rep, Period>& duration )
         {
-            unique_lock lck(lock_);
-            typename map_type::iterator f(at(key));
+            return wait_queue_impl( key,
+                        boost::bind( &this_type::cond_wait_for<Rep, Period>,
+                                     _1, _2, boost::cref(duration) ) );
+        }
 
-            hold_value_type_sptr value( f->second );
-
-            value->canceled_ = false;
-
-            bool res = value->cond_.wait_for( lck, duration,
-                          boost::bind( &this_type::queue_empty_predic, value ));
-
-            return cancel_res2wait_res( value->canceled_, res );
+        template <class Rep, class Period>
+        wait_result read( const key_type &key, queue_value_type &result,
+                         const boost::chrono::duration<Rep, Period>& duration )
+        {
+            return read_impl( key, result,
+                        boost::bind( &this_type::cond_wait_for<Rep, Period>,
+                                     _1, _2, boost::cref(duration) ) );
         }
 
         template <class Rep, class Period>
         wait_result read_queue( const key_type &key, queue_type &result,
                          const boost::chrono::duration<Rep, Period>& duration )
         {
-            unique_lock lck(lock_);
-            typename map_type::iterator f(at(key));
-
-            hold_value_type_sptr value( f->second );
-
-            value->canceled_ = false;
-
-            bool res = value->cond_.wait_for( lck, duration,
-                          boost::bind( &this_type::queue_empty_predic, value ));
-
-            if( res ) {
-                pop_all( value, result );
-            }
-
-            return cancel_res2wait_res( value->canceled_, res );
+            return read_queue_impl( key, result,
+                        boost::bind( &this_type::cond_wait_for<Rep, Period>,
+                                     _1, _2, boost::cref(duration) ) );
         }
 #endif
 
