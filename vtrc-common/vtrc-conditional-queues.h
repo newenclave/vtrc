@@ -20,9 +20,9 @@ namespace vtrc { namespace common {
         typedef std::deque<queue_value_type>    queue_type;
 
         enum wait_result {
-             WAIT_RESULT_TIMEOUT  = 0
-            ,WAIT_RESULT_SUCCESS
-            ,WAIT_RESULT_CANCELED
+             WAIT_RESULT_TIMEOUT    = 0
+            ,WAIT_RESULT_SUCCESS    = 1
+            ,WAIT_RESULT_CANCELED   = 2
         };
 
     private:
@@ -283,7 +283,7 @@ namespace vtrc { namespace common {
         {
             return read_impl( key, result,
                         boost::bind( &this_type::cond_timed_wait<TimeType>,
-                                        _1, _2, boost::cref(tt) ) );
+                                     _1, _2, boost::cref(tt) ) );
         }
 
         template <typename TimeType>
@@ -292,7 +292,7 @@ namespace vtrc { namespace common {
         {
             return read_queue_impl( key, result,
                         boost::bind( &this_type::cond_timed_wait<TimeType>,
-                                        _1, _2, boost::cref(tt) ) );
+                                     _1, _2, boost::cref(tt) ) );
         }
 
 #endif

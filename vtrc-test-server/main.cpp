@@ -98,13 +98,13 @@ int main( )
     cm_type_d d;
 
     d.add_queue( 10 );
-    d.write_queue( 10, "1234" );
+    //d.write_queue( 10, "1234" );
 
     std::deque<std::string> data;
     std::string             str_data;
 
     cm_type_d::wait_result rr =
-            d.read( 10, str_data, boost::chrono::milliseconds(1000));
+            d.read( 10, str_data, boost::posix_time::millisec(1000));
 
     std::cout << rr << str_data << "\n";
 
