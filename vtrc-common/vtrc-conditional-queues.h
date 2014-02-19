@@ -303,7 +303,7 @@ namespace vtrc { namespace common {
 
     private:
 
-        template <class Rep, class Period>
+        template <typename Rep, typename Period>
         static bool cond_wait_for( unique_lock &lck,
                         hold_value_type_sptr &value,
                         const boost::chrono::duration<Rep, Period>& duration)
@@ -313,7 +313,7 @@ namespace vtrc { namespace common {
         }
 
     public:
-        template <class Rep, class Period>
+        template <typename Rep, typename Period>
         wait_result wait_queue( const key_type &key,
                          const boost::chrono::duration<Rep, Period>& duration )
         {
@@ -322,7 +322,7 @@ namespace vtrc { namespace common {
                                      _1, _2, boost::cref(duration) ) );
         }
 
-        template <class Rep, class Period>
+        template <typename Rep, typename Period>
         wait_result read( const key_type &key, queue_value_type &result,
                          const boost::chrono::duration<Rep, Period>& duration )
         {
@@ -331,7 +331,7 @@ namespace vtrc { namespace common {
                                      _1, _2, boost::cref(duration) ) );
         }
 
-        template <class Rep, class Period>
+        template <typename Rep, typename Period>
         wait_result read_queue( const key_type &key, queue_type &result,
                          const boost::chrono::duration<Rep, Period>& duration )
         {
