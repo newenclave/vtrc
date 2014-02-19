@@ -3,6 +3,8 @@
 
 #include <deque>
 #include <boost/thread/condition_variable.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 
 namespace vtrc { namespace common {
 
