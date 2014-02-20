@@ -113,7 +113,7 @@ namespace vtrc { namespace common { namespace policies {
         {
             std::string res;
             res.reserve(sizeof(size_type));
-            for( ;size > 0x7F; size >>= 7 ) {
+            for( ; size > 0x7F; size >>= 7 ) {
                 res.push_back(static_cast<char>(size & 0x7F) | 0x80);
             }
             res.push_back(static_cast<char>(size));
@@ -127,7 +127,7 @@ namespace vtrc { namespace common { namespace policies {
             unsigned      shift = 0x00;
             unsigned char last  = 0x80;
 
-            for( ;(begin != end) && (last & 0x80); ++begin, shift += 7 ) {
+            for( ; (begin != end) && (last & 0x80); ++begin, shift += 7 ) {
                 last = (*begin);
                 res |= ( static_cast<size_type>(last & 0x7F) << shift);
             }
