@@ -2,6 +2,7 @@
 #define VTRC_ERRORS_H
 
 #include <exception>
+#include <string>
 
 namespace vtrc_errors {
     class error_container;
@@ -15,7 +16,10 @@ namespace vtrc { namespace common {
     public:
         exception( unsigned code, const std::string &additional );
         exception( unsigned code );
-        const char *what( ) const;
+
+        ~exception( ) throw ( );
+
+        const char *what( ) const throw ( );
         const char *additional( ) const;
         unsigned   code( ) const;
     };
