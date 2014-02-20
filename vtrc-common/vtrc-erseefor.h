@@ -1,7 +1,6 @@
 #ifndef VTRC_ERSEEFOR_H
 #define VTRC_ERSEEFOR_H
 
-#include <string>
 #include <memory.h>
 
 namespace vtrc { namespace common { namespace crypt {
