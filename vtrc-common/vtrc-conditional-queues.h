@@ -80,7 +80,7 @@ namespace vtrc { namespace common {
         {
             return canceled ? WAIT_RESULT_CANCELED
                             : ( waitres ? WAIT_RESULT_SUCCESS
-                                        : WAIT_RESULT_TIMEOUT);
+                                        : WAIT_RESULT_TIMEOUT );
         }
 
         template <typename WaitFunc>
