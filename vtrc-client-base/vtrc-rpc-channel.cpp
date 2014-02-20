@@ -5,6 +5,7 @@ namespace vtrc { namespace client {
     namespace gpb = google::protobuf;
 
     struct rpc_channel::rpc_channel_impl {
+
         common::connection_iface *connection_;
 
         rpc_channel_impl(common::connection_iface *c)
