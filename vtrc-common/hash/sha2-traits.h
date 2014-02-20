@@ -1,6 +1,7 @@
 #ifndef SHA2_TRAITS_H
 #define SHA2_TRAITS_H
 
+#include <string>
 #include "sha2.h"
 
 namespace vtrc { namespace hash {
