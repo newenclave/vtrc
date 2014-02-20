@@ -195,7 +195,7 @@ namespace vtrc { namespace common {
             }
         }
 
-        void cancel_all(  )
+        void cancel_all( )
         {
             unique_lock lck(lock_);
             typedef typename map_type::iterator iterator_type;
