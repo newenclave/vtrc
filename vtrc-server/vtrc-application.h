@@ -22,7 +22,7 @@ namespace server {
 
     struct endpoint_iface;
     struct connection_iface;
-    struct connection_list;
+    class  connection_list;
 
     class application {
 
