@@ -116,7 +116,8 @@ namespace vtrc { namespace common {
             }
         }
 
-        void write_handler( const bsys::error_code &error, size_t bytes,
+        void write_handler( const bsys::error_code &error,
+                            size_t /*bytes*/,
                             size_t /*messages*/ )
         {
             if( write_queue_.front( ).closure_.get( ) ) {

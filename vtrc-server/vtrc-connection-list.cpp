@@ -75,7 +75,7 @@ namespace vtrc { namespace server {
 
     size_t connection_list::foreach_while(client_predic func)
     {
-        impl_->foreach_while( func );
+        return impl_->foreach_while( func );
     }
 
 }}

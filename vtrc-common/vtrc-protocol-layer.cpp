@@ -29,6 +29,7 @@ namespace vtrc { namespace common {
         protocol_layer_impl( transport_iface *c )
             :connection_(c)
             ,hasher_(common::hasher::create_default( ))
+            //,transformer_(common::transformers::erseefor::create( "1234", 4 ))
             ,transformer_(common::transformers::none::create( ))
             ,queue_(data_queue::varint::create_parser(maximum_message_length))
         {}
