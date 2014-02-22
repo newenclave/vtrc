@@ -60,6 +60,9 @@ namespace vtrc { namespace common {
                                 std::string( data, data + length )));
         }
 
+        std::string prepare_for_write( const char * /*data*/, size_t /*length*/)
+        { }
+
         void async_write( )
         {
             try {
@@ -78,7 +81,9 @@ namespace vtrc { namespace common {
         void write_impl( const std::string data )
         {
             bool empty = write_queue_.empty( );
-            write_queue_.push_back( data );
+
+            write_queue_.push_back( parent_->prepare_for_write( data.c_str( ),
+                                                                data.size( )) );
 
             if( empty ) {
                 async_write( );
@@ -141,6 +146,11 @@ namespace vtrc { namespace common {
     void transport_tcp::write( const char *data, size_t length )
     {
         return impl_->write( data, length );
+    }
+
+    std::string transport_tcp::prepare_for_write(const char *data, size_t len)
+    {
+
     }
 
     boost::asio::ip::tcp::socket &transport_tcp::get_socket( )

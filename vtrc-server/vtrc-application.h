@@ -15,7 +15,7 @@ namespace vtrc {
 
     namespace common {
         struct connection_iface;
-        struct enviroment;
+        class enviroment;
     }
 
 namespace server {

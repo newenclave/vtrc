@@ -93,22 +93,6 @@ private:
 int main( )
 {
 
-    typedef vtrc::common::conditional_queues<int, std::string>  cm_type_d;
-
-    cm_type_d d;
-
-    d.add_queue( 10 );
-    //d.write_queue( 10, "1234" );
-
-    std::deque<std::string> data;
-    std::string             str_data;
-
-    cm_type_d::wait_result rr =
-            d.read( 10, str_data, boost::posix_time::millisec(1000));
-
-    std::cout << rr << str_data << "\n";
-
-    return 0;
     main_app app;
     vtrc::common::thread_poll poll(app.get_io_service( ), 4);
 

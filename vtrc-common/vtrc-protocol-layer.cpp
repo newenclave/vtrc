@@ -33,6 +33,28 @@ namespace vtrc { namespace common {
             ,queue_(data_queue::varint::create_parser(maximum_message_length))
         {}
 
+        std::string prepare_data( const char *data, size_t length)
+        {
+            /* here is:
+             *  message =
+             *  <packed_size(data_length+hash_length)><hash(data)><data>
+            */
+            std::string result(queue_->pack_size(
+                                length + hasher_->hash_size( )));
+
+            result.append( hasher_->get_data_hash(data, length ));
+            result.append( data, data + length );
+
+            /*
+             * message = transform( message )
+            */
+
+            transformer_->transform_data(
+                            result.empty( ) ? NULL : &result[0],
+                                            result.size( ) );
+            return result;
+        }
+
         void process_data( const char *data, size_t length )
         {
             if( length > 0 ) {
@@ -60,7 +82,7 @@ namespace vtrc { namespace common {
 
         void send_data( const char *data, size_t length )
         {
-            make_and_write( data, length );
+            connection_->write( data, length );
         }
 
         // --------------- sett ----------------- //
@@ -102,34 +124,6 @@ namespace vtrc { namespace common {
             return result;
         }
 
-        std::string make_message( const char *data, size_t length )
-        {
-            /* here is:
-             *  message =
-             *  <packed_size(data_length+hash_length)><hash(data)><data>
-            */
-            std::string result(queue_->pack_size(
-                                length + hasher_->hash_size( )));
-
-            result.append( hasher_->get_data_hash(data, length ));
-            result.append( data, data + length );
-
-            /*
-             * message = transform( message )
-            */
-
-            transformer_->transform_data(
-                            result.empty( ) ? NULL : &result[0],
-                                            result.size( ) );
-            return result;
-        }
-
-        void make_and_write( const char *data, size_t length )
-        {
-            boost::mutex::scoped_lock l( write_locker_ );
-            std::string result(make_message(data, length));
-            connection_->write( result.c_str( ), result.size( ));
-        }
 
         void set_hash_transformer( hasher_iface *new_hasher,
                                    transformer_iface *new_transformer )
@@ -160,6 +154,11 @@ namespace vtrc { namespace common {
     void protocol_layer::process_data( const char *data, size_t length )
     {
         impl_->process_data( data, length );
+    }
+
+    std::string protocol_layer::prepare_data( const char *data, size_t length)
+    {
+        return impl_->prepare_data( data, length );
     }
 
     void protocol_layer::send_data( const char *data, size_t length )

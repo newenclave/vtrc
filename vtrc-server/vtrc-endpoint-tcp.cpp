@@ -67,6 +67,11 @@ namespace vtrc { namespace server { namespace endpoints {
                 return endpoint_;
             }
 
+            std::string prepare_for_write( const char *data, size_t length )
+            {
+                return protocol_->prepare_data( data, length );
+            }
+
             void on_write_error( const bsys::error_code & /*error*/ )
             {
                 close( );

@@ -108,6 +108,12 @@ namespace vtrc { namespace client {
                 parent_->close( );
             }
         }
+
+        std::string prepare_for_write(const char *data, size_t len)
+        {
+            return protocol_->prepare_data( data, len );
+        }
+
     };
 
     client_tcp::client_tcp( boost::asio::io_service &ios, vtrc_client *client )
@@ -147,6 +153,10 @@ namespace vtrc { namespace client {
         impl_->send_message( data, length );
     }
 
+    std::string client_tcp::prepare_for_write(const char *data, size_t len)
+    {
+        return impl_->prepare_for_write( data, len );
+    }
 
 }}
 

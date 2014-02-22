@@ -9,7 +9,7 @@ namespace boost {
 
 namespace vtrc { namespace common {
 
-    struct enviroment;
+    class enviroment;
 
     struct connection_iface {
 

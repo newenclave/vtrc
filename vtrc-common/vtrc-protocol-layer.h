@@ -2,6 +2,7 @@
 #define VTRC_PROTOCOL_LAYER_H
 
 #include <stdlib.h>
+#include <string>
 
 namespace google { namespace protobuf {
     class Message;
@@ -36,6 +37,8 @@ namespace vtrc { namespace common {
         virtual bool ready( ) const     = 0;
 
         void process_data( const char *data, size_t length );
+        std::string prepare_data( const char *data, size_t length );
+
         void send_data( const char *data, size_t length );
 
     protected:
