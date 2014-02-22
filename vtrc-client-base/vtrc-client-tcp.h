@@ -20,10 +20,6 @@ namespace vtrc { namespace client {
 
     public:
 
-        typedef boost::function <
-                    void (const boost::system::error_code &)
-                > closure_type;
-
         client_tcp( boost::asio::io_service &ios, vtrc_client *client );
         ~client_tcp( );
 
@@ -31,7 +27,7 @@ namespace vtrc { namespace client {
                       const std::string &service );
         void async_connect( const std::string &address,
                             const std::string &service,
-                            closure_type closure );
+                            common::closure_type closure );
         void on_write_error( const boost::system::error_code &err );
         void send_message( const char *data, size_t length );
 

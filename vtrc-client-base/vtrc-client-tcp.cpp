@@ -53,12 +53,8 @@ namespace vtrc { namespace client {
             init( );
         }
 
-        typedef boost::function <
-                    void (const boost::system::error_code &)
-                > closure_type;
-
         void on_connect( const boost::system::error_code &err,
-                         closure_type closure )
+                         common::closure_type closure )
         {
             if( !err ) {
                 init( );
@@ -68,7 +64,7 @@ namespace vtrc { namespace client {
 
         void async_connect( const std::string &address,
                             const std::string &service,
-                            closure_type closure )
+                            common::closure_type closure )
         {
             basio::ip::tcp::endpoint ep
                     (basio::ip::address::from_string(address),
