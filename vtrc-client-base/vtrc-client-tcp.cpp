@@ -26,7 +26,7 @@ namespace vtrc { namespace client {
 
         client_tcp_impl( boost::asio::io_service &ios, vtrc_client *client )
             :ios_(ios)
-            ,read_buff_(4096)
+            ,read_buff_(4096 << 1)
             ,client_(client)
         {
 

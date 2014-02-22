@@ -105,8 +105,8 @@ namespace vtrc { namespace client {
             if( check ) {
                 parent_->parse_message( mess, init_proto );
                 std::cout << "Message is: " << init_proto.DebugString( ) << "\n";
-                throw std::runtime_error( "hello!" );
             }
+
             pop_message( );
 
             vtrc_auth::client_selection select;

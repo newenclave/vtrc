@@ -3,6 +3,10 @@
 #include <google/protobuf/service.h>
 #include <google/protobuf/descriptor.h>
 
+#include "protocol/vtrc-rpc-lowlevel.pb.h"
+
+#include "vtrc-common/vtrc-connection-iface.h"
+
 namespace vtrc { namespace client {
 
     namespace gpb = google::protobuf;
@@ -24,7 +28,21 @@ namespace vtrc { namespace client {
             std::string service_name(method->service( )->full_name( ));
             std::string method_name(method->name( ));
 
+            vtrc_rpc_lowlevel::lowlevel_unit llu;
 
+            llu.mutable_call( )->set_service( service_name );
+            llu.mutable_call( )->set_method( method_name );
+
+            llu.set_request( request->SerializeAsString( ) );
+            llu.set_response( response->SerializeAsString( ) );
+
+            llu.set_id( 1000 );
+
+            std::string serialized( llu.SerializeAsString( ) );
+
+            connection_->send_message( serialized.c_str( ), serialized.size( ));
+
+            if( done ) done->Run( );
         }
     };
 

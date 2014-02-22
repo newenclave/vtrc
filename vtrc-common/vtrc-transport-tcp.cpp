@@ -21,7 +21,7 @@ namespace vtrc { namespace common {
 
         struct message_holder {
             std::string message_;
-            boost::shared_ptr<closure_type> closure_;
+            // boost::shared_ptr<closure_type> closure_;
         };
 
         boost::shared_ptr<bip::tcp::socket> sock_;
@@ -98,6 +98,7 @@ namespace vtrc { namespace common {
             } catch( const std::exception & ) {
                 close( );
             }
+
         }
 
         void write_impl( const std::string data,
@@ -106,10 +107,15 @@ namespace vtrc { namespace common {
             bool empty = write_queue_.empty( );
 
             message_holder mh;
-            mh.closure_ = closure;
+
             mh.message_ = parent_->prepare_for_write( data.c_str( ),
                                                       data.size( ));
+
             write_queue_.push_back( mh );
+
+            if( closure.get( ) ) {
+                (*closure)( boost::system::error_code( ) );
+            }
 
             if( empty ) {
                 async_write( );
@@ -120,9 +126,6 @@ namespace vtrc { namespace common {
                             size_t /*bytes*/,
                             size_t /*messages*/ )
         {
-            if( write_queue_.front( ).closure_.get( ) ) {
-                (*write_queue_.front( ).closure_)( error );
-            }
             if( !error ) {
                 write_queue_.pop_front( );
                 if( !write_queue_.empty( ) )

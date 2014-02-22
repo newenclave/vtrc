@@ -4,6 +4,7 @@ import "vtrc-errors.proto";
 
 // index 51100
 
+option cc_generic_services = true;
 
 message message_info {
     enum message_type_enum {
@@ -34,3 +35,6 @@ message lowlevel_unit {
     optional bytes response          = 21;
 }
 
+service test_rpc {
+    rpc test( message_info ) returns ( message_info );
+}
