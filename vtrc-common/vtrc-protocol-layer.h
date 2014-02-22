@@ -11,7 +11,7 @@ namespace google { namespace protobuf {
 namespace vtrc { namespace common {
 
     namespace data_queue {
-        struct queue_base;
+        class queue_base;
     }
 
     struct hasher_iface;
