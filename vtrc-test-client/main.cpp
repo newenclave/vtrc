@@ -30,8 +30,8 @@ int main( )
 
     vtrc_rpc_lowlevel::message_info mi;
 
-
     s.test( NULL, &mi, &mi, NULL );
+
 
     tp.join_all( );
 

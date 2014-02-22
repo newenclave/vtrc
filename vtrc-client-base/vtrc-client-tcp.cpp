@@ -100,7 +100,7 @@ namespace vtrc { namespace client {
                 }
                 start_reading( );
             } else {
-                std::cout << "error close\n";
+                //std::cout << "error close\n";
                 parent_->close( );
             }
         }

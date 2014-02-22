@@ -4,6 +4,8 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
 
+#include "vtrc-common/vtrc-connection-iface.h"
+
 namespace boost {
 
 namespace system {
@@ -20,10 +22,6 @@ namespace google { namespace protobuf {
 
 namespace vtrc { namespace client {
 
-    typedef boost::function <
-        void (const boost::system::error_code &)
-    > success_function;
-
     class vtrc_client {
 
         struct vtrc_client_impl;
@@ -37,7 +35,7 @@ namespace vtrc { namespace client {
         void connect( const std::string &address, const std::string &service );
         void async_connect( const std::string &address,
                             const std::string &service,
-                            success_function   closure);
+                            common::closure_type &closure);
 
     };
 

@@ -26,7 +26,7 @@ namespace client {
 
     public:
 
-        rpc_channel( common::connection_iface *connection );
+        rpc_channel( boost::shared_ptr<common::connection_iface> connection );
         ~rpc_channel( );
 
     private:

@@ -1,5 +1,7 @@
 #include "vtrc-rpc-channel.h"
 
+#include <boost/weak_ptr.hpp>
+
 #include <google/protobuf/service.h>
 #include <google/protobuf/descriptor.h>
 
@@ -13,9 +15,9 @@ namespace vtrc { namespace client {
 
     struct rpc_channel::rpc_channel_impl {
 
-        common::connection_iface *connection_;
+        boost::weak_ptr<common::connection_iface> connection_;
 
-        rpc_channel_impl(common::connection_iface *c)
+        rpc_channel_impl(boost::shared_ptr<common::connection_iface> c)
             :connection_(c)
         {}
 
@@ -25,6 +27,12 @@ namespace vtrc { namespace client {
                         gpb::Message* response,
                         gpb::Closure* done)
         {
+
+            boost::shared_ptr<common::connection_iface> cl(connection_.lock());
+
+            if( cl.get( ) == NULL )
+                throw std::runtime_error( "Channel is empty" );
+
             std::string service_name(method->service( )->full_name( ));
             std::string method_name(method->name( ));
 
@@ -40,14 +48,16 @@ namespace vtrc { namespace client {
 
             std::string serialized( llu.SerializeAsString( ) );
 
-            connection_->send_message( serialized.c_str( ), serialized.size( ));
+            cl->send_message( serialized.c_str( ), serialized.size( ));
+
+            std::cout << "sent message: " << llu.DebugString( );
 
             if( done ) done->Run( );
         }
     };
 
-    rpc_channel::rpc_channel( common::connection_iface *connection )
-        :impl_(new rpc_channel_impl(connection))
+    rpc_channel::rpc_channel( boost::shared_ptr<common::connection_iface> c )
+        :impl_(new rpc_channel_impl(c))
     {}
 
     rpc_channel::~rpc_channel( )
