@@ -1,6 +1,7 @@
 
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
+#include <boost/make_shared.hpp>
 
 #include <deque>
 #include <string>
@@ -18,12 +19,17 @@ namespace vtrc { namespace common {
 
         typedef transport_tcp_impl this_type;
 
+        struct message_holder {
+            std::string message_;
+            boost::shared_ptr<closure_type> closure_;
+        };
+
         boost::shared_ptr<bip::tcp::socket> sock_;
         basio::io_service                  &ios_;
         enviroment                          env_;
 
         basio::io_service::strand           write_dispatcher_;
-        std::deque<std::string>             write_queue_;
+        std::deque<message_holder>          write_queue_;
 
         transport_tcp                       *parent_;
 
@@ -57,7 +63,20 @@ namespace vtrc { namespace common {
         {
             write_dispatcher_.post(
                    boost::bind( &this_type::write_impl, this,
-                                std::string( data, data + length )));
+                                std::string( data, data + length ),
+                                boost::shared_ptr<closure_type>()));
+        }
+
+        void write(const char *data, size_t length,
+                                  closure_type &success)
+        {
+            boost::shared_ptr<closure_type>
+                    closure(boost::make_shared<closure_type>(success));
+
+            write_dispatcher_.post(
+                   boost::bind( &this_type::write_impl, this,
+                                std::string( data, data + length ),
+                                closure));
         }
 
         std::string prepare_for_write( const char *data, size_t length)
@@ -69,31 +88,40 @@ namespace vtrc { namespace common {
         {
             try {
                 sock_->async_send(
-                        basio::buffer( write_queue_.front( ) ),
+                        basio::buffer( write_queue_.front( ).message_ ),
                         write_dispatcher_.wrap(
                                 boost::bind( &this_type::write_handler, this,
                                      basio::placeholders::error,
-                                     basio::placeholders::bytes_transferred ))
+                                     basio::placeholders::bytes_transferred,
+                                     1))
                         );
             } catch( const std::exception & ) {
                 close( );
             }
         }
 
-        void write_impl( const std::string data )
+        void write_impl( const std::string data,
+                         boost::shared_ptr<closure_type> closure )
         {
             bool empty = write_queue_.empty( );
 
-            write_queue_.push_back( parent_->prepare_for_write( data.c_str( ),
-                                                                data.size( )) );
+            message_holder mh;
+            mh.closure_ = closure;
+            mh.message_ = parent_->prepare_for_write( data.c_str( ),
+                                                      data.size( ));
+            write_queue_.push_back( mh );
 
             if( empty ) {
                 async_write( );
             }
         }
 
-        void write_handler( const bsys::error_code &error, size_t bytes )
+        void write_handler( const bsys::error_code &error, size_t bytes,
+                            size_t /*messages*/ )
         {
+            if( write_queue_.front( ).closure_.get( ) ) {
+                (*write_queue_.front( ).closure_)( error );
+            }
             if( !error ) {
                 write_queue_.pop_front( );
                 if( !write_queue_.empty( ) )
@@ -112,6 +140,12 @@ namespace vtrc { namespace common {
         {
             return *sock_;
         }
+
+        boost::asio::io_service::strand &get_write_dispatcher( )
+        {
+            return write_dispatcher_;
+        }
+
     };
 
     transport_tcp::transport_tcp( bip::tcp::socket *s )
@@ -148,6 +182,12 @@ namespace vtrc { namespace common {
     void transport_tcp::write( const char *data, size_t length )
     {
         return impl_->write( data, length );
+    }
+
+    void transport_tcp::write(const char *data, size_t length,
+                              closure_type &success)
+    {
+        return impl_->write( data, length, success );
     }
 
     std::string transport_tcp::prepare_for_write(const char *data, size_t len)

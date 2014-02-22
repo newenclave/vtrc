@@ -1,6 +1,7 @@
 
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
+#include <boost/asio.hpp>
 
 #include "vtrc-common/vtrc-data-queue.h"
 #include "vtrc-common/vtrc-hasher-iface.h"
@@ -46,7 +47,14 @@ namespace vtrc { namespace client {
         void send_proto_message( const gpb::Message &mess ) const
         {
             std::string s(mess.SerializeAsString( ));
-            parent_->send_data( s.c_str( ), s.size( ) );
+            connection_->write(s.c_str( ), s.size( ) );
+        }
+
+        void send_proto_message( const gpb::Message &mess,
+                                 common::closure_type closure ) const
+        {
+            std::string s(mess.SerializeAsString( ));
+            connection_->write(s.c_str( ), s.size( ), closure );
         }
 
         void on_server_ready( )
@@ -78,6 +86,15 @@ namespace vtrc { namespace client {
 
         }
 
+        void set_transformer( const boost::system::error_code &err )
+        {
+            if( !err ) {
+                parent_->set_hasher_transformer(
+                      common::hasher::create_by_index( vtrc_auth::HASH_CRC_64 ),
+                      NULL);
+            }
+        }
+
         void on_hello_call( )
         {
             std::string &mess = parent_->get_data_queue( ).messages( ).front( );
@@ -97,11 +114,9 @@ namespace vtrc { namespace client {
             select.set_ready( true );
             select.set_hello_message( "Miten menee?" );
 
-            send_proto_message( select );
+            send_proto_message( select,
+                    boost::bind( &this_type::set_transformer, this, _1 ) );
 
-            parent_->set_hasher_transformer(
-                    common::hasher::create_by_index( vtrc_auth::HASH_CRC_64 ),
-                    NULL);
             stage_call_ = boost::bind( &this_type::on_server_ready, this );
 
         }
