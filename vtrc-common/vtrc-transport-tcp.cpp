@@ -60,8 +60,10 @@ namespace vtrc { namespace common {
                                 std::string( data, data + length )));
         }
 
-        std::string prepare_for_write( const char * /*data*/, size_t /*length*/)
-        { }
+        std::string prepare_for_write( const char *data, size_t length)
+        {
+            return std::string( data, data + length );
+        }
 
         void async_write( )
         {
@@ -150,7 +152,7 @@ namespace vtrc { namespace common {
 
     std::string transport_tcp::prepare_for_write(const char *data, size_t len)
     {
-
+        return impl_->prepare_for_write( data, len );
     }
 
     boost::asio::ip::tcp::socket &transport_tcp::get_socket( )

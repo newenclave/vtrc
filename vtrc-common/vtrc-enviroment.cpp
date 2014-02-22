@@ -2,6 +2,7 @@
 #include "vtrc-enviroment.h"
 
 #include <boost/thread/shared_mutex.hpp>
+#include <boost/thread.hpp>
 #include <map>
 
 namespace vtrc { namespace common {

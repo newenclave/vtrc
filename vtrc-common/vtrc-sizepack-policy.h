@@ -31,7 +31,6 @@ namespace vtrc { namespace common { namespace policies {
     private:
         BOOST_STATIC_ASSERT(
             !std::numeric_limits<SizeType>::is_signed
-                && "SizeType must be unsigned"
         );
     public:
 
@@ -80,7 +79,6 @@ namespace vtrc { namespace common { namespace policies {
     private:
         BOOST_STATIC_ASSERT(
             !std::numeric_limits<SizeType>::is_signed
-                && "SizeType must be unsigned"
         );
     public:
 
