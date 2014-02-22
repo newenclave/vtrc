@@ -1,5 +1,6 @@
 
 #include <boost/thread/shared_mutex.hpp>
+#include <boost/thread.hpp>
 #include <map>
 
 #include "vtrc-connection-list.h"

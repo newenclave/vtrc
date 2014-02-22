@@ -81,8 +81,8 @@ namespace vtrc { namespace common {  namespace hasher {
 
                 std::string result( 2, 0 );
 
-                result[3] = (crc      ) & 0xFF;
-                result[2] = (crc >> 8 ) & 0xFF;
+                result[1] = (crc      ) & 0xFF;
+                result[0] = (crc >> 8 ) & 0xFF;
 
                 return result;
             }
