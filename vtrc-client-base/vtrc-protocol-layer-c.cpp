@@ -70,18 +70,6 @@ namespace vtrc { namespace client {
                           << transformer_proto.DebugString( ) << "\n";
             }
 
-            vtrc_rpc_lowlevel::lowlevel_unit llu;
-
-            llu.set_id( 100 );
-            llu.mutable_call(  )->set_service( "service_name" );
-            llu.mutable_call(  )->set_method( "method_name" );
-
-            llu.mutable_info( )
-                    ->set_message_type(
-                        vtrc_rpc_lowlevel::message_info::MESSAGE_CALL);
-
-            send_proto_message( llu );
-
             pop_message( );
 
         }
