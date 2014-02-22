@@ -20,6 +20,7 @@ namespace common {
 namespace client {
 
     class rpc_channel: public google::protobuf::RpcChannel {
+
         struct rpc_channel_impl;
         rpc_channel_impl  *impl_;
 

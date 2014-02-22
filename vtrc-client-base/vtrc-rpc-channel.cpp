@@ -1,5 +1,8 @@
 #include "vtrc-rpc-channel.h"
 
+#include <google/protobuf/service.h>
+#include <google/protobuf/descriptor.h>
+
 namespace vtrc { namespace client {
 
     namespace gpb = google::protobuf;
@@ -18,6 +21,9 @@ namespace vtrc { namespace client {
                         gpb::Message* response,
                         gpb::Closure* done)
         {
+            std::string service_name(method->service( )->full_name( ));
+            std::string method_name(method->name( ));
+
 
         }
     };

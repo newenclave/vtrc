@@ -86,7 +86,7 @@ namespace vtrc { namespace client {
 
         }
 
-        void set_transformer( const boost::system::error_code &err )
+        void set_options( const boost::system::error_code &err )
         {
             if( !err ) {
                 parent_->set_hasher_transformer(
@@ -102,20 +102,21 @@ namespace vtrc { namespace client {
             std::cout << "Message check: " << check << "\n";
             vtrc_auth::init_protocol init_proto;
 
-            //if( check ) {
+            if( check ) {
                 parent_->parse_message( mess, init_proto );
                 std::cout << "Message is: " << init_proto.DebugString( ) << "\n";
-            //}
+                throw std::runtime_error( "hello!" );
+            }
             pop_message( );
 
             vtrc_auth::client_selection select;
             select.set_hash( vtrc_auth::HASH_CRC_64 );
-            select.set_transform( vtrc_auth::TRANSFORM_ERSEEFOR );
+            select.set_transform( vtrc_auth::TRANSFORM_NONE );
             select.set_ready( true );
             select.set_hello_message( "Miten menee?" );
 
             send_proto_message( select,
-                    boost::bind( &this_type::set_transformer, this, _1 ) );
+                    boost::bind( &this_type::set_options, this, _1 ) );
 
             stage_call_ = boost::bind( &this_type::on_server_ready, this );
 
