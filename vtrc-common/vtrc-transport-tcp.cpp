@@ -194,6 +194,11 @@ namespace vtrc { namespace common {
         return impl_->write( data, length, success );
     }
 
+    void transport_tcp::send_message( const char *data, size_t length )
+    {
+        return impl_->write( data, length );
+    }
+
     std::string transport_tcp::prepare_for_write(const char *data, size_t len)
     {
         return impl_->prepare_for_write( data, len );

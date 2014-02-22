@@ -74,11 +74,6 @@ namespace vtrc { namespace client {
                                  basio::placeholders::error, closure) );
         }
 
-        void send_message( const char *data, size_t length )
-        {
-
-        }
-
         void start_reading( )
         {
             sock( ).async_read_some(
@@ -142,11 +137,6 @@ namespace vtrc { namespace client {
     void client_tcp::on_write_error( const boost::system::error_code &err )
     {
         close( );
-    }
-
-    void client_tcp::send_message( const char *data, size_t length )
-    {
-        impl_->send_message( data, length );
     }
 
     std::string client_tcp::prepare_for_write(const char *data, size_t len)

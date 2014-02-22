@@ -29,7 +29,6 @@ namespace vtrc { namespace client {
                             const std::string &service,
                             common::closure_type closure );
         void on_write_error( const boost::system::error_code &err );
-        void send_message( const char *data, size_t length );
 
     private:
         std::string prepare_for_write( const char *data, size_t len );

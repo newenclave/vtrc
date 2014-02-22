@@ -38,6 +38,8 @@ namespace vtrc { namespace common {
         void write( const char *data, size_t length, closure_type &success ) ;
         virtual void on_write_error( const boost::system::error_code &err ) = 0;
 
+        void send_message( const char *data, size_t length );
+
     private:
         virtual std::string prepare_for_write( const char *data, size_t len );
     };
