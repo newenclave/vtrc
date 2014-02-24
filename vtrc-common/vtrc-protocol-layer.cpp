@@ -115,7 +115,7 @@ namespace vtrc { namespace common {
             connection_->write( data, length );
         }
 
-        gpb::uint64 next_index( )
+        uint64_t next_index( )
         {
             return ++rpc_index_;
         }
@@ -232,5 +232,11 @@ namespace vtrc { namespace common {
     {
         impl_->pop_message( );
     }
+
+    uint64_t protocol_layer::next_index( )
+    {
+        return impl_->next_index( );
+    }
+
 
 }}

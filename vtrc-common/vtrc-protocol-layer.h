@@ -2,6 +2,7 @@
 #define VTRC_PROTOCOL_LAYER_H
 
 #include <stdlib.h>
+#include <stdint.h>
 #include <string>
 
 namespace google { namespace protobuf {
@@ -40,6 +41,8 @@ namespace vtrc { namespace common {
         std::string prepare_data( const char *data, size_t length );
 
         void send_data( const char *data, size_t length );
+
+        uint64_t next_index( );
 
     protected:
 
