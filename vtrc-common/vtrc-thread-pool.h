@@ -9,21 +9,21 @@ namespace boost { namespace asio {
 
 namespace vtrc { namespace common {
 
-    class thread_poll
+    class thread_pool
     {
-        struct thread_poll_impl;
-        thread_poll_impl  *impl_;
+        struct impl;
+        impl  *impl_;
 
-        thread_poll( const thread_poll & );      // non copyable
-        void operator = ( const thread_poll & ); // non copyable
+        thread_pool( const thread_pool & );      // non copyable
+        void operator = ( const thread_pool & ); // non copyable
 
     public:
 
-        thread_poll( );
-        thread_poll( size_t init_count );
-        thread_poll( boost::asio::io_service &ios, size_t init_count );
-        thread_poll( boost::asio::io_service &ios );
-        ~thread_poll( );
+        thread_pool( );
+        thread_pool( size_t init_count );
+        thread_pool( boost::asio::io_service &ios, size_t init_count );
+        thread_pool( boost::asio::io_service &ios );
+        ~thread_pool( );
 
         size_t size( ) const;
         void interrupt_one( );

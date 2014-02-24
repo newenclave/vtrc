@@ -8,8 +8,8 @@ namespace vtrc { namespace common {
 
     class rpc_controller: public google::protobuf::RpcController {
 
-        struct rpc_controller_impl;
-        rpc_controller_impl  *impl_;
+        struct impl;
+        impl  *impl_;
 
     public:
 

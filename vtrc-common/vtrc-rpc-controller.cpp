@@ -5,14 +5,14 @@ namespace vtrc { namespace common {
 
     namespace gpb = google::protobuf;
 
-    struct rpc_controller::rpc_controller_impl {
+    struct rpc_controller::impl {
 
         bool failed_;
         std::string error_string_;
         bool canceled_;
         gpb::Closure *cancel_cl_;
 
-        rpc_controller_impl( )
+        impl( )
             :failed_(false)
             ,canceled_(false)
             ,cancel_cl_(NULL)
@@ -20,7 +20,7 @@ namespace vtrc { namespace common {
     };
 
     rpc_controller::rpc_controller( )
-        :impl_(new rpc_controller_impl)
+        :impl_(new impl)
     {}
 
     rpc_controller::~rpc_controller( )

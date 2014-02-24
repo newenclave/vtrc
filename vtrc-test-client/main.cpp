@@ -3,7 +3,7 @@
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/service.h>
 
-#include "vtrc-common/vtrc-thread-poll.h"
+#include "vtrc-common/vtrc-thread-pool.h"
 #include "vtrc-client-base/vtrc-client.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
 
@@ -20,7 +20,7 @@ using namespace vtrc;
 int main( )
 {
 
-    common::thread_poll tp(4);
+    common::thread_pool tp(4);
     client::vtrc_client cl( tp.get_io_service( ) );
 
     cl.connect( "127.0.0.1", "44667" );

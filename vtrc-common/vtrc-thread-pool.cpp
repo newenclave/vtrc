@@ -1,4 +1,4 @@
-#include "vtrc-thread-poll.h"
+#include "vtrc-thread-pool.h"
 
 #include <boost/thread.hpp>
 #include <boost/asio.hpp>
@@ -11,7 +11,7 @@ namespace vtrc { namespace common {
 
     namespace basio = boost::asio;
 
-    struct thread_poll::thread_poll_impl {
+    struct thread_pool::impl {
 
         struct thread_context {
 
@@ -42,13 +42,13 @@ namespace vtrc { namespace common {
             static void raise ( ) { throw interrupt( ); }
         };
 
-        thread_poll_impl( basio::io_service *ios, bool own_ios )
+        impl( basio::io_service *ios, bool own_ios )
             :ios_(ios)
             ,wrk_(new basio::io_service::work(*ios_))
             ,own_ios_(own_ios)
         {}
 
-        ~thread_poll_impl( )
+        ~impl( )
         {
             try {
                 stop( );
@@ -85,8 +85,7 @@ namespace vtrc { namespace common {
             thread_context::shared_type
                     new_context(boost::make_shared<thread_context>());
             new_context->thread_ = new boost::thread(
-                        boost::bind(&thread_poll_impl::run, this,
-                                                    new_context.get( )) );
+                        boost::bind(&impl::run, this, new_context.get( )) );
             return new_context;
         }
 
@@ -143,67 +142,67 @@ namespace vtrc { namespace common {
 
     };
 
-    thread_poll::thread_poll( )
-        :impl_(new thread_poll_impl(new basio::io_service, true))
+    thread_pool::thread_pool( )
+        :impl_(new impl(new basio::io_service, true))
     {}
 
-    thread_poll::thread_poll( size_t init_count )
-        :impl_(new thread_poll_impl(new basio::io_service, true))
+    thread_pool::thread_pool( size_t init_count )
+        :impl_(new impl(new basio::io_service, true))
     {
         impl_->add( init_count );
     }
 
-    thread_poll::thread_poll( boost::asio::io_service &ios, size_t init_count )
-        :impl_(new thread_poll_impl(&ios, false))
+    thread_pool::thread_pool( boost::asio::io_service &ios, size_t init_count )
+        :impl_(new impl(&ios, false))
     {
         impl_->add( init_count );
     }
 
-    thread_poll::thread_poll( boost::asio::io_service &ios )
-        :impl_(new thread_poll_impl(&ios, false))
+    thread_pool::thread_pool( boost::asio::io_service &ios )
+        :impl_(new impl(&ios, false))
     {}
 
-    thread_poll::~thread_poll( )
+    thread_pool::~thread_pool( )
     {
         delete impl_;
     }
 
-    size_t thread_poll::size( ) const
+    size_t thread_pool::size( ) const
     {
         return impl_->size( );
     }
 
-    void thread_poll::interrupt_one( )
+    void thread_pool::interrupt_one( )
     {
         impl_->interrupt_one( );
     }
 
-    void thread_poll::stop( )
+    void thread_pool::stop( )
     {
         impl_->stop( );
     }
 
-    void thread_poll::join_all( )
+    void thread_pool::join_all( )
     {
         impl_->join_all( );
     }
 
-    void thread_poll::add_thread( )
+    void thread_pool::add_thread( )
     {
         impl_->inc( );
     }
 
-    void thread_poll::add_threads( size_t count )
+    void thread_pool::add_threads( size_t count )
     {
         impl_->add(count);
     }
 
-    boost::asio::io_service &thread_poll::get_io_service( )
+    boost::asio::io_service &thread_pool::get_io_service( )
     {
         return *impl_->ios_;
     }
 
-    const boost::asio::io_service &thread_poll::get_io_service( ) const
+    const boost::asio::io_service &thread_pool::get_io_service( ) const
     {
         return *impl_->ios_;
     }

@@ -10,13 +10,37 @@
 
 #include "vtrc-transport-iface.h"
 
+#include "vtrc-conditional-queues.h"
+
+#include "protocol/vtrc-rpc-lowlevel.pb.h"
+
 namespace vtrc { namespace common {
+
+    namespace gpb = google::protobuf;
 
     namespace {
         static const size_t maximum_message_length = 1024 * 1024;
+
+        struct rpc_unit_index {
+            gpb::uint64     id_;
+            rpc_unit_index( gpb::uint64 id )
+                :id_(id)
+            {}
+        };
+
+        inline bool operator < ( const rpc_unit_index &lhs,
+                                 const rpc_unit_index &rhs )
+        {
+            return lhs.id_ < rhs.id_;
+        }
+
+        typedef vtrc_rpc_lowlevel::lowlevel_unit ll_unit_type;
+        typedef boost::shared_ptr<ll_unit_type>  ll_unit_sptr;
+
+        typedef conditional_queues<rpc_unit_index, ll_unit_sptr> rpc_queue_type;
     }
 
-    struct protocol_layer::protocol_layer_impl {
+    struct protocol_layer::impl {
 
         transport_iface             *connection_;
         protocol_layer              *parent_;
@@ -26,7 +50,9 @@ namespace vtrc { namespace common {
 
         boost::mutex                 write_locker_; // use strand!
 
-        protocol_layer_impl( transport_iface *c )
+        rpc_queue_type               rpc_queue_;
+
+        impl( transport_iface *c )
             :connection_(c)
             ,hasher_(common::hasher::create_default( ))
             //,transformer_(common::transformers::erseefor::create( "1234", 4 ))
@@ -142,7 +168,7 @@ namespace vtrc { namespace common {
     };
 
     protocol_layer::protocol_layer( transport_iface *connection )
-        :impl_(new protocol_layer_impl(connection))
+        :impl_(new impl(connection))
     {
         impl_->parent_ = this;
     }

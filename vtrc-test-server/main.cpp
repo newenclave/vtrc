@@ -19,7 +19,7 @@
 #include "vtrc-server/vtrc-endpoint-tcp.h"
 
 #include "vtrc-common/vtrc-connection-iface.h"
-#include "vtrc-common/vtrc-thread-poll.h"
+#include "vtrc-common/vtrc-thread-pool.h"
 #include "vtrc-common/vtrc-sizepack-policy.h"
 
 #include "vtrc-common/vtrc-hasher-iface.h"
@@ -39,7 +39,7 @@ class main_app: public vtrc::server::application
 public:
 
     main_app( )
-    {}
+    { }
 
 private:
 
@@ -90,11 +90,10 @@ private:
 
 };
 
-int main( )
-{
+int main( ) try {
 
     main_app app;
-    vtrc::common::thread_poll poll(app.get_io_service( ), 4);
+    vtrc::common::thread_pool poll(app.get_io_service( ), 4);
 
     boost::shared_ptr<vtrc::server::endpoint_iface> tcp_ep
             (vtrc::server::endpoints::tcp::create(app, "0.0.0.0", 44667));
@@ -102,6 +101,10 @@ int main( )
     tcp_ep->start( );
 
     poll.join_all( );
+
+    return 0;
+
+} catch( ... ) {
 
     return 0;
 }
