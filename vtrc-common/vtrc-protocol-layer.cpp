@@ -1,4 +1,5 @@
 #include <boost/thread.hpp>
+#include <boost/atomic.hpp>
 
 #include <google/protobuf/message.h>
 
@@ -51,6 +52,7 @@ namespace vtrc { namespace common {
         boost::mutex                 write_locker_; // use strand!
 
         rpc_queue_type               rpc_queue_;
+        boost::atomic_int64_t        rpc_index_;
 
         impl( transport_iface *c )
             :connection_(c)
@@ -58,6 +60,7 @@ namespace vtrc { namespace common {
             //,transformer_(common::transformers::erseefor::create( "1234", 4 ))
             ,transformer_(common::transformers::none::create( ))
             ,queue_(data_queue::varint::create_parser(maximum_message_length))
+            ,rpc_index_(100)
         {}
 
         std::string prepare_data( const char *data, size_t length)
@@ -110,6 +113,11 @@ namespace vtrc { namespace common {
         void send_data( const char *data, size_t length )
         {
             connection_->write( data, length );
+        }
+
+        gpb::uint64 next_index( )
+        {
+            return ++rpc_index_;
         }
 
         // --------------- sett ----------------- //
