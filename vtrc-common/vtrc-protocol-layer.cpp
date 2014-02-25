@@ -238,5 +238,4 @@ namespace vtrc { namespace common {
         return impl_->next_index( );
     }
 
-
 }}
