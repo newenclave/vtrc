@@ -6,7 +6,7 @@
 
 namespace vtrc { namespace common { namespace data_queue {
 
-    struct queue_base::queue_base_impl {
+    struct queue_base::impl {
 
         std::deque<char>        data_;
         std::deque<std::string> packed_;
@@ -65,7 +65,7 @@ namespace vtrc { namespace common { namespace data_queue {
     };
 
     queue_base::queue_base( )
-        :impl_(new queue_base_impl)
+        :impl_(new impl)
     {}
 
     queue_base::~queue_base( )

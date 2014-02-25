@@ -11,8 +11,8 @@ namespace vtrc { namespace common {
 
     class enviroment {
 
-        struct enviroment_impl;
-        enviroment_impl  *impl_;
+        struct impl;
+        impl  *impl_;
 
     public:
 

@@ -12,16 +12,16 @@ namespace vtrc { namespace common {
         typedef boost::shared_lock<boost::shared_mutex> shared_lock;
     }
 
-    struct enviroment::enviroment_impl {
+    struct enviroment::impl {
 
         typedef std::map<std::string, std::string> data_type;
 
         data_type                   data_;
         mutable boost::shared_mutex data_lock_;
 
-        enviroment_impl( ) { }
+        impl( ) { }
 
-        enviroment_impl( const enviroment_impl &other_data )
+        impl( const impl &other_data )
         {
             other_data.get_data(data_);
         }
@@ -34,7 +34,7 @@ namespace vtrc { namespace common {
             out.swap( tmp );
         }
 
-        void copy_from( const enviroment_impl &other_data )
+        void copy_from( const impl &other_data )
         {
             data_type tmp;
             other_data.get_data( tmp );
@@ -75,11 +75,11 @@ namespace vtrc { namespace common {
     };
 
     enviroment::enviroment( )
-        :impl_(new enviroment_impl)
+        :impl_(new impl)
     {}
 
     enviroment::enviroment( const enviroment &other )
-        :impl_(new enviroment_impl(*other.impl_))
+        :impl_(new impl(*other.impl_))
     {}
 
     enviroment &enviroment::operator = ( const enviroment &other )

@@ -26,7 +26,7 @@ namespace vtrc { namespace common {
             gpb::uint64     id_;
             rpc_unit_index( gpb::uint64 id )
                 :id_(id)
-            {}
+            { }
         };
 
         inline bool operator < ( const rpc_unit_index &lhs,
