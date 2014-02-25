@@ -69,13 +69,18 @@ namespace vtrc { namespace server {
 
         void write( const char *data, size_t length )
         {
-            parent_->send_data( data, length );
+            connection_->write( data, length );
+        }
+
+        void write( const char *data, size_t length ) const
+        {
+            connection_->write( data, length );
         }
 
         void send_proto_message( const gpb::Message &mess ) const
         {
             std::string s(mess.SerializeAsString( ));
-            parent_->send_data( s.c_str( ), s.size( ) );
+            write( s.c_str( ), s.size( ) );
         }
 
         void on_client_selection( )

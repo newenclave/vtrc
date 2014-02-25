@@ -8,6 +8,7 @@
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
 
 #include "vtrc-common/vtrc-connection-iface.h"
+#include "vtrc-common/vtrc-protocol-layer.h"
 
 namespace vtrc { namespace client {
 
@@ -44,11 +45,9 @@ namespace vtrc { namespace client {
             llu.set_request( request->SerializeAsString( ) );
             llu.set_response( response->SerializeAsString( ) );
 
-            llu.set_id( 1000 );
+            llu.set_id( cl->get_protocol( ).next_index( ) );
 
-            std::string serialized( llu.SerializeAsString( ) );
-
-            cl->send_message( serialized.c_str( ), serialized.size( ));
+            cl->get_protocol( ).send_message( llu );
 
             std::cout << "sent message: " << llu.DebugString( );
 

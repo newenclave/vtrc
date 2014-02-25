@@ -105,6 +105,11 @@ namespace vtrc { namespace client {
             return protocol_->prepare_data( data, len );
         }
 
+        common::protocol_layer &get_protocol( )
+        {
+            return *protocol_;
+        }
+
     };
 
     client_tcp::client_tcp( boost::asio::io_service &ios, vtrc_client *client )
@@ -137,6 +142,11 @@ namespace vtrc { namespace client {
     void client_tcp::on_write_error( const boost::system::error_code &err )
     {
         close( );
+    }
+
+    common::protocol_layer &client_tcp::get_protocol( )
+    {
+        return impl_->get_protocol( );
     }
 
     std::string client_tcp::prepare_for_write(const char *data, size_t len)

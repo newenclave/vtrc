@@ -21,17 +21,17 @@ namespace vtrc { namespace common {
             > closure_type;
 
     class enviroment;
+    class protocol_layer;
 
     struct connection_iface {
 
         virtual ~connection_iface( ) { }
 
-        virtual const char *name( ) const                            = 0;
-        virtual void close( )                                        = 0;
-        virtual common::enviroment      &get_enviroment( )           = 0;
-        virtual boost::asio::io_service &get_io_service( )           = 0;
-
-        virtual void send_message( const char *data, size_t length ) = 0;
+        virtual const char *name( ) const                  = 0;
+        virtual void close( )                              = 0;
+        virtual common::enviroment      &get_enviroment( ) = 0;
+        virtual boost::asio::io_service &get_io_service( ) = 0;
+        virtual protocol_layer          &get_protocol( )   = 0;
 
     };
 

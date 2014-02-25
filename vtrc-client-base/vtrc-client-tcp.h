@@ -9,7 +9,13 @@ namespace boost { namespace asio {
     class io_service;
 }}
 
-namespace vtrc { namespace client {
+namespace vtrc {
+
+namespace common {
+    class protocol_layer;
+}
+
+namespace client {
 
     class vtrc_client;
 
@@ -29,6 +35,8 @@ namespace vtrc { namespace client {
                             const std::string &service,
                             common::closure_type closure );
         void on_write_error( const boost::system::error_code &err );
+
+        common::protocol_layer &get_protocol( );
 
     private:
         std::string prepare_for_write( const char *data, size_t len );

@@ -115,6 +115,12 @@ namespace vtrc { namespace common {
             connection_->write( data, length );
         }
 
+        void send_message( const gpb::Message &message )
+        {
+            std::string ser(message.SerializeAsString( ));
+            send_data( ser.c_str( ), ser.size( ) );
+        }
+
         uint64_t next_index( )
         {
             return ++rpc_index_;
@@ -196,9 +202,9 @@ namespace vtrc { namespace common {
         return impl_->prepare_data( data, length );
     }
 
-    void protocol_layer::send_data( const char *data, size_t length )
+    void protocol_layer::send_message(const google::protobuf::Message &message)
     {
-        impl_->send_data( data, length );
+        impl_->send_message( message );
     }
 
     bool protocol_layer::check_message( const std::string &mess )

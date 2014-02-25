@@ -15,6 +15,7 @@ namespace vtrc { namespace common {
         class queue_base;
     }
 
+    struct connection_iface;
     struct hasher_iface;
     struct transformer_iface;
     struct transport_iface;
@@ -23,6 +24,8 @@ namespace vtrc { namespace common {
 
         struct impl;
         impl  *impl_;
+
+        friend struct connection_iface;
 
         protocol_layer( const protocol_layer& other );
         protocol_layer &operator = ( const protocol_layer& other );
@@ -34,18 +37,17 @@ namespace vtrc { namespace common {
 
     public:
 
-        virtual void init( )            = 0;
         virtual bool ready( ) const     = 0;
+        uint64_t next_index( );
 
         void process_data( const char *data, size_t length );
         std::string prepare_data( const char *data, size_t length );
 
-        void send_data( const char *data, size_t length );
-
-        uint64_t next_index( );
+        void send_message( const google::protobuf::Message &message );
 
     protected:
 
+        virtual void init( )            = 0;
         virtual void on_data_ready( )   = 0;
 
         bool check_message( const std::string &mess );
