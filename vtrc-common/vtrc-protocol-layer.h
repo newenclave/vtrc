@@ -9,6 +9,10 @@ namespace google { namespace protobuf {
     class Message;
 }}
 
+namespace vtrc_rpc_lowlevel {
+    class lowlevel_unit;
+}
+
 namespace vtrc { namespace common {
 
     namespace data_queue {
@@ -44,6 +48,7 @@ namespace vtrc { namespace common {
         std::string prepare_data( const char *data, size_t length );
 
         void send_message( const google::protobuf::Message &message );
+        uint64_t send_rpc_message( const vtrc_rpc_lowlevel::lowlevel_unit &u );
 
     protected:
 
