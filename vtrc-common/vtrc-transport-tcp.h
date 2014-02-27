@@ -17,9 +17,9 @@ namespace vtrc { namespace common {
 
     class transport_tcp: public transport_iface {
 
-        struct transport_tcp_impl;
-        friend struct transport_tcp_impl;
-        transport_tcp_impl *impl_;
+        struct impl;
+        friend struct impl;
+        impl *impl_;
 
     public:
 

@@ -15,9 +15,9 @@ namespace vtrc { namespace common {
     namespace bip = boost::asio::ip;
     namespace bsys = boost::system;
 
-    struct transport_tcp::transport_tcp_impl {
+    struct transport_tcp::impl {
 
-        typedef transport_tcp_impl this_type;
+        typedef impl this_type;
 
         struct message_holder {
             std::string message_;
@@ -33,7 +33,7 @@ namespace vtrc { namespace common {
 
         transport_tcp                       *parent_;
 
-        transport_tcp_impl( bip::tcp::socket *s )
+        impl( bip::tcp::socket *s )
             :sock_(s)
             ,ios_(sock_->get_io_service( ))
             ,write_dispatcher_(ios_)
@@ -153,7 +153,7 @@ namespace vtrc { namespace common {
     };
 
     transport_tcp::transport_tcp( bip::tcp::socket *s )
-        :impl_(new transport_tcp_impl(s))
+        :impl_(new impl(s))
     {
         impl_->parent_ = this;
     }
