@@ -26,6 +26,8 @@ int main( )
     cl.connect( "127.0.0.1", "44667" );
     ///cl.async_connect( "127.0.0.1", "44667", on_connect );
 
+    sleep( 5 );
+
     vtrc_rpc_lowlevel::test_rpc::Stub s( cl.get_channel( ).get( ) );
 
     vtrc_rpc_lowlevel::message_info mi;

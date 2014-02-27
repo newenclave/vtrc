@@ -1,10 +1,36 @@
 package vtrc_rpc_lowlevel;
 
+
+import "google/protobuf/descriptor.proto";
 import "vtrc-errors.proto";
 
 // index 51100
 
 option cc_generic_services = true;
+
+message options {
+    optional uint32     secure_level    = 1 ;
+    optional uint64     call_timeout    = 2 [default = 60000];
+    optional bool       wait            = 3 [default = true];
+};
+
+message service_options_type {
+    optional options opt = 1;
+};
+
+message method_options_type {
+    optional options opt = 1;
+};
+
+
+extend google.protobuf.ServiceOptions {
+    optional service_options_type service_options = 51201;
+}
+
+extend google.protobuf.MethodOptions {
+    optional method_options_type  method_options = 51202;
+}
+
 
 message message_info {
     enum message_type_enum {
@@ -36,5 +62,6 @@ message lowlevel_unit {
 }
 
 service test_rpc {
+
     rpc test( message_info ) returns ( message_info );
 }

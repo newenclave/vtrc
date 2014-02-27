@@ -45,16 +45,20 @@ namespace vtrc { namespace client {
             llu.set_request( request->SerializeAsString( ) );
             llu.set_response( response->SerializeAsString( ) );
 
+            llu.mutable_info( )->set_message_type(
+                        vtrc_rpc_lowlevel::message_info::MESSAGE_CALL );
+
             uint64_t call_id = cl->get_protocol( ).next_index( );
 
             llu.set_id( call_id );
 
             cl->get_protocol( ).call_rpc_method( call_id, llu );
 
-            bool wait = cl->get_protocol( ).wait_call_slot( call_id, 1000 );
+            bool wait = cl->get_protocol( ).wait_call_slot( call_id, 2000 );
 
             std::cout << "sent message: " << llu.DebugString( )
-                         << "\n" << wait;
+                      << "\n" << (wait ? "true" : "false")
+                      << "\n";
 
             if( done ) done->Run( );
         }
