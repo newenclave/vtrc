@@ -9,17 +9,26 @@ namespace vtrc { namespace common {
 
     namespace {
 
-        std::string get_error_code_string( unsigned code, unsigned category )
+        const std::string unknown_error("Unknown error");
+
+        const std::string &get_internal_error( unsigned code )
         {
             const gpb::EnumValueDescriptor *ev =
                 vtrc_errors::errors_numbers_descriptor( )
                                 ->FindValueByNumber( code );
-
             if( ev ) {
                 return ev->options( )
                         .GetExtension( vtrc_errors::error_description );
             }
-            return "Unknown error";
+            return unknown_error;
+        }
+
+        std::string get_error_code_string( unsigned code, unsigned category )
+        {
+            if( category == vtrc_errors::CATEGORY_INTERNAL ) {
+                return get_internal_error( code );
+            }
+            return unknown_error;
         }
     }
 
