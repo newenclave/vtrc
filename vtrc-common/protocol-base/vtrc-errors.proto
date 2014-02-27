@@ -14,8 +14,9 @@ enum error_category {
     CATEGORY_PROTOCOL = 1;
 }
 
-enum errors_numbers {
-    ERROR_NO_ERROR = 0 [(error_description) = "No error"];
+enum errors_numbers { // CATEGORY_INTERNAL
+    ERROR_NO_ERROR =  0 [(error_description) = "No error"];
+    ERROR_TIMEOUT  = 62 [(error_description) = "Timeout" ];
 }
 
 message error_container {
