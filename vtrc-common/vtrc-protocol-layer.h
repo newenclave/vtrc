@@ -52,6 +52,10 @@ namespace vtrc { namespace common {
 
         void send_message( const google::protobuf::Message &message );
 
+        void call_rpc_method( const vtrc_rpc_lowlevel::lowlevel_unit &llu );
+        void call_rpc_method( uint64_t id,
+                              const vtrc_rpc_lowlevel::lowlevel_unit &llu );
+
     protected:
 
         virtual void init( )            = 0;
