@@ -9,13 +9,18 @@ extend google.protobuf.EnumValueOptions {
     optional string error_description = 51000 [default = "Unknown error"];
 }
 
+enum error_category {
+    CATEGORY_INTERNAL = 0;
+    CATEGORY_PROTOCOL = 1;
+}
+
 enum errors_numbers {
     ERROR_NO_ERROR = 0 [(error_description) = "No error"];
 }
 
 message error_container {
-    optional uint32 code        = 1;
-    optional uint32 system_code = 2;
-    optional string additional  = 3;
+    optional uint32 code        =  1;
+    optional uint32 category    =  2;
+    optional string additional  = 10;
 }
 
