@@ -1,8 +1,7 @@
-package vtrc_rpc_lowlevel;
-
-
 import "google/protobuf/descriptor.proto";
 import "vtrc-errors.proto";
+
+package vtrc_rpc_lowlevel;
 
 // index 51100
 
@@ -10,7 +9,7 @@ option cc_generic_services = true;
 
 message options {
     optional uint32     secure_level    = 1 ;
-    optional uint64     call_timeout    = 2 [default = 60000];
+    optional uint64     call_timeout    = 2 [default = 60000]; // milliseconds
     optional bool       wait            = 3 [default = true];
 };
 
