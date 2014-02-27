@@ -7,6 +7,9 @@
 
 namespace google { namespace protobuf {
     class Message;
+    class RpcController;
+    class Closure;
+    class MethodDescriptor;
 }}
 
 namespace vtrc_rpc_lowlevel {
@@ -48,7 +51,6 @@ namespace vtrc { namespace common {
         std::string prepare_data( const char *data, size_t length );
 
         void send_message( const google::protobuf::Message &message );
-        uint64_t send_rpc_message( const vtrc_rpc_lowlevel::lowlevel_unit &u );
 
     protected:
 
