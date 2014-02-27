@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string>
+#include <deque>
+#include <boost/shared_ptr.hpp>
 
 namespace google { namespace protobuf {
     class Message;
@@ -53,10 +55,22 @@ namespace vtrc { namespace common {
         void send_message( const google::protobuf::Message &message );
 
         void call_rpc_method( const vtrc_rpc_lowlevel::lowlevel_unit &llu );
-        void call_rpc_method( uint64_t id,
+        void call_rpc_method( uint64_t slot_id,
                               const vtrc_rpc_lowlevel::lowlevel_unit &llu );
 
+        bool wait_call_slot( uint64_t slot_id, uint32_t millisec );
+        bool wait_call_slot( uint64_t slot_id,
+                             std::deque<
+                             boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
+                             > data_list,
+                             uint32_t millisec );
+
+        void close_slot( uint64_t slot_id );
+
     protected:
+
+        void push_rpc_message( uint64_t slot_id,
+                  boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess);
 
         virtual void init( )            = 0;
         virtual void on_data_ready( )   = 0;

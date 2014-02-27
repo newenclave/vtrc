@@ -179,6 +179,42 @@ namespace vtrc { namespace common {
             queue_->messages( ).pop_front( );
         }
 
+        void push_rpc_message(uint64_t slot_id,
+                    boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess)
+        {
+            if( rpc_queue_.queue_exists( slot_id ) )
+                rpc_queue_.write_queue( slot_id, mess );
+        }
+
+        void call_rpc_method( uint64_t slot_id,
+                              const vtrc_rpc_lowlevel::lowlevel_unit &llu )
+        {
+            rpc_queue_.add_queue( slot_id );
+            send_message( llu );
+        }
+
+        void call_rpc_method( const vtrc_rpc_lowlevel::lowlevel_unit &llu )
+        {
+            send_message( llu );
+        }
+
+        bool wait_call_slot( uint64_t slot_id, uint32_t millisec)
+        {
+            return rpc_queue_.wait_queue( slot_id,
+                             boost::chrono::milliseconds(millisec) );
+        }
+
+        bool wait_call_slot(
+                    uint64_t slot_id,
+                    std::deque<
+                          boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
+                    > data_list,
+                    uint32_t millisec )
+        {
+            return rpc_queue_.read_queue( slot_id, data_list,
+                                  boost::chrono::milliseconds(millisec));
+        }
+
     };
 
     protocol_layer::protocol_layer( transport_iface *connection )
@@ -242,6 +278,38 @@ namespace vtrc { namespace common {
     uint64_t protocol_layer::next_index( )
     {
         return impl_->next_index( );
+    }
+
+    void protocol_layer::call_rpc_method( const
+                                        vtrc_rpc_lowlevel::lowlevel_unit &llu )
+    {
+        impl_->call_rpc_method( llu );
+    }
+
+    void protocol_layer::call_rpc_method( uint64_t slot_id,
+                          const vtrc_rpc_lowlevel::lowlevel_unit &llu )
+    {
+        impl_->call_rpc_method( slot_id, llu );
+    }
+
+    bool protocol_layer::wait_call_slot( uint64_t slot_id, uint32_t millisec)
+    {
+        return impl_->wait_call_slot( slot_id, millisec);
+    }
+
+    bool protocol_layer::wait_call_slot( uint64_t slot_id,
+                         std::deque<
+                            boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
+                         > data_list,
+                         uint32_t millisec )
+    {
+        return impl_->wait_call_slot( slot_id, data_list, millisec);
+    }
+
+    void protocol_layer::push_rpc_message(uint64_t slot_id,
+                      boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess)
+    {
+        impl_->push_rpc_message(slot_id, mess);
     }
 
 }}
