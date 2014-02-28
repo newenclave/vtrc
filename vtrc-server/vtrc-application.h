@@ -16,6 +16,7 @@ namespace vtrc {
     namespace common {
         struct connection_iface;
         class enviroment;
+        class rpc_service_wrapper;
     }
 
 namespace server {
@@ -39,7 +40,11 @@ namespace server {
         common::enviroment      &get_enviroment( );
         boost::asio::io_service &get_io_service( );
 
-        boost::shared_ptr<connection_list> get_clients( );
+        boost::shared_ptr<connection_list>      get_clients( );
+
+        virtual boost::shared_ptr<common::rpc_service_wrapper>
+                 get_service_by_name( common::connection_iface* connection,
+                                      const std::string &service_name );
 
         /** TODO: fix it **/
         virtual void on_endpoint_started(   endpoint_iface * /*ep*/ ) { }

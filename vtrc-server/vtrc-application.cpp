@@ -6,6 +6,7 @@
 #include "vtrc-connection-list.h"
 
 #include "vtrc-common/vtrc-enviroment.h"
+#include "vtrc-common/vtrc-rpc-service-wrapper.h"
 
 namespace vtrc { namespace server {
 
@@ -77,6 +78,13 @@ namespace vtrc { namespace server {
     boost::shared_ptr<connection_list> application::get_clients()
     {
         return impl_->get_clients( );
+    }
+
+    common::rpc_service_wrapper_sptr application::get_service_by_name(
+                                    common::connection_iface * /*connection*/,
+                                    const std::string &        /*service_name*/)
+    {
+        return common::rpc_service_wrapper_sptr( );
     }
 
 }}

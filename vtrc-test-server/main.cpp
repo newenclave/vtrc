@@ -26,12 +26,15 @@
 
 #include "vtrc-common/vtrc-data-queue.h"
 #include "vtrc-common/vtrc-conditional-queues.h"
+#include "vtrc-common/vtrc-rpc-service-wrapper.h"
 
 #include "protocol/vtrc-errors.pb.h"
 #include "protocol/vtrc-auth.pb.h"
 
 
 namespace ba = boost::asio;
+
+using namespace vtrc;
 
 class main_app: public vtrc::server::application
 {
@@ -87,6 +90,14 @@ private:
     {
         return NULL;
     }
+
+    vtrc::common::rpc_service_wrapper_sptr get_service_by_name(
+                                    vtrc::common::connection_iface *connection,
+                                    const std::string &service_name)
+    {
+        return common::rpc_service_wrapper_sptr( );
+    }
+
 
 };
 
