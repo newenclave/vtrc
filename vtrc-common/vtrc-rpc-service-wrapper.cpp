@@ -24,7 +24,7 @@ namespace vtrc { namespace common {
             return service_->GetDescriptor()->full_name( );
         }
 
-        gpb::MethodDescriptor *find_method( ) const
+        const gpb::MethodDescriptor *find_method( const std::string &name) const
         {
             return service_->GetDescriptor( )->FindMethodByName( name );
         }
