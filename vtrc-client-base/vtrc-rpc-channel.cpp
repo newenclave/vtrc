@@ -14,11 +14,11 @@ namespace vtrc { namespace client {
 
     namespace gpb = google::protobuf;
 
-    struct rpc_channel::rpc_channel_impl {
+    struct rpc_channel::impl {
 
         boost::weak_ptr<common::connection_iface> connection_;
 
-        rpc_channel_impl(boost::shared_ptr<common::connection_iface> c)
+        impl(boost::shared_ptr<common::connection_iface> c)
             :connection_(c)
         {}
 
@@ -65,7 +65,7 @@ namespace vtrc { namespace client {
     };
 
     rpc_channel::rpc_channel( boost::shared_ptr<common::connection_iface> c )
-        :impl_(new rpc_channel_impl(c))
+        :impl_(new impl(c))
     {}
 
     rpc_channel::~rpc_channel( )

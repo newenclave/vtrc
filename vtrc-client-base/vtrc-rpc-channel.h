@@ -21,12 +21,15 @@ namespace client {
 
     class rpc_channel: public google::protobuf::RpcChannel {
 
-        struct rpc_channel_impl;
-        rpc_channel_impl  *impl_;
+        struct impl;
+        impl  *impl_;
+
+        rpc_channel & operator = ( const rpc_channel & );
+        rpc_channel( );
 
     public:
 
-        rpc_channel( boost::shared_ptr<common::connection_iface> connection );
+        explicit rpc_channel( boost::shared_ptr<common::connection_iface> conn);
         ~rpc_channel( );
 
     private:
