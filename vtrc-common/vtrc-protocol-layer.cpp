@@ -200,8 +200,9 @@ namespace vtrc { namespace common {
 
         bool wait_call_slot( uint64_t slot_id, uint32_t millisec)
         {
-            return rpc_queue_.wait_queue( slot_id,
+            queue_wait_result qwr = rpc_queue_.wait_queue( slot_id,
                              boost::chrono::milliseconds(millisec) );
+            return qwr == QUEUE_WAIT_SUCCESS;
         }
 
         bool wait_call_slot(
@@ -211,8 +212,10 @@ namespace vtrc { namespace common {
                     > &data_list,
                     uint32_t millisec )
         {
-            return rpc_queue_.read_queue( slot_id, data_list,
-                                  boost::chrono::milliseconds(millisec));
+            queue_wait_result qwr = rpc_queue_.read_queue(
+                        slot_id, data_list,
+                        boost::chrono::milliseconds(millisec)) ;
+            return qwr == QUEUE_WAIT_SUCCESS;
         }
 
         void close_slot( uint64_t slot_id )
