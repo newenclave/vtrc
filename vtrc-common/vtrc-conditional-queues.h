@@ -8,6 +8,12 @@
 
 namespace vtrc { namespace common {
 
+    enum queue_wait_result {
+         QUEUE_WAIT_TIMEOUT    = 0
+        ,QUEUE_WAIT_SUCCESS    = 1
+        ,QUEUE_WAIT_CANCELED   = 2
+    };
+
     template <typename KeyType, typename QueueValueType>
     class conditional_queues {
 
@@ -21,13 +27,9 @@ namespace vtrc { namespace common {
         typedef QueueValueType                  queue_value_type;
         typedef std::deque<queue_value_type>    queue_type;
 
-        enum wait_result {
-             WAIT_RESULT_TIMEOUT    = 0
-            ,WAIT_RESULT_SUCCESS    = 1
-            ,WAIT_RESULT_CANCELED   = 2
-        };
-
     private:
+
+        typedef queue_wait_result wait_result;
 
         struct hold_value_type {
             boost::condition_variable cond_;
@@ -80,9 +82,9 @@ namespace vtrc { namespace common {
 
         static wait_result cancel_res2wait_res ( bool canceled, bool waitres )
         {
-            return canceled ? WAIT_RESULT_CANCELED
-                            : ( waitres ? WAIT_RESULT_SUCCESS
-                                        : WAIT_RESULT_TIMEOUT );
+            return canceled ? QUEUE_WAIT_CANCELED
+                            : ( waitres ? QUEUE_WAIT_SUCCESS
+                                        : QUEUE_WAIT_TIMEOUT );
         }
 
         template <typename WaitFunc>
@@ -232,19 +234,19 @@ namespace vtrc { namespace common {
             f->second->cond_.notify_all( );
         }
 
-        wait_result wait_queue( const key_type &key )
+        queue_wait_result wait_queue( const key_type &key )
         {
             return wait_queue_impl( key,
                         boost::bind( &this_type::cond_wait, _1, _2) );
         }
 
-        wait_result read( const key_type &key, queue_value_type &result )
+        queue_wait_result read( const key_type &key, queue_value_type &result )
         {
             return read_impl( key, result,
                         boost::bind( &this_type::cond_wait, _1, _2 ) );
         }
 
-        wait_result read_queue( const key_type &key, queue_type &result )
+        queue_wait_result read_queue( const key_type &key, queue_type &result )
         {
             return read_queue_impl( key, result,
                         boost::bind( &this_type::cond_wait, _1, _2) );
@@ -272,7 +274,7 @@ namespace vtrc { namespace common {
     public:
 
         template <typename TimeType>
-        wait_result wait_queue( const key_type &key, const TimeType &tt )
+        queue_wait_result wait_queue( const key_type &key, const TimeType &tt )
         {
             return wait_queue_impl( key,
                         boost::bind( &this_type::cond_timed_wait<TimeType>,
@@ -280,7 +282,7 @@ namespace vtrc { namespace common {
         }
 
         template <typename TimeType>
-        wait_result read( const key_type &key, queue_value_type &result,
+        queue_wait_result read( const key_type &key, queue_value_type &result,
                                 const TimeType &tt )
         {
             return read_impl( key, result,
@@ -289,7 +291,7 @@ namespace vtrc { namespace common {
         }
 
         template <typename TimeType>
-        wait_result read_queue( const key_type &key, queue_type &result,
+        queue_wait_result read_queue( const key_type &key, queue_type &result,
                                 const TimeType &tt )
         {
             return read_queue_impl( key, result,
@@ -314,7 +316,7 @@ namespace vtrc { namespace common {
 
     public:
         template <typename Rep, typename Period>
-        wait_result wait_queue( const key_type &key,
+        queue_wait_result wait_queue( const key_type &key,
                          const boost::chrono::duration<Rep, Period>& duration )
         {
             return wait_queue_impl( key,
@@ -323,7 +325,7 @@ namespace vtrc { namespace common {
         }
 
         template <typename Rep, typename Period>
-        wait_result read( const key_type &key, queue_value_type &result,
+        queue_wait_result read( const key_type &key, queue_value_type &result,
                          const boost::chrono::duration<Rep, Period>& duration )
         {
             return read_impl( key, result,
@@ -332,7 +334,7 @@ namespace vtrc { namespace common {
         }
 
         template <typename Rep, typename Period>
-        wait_result read_queue( const key_type &key, queue_type &result,
+        queue_wait_result read_queue( const key_type &key, queue_type &result,
                          const boost::chrono::duration<Rep, Period>& duration )
         {
             return read_queue_impl( key, result,

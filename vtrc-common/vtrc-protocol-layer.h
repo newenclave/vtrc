@@ -62,7 +62,7 @@ namespace vtrc { namespace common {
         bool wait_call_slot( uint64_t slot_id,
                              std::deque<
                              boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
-                             > data_list,
+                             > &data_list,
                              uint32_t millisec );
 
         void close_slot( uint64_t slot_id );

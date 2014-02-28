@@ -208,7 +208,7 @@ namespace vtrc { namespace common {
                     uint64_t slot_id,
                     std::deque<
                           boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
-                    > data_list,
+                    > &data_list,
                     uint32_t millisec )
         {
             return rpc_queue_.read_queue( slot_id, data_list,
@@ -305,7 +305,7 @@ namespace vtrc { namespace common {
     bool protocol_layer::wait_call_slot( uint64_t slot_id,
                          std::deque<
                             boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
-                         > data_list,
+                         > &data_list,
                          uint32_t millisec )
     {
         return impl_->wait_call_slot( slot_id, data_list, millisec);
