@@ -14,6 +14,7 @@
 #include "vtrc-conditional-queues.h"
 
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
+#include "protocol/vtrc-errors.pb.h"
 
 namespace vtrc { namespace common {
 
