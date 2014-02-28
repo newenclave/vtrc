@@ -171,13 +171,16 @@ namespace vtrc { namespace server {
                 llu->mutable_info( )->mutable_error( )->set_code( 5 );
             } else {
                 gpb::MethodDescriptor const *meth
-                        (service->get_method(llu->call( ).method( )));
+                    (service->get_method(llu->call( ).method( )));
+
                 gpb::Message *req
-                        (service->service( )->GetRequestPrototype(meth).New( ));
+                    (service->service( )->GetRequestPrototype( meth ).New( ));
                 req->ParseFromString( llu->request( ) );
+
                 gpb::Message *res
-                        (service->service( )->GetResponsePrototype(meth).New( ));
+                    (service->service( )->GetResponsePrototype( meth ).New( ));
                 res->ParseFromString( llu->response( ) );
+
                 service->service( )
                         ->CallMethod( meth,  NULL, req, res, NULL );
                 llu->set_response( res->SerializeAsString( ) );
