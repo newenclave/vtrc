@@ -58,8 +58,8 @@ namespace vtrc { namespace common {
         void call_rpc_method( uint64_t slot_id,
                               const vtrc_rpc_lowlevel::lowlevel_unit &llu );
 
-        bool wait_call_slot( uint64_t slot_id, uint32_t millisec );
-        bool wait_call_slot( uint64_t slot_id,
+        void wait_call_slot( uint64_t slot_id, uint32_t millisec );
+        void wait_call_slot( uint64_t slot_id,
                              std::deque<
                              boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
                              > &data_list,

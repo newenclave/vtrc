@@ -60,15 +60,9 @@ namespace vtrc { namespace client {
                boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
             > data_list;
 
-            bool wait = cl->get_protocol( ).wait_call_slot( call_id, data_list, 2000 );
+            cl->get_protocol( ).wait_call_slot( call_id, data_list, 2000 );
 
-            if( wait ) {
-                response->ParseFromString( data_list.front( )->response( ) );
-            }
-
-            std::cout << "Wait is: "
-                      << call_id << " "
-                      << wait << "\n";
+            response->ParseFromString( data_list.front( )->response( ) );
 
             cl->get_protocol( ).close_slot( call_id );
 

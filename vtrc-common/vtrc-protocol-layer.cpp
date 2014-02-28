@@ -12,6 +12,7 @@
 #include "vtrc-transport-iface.h"
 
 #include "vtrc-conditional-queues.h"
+#include "vtrc-exception.h"
 
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
 #include "protocol/vtrc-errors.pb.h"
@@ -21,6 +22,26 @@ namespace vtrc { namespace common {
     namespace gpb = google::protobuf;
 
     namespace {
+
+        void raise_error( unsigned code )
+        {
+            throw vtrc::common::exception( code );
+        }
+
+        void raise_wait_error( queue_wait_result wr )
+        {
+            switch ( wr ) {
+            case QUEUE_WAIT_CANCELED:
+                raise_error( vtrc_errors::ERR_CANCELED );
+                break;
+            case QUEUE_WAIT_TIMEOUT:
+                raise_error( vtrc_errors::ERR_TIMEOUT );
+                break;
+            default:
+                break;
+            }
+        }
+
         static const size_t maximum_message_length = 1024 * 1024;
 
         struct rpc_unit_index {
@@ -199,14 +220,14 @@ namespace vtrc { namespace common {
             send_message( llu );
         }
 
-        bool wait_call_slot( uint64_t slot_id, uint32_t millisec)
+        void wait_call_slot( uint64_t slot_id, uint32_t millisec)
         {
             queue_wait_result qwr = rpc_queue_.wait_queue( slot_id,
                              boost::chrono::milliseconds(millisec) );
-            return qwr == QUEUE_WAIT_SUCCESS;
+            raise_wait_error( qwr );
         }
 
-        bool wait_call_slot(
+        void wait_call_slot(
                     uint64_t slot_id,
                     std::deque<
                           boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
@@ -216,7 +237,7 @@ namespace vtrc { namespace common {
             queue_wait_result qwr = rpc_queue_.read_queue(
                         slot_id, data_list,
                         boost::chrono::milliseconds(millisec)) ;
-            return qwr == QUEUE_WAIT_SUCCESS;
+            raise_wait_error( qwr );
         }
 
         void close_slot( uint64_t slot_id )
@@ -301,18 +322,18 @@ namespace vtrc { namespace common {
         impl_->call_rpc_method( slot_id, llu );
     }
 
-    bool protocol_layer::wait_call_slot( uint64_t slot_id, uint32_t millisec)
+    void protocol_layer::wait_call_slot( uint64_t slot_id, uint32_t millisec)
     {
-        return impl_->wait_call_slot( slot_id, millisec);
+        impl_->wait_call_slot( slot_id, millisec);
     }
 
-    bool protocol_layer::wait_call_slot( uint64_t slot_id,
+    void protocol_layer::wait_call_slot( uint64_t slot_id,
                          std::deque<
                             boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
                          > &data_list,
                          uint32_t millisec )
     {
-        return impl_->wait_call_slot( slot_id, data_list, millisec);
+        impl_->wait_call_slot( slot_id, data_list, millisec);
     }
 
     void protocol_layer::close_slot(uint64_t slot_id)
