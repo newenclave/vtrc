@@ -17,8 +17,9 @@ enum error_category {
 enum errors_numbers { // CATEGORY_INTERNAL
                       // linux error codes I use
 
-    ERROR_NO_ERROR =  0 [(error_description) = "No error"];
-    ERROR_TIME_OUT = 62 [(error_description) = "Timeout" ];
+    ERROR_NO_ERROR =  0  [(error_description) = "No error"];
+    ERROR_TIME_OUT =  62 [(error_description) = "Timeout" ];
+    ERROR_CANCELED = 125 [(error_description) = "Operation canceled"];
 }
 
 message error_container {
