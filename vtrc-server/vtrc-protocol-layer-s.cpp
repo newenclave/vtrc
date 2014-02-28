@@ -13,6 +13,8 @@
 
 #include "vtrc-transport-iface.h"
 
+#include "vtrc-common/vtrc-rpc-service-wrapper.h"
+
 #include "protocol/vtrc-errors.pb.h"
 #include "protocol/vtrc-auth.pb.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
@@ -27,6 +29,12 @@ namespace vtrc { namespace server {
             ,stage_client_select     = 2
             ,stage_client_ready      = 3
         };
+
+        typedef std::map <
+            std::string,
+            common::rpc_service_wrapper_sptr
+        > service_map;
+
     }
 
     namespace data_queue = common::data_queue;
@@ -39,6 +47,9 @@ namespace vtrc { namespace server {
         common::transport_iface *connection_;
         protocol_layer          *parent_;
         bool                     ready_;
+
+        service_map              services_;
+        boost::shared_mutex      services_lock_;
 
         typedef boost::function<void (void)> stage_function_type;
         stage_function_type  stage_function_;
@@ -133,6 +144,7 @@ namespace vtrc { namespace server {
             while( !parent_->get_data_queue( ).messages( ).empty( ) ) {
                 vtrc_rpc_lowlevel::lowlevel_unit llu;
                 get_pop_message( llu );
+
                 try {
                     std::cout << llu.DebugString( ) << "\n";
                 } catch( const std::exception &ex ) {

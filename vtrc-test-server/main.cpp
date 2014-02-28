@@ -4,6 +4,8 @@
 #include <vector>
 #include <queue>
 
+#include <google/protobuf/descriptor.h>
+
 #include <boost/asio.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/chrono.hpp>
@@ -30,11 +32,30 @@
 
 #include "protocol/vtrc-errors.pb.h"
 #include "protocol/vtrc-auth.pb.h"
+#include "protocol/vtrc-rpc-lowlevel.pb.h"
+
 
 
 namespace ba = boost::asio;
 
 using namespace vtrc;
+
+class teat_impl: public vtrc_rpc_lowlevel::test_rpc {
+    common::connection_iface *connection_;
+public:
+    teat_impl(common::connection_iface *c )
+        :connection_(c)
+    {}
+
+    void test(::google::protobuf::RpcController* controller,
+                         const ::vtrc_rpc_lowlevel::message_info* request,
+                         ::vtrc_rpc_lowlevel::message_info* response,
+                         ::google::protobuf::Closure* done)
+    {
+        std::cout << "test was called :]\n";
+        if( done ) done->Run( );
+    }
+};
 
 class main_app: public vtrc::server::application
 {
@@ -95,6 +116,12 @@ private:
                                     vtrc::common::connection_iface *connection,
                                     const std::string &service_name)
     {
+        if( service_name == teat_impl::descriptor( )->full_name( ) ) {
+            return common::rpc_service_wrapper_sptr(
+                        new common::rpc_service_wrapper(
+                                new teat_impl(connection) ) );
+        }
+
         return common::rpc_service_wrapper_sptr( );
     }
 
