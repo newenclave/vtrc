@@ -14,6 +14,7 @@
 #include "vtrc-transport-iface.h"
 
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"
+#include "vtrc-application.h"
 
 #include "protocol/vtrc-errors.pb.h"
 #include "protocol/vtrc-auth.pb.h"
@@ -35,6 +36,12 @@ namespace vtrc { namespace server {
             common::rpc_service_wrapper_sptr
         > service_map;
 
+        typedef boost::unique_lock<boost::shared_mutex>    unique_lock;
+        typedef boost::shared_lock<boost::shared_mutex>    shared_lock;
+        typedef boost::upgrade_lock<boost::shared_mutex>   upgradable_lock;
+        typedef boost::upgrade_to_unique_lock <
+                                    boost::shared_mutex
+                                    >                       upgrade_to_unique;
     }
 
     namespace data_queue = common::data_queue;
@@ -61,6 +68,25 @@ namespace vtrc { namespace server {
         {
             stage_function_ =
                     boost::bind( &this_type::on_client_selection, this );
+        }
+
+        common::rpc_service_wrapper_sptr get_service( const std::string &name )
+        {
+            upgradable_lock l( services_lock_ );
+            common::rpc_service_wrapper_sptr result;
+            service_map::iterator f( services_.find( name ) );
+
+            if( f != services_.end( ) ) {
+                result = f->second;
+            } else {
+                result = app_.get_service_by_name( connection_, name );
+                if( result ) {
+                    upgrade_to_unique ul( l );
+                    services_.insert( std::make_pair( name, result ) );
+                }
+            }
+
+            return result;
         }
 
         void pop_message( )
@@ -139,14 +165,42 @@ namespace vtrc { namespace server {
             pop_message( );
         }
 
+        void make_call( boost::shared_ptr <
+                            vtrc_rpc_lowlevel::lowlevel_unit> llu )
+        {
+            common::rpc_service_wrapper_sptr
+                    service(get_service(llu.call().service()));
+            if( !service ) {
+                llu.clear_request( );
+                llu.clear_response( );
+                llu.mutable_info( )->mutable_error( )->set_code( 5 );
+            } else {
+                gpb::MethodDescriptor const *meth
+                        (service->get_method(llu->call( ).method( )));
+                gpb::Message *req
+                        (service->service( )->GetRequestPrototype(meth).New( ));
+                gpb::Message *res
+                        (service->service( )->GetResponsePrototype(meth).New( ));
+
+                service->service( )
+                        ->CallMethod( meth,  NULL, req, res, NULL );
+
+            }
+            llu->set_response( res->SerializeAsString( ) );
+            llu->clear_request( );
+
+            std::cout << llu->DebugString( ) << "\n";
+        }
+
         void on_rcp_call_ready( )
         {
             while( !parent_->get_data_queue( ).messages( ).empty( ) ) {
-                vtrc_rpc_lowlevel::lowlevel_unit llu;
-                get_pop_message( llu );
-
+                boost::shared_ptr <
+                            vtrc_rpc_lowlevel::lowlevel_unit
+                        > llu;
+                get_pop_message( *llu );
                 try {
-                    std::cout << llu.DebugString( ) << "\n";
+                    make_call( llu );
                 } catch( const std::exception &ex ) {
                     std::cout << "Error rpc: " << ex.what( ) << "\n";
                 }
