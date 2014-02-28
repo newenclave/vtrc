@@ -189,7 +189,6 @@ namespace vtrc { namespace server {
             llu->clear_request( );
             llu->clear_call( );
             send_proto_message( *llu );
-            std::cout << llu->DebugString( ) << "\n";
         }
 
         void on_rcp_call_ready( )
