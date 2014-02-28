@@ -2,7 +2,8 @@
 #include <boost/asio.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
-#include <boost/thread.hpp>
+
+#include "vtrc-common/vtrc-mutex.h"
 
 #include "vtrc-protocol-layer-s.h"
 
@@ -36,12 +37,6 @@ namespace vtrc { namespace server {
             common::rpc_service_wrapper_sptr
         > service_map;
 
-        typedef boost::unique_lock<boost::shared_mutex>    unique_lock;
-        typedef boost::shared_lock<boost::shared_mutex>    shared_lock;
-        typedef boost::upgrade_lock<boost::shared_mutex>   upgradable_lock;
-        typedef boost::upgrade_to_unique_lock <
-                                    boost::shared_mutex
-                                    >                       upgrade_to_unique;
     }
 
     namespace data_queue = common::data_queue;
@@ -56,7 +51,7 @@ namespace vtrc { namespace server {
         bool                     ready_;
 
         service_map              services_;
-        boost::shared_mutex      services_lock_;
+        shared_mutex             services_lock_;
 
         typedef boost::function<void (void)> stage_function_type;
         stage_function_type  stage_function_;
@@ -169,26 +164,28 @@ namespace vtrc { namespace server {
                             vtrc_rpc_lowlevel::lowlevel_unit> llu )
         {
             common::rpc_service_wrapper_sptr
-                    service(get_service(llu.call().service()));
+                    service(get_service(llu->call().service()));
             if( !service ) {
-                llu.clear_request( );
-                llu.clear_response( );
-                llu.mutable_info( )->mutable_error( )->set_code( 5 );
+                llu->clear_request( );
+                llu->clear_response( );
+                llu->mutable_info( )->mutable_error( )->set_code( 5 );
             } else {
                 gpb::MethodDescriptor const *meth
                         (service->get_method(llu->call( ).method( )));
                 gpb::Message *req
                         (service->service( )->GetRequestPrototype(meth).New( ));
+                req->ParseFromString( llu->request( ) );
                 gpb::Message *res
                         (service->service( )->GetResponsePrototype(meth).New( ));
-
+                res->ParseFromString( llu->response( ) );
                 service->service( )
                         ->CallMethod( meth,  NULL, req, res, NULL );
+                llu->set_response( res->SerializeAsString( ) );
 
             }
-            llu->set_response( res->SerializeAsString( ) );
             llu->clear_request( );
-
+            llu->clear_call( );
+            send_proto_message( *llu );
             std::cout << llu->DebugString( ) << "\n";
         }
 
@@ -197,7 +194,7 @@ namespace vtrc { namespace server {
             while( !parent_->get_data_queue( ).messages( ).empty( ) ) {
                 boost::shared_ptr <
                             vtrc_rpc_lowlevel::lowlevel_unit
-                        > llu;
+                        > llu(new vtrc_rpc_lowlevel::lowlevel_unit);
                 get_pop_message( *llu );
                 try {
                     make_call( llu );

@@ -215,6 +215,11 @@ namespace vtrc { namespace common {
                                   boost::chrono::milliseconds(millisec));
         }
 
+        void close_slot( uint64_t slot_id )
+        {
+            rpc_queue_.erase_queue( slot_id );
+        }
+
     };
 
     protocol_layer::protocol_layer( transport_iface *connection )
@@ -304,6 +309,11 @@ namespace vtrc { namespace common {
                          uint32_t millisec )
     {
         return impl_->wait_call_slot( slot_id, data_list, millisec);
+    }
+
+    void protocol_layer::close_slot(uint64_t slot_id)
+    {
+        impl_->close_slot( slot_id );
     }
 
     void protocol_layer::push_rpc_message(uint64_t slot_id,

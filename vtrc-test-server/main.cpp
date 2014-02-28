@@ -42,9 +42,11 @@ using namespace vtrc;
 
 class teat_impl: public vtrc_rpc_lowlevel::test_rpc {
     common::connection_iface *connection_;
+    unsigned id_;
 public:
     teat_impl(common::connection_iface *c )
         :connection_(c)
+        ,id_(0)
     {}
 
     void test(::google::protobuf::RpcController* controller,
@@ -53,6 +55,7 @@ public:
                          ::google::protobuf::Closure* done)
     {
         std::cout << "test was called :]\n";
+        response->set_message_type( id_++ );
         if( done ) done->Run( );
     }
 };

@@ -37,28 +37,40 @@ namespace vtrc { namespace client {
             std::string service_name(method->service( )->full_name( ));
             std::string method_name(method->name( ));
 
-            vtrc_rpc_lowlevel::lowlevel_unit llu;
+            boost::shared_ptr<
+                    vtrc_rpc_lowlevel::lowlevel_unit
+            > llu(new vtrc_rpc_lowlevel::lowlevel_unit);
 
-            llu.mutable_call( )->set_service( service_name );
-            llu.mutable_call( )->set_method( method_name );
+            llu->mutable_call( )->set_service( service_name );
+            llu->mutable_call( )->set_method( method_name );
 
-            llu.set_request( request->SerializeAsString( ) );
-            llu.set_response( response->SerializeAsString( ) );
+            llu->set_request( request->SerializeAsString( ) );
+            llu->set_response( response->SerializeAsString( ) );
 
-            llu.mutable_info( )->set_message_type(
+            llu->mutable_info( )->set_message_type(
                         vtrc_rpc_lowlevel::message_info::MESSAGE_CALL );
 
             uint64_t call_id = cl->get_protocol( ).next_index( );
 
-            llu.set_id( call_id );
+            llu->set_id( call_id );
 
-            cl->get_protocol( ).call_rpc_method( call_id, llu );
+            cl->get_protocol( ).call_rpc_method( call_id, *llu );
 
-            bool wait = cl->get_protocol( ).wait_call_slot( call_id, 2000 );
+            std::deque<
+               boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
+            > data_list;
 
-            std::cout << "sent message: " << llu.DebugString( )
-                      << "\n" << (wait ? "true" : "false")
-                      << "\n";
+            bool wait = cl->get_protocol( ).wait_call_slot( call_id, data_list, 2000 );
+
+            if( wait ) {
+                response->ParseFromString( data_list.front( )->response( ) );
+            }
+
+            std::cout << "Wait is: "
+                      << call_id << " "
+                      << wait << "\n";
+
+            cl->get_protocol( ).close_slot( call_id );
 
             if( done ) done->Run( );
         }

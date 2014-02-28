@@ -57,6 +57,22 @@ namespace vtrc { namespace client {
             connection_->write(s.c_str( ), s.size( ), closure );
         }
 
+        void on_rpc_process( )
+        {
+            while( !parent_->get_data_queue( ).messages( ).empty( ) ) {
+                std::string &mess
+                        (parent_->get_data_queue( ).messages( ).front( ));
+                bool check = parent_->check_message( mess );
+
+                boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
+                        llu( new  vtrc_rpc_lowlevel::lowlevel_unit );
+                parent_->parse_message( mess, *llu );
+                std::cout << "push " << llu->id( ) << "\n";
+                parent_->push_rpc_message( llu->id( ), llu );
+                pop_message( );
+            }
+        }
+
         void on_server_ready( )
         {
             std::string &mess = parent_->get_data_queue( ).messages( ).front( );
@@ -71,7 +87,7 @@ namespace vtrc { namespace client {
             }
 
             pop_message( );
-
+            stage_call_ = boost::bind( &this_type::on_rpc_process, this );
         }
 
         void set_options( const boost::system::error_code &err )
@@ -146,7 +162,6 @@ namespace vtrc { namespace client {
 
     void protocol_layer::on_data_ready( )
     {
-        std::cout << "data ready\n";
         impl_->data_ready( );
     }
 

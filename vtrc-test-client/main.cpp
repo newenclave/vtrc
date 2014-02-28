@@ -26,14 +26,16 @@ int main( )
     cl.connect( "127.0.0.1", "44667" );
     ///cl.async_connect( "127.0.0.1", "44667", on_connect );
 
-    sleep( 5 );
+    sleep( 2 );
 
     vtrc_rpc_lowlevel::test_rpc::Stub s( cl.get_channel( ).get( ) );
 
     vtrc_rpc_lowlevel::message_info mi;
 
-    s.test( NULL, &mi, &mi, NULL );
-
+    for( int i=0; i<100; ++i ) {
+        s.test( NULL, &mi, &mi, NULL );
+        std::cout << "response: " << mi.message_type( ) << "\n";
+    }
 
     tp.join_all( );
 
