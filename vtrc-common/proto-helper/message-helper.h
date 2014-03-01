@@ -70,8 +70,10 @@ namespace vtrc { namespace helper {
         message_helper( const message_helper &other );
 
     public:
+
         message_helper(google::protobuf::Message *mess );
         virtual ~message_helper( );
+
         void set( const google::protobuf::FieldDescriptor *fld,
                                                  std::string const &value );
         void set( const std::string &field_name, std::string const &value );
@@ -79,7 +81,8 @@ namespace vtrc { namespace helper {
 
     void make_fields_map( const google::protobuf::Descriptor *src,
                           field_map_type &result,
-                          bool use_full_names, bool leafs_only );
+                          bool use_full_names,
+                          bool leafs_only );
 
 }}
 
