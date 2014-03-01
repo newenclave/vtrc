@@ -17,7 +17,7 @@ namespace vtrc { namespace helper {
         template<google::protobuf::FieldDescriptor::CppType>
         struct types_info;
 
-#define DWS9_STATIC_DEFINE_NAME_TYPE_CALLS(ValueName,RetType,SetType,TypeName) \
+#define VTRC_STATIC_DEFINE_NAME_TYPE_CALLS(ValueName,RetType,SetType,TypeName) \
     template<>                                                                 \
     struct types_info<ValueName>                                               \
     {                                                                          \
@@ -53,41 +53,41 @@ namespace vtrc { namespace helper {
             return &::google::protobuf::Reflection::Add##TypeName; }           \
     };
 
-#define DWS9_STATIC_DEFINE_NAME_TYPE_CALLS_FOR_INTS( T )                       \
-        DWS9_STATIC_DEFINE_NAME_TYPE_CALLS(                                    \
+#define VTRC_STATIC_DEFINE_NAME_TYPE_CALLS_FOR_INTS( T )                       \
+        VTRC_STATIC_DEFINE_NAME_TYPE_CALLS(                                    \
             google::protobuf::FieldDescriptor::CPPTYPE_INT##T,                 \
             google::protobuf::int##T, google::protobuf::int##T, Int##T)        \
-        DWS9_STATIC_DEFINE_NAME_TYPE_CALLS(                                    \
+        VTRC_STATIC_DEFINE_NAME_TYPE_CALLS(                                    \
             google::protobuf::FieldDescriptor::CPPTYPE_UINT##T,                \
             google::protobuf::uint##T, google::protobuf::uint##T, UInt##T)
 
-DWS9_STATIC_DEFINE_NAME_TYPE_CALLS_FOR_INTS( 32 )
-DWS9_STATIC_DEFINE_NAME_TYPE_CALLS_FOR_INTS( 64 )
+VTRC_STATIC_DEFINE_NAME_TYPE_CALLS_FOR_INTS( 32 )
+VTRC_STATIC_DEFINE_NAME_TYPE_CALLS_FOR_INTS( 64 )
 
-#undef DWS9_STATIC_DEFINE_NAME_TYPE_CALLS_FOR_INTS
+#undef VTRC_STATIC_DEFINE_NAME_TYPE_CALLS_FOR_INTS
 
-DWS9_STATIC_DEFINE_NAME_TYPE_CALLS(
+VTRC_STATIC_DEFINE_NAME_TYPE_CALLS(
     google::protobuf::FieldDescriptor::CPPTYPE_FLOAT,
     float, float, Float);
 
-DWS9_STATIC_DEFINE_NAME_TYPE_CALLS(
+VTRC_STATIC_DEFINE_NAME_TYPE_CALLS(
     google::protobuf::FieldDescriptor::CPPTYPE_DOUBLE,
     double, double, Double);
 
-DWS9_STATIC_DEFINE_NAME_TYPE_CALLS(
+VTRC_STATIC_DEFINE_NAME_TYPE_CALLS(
     google::protobuf::FieldDescriptor::CPPTYPE_STRING,
     std::string, const std::string &, String);
 
-DWS9_STATIC_DEFINE_NAME_TYPE_CALLS(
+VTRC_STATIC_DEFINE_NAME_TYPE_CALLS(
     google::protobuf::FieldDescriptor::CPPTYPE_BOOL,
     bool, bool, Bool);
 
-DWS9_STATIC_DEFINE_NAME_TYPE_CALLS(
+VTRC_STATIC_DEFINE_NAME_TYPE_CALLS(
     google::protobuf::FieldDescriptor::CPPTYPE_ENUM,
     const google::protobuf::EnumValueDescriptor*,
     const google::protobuf::EnumValueDescriptor*, Enum);
 
-#undef DWS9_STATIC_DEFINE_NAME_TYPE_CALLS
+#undef VTRC_STATIC_DEFINE_NAME_TYPE_CALLS
 
     }
 
@@ -228,7 +228,7 @@ DWS9_STATIC_DEFINE_NAME_TYPE_CALLS(
             return mess_;
         }
 
-#define DWS_REFLECT_HELPER_DEFINE_GETTER( TypeName )                           \
+#define VTRC_REFLECT_HELPER_DEFINE_GETTER( TypeName )                          \
         type_info##TypeName::data_type                                         \
             get##TypeName(const field_desc_type *fld ) const                   \
         {                                                                      \
@@ -236,7 +236,7 @@ DWS9_STATIC_DEFINE_NAME_TYPE_CALLS(
                     ( type_info##TypeName::get( )))(*mess_, fld);              \
         }
 
-#define DWS_REFLECT_HELPER_DEFINE_GETTER_REP( TypeName )                       \
+#define VTRC_REFLECT_HELPER_DEFINE_GETTER_REP( TypeName )                      \
         type_info##TypeName::data_type                                         \
             get_repeated##TypeName(const field_desc_type *fld,                 \
                                    int fld_num ) const                         \
@@ -246,7 +246,7 @@ DWS9_STATIC_DEFINE_NAME_TYPE_CALLS(
                         (*mess_, fld, fld_num);                                \
         }
 
-#define DWS_REFLECT_HELPER_DEFINE_GETTER_REP_VEC( TypeName )                   \
+#define VTRC_REFLECT_HELPER_DEFINE_GETTER_REP_VEC( TypeName )                  \
         void get_repeated_vector##TypeName( const field_desc_type *fld,        \
                     std::vector<type_info##TypeName::data_type> &result ) const\
         {                                                                      \
@@ -259,39 +259,39 @@ DWS9_STATIC_DEFINE_NAME_TYPE_CALLS(
             result.swap( tmp );                                                \
         }
 
-        DWS_REFLECT_HELPER_DEFINE_GETTER( _int32  );
-        DWS_REFLECT_HELPER_DEFINE_GETTER( _uint32 );
-        DWS_REFLECT_HELPER_DEFINE_GETTER( _int64  );
-        DWS_REFLECT_HELPER_DEFINE_GETTER( _uint64 );
-        DWS_REFLECT_HELPER_DEFINE_GETTER( _bool   );
-        DWS_REFLECT_HELPER_DEFINE_GETTER( _float  );
-        DWS_REFLECT_HELPER_DEFINE_GETTER( _double );
-        DWS_REFLECT_HELPER_DEFINE_GETTER( _string );
-        DWS_REFLECT_HELPER_DEFINE_GETTER( _enum   );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER( _int32  );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER( _uint32 );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER( _int64  );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER( _uint64 );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER( _bool   );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER( _float  );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER( _double );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER( _string );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER( _enum   );
 
-        DWS_REFLECT_HELPER_DEFINE_GETTER_REP( _int32  );
-        DWS_REFLECT_HELPER_DEFINE_GETTER_REP( _uint32 );
-        DWS_REFLECT_HELPER_DEFINE_GETTER_REP( _int64  );
-        DWS_REFLECT_HELPER_DEFINE_GETTER_REP( _uint64 );
-        DWS_REFLECT_HELPER_DEFINE_GETTER_REP( _bool   );
-        DWS_REFLECT_HELPER_DEFINE_GETTER_REP( _float  );
-        DWS_REFLECT_HELPER_DEFINE_GETTER_REP( _double );
-        DWS_REFLECT_HELPER_DEFINE_GETTER_REP( _string );
-        DWS_REFLECT_HELPER_DEFINE_GETTER_REP( _enum   );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER_REP( _int32  );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER_REP( _uint32 );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER_REP( _int64  );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER_REP( _uint64 );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER_REP( _bool   );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER_REP( _float  );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER_REP( _double );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER_REP( _string );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER_REP( _enum   );
 
-        DWS_REFLECT_HELPER_DEFINE_GETTER_REP_VEC( _int32  );
-        DWS_REFLECT_HELPER_DEFINE_GETTER_REP_VEC( _uint32 );
-        DWS_REFLECT_HELPER_DEFINE_GETTER_REP_VEC( _int64  );
-        DWS_REFLECT_HELPER_DEFINE_GETTER_REP_VEC( _uint64 );
-        DWS_REFLECT_HELPER_DEFINE_GETTER_REP_VEC( _bool   );
-        DWS_REFLECT_HELPER_DEFINE_GETTER_REP_VEC( _float  );
-        DWS_REFLECT_HELPER_DEFINE_GETTER_REP_VEC( _double );
-        DWS_REFLECT_HELPER_DEFINE_GETTER_REP_VEC( _string );
-        DWS_REFLECT_HELPER_DEFINE_GETTER_REP_VEC( _enum );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER_REP_VEC( _int32  );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER_REP_VEC( _uint32 );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER_REP_VEC( _int64  );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER_REP_VEC( _uint64 );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER_REP_VEC( _bool   );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER_REP_VEC( _float  );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER_REP_VEC( _double );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER_REP_VEC( _string );
+        VTRC_REFLECT_HELPER_DEFINE_GETTER_REP_VEC( _enum );
 
-#undef DWS_REFLECT_HELPER_DEFINE_GETTER_REP_VEC
-#undef DWS_REFLECT_HELPER_DEFINE_GETTER
-#undef DWS_REFLECT_HELPER_DEFINE_GETTER_REP
+#undef VTRC_REFLECT_HELPER_DEFINE_GETTER_REP_VEC
+#undef VTRC_REFLECT_HELPER_DEFINE_GETTER
+#undef VTRC_REFLECT_HELPER_DEFINE_GETTER_REP
 
         int get_repeated_size( const field_desc_type *fld ) const
         {
@@ -394,7 +394,7 @@ public:
                             std::vector<T> &result ) const
         {
 
-#           define DWS_REFLECT_HELPER_DEFINE_CASE_REP_VEC( CppType, TypeName ) \
+#           define VTRC_REFLECT_HELPER_DEFINE_CASE_REP_VEC( CppType, TypeName ) \
                 case field_desc_type::CppType: {                               \
                     typename type_info##TypeName::vector_type vec;             \
                     get_repeated_vector##TypeName( fld, vec );                 \
@@ -403,21 +403,21 @@ public:
                 }
 
             switch(fld->cpp_type( )) {
-            DWS_REFLECT_HELPER_DEFINE_CASE_REP_VEC( CPPTYPE_INT32,  _int32  );
-            DWS_REFLECT_HELPER_DEFINE_CASE_REP_VEC( CPPTYPE_INT64,  _int64  );
-            DWS_REFLECT_HELPER_DEFINE_CASE_REP_VEC( CPPTYPE_UINT32, _uint64 );
-            DWS_REFLECT_HELPER_DEFINE_CASE_REP_VEC( CPPTYPE_UINT64, _uint64 );
-            DWS_REFLECT_HELPER_DEFINE_CASE_REP_VEC( CPPTYPE_FLOAT,  _float  );
-            DWS_REFLECT_HELPER_DEFINE_CASE_REP_VEC( CPPTYPE_DOUBLE, _double );
-            DWS_REFLECT_HELPER_DEFINE_CASE_REP_VEC( CPPTYPE_STRING, _string );
-            DWS_REFLECT_HELPER_DEFINE_CASE_REP_VEC( CPPTYPE_ENUM,   _enum   );
+            VTRC_REFLECT_HELPER_DEFINE_CASE_REP_VEC( CPPTYPE_INT32,  _int32  );
+            VTRC_REFLECT_HELPER_DEFINE_CASE_REP_VEC( CPPTYPE_INT64,  _int64  );
+            VTRC_REFLECT_HELPER_DEFINE_CASE_REP_VEC( CPPTYPE_UINT32, _uint64 );
+            VTRC_REFLECT_HELPER_DEFINE_CASE_REP_VEC( CPPTYPE_UINT64, _uint64 );
+            VTRC_REFLECT_HELPER_DEFINE_CASE_REP_VEC( CPPTYPE_FLOAT,  _float  );
+            VTRC_REFLECT_HELPER_DEFINE_CASE_REP_VEC( CPPTYPE_DOUBLE, _double );
+            VTRC_REFLECT_HELPER_DEFINE_CASE_REP_VEC( CPPTYPE_STRING, _string );
+            VTRC_REFLECT_HELPER_DEFINE_CASE_REP_VEC( CPPTYPE_ENUM,   _enum   );
 
             case field_desc_type::CPPTYPE_MESSAGE:
                 throw std::bad_cast( );
             default:
                 break;
             }
-#           undef DWS_REFLECT_HELPER_DEFINE_CASE_REP_VEC
+#           undef VTRC_REFLECT_HELPER_DEFINE_CASE_REP_VEC
         }
     };
 
@@ -527,21 +527,21 @@ public:
             reflection()->ClearField( mess_, fld );
         }
 
-#define DWS_REFLECT_HELPER_DEFINE_SETTER( TypeName )                           \
+#define VTRC_REFLECT_HELPER_DEFINE_SETTER( TypeName )                          \
         void set##TypeName( const field_desc_type *fld,                        \
                             type_info##TypeName::data_type v )                 \
         {                                                                      \
             (reflection( )->*(type_info##TypeName::set( )))( mess_, fld, v );  \
         }
 
-        DWS_REFLECT_HELPER_DEFINE_SETTER( _int32  )
-        DWS_REFLECT_HELPER_DEFINE_SETTER( _int64  )
-        DWS_REFLECT_HELPER_DEFINE_SETTER( _uint32 )
-        DWS_REFLECT_HELPER_DEFINE_SETTER( _uint64 )
-        DWS_REFLECT_HELPER_DEFINE_SETTER( _float  )
-        DWS_REFLECT_HELPER_DEFINE_SETTER( _double )
-        DWS_REFLECT_HELPER_DEFINE_SETTER( _bool   )
-        DWS_REFLECT_HELPER_DEFINE_SETTER( _enum   )
+        VTRC_REFLECT_HELPER_DEFINE_SETTER( _int32  )
+        VTRC_REFLECT_HELPER_DEFINE_SETTER( _int64  )
+        VTRC_REFLECT_HELPER_DEFINE_SETTER( _uint32 )
+        VTRC_REFLECT_HELPER_DEFINE_SETTER( _uint64 )
+        VTRC_REFLECT_HELPER_DEFINE_SETTER( _float  )
+        VTRC_REFLECT_HELPER_DEFINE_SETTER( _double )
+        VTRC_REFLECT_HELPER_DEFINE_SETTER( _bool   )
+        VTRC_REFLECT_HELPER_DEFINE_SETTER( _enum   )
 
         void set_string( const field_desc_type *fld, const std::string &v )
         {
@@ -566,50 +566,50 @@ public:
                 throw std::runtime_error( "Bad enum value name" );
         }
 
-#undef DWS_REFLECT_HELPER_DEFINE_SETTER
+#undef VTRC_REFLECT_HELPER_DEFINE_SETTER
 
         template <typename T>
         void set( const field_desc_type *fld, const T &v )
         {
-#           define DWS_REFLECT_HELPER_DEFINE_CASE_SET( CppType, TypeName )     \
+#           define VTRC_REFLECT_HELPER_DEFINE_CASE_SET( CppType, TypeName )    \
                 case field_desc_type::CppType:                                 \
                     set##TypeName( fld,                                        \
                       boost::lexical_cast<type_info##TypeName::data_type>(v)); \
                     break;
 
             switch( fld->cpp_type( ) ) {
-            DWS_REFLECT_HELPER_DEFINE_CASE_SET( CPPTYPE_INT32,  _int32  );
-            DWS_REFLECT_HELPER_DEFINE_CASE_SET( CPPTYPE_INT64,  _int64  );
-            DWS_REFLECT_HELPER_DEFINE_CASE_SET( CPPTYPE_UINT32, _uint32 );
-            DWS_REFLECT_HELPER_DEFINE_CASE_SET( CPPTYPE_UINT64, _uint64 );
-            DWS_REFLECT_HELPER_DEFINE_CASE_SET( CPPTYPE_FLOAT,  _float  );
-            DWS_REFLECT_HELPER_DEFINE_CASE_SET( CPPTYPE_DOUBLE, _double );
-            DWS_REFLECT_HELPER_DEFINE_CASE_SET( CPPTYPE_STRING, _string );
-            DWS_REFLECT_HELPER_DEFINE_CASE_SET( CPPTYPE_BOOL,   _bool   );
+            VTRC_REFLECT_HELPER_DEFINE_CASE_SET( CPPTYPE_INT32,  _int32  );
+            VTRC_REFLECT_HELPER_DEFINE_CASE_SET( CPPTYPE_INT64,  _int64  );
+            VTRC_REFLECT_HELPER_DEFINE_CASE_SET( CPPTYPE_UINT32, _uint32 );
+            VTRC_REFLECT_HELPER_DEFINE_CASE_SET( CPPTYPE_UINT64, _uint64 );
+            VTRC_REFLECT_HELPER_DEFINE_CASE_SET( CPPTYPE_FLOAT,  _float  );
+            VTRC_REFLECT_HELPER_DEFINE_CASE_SET( CPPTYPE_DOUBLE, _double );
+            VTRC_REFLECT_HELPER_DEFINE_CASE_SET( CPPTYPE_STRING, _string );
+            VTRC_REFLECT_HELPER_DEFINE_CASE_SET( CPPTYPE_BOOL,   _bool   );
             case field_desc_type::CPPTYPE_ENUM:
                 set_enum( fld, boost::lexical_cast<int>(v));
                 break;
             default:
                 throw std::runtime_error( "Bad field type" );
             }
-#            undef DWS_REFLECT_HELPER_DEFINE_CASE_SET
+#            undef VTRC_REFLECT_HELPER_DEFINE_CASE_SET
         }
 
-#define DWS_REFLECT_HELPER_DEFINE_ADDER( TypeName )                            \
+#define VTRC_REFLECT_HELPER_DEFINE_ADDER( TypeName )                           \
         void add##TypeName( const field_desc_type *fld,                        \
                             type_info##TypeName::data_type v )                 \
         {                                                                      \
             (reflection( )->*(type_info##TypeName::add()))( mess_, fld, v );   \
         }
 
-        DWS_REFLECT_HELPER_DEFINE_ADDER( _int32  )
-        DWS_REFLECT_HELPER_DEFINE_ADDER( _int64  )
-        DWS_REFLECT_HELPER_DEFINE_ADDER( _uint32 )
-        DWS_REFLECT_HELPER_DEFINE_ADDER( _uint64 )
-        DWS_REFLECT_HELPER_DEFINE_ADDER( _float  )
-        DWS_REFLECT_HELPER_DEFINE_ADDER( _double )
-        DWS_REFLECT_HELPER_DEFINE_ADDER( _bool   )
-        DWS_REFLECT_HELPER_DEFINE_ADDER( _enum   )
+        VTRC_REFLECT_HELPER_DEFINE_ADDER( _int32  )
+        VTRC_REFLECT_HELPER_DEFINE_ADDER( _int64  )
+        VTRC_REFLECT_HELPER_DEFINE_ADDER( _uint32 )
+        VTRC_REFLECT_HELPER_DEFINE_ADDER( _uint64 )
+        VTRC_REFLECT_HELPER_DEFINE_ADDER( _float  )
+        VTRC_REFLECT_HELPER_DEFINE_ADDER( _double )
+        VTRC_REFLECT_HELPER_DEFINE_ADDER( _bool   )
+        VTRC_REFLECT_HELPER_DEFINE_ADDER( _enum   )
 
         void add_string( const field_desc_type *fld, const std::string &v )
         {
@@ -634,33 +634,33 @@ public:
                 throw std::runtime_error( "Bad enum value number" );
         }
 
-#undef DWS_REFLECT_HELPER_DEFINE_ADDER
+#undef VTRC_REFLECT_HELPER_DEFINE_ADDER
 
         template <typename T>
         void add( const field_desc_type *fld, const T& v )
         {
-#           define DWS_REFLECT_HELPER_DEFINE_CASE_ADD( CppType, TypeName )     \
+#           define VTRC_REFLECT_HELPER_DEFINE_CASE_ADD( CppType, TypeName )    \
                 case field_desc_type::CppType:                                 \
                     add##TypeName( fld,                                        \
                       boost::lexical_cast<type_info##TypeName::data_type>(v)); \
                     break;
 
             switch( fld->cpp_type( ) ) {
-            DWS_REFLECT_HELPER_DEFINE_CASE_ADD( CPPTYPE_INT32,  _int32  );
-            DWS_REFLECT_HELPER_DEFINE_CASE_ADD( CPPTYPE_INT64,  _int64  );
-            DWS_REFLECT_HELPER_DEFINE_CASE_ADD( CPPTYPE_UINT32, _uint32 );
-            DWS_REFLECT_HELPER_DEFINE_CASE_ADD( CPPTYPE_UINT64, _uint64 );
-            DWS_REFLECT_HELPER_DEFINE_CASE_ADD( CPPTYPE_FLOAT,  _float  );
-            DWS_REFLECT_HELPER_DEFINE_CASE_ADD( CPPTYPE_DOUBLE, _double );
-            DWS_REFLECT_HELPER_DEFINE_CASE_ADD( CPPTYPE_STRING, _string );
-            DWS_REFLECT_HELPER_DEFINE_CASE_ADD( CPPTYPE_BOOL,   _bool   );
+            VTRC_REFLECT_HELPER_DEFINE_CASE_ADD( CPPTYPE_INT32,  _int32  );
+            VTRC_REFLECT_HELPER_DEFINE_CASE_ADD( CPPTYPE_INT64,  _int64  );
+            VTRC_REFLECT_HELPER_DEFINE_CASE_ADD( CPPTYPE_UINT32, _uint32 );
+            VTRC_REFLECT_HELPER_DEFINE_CASE_ADD( CPPTYPE_UINT64, _uint64 );
+            VTRC_REFLECT_HELPER_DEFINE_CASE_ADD( CPPTYPE_FLOAT,  _float  );
+            VTRC_REFLECT_HELPER_DEFINE_CASE_ADD( CPPTYPE_DOUBLE, _double );
+            VTRC_REFLECT_HELPER_DEFINE_CASE_ADD( CPPTYPE_STRING, _string );
+            VTRC_REFLECT_HELPER_DEFINE_CASE_ADD( CPPTYPE_BOOL,   _bool   );
             case field_desc_type::CPPTYPE_ENUM:
                 add_enum( fld, boost::lexical_cast<int>(v));
                 break;
             default:
                 throw std::runtime_error( "Bad field type" );
             }
-#           undef DWS_REFLECT_HELPER_DEFINE_CASE_SET
+#           undef VTRC_REFLECT_HELPER_DEFINE_CASE_SET
         }
 
     };
