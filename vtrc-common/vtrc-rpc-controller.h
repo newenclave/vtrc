@@ -21,7 +21,7 @@ namespace vtrc { namespace common {
 
         void Reset( );
 
-        // client-sede
+        // client-side
         bool Failed( ) const;
         std::string ErrorText( ) const;
         void StartCancel( );
