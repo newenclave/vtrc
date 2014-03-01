@@ -12,6 +12,9 @@ namespace vtrc { namespace common {
         struct impl;
         impl  *impl_;
 
+        rpc_controller( const rpc_controller & );
+        rpc_controller& operator = ( const rpc_controller & );
+
     public:
 
         rpc_controller( );
