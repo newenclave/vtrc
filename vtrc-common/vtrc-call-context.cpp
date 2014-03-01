@@ -2,13 +2,17 @@
 
 namespace vtrc { namespace common {
 
-    struct call_context::impl {
+    typedef vtrc_rpc_lowlevel::lowlevel_unit lowlevel_unit;
 
+    struct call_context::impl {
+        lowlevel_unit *llu_;
     };
 
-    call_context::call_context( )
+    call_context::call_context( lowlevel_unit *lowlevel )
         :impl_(new impl)
-    {}
+    {
+        impl_->llu_ = lowlevel;
+    }
 
     call_context::call_context( const call_context &other )
         :impl_(new impl(*other.impl_))
@@ -18,6 +22,16 @@ namespace vtrc { namespace common {
     {
         *impl_ = *other.impl_;
         return *this;
+    }
+
+    const lowlevel_unit *call_context::get_lowlevel_message( ) const
+    {
+        return impl_->llu_;
+    }
+
+    lowlevel_unit *call_context::get_lowlevel_message( )
+    {
+        return impl_->llu_;
     }
 
     call_context::~call_context( )

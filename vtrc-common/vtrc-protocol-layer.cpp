@@ -200,9 +200,9 @@ namespace vtrc { namespace common {
             context_.release( );
         }
 
-        call_context *create_call_context( )
+        call_context *create_call_context( vtrc_rpc_lowlevel::lowlevel_unit *ll)
         {
-            context_.reset( new call_context );
+            context_.reset( new call_context( ll ) );
             return context_.get( );
         }
 
@@ -296,9 +296,10 @@ namespace vtrc { namespace common {
         impl_->send_message( message );
     }
 
-    call_context *protocol_layer::create_call_context( )
+    call_context *protocol_layer::create_call_context(
+                            vtrc_rpc_lowlevel::lowlevel_unit *llu )
     {
-        return impl_->create_call_context( );
+        return impl_->create_call_context( llu );
     }
 
     void protocol_layer::clear_call_context( )

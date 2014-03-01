@@ -75,9 +75,10 @@ namespace vtrc { namespace common {
         struct context_holder {
             protocol_layer *p_;
             call_context   *ctx_;
-            context_holder( protocol_layer *parent )
+            context_holder( protocol_layer *parent,
+                            vtrc_rpc_lowlevel::lowlevel_unit *llu )
                 :p_(parent)
-                ,ctx_(p_->create_call_context( ))
+                ,ctx_(p_->create_call_context( llu ))
             {}
 
             ~context_holder( )
@@ -96,7 +97,8 @@ namespace vtrc { namespace common {
         void parse_message( const std::string &mess,
                             google::protobuf::Message &result );
 
-        call_context *create_call_context( );
+        call_context *create_call_context (
+                                        vtrc_rpc_lowlevel::lowlevel_unit *llu );
         void clear_call_context( );
 
         void pop_message( );

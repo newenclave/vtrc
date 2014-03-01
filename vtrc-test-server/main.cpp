@@ -29,6 +29,8 @@
 #include "vtrc-common/vtrc-data-queue.h"
 #include "vtrc-common/vtrc-conditional-queues.h"
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"
+#include "vtrc-common/vtrc-protocol-layer.h"
+#include "vtrc-common/vtrc-call-context.h"
 
 #include "protocol/vtrc-errors.pb.h"
 #include "protocol/vtrc-auth.pb.h"
@@ -54,7 +56,12 @@ public:
                          ::vtrc_rpc_lowlevel::message_info* response,
                          ::google::protobuf::Closure* done)
     {
-        std::cout << "test was called :]\n";
+        std::cout << "test was called :] context: \n"
+                  << connection_->get_protocol( )
+                     .get_call_context( )
+                     ->get_lowlevel_message( )
+                     ->DebugString( );
+
         response->set_message_type( id_++ );
         if( done ) done->Run( );
     }

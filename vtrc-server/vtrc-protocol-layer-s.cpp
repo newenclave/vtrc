@@ -193,8 +193,7 @@ namespace vtrc { namespace server {
             gpb::Message *req
                 (service->service( )->GetRequestPrototype( meth ).New( ));
 
-
-            protocol_layer::context_holder ch( parent_ );
+            protocol_layer::context_holder ch( parent_, llu.get( ) );
 
             req->ParseFromString( llu->request( ) );
 
