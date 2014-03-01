@@ -14,8 +14,8 @@ namespace server {
 
     class connection_list {
 
-        struct connection_list_impl;
-        connection_list_impl  *impl_;
+        struct impl;
+        impl  *impl_;
 
     public:
 
@@ -29,6 +29,9 @@ namespace server {
 
         void store( common::connection_iface *connection );
         void drop ( common::connection_iface *connection );
+
+        boost::shared_ptr<common::connection_iface> lock (
+                                         common::connection_iface *connection );
 
         size_t foreach_while(client_predic func);
 

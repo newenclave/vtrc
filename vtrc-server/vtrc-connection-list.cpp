@@ -1,6 +1,7 @@
 
 #include <boost/thread/shared_mutex.hpp>
 #include <boost/thread.hpp>
+#include <boost/weak_ptr.hpp>
 #include <map>
 
 #include "vtrc-connection-list.h"
@@ -9,19 +10,22 @@
 namespace vtrc { namespace server {
 
     namespace {
+
+        typedef boost::shared_ptr<common::connection_iface> connection_sptr;
+        typedef boost::weak_ptr  <common::connection_iface> connection_wptr;
+
         typedef std::map <
-            common::connection_iface *,
-            boost::shared_ptr<common::connection_iface>
+            common::connection_iface *, connection_sptr
         > client_map_type;
 
         typedef boost::unique_lock<boost::shared_mutex>    unique_lock;
         typedef boost::shared_lock<boost::shared_mutex>    shared_lock;
     }
 
-    struct connection_list::connection_list_impl {
+    struct connection_list::impl {
 
-        client_map_type     clients_;
-        boost::shared_mutex clients_lock_;
+        client_map_type             clients_;
+        mutable boost::shared_mutex clients_lock_;
 
         void store( common::connection_iface *c )
         {
@@ -29,6 +33,16 @@ namespace vtrc { namespace server {
             clients_.insert(
                     std::make_pair(c,
                             boost::shared_ptr<common::connection_iface>(c)));
+        }
+
+        connection_sptr lock( common::connection_iface *c )
+        {
+            connection_sptr result;
+            shared_lock l(clients_lock_);
+            client_map_type::iterator f( clients_.find( c ) );
+            if( f != clients_.end( ) )
+                result = f->second;
+            return result;
         }
 
         void drop ( common::connection_iface *c )
@@ -55,7 +69,7 @@ namespace vtrc { namespace server {
     };
 
     connection_list::connection_list()
-        :impl_(new connection_list_impl)
+        :impl_(new impl)
     { }
 
     connection_list::~connection_list()
@@ -71,6 +85,11 @@ namespace vtrc { namespace server {
     void connection_list::drop ( common::connection_iface *connection )
     {
         impl_->drop( connection );
+    }
+
+    connection_sptr connection_list::lock(common::connection_iface *connection)
+    {
+
     }
 
     size_t connection_list::foreach_while(client_predic func)
