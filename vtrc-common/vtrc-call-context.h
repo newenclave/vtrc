@@ -12,11 +12,12 @@ namespace vtrc { namespace common {
         struct impl;
         impl  *impl_;
 
+        call_context( const call_context &other );
+        call_context &operator = ( const call_context &other );
+
     public:
 
         call_context( vtrc_rpc_lowlevel::lowlevel_unit *lowlevel );
-        call_context( const call_context &other );
-        call_context &operator = ( const call_context &other );
 
         const vtrc_rpc_lowlevel::lowlevel_unit *get_lowlevel_message( ) const;
         vtrc_rpc_lowlevel::lowlevel_unit *get_lowlevel_message( );
