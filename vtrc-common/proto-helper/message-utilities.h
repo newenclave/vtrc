@@ -1,0 +1,6 @@
+#ifndef MESSAGE_UTILITIES_H
+#define MESSAGE_UTILITIES_H
+
+
+
+#endif // MESSAGEUTILITIES_H

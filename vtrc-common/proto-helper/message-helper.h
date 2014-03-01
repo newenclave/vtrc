@@ -18,13 +18,17 @@ namespace vtrc { namespace helper {
     typedef std::deque <
             const google::protobuf::FieldDescriptor *
     >  field_stack_type;
+
     typedef std::map<std::string, field_stack_type> field_map_type;
 
     struct message_reader_impl;
     class message_reader  {
+
         message_reader_impl *impl_;
+
         message_reader & operator = ( const message_reader &other );
         message_reader( const message_reader &other );
+
     public:
         message_reader( const google::protobuf::Message *mess );
         virtual ~message_reader( );
