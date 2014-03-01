@@ -23,7 +23,6 @@ namespace server {
                 bool (common::connection_iface *)
         > client_predic;
 
-
         connection_list( );
         ~connection_list( );
 
