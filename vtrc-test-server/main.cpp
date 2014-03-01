@@ -43,13 +43,16 @@ namespace ba = boost::asio;
 using namespace vtrc;
 
 class teat_impl: public vtrc_rpc_lowlevel::test_rpc {
+
     common::connection_iface *connection_;
     unsigned id_;
+
 public:
+
     teat_impl(common::connection_iface *c )
         :connection_(c)
         ,id_(0)
-    {}
+    { }
 
     void test(::google::protobuf::RpcController* controller,
                          const ::vtrc_rpc_lowlevel::message_info* request,
