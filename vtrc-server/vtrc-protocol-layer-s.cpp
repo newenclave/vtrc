@@ -2,6 +2,7 @@
 #include <boost/asio.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
+#include <boost/make_shared.hpp>
 
 #include "vtrc-common/vtrc-mutex.h"
 
@@ -15,6 +16,9 @@
 #include "vtrc-transport-iface.h"
 
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"
+#include "vtrc-common/vtrc-exception.h"
+#include "vtrc-common/vtrc-rpc-controller.h"
+
 #include "vtrc-application.h"
 
 #include "protocol/vtrc-errors.pb.h"
@@ -160,34 +164,92 @@ namespace vtrc { namespace server {
             pop_message( );
         }
 
-        void make_call( boost::shared_ptr <
-                            vtrc_rpc_lowlevel::lowlevel_unit> llu )
+        void closure( common::rpc_controller_sptr controller,
+                           boost::shared_ptr <
+                            vtrc_rpc_lowlevel::lowlevel_unit
+                           > llu)
+        {
+            ;;;
+        }
+
+        void make_call_impl( boost::shared_ptr <
+                              vtrc_rpc_lowlevel::lowlevel_unit> llu )
         {
             common::rpc_service_wrapper_sptr
                     service(get_service(llu->call().service()));
+
             if( !service ) {
-                llu->clear_request( );
-                llu->clear_response( );
-                llu->mutable_info( )->mutable_error( )->set_code( 5 );
-            } else {
-                gpb::MethodDescriptor const *meth
-                    (service->get_method(llu->call( ).method( )));
-
-                gpb::Message *req
-                    (service->service( )->GetRequestPrototype( meth ).New( ));
-                req->ParseFromString( llu->request( ) );
-
-                gpb::Message *res
-                    (service->service( )->GetResponsePrototype( meth ).New( ));
-                res->ParseFromString( llu->response( ) );
-
-                service->service( )
-                        ->CallMethod( meth,  NULL, req, res, NULL );
-                llu->set_response( res->SerializeAsString( ) );
-
+                throw vtrc::common::exception( vtrc_errors::ERR_BAD_FILE,
+                                               "Service not found");
             }
+
+            gpb::MethodDescriptor const *meth
+                (service->get_method(llu->call( ).method( )));
+
+            if( !meth ) {
+                throw vtrc::common::exception( vtrc_errors::ERR_NO_FUNC );
+            }
+
+            gpb::Message *req
+                (service->service( )->GetRequestPrototype( meth ).New( ));
+
+            req->ParseFromString( llu->request( ) );
+
+            gpb::Message *res
+                (service->service( )->GetResponsePrototype( meth ).New( ));
+            res->ParseFromString( llu->response( ) );
+
+            common::rpc_controller_sptr controller
+                                (boost::make_shared<common::rpc_controller>( ));
+
+            boost::shared_ptr<gpb::Closure> clos
+                    (gpb::NewPermanentCallback( this, &this_type::closure,
+                                                controller, llu ));
+
+            if( controller->Failed( ) ) {
+                throw vtrc::common::exception( vtrc_errors::ERR_INTERNAL,
+                                               controller->ErrorText( ));
+            }
+
+            service->service( )
+                    ->CallMethod( meth, controller.get( ),
+                                  req, res, clos.get( ) );
+
+            llu->set_response( res->SerializeAsString( ) );
+        }
+
+        void make_call( boost::shared_ptr <
+                            vtrc_rpc_lowlevel::lowlevel_unit> llu )
+        {
+            bool failed = false;
+            unsigned errorcode = 0;
+            try {
+                make_call_impl( llu );
+            } catch ( const vtrc::common::exception &ex ) {
+                errorcode = ex.code( );
+                llu->mutable_info( )
+                        ->mutable_error( )
+                        ->set_additional( ex.additional( ) );
+                failed = true;
+            } catch ( const std::exception &ex ) {
+                errorcode = vtrc_errors::ERR_INTERNAL;
+                llu->mutable_info( )
+                        ->mutable_error( )
+                        ->set_additional( ex.what( ) );
+                failed = true;
+            } catch ( ... ) {
+                errorcode = vtrc_errors::ERR_UNKNOWN;
+                llu->mutable_info( )
+                        ->mutable_error( )
+                        ->set_additional( "..." );
+                failed = true;
+            }
+
             llu->clear_request( );
             llu->clear_call( );
+            if( failed ) {
+                llu->clear_response( );
+            }
             send_proto_message( *llu );
         }
 
@@ -198,13 +260,14 @@ namespace vtrc { namespace server {
                             vtrc_rpc_lowlevel::lowlevel_unit
                         > llu(new vtrc_rpc_lowlevel::lowlevel_unit);
                 get_pop_message( *llu );
-                try {
+                switch (llu->info( ).message_type( )) {
+                case vtrc_rpc_lowlevel::message_info::MESSAGE_CALL:
                     make_call( llu );
-                } catch( const std::exception &ex ) {
-                    std::cout << "Error rpc: " << ex.what( ) << "\n";
+                    break;
+                default:
+                    break;
                 }
             }
-
             //connection_->close( );
         }
 

@@ -16,10 +16,23 @@ enum error_category {
 
 enum errors_numbers { // CATEGORY_INTERNAL
                       // linux error codes I use
+    ERR_NO_ERROR      =    0 [(error_description) = "No error"];
+    ERR_PERMISSION    =    1 [(error_description) = "Operation not permitted"];
+    ERR_NOT_FOUND     =    2 [(error_description) = "Object was not found"];
+    ERR_IO            =    5 [(error_description) = "I/O error"];
+    ERR_BAD_FILE      =    9 [(error_description) = "Bad file number"];
+    ERR_ACCESS        =   13 [(error_description) = "Permission denied"];
+    ERR_INVALID_VALUE =   22 [(error_description) = "Invalid value"];
+    ERR_NO_FUNC       =   38 [(error_description) = "Function not implemented"];
+    ERR_TIMEOUT       =   62 [(error_description) = "Timeout"];
+    ERR_PROTOCOL      =   71 [(error_description) = "Protocol error"];
+    ERR_MESSAGE_SIZE  =   90 [(error_description) = "Message is too long"];
+    ERR_CANCELED      =  125 [(error_description) = "Operation canceled"];
 
-    ERR_NO_ERROR =   0 [(error_description) = "No error"];
-    ERR_TIMEOUT  =  62 [(error_description) = "Timeout" ];
-    ERR_CANCELED = 125 [(error_description) = "Operation canceled"];
+    ERR_UNKNOWN       = 1000 [(error_description) = "Unknown error"];
+    ERR_CALL_FAILED   = 1001 [(error_description) = "Call failed"];
+    ERR_INTERNAL      = 1002 [(error_description) = "Internal error"];
+
 }
 
 message error_container {

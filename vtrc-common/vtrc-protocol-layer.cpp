@@ -112,6 +112,7 @@ namespace vtrc { namespace common {
             if( length > 0 ) {
                 std::string next_data(data, data + length);
 
+                size_t old_size = queue_->messages( ).size( );
                 /*
                  * message = revert( message )
                 */
@@ -120,7 +121,7 @@ namespace vtrc { namespace common {
                 queue_->append( &next_data[0], next_data.size( ));
                 queue_->process( );
 
-                if( !queue_->messages( ).empty( ) ) {
+                if( queue_->messages( ).size( ) > old_size ) {
                     parent_->on_data_ready( );
                 }
             }

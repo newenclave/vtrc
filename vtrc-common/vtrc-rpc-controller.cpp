@@ -17,6 +17,13 @@ namespace vtrc { namespace common {
             ,canceled_(false)
             ,cancel_cl_(NULL)
         {}
+
+        void reset( )
+        {
+            failed_   = false;
+            canceled_ = false;
+            error_string_.clear( );
+        }
     };
 
     rpc_controller::rpc_controller( )
@@ -26,6 +33,11 @@ namespace vtrc { namespace common {
     rpc_controller::~rpc_controller( )
     {
         delete impl_;
+    }
+
+    void rpc_controller::Reset( )
+    {
+        impl_->reset( );
     }
 
     // client-sede

@@ -2,6 +2,7 @@
 #define VTRC_RCP_CONTROLLER_H
 
 #include <google/protobuf/service.h>
+#include <boost/shared_ptr.hpp>
 #include <string>
 
 namespace vtrc { namespace common {
@@ -16,7 +17,9 @@ namespace vtrc { namespace common {
         rpc_controller( );
         ~rpc_controller( );
 
-    private:
+    public:
+
+        void Reset( );
 
         // client-sede
         bool Failed( ) const;
@@ -28,6 +31,8 @@ namespace vtrc { namespace common {
         bool IsCanceled() const;
         void NotifyOnCancel(google::protobuf::Closure* callback);
     };
+
+    typedef boost::shared_ptr<rpc_controller> rpc_controller_sptr;
 
 }}
 
