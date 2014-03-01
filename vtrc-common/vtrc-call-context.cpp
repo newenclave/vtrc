@@ -17,6 +17,7 @@ namespace vtrc { namespace common {
     call_context &call_context::operator = ( const call_context &other )
     {
         *impl_ = *other.impl_;
+        return *this;
     }
 
     call_context::~call_context( )
