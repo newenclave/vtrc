@@ -75,7 +75,7 @@ namespace vtrc { namespace server { namespace endpoints {
             void on_write_error( const bsys::error_code & /*error*/ )
             {
                 close( );
-                app_.get_clients( )->drop(this); // delete
+                //app_.get_clients( )->drop(this); // delete
             }
 
             void start_reading( )
@@ -95,13 +95,13 @@ namespace vtrc { namespace server { namespace endpoints {
                         protocol_->process_data( &read_buff_[0], bytes );
                     } catch( const std::exception & /*ex*/ ) {
                         close( );
-                        app_.get_clients( )->drop(this); // delete
+                        //app_.get_clients( )->drop(this); // delete
                         return;
                     }
                     start_reading( );
                 } else {
                     close( );
-                    app_.get_clients( )->drop(this); // delete
+                    //app_.get_clients( )->drop(this); // delete
                 }
             }
 
