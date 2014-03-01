@@ -36,8 +36,6 @@
 #include "protocol/vtrc-auth.pb.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
 
-
-
 namespace ba = boost::asio;
 
 using namespace vtrc;
@@ -55,9 +53,9 @@ public:
     { }
 
     void test(::google::protobuf::RpcController* controller,
-                         const ::vtrc_rpc_lowlevel::message_info* request,
-                         ::vtrc_rpc_lowlevel::message_info* response,
-                         ::google::protobuf::Closure* done)
+              const ::vtrc_rpc_lowlevel::message_info* request,
+              ::vtrc_rpc_lowlevel::message_info* response,
+              ::google::protobuf::Closure* done)
     {
         std::cout << "test was called :] context: \n"
                   << connection_->get_protocol( )
