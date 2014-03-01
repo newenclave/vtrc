@@ -1,4 +1,6 @@
 #include <boost/thread.hpp>
+#include <boost/thread/tss.hpp>
+
 #include <boost/atomic.hpp>
 
 #include <google/protobuf/message.h>
@@ -13,6 +15,7 @@
 
 #include "vtrc-conditional-queues.h"
 #include "vtrc-exception.h"
+#include "vtrc-call-context.h"
 
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
 #include "protocol/vtrc-errors.pb.h"
@@ -61,6 +64,8 @@ namespace vtrc { namespace common {
         typedef boost::shared_ptr<ll_unit_type>  ll_unit_sptr;
 
         typedef conditional_queues<rpc_unit_index, ll_unit_sptr> rpc_queue_type;
+
+        typedef boost::thread_specific_ptr<call_context> call_context_ptr;
     }
 
     struct protocol_layer::impl {
@@ -75,6 +80,8 @@ namespace vtrc { namespace common {
 
         rpc_queue_type               rpc_queue_;
         boost::atomic_int64_t        rpc_index_;
+
+        call_context_ptr             context_;
 
         impl( transport_iface *c )
             :connection_(c)
@@ -188,6 +195,21 @@ namespace vtrc { namespace common {
             return result;
         }
 
+        void clear_call_context( )
+        {
+            context_.release( );
+        }
+
+        call_context *create_call_context( )
+        {
+            context_.reset( new call_context );
+            return context_.get( );
+        }
+
+        const call_context *get_call_context( ) const
+        {
+            return context_.get( );
+        }
 
         void set_hash_transformer( hasher_iface *new_hasher,
                                    transformer_iface *new_transformer )
@@ -272,6 +294,21 @@ namespace vtrc { namespace common {
     void protocol_layer::send_message(const google::protobuf::Message &message)
     {
         impl_->send_message( message );
+    }
+
+    call_context *protocol_layer::create_call_context( )
+    {
+        return impl_->create_call_context( );
+    }
+
+    void protocol_layer::clear_call_context( )
+    {
+        impl_->clear_call_context( );
+    }
+
+    const call_context *protocol_layer::get_call_context( ) const
+    {
+        return impl_->get_call_context( );
     }
 
     bool protocol_layer::check_message( const std::string &mess )

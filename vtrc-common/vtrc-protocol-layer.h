@@ -28,6 +28,7 @@ namespace vtrc { namespace common {
     struct hasher_iface;
     struct transformer_iface;
     struct transport_iface;
+    class  call_context;
 
     class protocol_layer {
 
@@ -54,6 +55,8 @@ namespace vtrc { namespace common {
 
         void send_message( const google::protobuf::Message &message );
 
+        const call_context *get_call_context( ) const;
+
         void call_rpc_method( const vtrc_rpc_lowlevel::lowlevel_unit &llu );
         void call_rpc_method( uint64_t slot_id,
                               const vtrc_rpc_lowlevel::lowlevel_unit &llu );
@@ -69,6 +72,20 @@ namespace vtrc { namespace common {
 
     protected:
 
+        struct context_holder {
+            protocol_layer *p_;
+            call_context   *ctx_;
+            context_holder( protocol_layer *parent )
+                :p_(parent)
+                ,ctx_(p_->create_call_context( ))
+            {}
+
+            ~context_holder( )
+            {
+                p_->clear_call_context( );
+            }
+        };
+
         void push_rpc_message( uint64_t slot_id,
                   boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess);
 
@@ -78,6 +95,9 @@ namespace vtrc { namespace common {
         bool check_message( const std::string &mess );
         void parse_message( const std::string &mess,
                             google::protobuf::Message &result );
+
+        call_context *create_call_context( );
+        void clear_call_context( );
 
         void pop_message( );
 

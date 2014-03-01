@@ -15,8 +15,8 @@ namespace client {
 
     class protocol_layer: public common::protocol_layer {
 
-        struct protocol_layer_c_impl;
-        protocol_layer_c_impl *impl_;
+        struct impl;
+        impl *impl_;
 
         protocol_layer( const protocol_layer& other );
         protocol_layer &operator = ( const protocol_layer& other );

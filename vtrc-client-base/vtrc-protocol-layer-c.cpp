@@ -18,9 +18,9 @@ namespace vtrc { namespace client {
 
     namespace gpb = google::protobuf;
 
-    struct protocol_layer::protocol_layer_c_impl {
+    struct protocol_layer::impl {
 
-        typedef protocol_layer_c_impl this_type;
+        typedef impl this_type;
 
         typedef boost::function<void (void)> stage_funcion_type;
 
@@ -28,7 +28,7 @@ namespace vtrc { namespace client {
         protocol_layer          *parent_;
         stage_funcion_type       stage_call_;
 
-        protocol_layer_c_impl( common::transport_iface *c )
+        impl( common::transport_iface *c )
             :connection_(c)
         {
             stage_call_ = boost::bind( &this_type::on_hello_call, this );
@@ -145,7 +145,7 @@ namespace vtrc { namespace client {
 
     protocol_layer::protocol_layer( common::transport_iface *connection )
         :common::protocol_layer(connection)
-        ,impl_(new protocol_layer_c_impl(connection))
+        ,impl_(new impl(connection))
     {
         impl_->parent_ = this;
     }
