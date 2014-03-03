@@ -208,14 +208,15 @@ namespace vtrc { namespace server {
                     (gpb::NewPermanentCallback( this, &this_type::closure,
                                                 controller, llu ));
 
-            if( controller->Failed( ) ) {
-                throw vtrc::common::exception( vtrc_errors::ERR_INTERNAL,
-                                               controller->ErrorText( ));
-            }
 
             service->service( )
                     ->CallMethod( meth, controller.get( ),
                                   req.get( ), res.get( ), clos.get( ) );
+
+            if( controller->Failed( ) ) {
+                throw vtrc::common::exception( vtrc_errors::ERR_INTERNAL,
+                                               controller->ErrorText( ));
+            }
 
             llu->set_response( res->SerializeAsString( ) );
         }
