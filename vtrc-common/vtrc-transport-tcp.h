@@ -2,6 +2,7 @@
 #include "vtrc-transport-iface.h"
 
 #include <boost/asio/ip/tcp.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace boost {
 
@@ -21,10 +22,11 @@ namespace vtrc { namespace common {
         friend struct impl;
         impl *impl_;
 
+
     public:
 
-        virtual ~transport_tcp(  );
         transport_tcp( boost::asio::ip::tcp::socket *sock );
+        virtual ~transport_tcp(  );
 
         const char *name( ) const                     ;
         void close( )                                 ;

@@ -4,6 +4,7 @@
 #include <boost/function.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
+#include <boost/enable_shared_from_this.hpp>
 
 namespace boost {
 
@@ -25,7 +26,8 @@ namespace vtrc { namespace common {
     class enviroment;
     class protocol_layer;
 
-    struct connection_iface {
+    struct connection_iface:
+            public boost::enable_shared_from_this<connection_iface> {
 
         virtual ~connection_iface( ) { }
 

@@ -156,6 +156,7 @@ namespace vtrc { namespace common {
 
         boost::asio::io_service::strand &get_write_dispatcher( )
         {
+
             return write_dispatcher_;
         }
 

@@ -57,6 +57,15 @@ namespace vtrc { namespace server { namespace endpoints {
                 protocol_ ->init( );
             }
 
+            static boost::shared_ptr<tcp_connection> create
+                             (endpoint_iface &endpoint, bip::tcp::socket *sock)
+            {
+                boost::shared_ptr<tcp_connection> new_inst
+                                    (boost::make_shared<tcp_connection>
+                                                  (boost::ref(endpoint), sock));
+                return new_inst;
+            }
+
             bool ready( ) const
             {
                 protocol_->ready( );
@@ -176,10 +185,10 @@ namespace vtrc { namespace server { namespace endpoints {
                     delete sock;
                 } else {
                     try {
-                        tcp_connection *new_conn
-                                    (new tcp_connection(*this, sock));
+                        boost::shared_ptr<tcp_connection> new_conn
+                                         (tcp_connection::create(*this, sock));
                         app_.get_clients( )->store( new_conn );
-                        app_.on_new_connection_ready( new_conn );
+                        app_.on_new_connection_ready( new_conn.get( ) );
                     } catch( ... ) {
                         ;;;
                     }

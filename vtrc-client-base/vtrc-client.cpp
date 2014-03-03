@@ -31,7 +31,7 @@ namespace vtrc { namespace client {
                       const std::string &service )
         {
             boost::shared_ptr<client_tcp>
-                                  new_client(new client_tcp( ios_, parent_ ));
+                               new_client(client_tcp::create( ios_, parent_ ));
             new_client->connect( address, service );
             connection_ = new_client;
             channel_ = boost::make_shared<rpc_channel>( connection_ );
@@ -51,7 +51,8 @@ namespace vtrc { namespace client {
                             common::closure_type &closure )
         {
             boost::shared_ptr<client_tcp>
-                                   new_client(new client_tcp( ios_ , parent_));
+                               new_client(client_tcp::create( ios_ , parent_));
+
             new_client->async_connect( address, service,
                         boost::bind( &this_type::async_connect_success, this,
                                      basio::placeholders::error,
