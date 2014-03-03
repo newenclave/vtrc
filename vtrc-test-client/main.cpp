@@ -32,7 +32,7 @@ int main( )
 
     vtrc_rpc_lowlevel::message_info mi;
 
-    for( int i=0; i<100; ++i ) {
+    for( int i=0; i<10000000; ++i ) {
         s.test( NULL, &mi, &mi, NULL );
         std::cout << "response: " << mi.message_type( ) << "\n";
     }

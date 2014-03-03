@@ -190,14 +190,14 @@ namespace vtrc { namespace server {
                 throw vtrc::common::exception( vtrc_errors::ERR_NO_FUNC );
             }
 
-            gpb::Message *req
+            boost::shared_ptr<gpb::Message> req
                 (service->service( )->GetRequestPrototype( meth ).New( ));
 
             protocol_layer::context_holder ch( parent_, llu.get( ) );
 
             req->ParseFromString( llu->request( ) );
 
-            gpb::Message *res
+            boost::shared_ptr<gpb::Message> res
                 (service->service( )->GetResponsePrototype( meth ).New( ));
             res->ParseFromString( llu->response( ) );
 
@@ -215,7 +215,7 @@ namespace vtrc { namespace server {
 
             service->service( )
                     ->CallMethod( meth, controller.get( ),
-                                  req, res, clos.get( ) );
+                                  req.get( ), res.get( ), clos.get( ) );
 
             llu->set_response( res->SerializeAsString( ) );
         }

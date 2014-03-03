@@ -40,7 +40,12 @@ namespace vtrc { namespace common {
             ,ios_(sock_->get_io_service( ))
             ,write_dispatcher_(ios_)
             ,closed_(false)
-        {}
+        {
+        }
+
+        ~impl( )
+        {
+        }
 
         const char *name( ) const
         {

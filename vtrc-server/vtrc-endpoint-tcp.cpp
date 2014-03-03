@@ -53,8 +53,6 @@ namespace vtrc { namespace server { namespace endpoints {
             {
                 protocol_ = boost::make_shared<server::protocol_layer>
                                                        (boost::ref(app_), this);
-                start_reading( );
-                protocol_ ->init( );
             }
 
             static boost::shared_ptr<tcp_connection> create
@@ -63,7 +61,14 @@ namespace vtrc { namespace server { namespace endpoints {
                 boost::shared_ptr<tcp_connection> new_inst
                                     (boost::make_shared<tcp_connection>
                                                   (boost::ref(endpoint), sock));
+                new_inst->init( );
                 return new_inst;
+            }
+
+            void init( )
+            {
+                start_reading( );
+                protocol_ ->init( );
             }
 
             bool ready( ) const
@@ -104,13 +109,13 @@ namespace vtrc { namespace server { namespace endpoints {
                         protocol_->process_data( &read_buff_[0], bytes );
                     } catch( const std::exception & /*ex*/ ) {
                         close( );
-                        //app_.get_clients( )->drop(this); // delete
+                        app_.get_clients( )->drop(this); // delete
                         return;
                     }
                     start_reading( );
                 } else {
                     close( );
-                    //app_.get_clients( )->drop(this); // delete
+                    app_.get_clients( )->drop(this); // delete
                 }
             }
 
@@ -185,6 +190,7 @@ namespace vtrc { namespace server { namespace endpoints {
                     delete sock;
                 } else {
                     try {
+                        std::cout << "accept\n";
                         boost::shared_ptr<tcp_connection> new_conn
                                          (tcp_connection::create(*this, sock));
                         app_.get_clients( )->store( new_conn );

@@ -32,6 +32,7 @@ namespace client {
                          ( boost::asio::io_service &ios, vtrc_client *client );
 
         ~client_tcp( );
+        void init( );
 
         void connect( const std::string &address,
                       const std::string &service );
