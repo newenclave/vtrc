@@ -1,5 +1,4 @@
 
-#include <boost/thread/shared_mutex.hpp>
 #include <boost/thread.hpp>
 #include <boost/weak_ptr.hpp>
 #include <map>
@@ -11,8 +10,8 @@ namespace vtrc { namespace server {
 
     namespace {
 
-        typedef boost::shared_ptr<common::connection_iface> connection_sptr;
-        typedef boost::weak_ptr  <common::connection_iface> connection_wptr;
+        typedef common::connection_iface_sptr connection_sptr;
+        typedef common::connection_iface_wptr connection_wptr;
 
         typedef std::map <
             common::connection_iface *, connection_sptr

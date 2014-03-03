@@ -2,6 +2,8 @@
 #define VTRC_CONNECTION_IFACE_H
 
 #include <boost/function.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/weak_ptr.hpp>
 
 namespace boost {
 
@@ -36,6 +38,7 @@ namespace vtrc { namespace common {
     };
 
     typedef boost::shared_ptr<connection_iface> connection_iface_sptr;
+    typedef boost::weak_ptr<connection_iface>   connection_iface_wptr;
 
 }}
 
