@@ -35,6 +35,8 @@ namespace vtrc { namespace common {
 
     };
 
+    typedef boost::shared_ptr<connection_iface> connection_iface_sptr;
+
 }}
 
 #endif // VTRCCONNECTIONIFACE_H

@@ -2,7 +2,7 @@
 #define VTRC_CONNECTION_LIST_H
 
 #include <boost/shared_ptr.hpp>
-#include <boost/function.hpp>
+#include "vtrc-common/vtrc-connection-iface.h"
 
 namespace vtrc {
 
@@ -27,10 +27,12 @@ namespace server {
         ~connection_list( );
 
         void store( common::connection_iface *connection );
-        void drop ( common::connection_iface *connection );
+        void store( common::connection_iface_sptr connection );
 
-        boost::shared_ptr<common::connection_iface> lock (
-                                         common::connection_iface *connection );
+        void drop ( common::connection_iface *connection );
+        void drop ( common::connection_iface_sptr connection );
+
+        common::connection_iface_sptr lock (common::connection_iface *conn );
 
         size_t foreach_while(client_predic func);
 

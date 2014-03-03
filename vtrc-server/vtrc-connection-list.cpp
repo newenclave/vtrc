@@ -5,7 +5,7 @@
 #include <map>
 
 #include "vtrc-connection-list.h"
-#include "vtrc-common/vtrc-connection-iface.h"
+#include "vtrc-common/vtrc-mutex.h"
 
 namespace vtrc { namespace server {
 
@@ -17,22 +17,23 @@ namespace vtrc { namespace server {
         typedef std::map <
             common::connection_iface *, connection_sptr
         > client_map_type;
-
-        typedef boost::unique_lock<boost::shared_mutex>    unique_lock;
-        typedef boost::shared_lock<boost::shared_mutex>    shared_lock;
     }
 
     struct connection_list::impl {
 
-        client_map_type             clients_;
-        mutable boost::shared_mutex clients_lock_;
+        client_map_type      clients_;
+        mutable shared_mutex clients_lock_;
 
         void store( common::connection_iface *c )
         {
-            unique_lock l(clients_lock_);
-            clients_.insert(
-                    std::make_pair(c,
-                            boost::shared_ptr<common::connection_iface>(c)));
+            common::connection_iface_sptr connection( c );
+            store( connection );
+        }
+
+        void store( common::connection_iface_sptr c )
+        {
+            unique_shared_lock l(clients_lock_);
+            clients_.insert(std::make_pair(c.get( ), c));
         }
 
         connection_sptr lock( common::connection_iface *c )
@@ -47,9 +48,22 @@ namespace vtrc { namespace server {
 
         void drop ( common::connection_iface *c )
         {
-            unique_lock l(clients_lock_);
+            upgradable_lock lck(clients_lock_);
             client_map_type::iterator f(clients_.find(c));
-            if( f != clients_.end( )) clients_.erase( f );
+            if( f != clients_.end( )) {
+                upgrade_to_unique ulck(lck);
+                clients_.erase( f );
+            }
+        }
+
+        void drop ( common::connection_iface_sptr c )
+        {
+            upgradable_lock lck(clients_lock_);
+            client_map_type::iterator f(clients_.find(c.get( )));
+            if( f != clients_.end( )) {
+                upgrade_to_unique ulck(lck);
+                clients_.erase( f );
+            }
         }
 
         size_t foreach_while(client_predic func)
@@ -82,7 +96,17 @@ namespace vtrc { namespace server {
         impl_->store( connection );
     }
 
+    void connection_list::store(common::connection_iface_sptr connection)
+    {
+        impl_->store( connection );
+    }
+
     void connection_list::drop ( common::connection_iface *connection )
+    {
+        impl_->drop( connection );
+    }
+
+    void connection_list::drop(common::connection_iface_sptr connection)
     {
         impl_->drop( connection );
     }
