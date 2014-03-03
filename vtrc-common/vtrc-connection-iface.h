@@ -31,6 +31,7 @@ namespace vtrc { namespace common {
 
         virtual const char *name( ) const                  = 0;
         virtual void close( )                              = 0;
+        virtual bool active( ) const                       = 0;
         virtual common::enviroment      &get_enviroment( ) = 0;
         virtual boost::asio::io_service &get_io_service( ) = 0;
         virtual protocol_layer          &get_protocol( )   = 0;

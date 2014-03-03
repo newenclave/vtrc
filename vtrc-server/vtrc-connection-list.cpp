@@ -57,12 +57,7 @@ namespace vtrc { namespace server {
 
         void drop ( common::connection_iface_sptr c )
         {
-            upgradable_lock lck(clients_lock_);
-            client_map_type::iterator f(clients_.find(c.get( )));
-            if( f != clients_.end( )) {
-                upgrade_to_unique ulck(lck);
-                clients_.erase( f );
-            }
+            drop( c.get( ) );
         }
 
         size_t foreach_while(client_predic func)
@@ -81,11 +76,11 @@ namespace vtrc { namespace server {
         }
     };
 
-    connection_list::connection_list()
+    connection_list::connection_list( )
         :impl_(new impl)
     { }
 
-    connection_list::~connection_list()
+    connection_list::~connection_list( )
     {
         delete impl_;
     }

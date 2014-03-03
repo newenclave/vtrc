@@ -2,6 +2,7 @@
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/make_shared.hpp>
+#include <boost/atomic.hpp>
 
 #include <deque>
 #include <string>
@@ -32,11 +33,13 @@ namespace vtrc { namespace common {
         std::deque<message_holder>          write_queue_;
 
         transport_tcp                       *parent_;
+        boost::atomic_bool                   closed_;
 
         impl( bip::tcp::socket *s )
             :sock_(s)
             ,ios_(sock_->get_io_service( ))
             ,write_dispatcher_(ios_)
+            ,closed_(false)
         {}
 
         const char *name( ) const
@@ -46,7 +49,13 @@ namespace vtrc { namespace common {
 
         void close( )
         {
+            closed_ = true;
             sock_->close( );
+        }
+
+        bool active( ) const
+        {
+            return !closed_;
         }
 
         common::enviroment &get_enviroment( )
@@ -171,6 +180,11 @@ namespace vtrc { namespace common {
     void transport_tcp::close( )
     {
         impl_->close( );
+    }
+
+    bool transport_tcp::active( ) const
+    {
+        return impl_->active( );
     }
 
     common::enviroment &transport_tcp::get_enviroment( )

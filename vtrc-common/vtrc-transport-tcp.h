@@ -28,6 +28,8 @@ namespace vtrc { namespace common {
 
         const char *name( ) const                     ;
         void close( )                                 ;
+        bool active( ) const                          ;
+
         common::enviroment      &get_enviroment( )    ;
         boost::asio::io_service &get_io_service( )    ;
 
