@@ -23,6 +23,12 @@ namespace vtrc { namespace server {
         client_map_type      clients_;
         mutable shared_mutex clients_lock_;
 
+        void clear( )
+        {
+            unique_shared_lock l(clients_lock_);
+            clients_.clear( );
+        }
+
         void store( common::connection_iface *c )
         {
             common::connection_iface_sptr connection( c );
@@ -83,6 +89,11 @@ namespace vtrc { namespace server {
     connection_list::~connection_list( )
     {
         delete impl_;
+    }
+
+    void connection_list::clear( )
+    {
+        impl_->clear( );
     }
 
     void connection_list::store( common::connection_iface *connection )

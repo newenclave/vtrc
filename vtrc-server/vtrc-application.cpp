@@ -30,9 +30,13 @@ namespace vtrc { namespace server {
             ,clients_(boost::make_shared<connection_list>( ))
         {}
 
-        ~impl( )
+        ~impl( ) try
         {
+            clients_->clear( );
             if( own_ios_ ) delete ios_;
+
+        } catch ( ... ) {
+
         }
 
         common::enviroment &get_enviroment( )

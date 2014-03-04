@@ -26,6 +26,8 @@ namespace server {
         connection_list( );
         ~connection_list( );
 
+        void clear( );
+
         void store( common::connection_iface *connection );
         void store( common::connection_iface_sptr connection );
 
