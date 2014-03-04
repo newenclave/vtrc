@@ -74,7 +74,7 @@ namespace vtrc { namespace server {
             for(client_map_type::iterator b(clients_.begin()),
                                           e(clients_.end()); b!=e; ++b )
             {
-                bool ot = func( b->first );
+                bool ot = func( b->second );
                 result += ot;
                 if( !ot ) break;
             }

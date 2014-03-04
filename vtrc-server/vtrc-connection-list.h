@@ -20,7 +20,7 @@ namespace server {
     public:
 
         typedef boost::function <
-                bool (common::connection_iface *)
+                bool (common::connection_iface_sptr)
         > client_predic;
 
         connection_list( );
