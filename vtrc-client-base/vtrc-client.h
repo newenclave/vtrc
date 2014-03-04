@@ -24,8 +24,8 @@ namespace vtrc { namespace client {
 
     class vtrc_client {
 
-        struct vtrc_client_impl;
-        vtrc_client_impl *impl_;
+        struct impl;
+        impl *impl_;
 
     public:
 

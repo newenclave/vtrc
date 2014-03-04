@@ -10,7 +10,7 @@
 
 namespace vtrc { namespace server {
 
-    struct application::application_impl {
+    struct application::impl {
 
         common::enviroment                  env_;
         boost::asio::io_service            *ios_;
@@ -18,19 +18,19 @@ namespace vtrc { namespace server {
 
         boost::shared_ptr<connection_list>  clients_;
 
-        application_impl( )
+        impl( )
             :ios_(new boost::asio::io_service)
             ,own_ios_(true)
             ,clients_(boost::make_shared<connection_list>( ))
         {}
 
-        application_impl( boost::asio::io_service *ios )
+        impl( boost::asio::io_service *ios )
             :ios_(ios)
             ,own_ios_(false)
             ,clients_(boost::make_shared<connection_list>( ))
         {}
 
-        ~application_impl( )
+        ~impl( )
         {
             if( own_ios_ ) delete ios_;
         }
@@ -53,11 +53,11 @@ namespace vtrc { namespace server {
     };
 
     application::application( )
-        :impl_(new application_impl)
+        :impl_(new impl)
     {}
 
     application::application( boost::asio::io_service &ios )
-        :impl_(new application_impl(&ios))
+        :impl_(new impl(&ios))
     {}
 
     application::~application( )

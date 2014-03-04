@@ -15,8 +15,8 @@ namespace server {
 
     class protocol_layer: public common::protocol_layer {
 
-        struct protocol_layer_s_impl;
-        protocol_layer_s_impl *impl_;
+        struct impl;
+        impl *impl_;
 
         protocol_layer( const protocol_layer& other );
         protocol_layer operator = ( const protocol_layer& other );

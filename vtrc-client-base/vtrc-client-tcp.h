@@ -21,8 +21,8 @@ namespace client {
 
     class client_tcp: public common::transport_tcp {
 
-        struct client_tcp_impl;
-        client_tcp_impl  *impl_;
+        struct impl;
+        impl  *impl_;
 
         client_tcp( boost::asio::io_service &ios, vtrc_client *client );
 

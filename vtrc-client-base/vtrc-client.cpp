@@ -14,16 +14,16 @@ namespace vtrc { namespace client {
     namespace bsys  = boost::system;
     namespace gpb = google::protobuf;
 
-    struct vtrc_client::vtrc_client_impl {
+    struct vtrc_client::impl {
 
-        typedef vtrc_client_impl this_type;
+        typedef impl this_type;
 
         basio::io_service                          &ios_;
         vtrc_client                                *parent_;
         boost::shared_ptr<common::connection_iface> connection_;
         boost::shared_ptr<rpc_channel>              channel_;
 
-        vtrc_client_impl( basio::io_service &ios )
+        impl( basio::io_service &ios )
             :ios_(ios)
         {}
 
@@ -68,7 +68,7 @@ namespace vtrc { namespace client {
     };
 
     vtrc_client::vtrc_client( boost::asio::io_service &ios )
-        :impl_(new vtrc_client_impl(ios))
+        :impl_(new impl(ios))
     {
         impl_->parent_ = this;
     }

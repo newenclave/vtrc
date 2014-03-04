@@ -45,9 +45,9 @@ namespace vtrc { namespace server {
 
     namespace data_queue = common::data_queue;
 
-    struct protocol_layer::protocol_layer_s_impl {
+    struct protocol_layer::impl {
 
-        typedef protocol_layer_s_impl this_type;
+        typedef impl this_type;
 
         application             &app_;
         common::transport_iface *connection_;
@@ -60,7 +60,7 @@ namespace vtrc { namespace server {
         typedef boost::function<void (void)> stage_function_type;
         stage_function_type  stage_function_;
 
-        protocol_layer_s_impl( application &a, common::transport_iface *c )
+        impl( application &a, common::transport_iface *c )
             :app_(a)
             ,connection_(c)
             ,ready_(false)
@@ -316,7 +316,7 @@ namespace vtrc { namespace server {
     protocol_layer::protocol_layer( application &a,
                                     common::transport_iface *connection )
         :common::protocol_layer(connection)
-        ,impl_(new protocol_layer_s_impl(a, connection))
+        ,impl_(new impl(a, connection))
     {
         impl_->parent_ = this;
     }

@@ -27,9 +27,9 @@ namespace server {
 
     class application {
 
-        struct application_impl;
-        friend struct application_impl;
-        application_impl  *impl_;
+        struct impl;
+        friend struct impl;
+        impl  *impl_;
 
     public:
 
