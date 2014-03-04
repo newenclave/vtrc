@@ -197,7 +197,7 @@ namespace vtrc { namespace common {
 
         void clear_call_context( )
         {
-            context_.release( );
+            context_.reset( );
         }
 
         call_context *create_call_context( vtrc_rpc_lowlevel::lowlevel_unit *ll)

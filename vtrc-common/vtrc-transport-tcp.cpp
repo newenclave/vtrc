@@ -13,8 +13,8 @@
 namespace vtrc { namespace common {
 
     namespace basio = boost::asio;
-    namespace bip = boost::asio::ip;
-    namespace bsys = boost::system;
+    namespace bip   = boost::asio::ip;
+    namespace bsys  = boost::system;
 
     struct transport_tcp::impl {
 
