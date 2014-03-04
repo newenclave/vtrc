@@ -105,11 +105,6 @@ namespace vtrc { namespace server {
         impl_->drop( connection );
     }
 
-    connection_sptr connection_list::lock(common::connection_iface *connection)
-    {
-        return impl_->lock( connection );
-    }
-
     size_t connection_list::foreach_while(client_predic func)
     {
         return impl_->foreach_while( func );

@@ -32,8 +32,6 @@ namespace server {
         void drop ( common::connection_iface *connection );
         void drop ( common::connection_iface_sptr connection );
 
-        common::connection_iface_sptr lock (common::connection_iface *conn );
-
         size_t foreach_while(client_predic func);
 
     };
