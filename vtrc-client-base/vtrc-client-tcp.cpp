@@ -1,6 +1,7 @@
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/make_shared.hpp>
 
 #include "vtrc-client-tcp.h"
 #include "vtrc-protocol-layer-c.h"
@@ -95,7 +96,6 @@ namespace vtrc { namespace client {
                 }
                 start_reading( );
             } else {
-                //std::cout << "error close\n";
                 parent_->close( );
             }
         }
@@ -117,6 +117,13 @@ namespace vtrc { namespace client {
         ,impl_(new client_tcp_impl(ios, client))
     {
         impl_->parent_ = this;
+    }
+
+    boost::shared_ptr<client_tcp> client_tcp::create(basio::io_service &ios,
+                                                        vtrc_client *client)
+    {
+        boost::shared_ptr<client_tcp> new_inst (new client_tcp( ios, client ));
+        return new_inst;
     }
 
     client_tcp::~client_tcp( )
@@ -152,6 +159,11 @@ namespace vtrc { namespace client {
     std::string client_tcp::prepare_for_write(const char *data, size_t len)
     {
         return impl_->prepare_for_write( data, len );
+    }
+
+    void client_tcp::init( )
+    {
+        //impl_->init( );
     }
 
 }}

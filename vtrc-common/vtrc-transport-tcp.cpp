@@ -40,7 +40,12 @@ namespace vtrc { namespace common {
             ,ios_(sock_->get_io_service( ))
             ,write_dispatcher_(ios_)
             ,closed_(false)
-        {}
+        {
+        }
+
+        ~impl( )
+        {
+        }
 
         const char *name( ) const
         {
@@ -73,7 +78,8 @@ namespace vtrc { namespace common {
             write_dispatcher_.post(
                    boost::bind( &this_type::write_impl, this,
                                 std::string( data, data + length ),
-                                boost::shared_ptr<closure_type>()));
+                                boost::shared_ptr<closure_type>(),
+                                parent_->shared_from_this( )));
         }
 
         void write(const char *data, size_t length,
@@ -85,7 +91,7 @@ namespace vtrc { namespace common {
             write_dispatcher_.post(
                    boost::bind( &this_type::write_impl, this,
                                 std::string( data, data + length ),
-                                closure));
+                                closure, parent_->shared_from_this( )));
         }
 
         std::string prepare_for_write( const char *data, size_t length)
@@ -102,7 +108,7 @@ namespace vtrc { namespace common {
                                 boost::bind( &this_type::write_handler, this,
                                      basio::placeholders::error,
                                      basio::placeholders::bytes_transferred,
-                                     1))
+                                     1, parent_->shared_from_this( )))
                         );
             } catch( const std::exception & ) {
                 close( );
@@ -111,7 +117,8 @@ namespace vtrc { namespace common {
         }
 
         void write_impl( const std::string data,
-                         boost::shared_ptr<closure_type> closure )
+                         boost::shared_ptr<closure_type> closure,
+                         common::connection_iface_sptr inst)
         {
             bool empty = write_queue_.empty( );
 
@@ -133,7 +140,8 @@ namespace vtrc { namespace common {
 
         void write_handler( const bsys::error_code &error,
                             size_t /*bytes*/,
-                            size_t /*messages*/ )
+                            size_t /*messages*/,
+                            common::connection_iface_sptr inst)
         {
             if( !error ) {
                 write_queue_.pop_front( );
@@ -156,6 +164,7 @@ namespace vtrc { namespace common {
 
         boost::asio::io_service::strand &get_write_dispatcher( )
         {
+
             return write_dispatcher_;
         }
 

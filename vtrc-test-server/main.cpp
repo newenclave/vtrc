@@ -57,11 +57,11 @@ public:
               ::vtrc_rpc_lowlevel::message_info* response,
               ::google::protobuf::Closure* done)
     {
-        std::cout << "test was called :] context: \n"
-                  << connection_->get_protocol( )
-                     .get_call_context( )
-                     ->get_lowlevel_message( )
-                     ->DebugString( );
+//        std::cout << "test was called :] context: \n"
+//                  << connection_->get_protocol( )
+//                     .get_call_context( )
+//                     ->get_lowlevel_message( )
+//                     ->DebugString( );
 
         response->set_message_type( id_++ );
         if( done ) done->Run( );
@@ -149,6 +149,8 @@ int main( ) try {
 
     tcp_ep->start( );
 
+    sleep( 10 );
+    poll.stop( );
     poll.join_all( );
 
     return 0;

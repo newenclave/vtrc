@@ -79,11 +79,16 @@ namespace vtrc { namespace common {
                             vtrc_rpc_lowlevel::lowlevel_unit *llu )
                 :p_(parent)
                 ,ctx_(p_->create_call_context( llu ))
-            {}
+            {
+                std::cout << "Create context " << ctx_ << "\n";
+            }
 
             ~context_holder( )
             {
+                std::cout << "destroy context " << ctx_ << "\n";
                 p_->clear_call_context( );
+                std::cout << "context: " << p_->get_call_context( ) << "\n";
+
             }
         };
 

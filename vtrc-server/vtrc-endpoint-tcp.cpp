@@ -53,6 +53,20 @@ namespace vtrc { namespace server { namespace endpoints {
             {
                 protocol_ = boost::make_shared<server::protocol_layer>
                                                        (boost::ref(app_), this);
+            }
+
+            static boost::shared_ptr<tcp_connection> create
+                             (endpoint_iface &endpoint, bip::tcp::socket *sock)
+            {
+                boost::shared_ptr<tcp_connection> new_inst
+                                    (boost::make_shared<tcp_connection>
+                                                  (boost::ref(endpoint), sock));
+                new_inst->init( );
+                return new_inst;
+            }
+
+            void init( )
+            {
                 start_reading( );
                 protocol_ ->init( );
             }
@@ -95,13 +109,13 @@ namespace vtrc { namespace server { namespace endpoints {
                         protocol_->process_data( &read_buff_[0], bytes );
                     } catch( const std::exception & /*ex*/ ) {
                         close( );
-                        //app_.get_clients( )->drop(this); // delete
+                        app_.get_clients( )->drop(this); // delete
                         return;
                     }
                     start_reading( );
                 } else {
                     close( );
-                    //app_.get_clients( )->drop(this); // delete
+                    app_.get_clients( )->drop(this); // delete
                 }
             }
 
@@ -176,10 +190,11 @@ namespace vtrc { namespace server { namespace endpoints {
                     delete sock;
                 } else {
                     try {
-                        tcp_connection *new_conn
-                                    (new tcp_connection(*this, sock));
+                        std::cout << "accept\n";
+                        boost::shared_ptr<tcp_connection> new_conn
+                                         (tcp_connection::create(*this, sock));
                         app_.get_clients( )->store( new_conn );
-                        app_.on_new_connection_ready( new_conn );
+                        app_.on_new_connection_ready( new_conn.get( ) );
                     } catch( ... ) {
                         ;;;
                     }
