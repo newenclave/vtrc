@@ -52,13 +52,13 @@ namespace server {
         virtual void on_endpoint_exception( endpoint_iface * /*ep*/ ) { }
 
         virtual void on_new_connection_accepted(
-                common::connection_iface* connection ) { };
+                common::connection_iface* connection ) { }
 
         virtual void on_new_connection_ready(
-                            common::connection_iface* connection ) { };
+                            common::connection_iface* connection ) { }
 
         virtual void on_connection_die(
-                            common::connection_iface* connection ) { };
+                            common::connection_iface* connection ) { }
 
         /** TODO: fix it **/
 

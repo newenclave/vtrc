@@ -1,10 +1,10 @@
 #include "vtrc-hasher-iface.h"
 
-namespace vtrc { namespace common {  namespace hasher { 
+namespace vtrc { namespace common {  namespace hasher {
 
     namespace {
 
-        struct hasher_fake: public hasher_iface {
+        struct hasher_none: public hasher_iface {
 
             size_t hash_size( ) const
             {
@@ -28,10 +28,10 @@ namespace vtrc { namespace common {  namespace hasher {
 
     }
 
-    namespace fake {
+    namespace none {
         hasher_iface *create( )
         {
-            return new hasher_fake;
+            return new hasher_none;
         }
     }
 

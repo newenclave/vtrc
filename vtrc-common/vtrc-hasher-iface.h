@@ -21,7 +21,7 @@ namespace vtrc { namespace common {
 
     namespace hasher {
 
-        namespace  fake {
+        namespace  none {
             hasher_iface *create( );
         }
 

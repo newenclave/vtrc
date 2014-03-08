@@ -13,7 +13,7 @@ namespace vtrc { namespace common {  namespace hasher {
         hasher_iface *result = NULL;
         switch( var ) {
         case vtrc_auth::HASH_NONE:
-            result = fake::create( );
+            result = none::create( );
             break;
         case vtrc_auth::HASH_CRC_16:
             result = crc::create16( );
