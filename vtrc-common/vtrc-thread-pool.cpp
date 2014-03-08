@@ -1,5 +1,4 @@
 
-#include <boost/thread.hpp>
 #include <boost/asio.hpp>
 
 #include <list>
@@ -7,6 +6,7 @@
 #include "vtrc-mutex.h"
 #include "vtrc-memory.h"
 #include "vtrc-bind.h"
+#include "vtrc-thread.h"
 
 namespace vtrc { namespace common {
 
@@ -17,7 +17,7 @@ namespace vtrc { namespace common {
         struct thread_context {
 
             typedef shared_ptr<thread_context> shared_type;
-            boost::thread *thread_;
+            vtrc::thread  *thread_;
             bool           in_use_;
 
             thread_context()
@@ -85,7 +85,7 @@ namespace vtrc { namespace common {
         {
             thread_context::shared_type
                     new_context(make_shared<thread_context>());
-            new_context->thread_ = new boost::thread(
+            new_context->thread_ = new vtrc::thread(
                         vtrc::bind(&impl::run, this, new_context.get( )) );
             return new_context;
         }

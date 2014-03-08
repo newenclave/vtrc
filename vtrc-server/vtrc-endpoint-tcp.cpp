@@ -5,6 +5,7 @@
 
 #include "vtrc-memory.h"
 #include "vtrc-bind.h"
+#include "vtrc-ref.h"
 
 #include "vtrc-endpoint-iface.h"
 #include "vtrc-application.h"
@@ -53,7 +54,7 @@ namespace vtrc { namespace server { namespace endpoints {
                 ,read_buff_(4096)
             {
                 protocol_ = make_shared<server::protocol_layer_s>
-                                                     (boost::ref(app_), this);
+                                                     (vtrc::ref(app_), this);
             }
 
             static shared_ptr<tcp_connection> create
@@ -61,7 +62,7 @@ namespace vtrc { namespace server { namespace endpoints {
             {
                 shared_ptr<tcp_connection> new_inst
                                     (make_shared<tcp_connection>
-                                                  (boost::ref(endpoint), sock));
+                                                  (vtrc::ref(endpoint), sock));
                 new_inst->init( );
                 return new_inst;
             }

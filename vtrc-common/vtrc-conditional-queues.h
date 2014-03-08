@@ -5,6 +5,7 @@
 #include <boost/thread/condition_variable.hpp>
 #include "vtrc-memory.h"
 #include "vtrc-bind.h"
+#include "vtrc-ref.h"
 
 namespace vtrc { namespace common {
 
@@ -277,7 +278,7 @@ namespace vtrc { namespace common {
         {
             return wait_queue_impl( key,
                         vtrc::bind( &this_type::cond_timed_wait<TimeType>,
-                                     _1, _2, boost::cref(tt) ) );
+                                     _1, _2, vtrc::cref(tt) ) );
         }
 
         template <typename TimeType>
@@ -286,7 +287,7 @@ namespace vtrc { namespace common {
         {
             return read_impl( key, result,
                         vtrc::bind( &this_type::cond_timed_wait<TimeType>,
-                                     _1, _2, boost::cref(tt) ) );
+                                     _1, _2, vtrc::cref(tt) ) );
         }
 
         template <typename TimeType>
@@ -295,7 +296,7 @@ namespace vtrc { namespace common {
         {
             return read_queue_impl( key, result,
                         vtrc::bind( &this_type::cond_timed_wait<TimeType>,
-                                     _1, _2, boost::cref(tt) ) );
+                                     _1, _2, vtrc::cref(tt) ) );
         }
 
 #endif
@@ -320,7 +321,7 @@ namespace vtrc { namespace common {
         {
             return wait_queue_impl( key,
                         vtrc::bind( &this_type::cond_wait_for<Rep, Period>,
-                                     _1, _2, boost::cref(duration) ) );
+                                     _1, _2, vtrc::cref(duration) ) );
         }
 
         template <typename Rep, typename Period>
@@ -329,7 +330,7 @@ namespace vtrc { namespace common {
         {
             return read_impl( key, result,
                         vtrc::bind( &this_type::cond_wait_for<Rep, Period>,
-                                     _1, _2, boost::cref(duration) ) );
+                                     _1, _2, vtrc::cref(duration) ) );
         }
 
         template <typename Rep, typename Period>
@@ -338,7 +339,7 @@ namespace vtrc { namespace common {
         {
             return read_queue_impl( key, result,
                         vtrc::bind( &this_type::cond_wait_for<Rep, Period>,
-                                     _1, _2, boost::cref(duration) ) );
+                                     _1, _2, vtrc::cref(duration) ) );
         }
 #endif
 
