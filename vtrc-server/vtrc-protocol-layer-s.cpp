@@ -171,6 +171,9 @@ namespace vtrc { namespace server {
         void make_call_impl( boost::shared_ptr <
                               vtrc_rpc_lowlevel::lowlevel_unit> llu )
         {
+
+            protocol_layer::context_holder ch( parent_, llu.get( ) );
+
             common::rpc_service_wrapper_sptr
                     service(get_service(llu->call().service()));
 
@@ -188,8 +191,6 @@ namespace vtrc { namespace server {
 
             boost::shared_ptr<gpb::Message> req
                 (service->service( )->GetRequestPrototype( meth ).New( ));
-
-            protocol_layer::context_holder ch( parent_, llu.get( ) );
 
             req->ParseFromString( llu->request( ) );
 

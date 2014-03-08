@@ -22,6 +22,15 @@ using namespace vtrc;
 
 int main( )
 {
+    boost::random_device rd;
+
+    for( int i=0;; ++i )  {
+        std::cout << rd( ) << " ";
+    }
+    std::cout << "\n";
+
+    return 0;
+
     common::thread_pool tp(4);
     client::vtrc_client cl( tp.get_io_service( ) );
 

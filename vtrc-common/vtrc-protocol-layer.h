@@ -85,6 +85,9 @@ namespace vtrc { namespace common {
             {
                 p_->clear_call_context( );
             }
+        private:
+            context_holder( context_holder const & );
+            context_holder &operator = ( context_holder const & );
         };
 
         void push_rpc_message( uint64_t slot_id,
