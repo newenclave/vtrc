@@ -1,9 +1,8 @@
 #ifndef VTRC_CONNECTION_IFACE_H
 #define VTRC_CONNECTION_IFACE_H
 
-#include <boost/function.hpp>
-
 #include "vtrc-memory.h"
+#include "vtrc-function.h"
 
 namespace boost {
 
@@ -18,7 +17,7 @@ namespace boost {
 
 namespace vtrc { namespace common {
 
-    typedef boost::function <
+    typedef vtrc::function <
                 void (const boost::system::error_code &)
             > closure_type;
 

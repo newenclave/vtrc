@@ -1,12 +1,10 @@
+#include <boost/asio.hpp>
 
 #include "vtrc-client.h"
 #include "vtrc-client-tcp.h"
 
-#include <boost/asio.hpp>
-#include <boost/make_shared.hpp>
-#include <boost/bind.hpp>
-
 #include "vtrc-rpc-channel.h"
+#include "vtrc-bind.h"
 
 namespace vtrc { namespace client {
 
@@ -53,7 +51,7 @@ namespace vtrc { namespace client {
                                new_client(client_tcp::create( ios_ , parent_));
 
             new_client->async_connect( address, service,
-                        boost::bind( &this_type::async_connect_success, this,
+                        vtrc::bind( &this_type::async_connect_success, this,
                                      basio::placeholders::error,
                                      closure ));
             connection_ = new_client;

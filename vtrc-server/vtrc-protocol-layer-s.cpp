@@ -1,10 +1,9 @@
 
 #include <boost/asio.hpp>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
-#include <boost/make_shared.hpp>
 
 #include "vtrc-common/vtrc-mutex.h"
+#include "vtrc-bind.h"
+#include "vtrc-function.h"
 
 #include "vtrc-protocol-layer-s.h"
 
@@ -57,7 +56,7 @@ namespace vtrc { namespace server {
         service_map              services_;
         shared_mutex             services_lock_;
 
-        typedef boost::function<void (void)> stage_function_type;
+        typedef vtrc::function<void (void)> stage_function_type;
         stage_function_type  stage_function_;
 
         impl( application &a, common::transport_iface *c )
@@ -66,7 +65,7 @@ namespace vtrc { namespace server {
             ,ready_(false)
         {
             stage_function_ =
-                    boost::bind( &this_type::on_client_selection, this );
+                    vtrc::bind( &this_type::on_client_selection, this );
         }
 
         common::rpc_service_wrapper_sptr get_service( const std::string &name )
@@ -142,7 +141,7 @@ namespace vtrc { namespace server {
             ts.set_ready( true );
 
             stage_function_ =
-                    boost::bind( &this_type::on_rcp_call_ready, this );
+                    vtrc::bind( &this_type::on_rcp_call_ready, this );
 
             send_proto_message( ts );
 

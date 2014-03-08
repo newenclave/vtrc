@@ -1,7 +1,8 @@
 
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
 #include <boost/asio.hpp>
+
+#include "vtrc-bind.h"
+#include "vtrc-function.h"
 
 #include "vtrc-common/vtrc-data-queue.h"
 #include "vtrc-common/vtrc-hash-iface.h"
@@ -21,7 +22,7 @@ namespace vtrc { namespace client {
 
         typedef impl this_type;
 
-        typedef boost::function<void (void)> stage_funcion_type;
+        typedef vtrc::function<void (void)> stage_funcion_type;
 
         common::transport_iface *connection_;
         protocol_layer_c          *parent_;
@@ -30,7 +31,7 @@ namespace vtrc { namespace client {
         impl( common::transport_iface *c )
             :connection_(c)
         {
-            stage_call_ = boost::bind( &this_type::on_hello_call, this );
+            stage_call_ = vtrc::bind( &this_type::on_hello_call, this );
         }
 
         void init( )
@@ -84,7 +85,7 @@ namespace vtrc { namespace client {
             }
 
             pop_message( );
-            stage_call_ = boost::bind( &this_type::on_rpc_process, this );
+            stage_call_ = vtrc::bind( &this_type::on_rpc_process, this );
         }
 
         void set_options( const boost::system::error_code &err )
@@ -119,9 +120,9 @@ namespace vtrc { namespace client {
                common::hash::create_by_index( vtrc_auth::HASH_CRC_64 ));
 
             send_proto_message( select,
-                    boost::bind( &this_type::set_options, this, _1 ) );
+                    vtrc::bind( &this_type::set_options, this, _1 ) );
 
-            stage_call_ = boost::bind( &this_type::on_server_ready, this );
+            stage_call_ = vtrc::bind( &this_type::on_server_ready, this );
 
         }
 

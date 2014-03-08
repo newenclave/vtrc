@@ -1,8 +1,6 @@
 #ifndef VTRC_CLIENT_TCP_H
 #define VTRC_CLIENT_TCP_H
 
-#include <boost/function.hpp>
-
 #include "vtrc-common/vtrc-transport-tcp.h"
 #include "vtrc-memory.h"
 

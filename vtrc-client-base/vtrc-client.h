@@ -1,8 +1,6 @@
 #ifndef VTRC_CLIENT_H
 #define VTRC_CLIENT_H
 
-#include <boost/function.hpp>
-
 #include "vtrc-common/vtrc-connection-iface.h"
 
 namespace boost {

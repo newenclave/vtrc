@@ -9,6 +9,7 @@
 #include "vtrc-transport-tcp.h"
 #include "vtrc-enviroment.h"
 #include "vtrc-memory.h"
+#include "vtrc-bind.h"
 
 namespace vtrc { namespace common {
 
@@ -76,7 +77,7 @@ namespace vtrc { namespace common {
         void write( const char *data, size_t length )
         {
             write_dispatcher_.post(
-                   boost::bind( &this_type::write_impl, this,
+                   vtrc::bind( &this_type::write_impl, this,
                                 std::string( data, data + length ),
                                 shared_ptr<closure_type>(),
                                 parent_->shared_from_this( )));
@@ -89,7 +90,7 @@ namespace vtrc { namespace common {
                     closure(make_shared<closure_type>(success));
 
             write_dispatcher_.post(
-                   boost::bind( &this_type::write_impl, this,
+                   vtrc::bind( &this_type::write_impl, this,
                                 std::string( data, data + length ),
                                 closure, parent_->shared_from_this( )));
         }
@@ -105,7 +106,7 @@ namespace vtrc { namespace common {
                 sock_->async_send(
                         basio::buffer( write_queue_.front( ).message_ ),
                         write_dispatcher_.wrap(
-                                boost::bind( &this_type::write_handler, this,
+                                vtrc::bind( &this_type::write_handler, this,
                                      basio::placeholders::error,
                                      basio::placeholders::bytes_transferred,
                                      1, parent_->shared_from_this( )))

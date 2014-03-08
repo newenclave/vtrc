@@ -7,7 +7,6 @@
 #include <google/protobuf/descriptor.h>
 
 #include <boost/asio.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/chrono.hpp>
 
 #include <boost/atomic.hpp>

@@ -18,7 +18,7 @@ namespace server {
 
     public:
 
-        typedef boost::function <
+        typedef vtrc::function <
                 bool (common::connection_iface_sptr)
         > client_predic;
 

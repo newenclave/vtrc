@@ -6,6 +6,7 @@
 #include "vtrc-thread-pool.h"
 #include "vtrc-mutex.h"
 #include "vtrc-memory.h"
+#include "vtrc-bind.h"
 
 namespace vtrc { namespace common {
 
@@ -85,7 +86,7 @@ namespace vtrc { namespace common {
             thread_context::shared_type
                     new_context(make_shared<thread_context>());
             new_context->thread_ = new boost::thread(
-                        boost::bind(&impl::run, this, new_context.get( )) );
+                        vtrc::bind(&impl::run, this, new_context.get( )) );
             return new_context;
         }
 
