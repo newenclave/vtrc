@@ -90,7 +90,7 @@ namespace vtrc { namespace client {
         void set_options( const boost::system::error_code &err )
         {
             if( !err ) {
-                parent_->change_sign_maker(
+                parent_->change_hash_maker(
                    common::hasher::create_by_index( vtrc_auth::HASH_CRC_64 ));
             }
         }
@@ -115,7 +115,7 @@ namespace vtrc { namespace client {
             select.set_ready( true );
             select.set_hello_message( "Miten menee?" );
 
-            parent_->change_sign_checker(
+            parent_->change_hash_checker(
                common::hasher::create_by_index( vtrc_auth::HASH_CRC_64 ));
 
             send_proto_message( select,

@@ -72,8 +72,8 @@ namespace vtrc { namespace common {
 
         transport_iface             *connection_;
         protocol_layer              *parent_;
-        hasher_iface_sptr            sign_maker_;
-        hasher_iface_sptr            sign_checker_;
+        hasher_iface_sptr            hash_maker_;
+        hasher_iface_sptr            hash_checker_;
         transformer_iface_sptr       transformer_;
         transformer_iface_sptr       reverter_;
 
@@ -86,8 +86,8 @@ namespace vtrc { namespace common {
 
         impl( transport_iface *c )
             :connection_(c)
-            ,sign_maker_(common::hasher::create_default( ))
-            ,sign_checker_(common::hasher::create_default( ))
+            ,hash_maker_(common::hasher::create_default( ))
+            ,hash_checker_(common::hasher::create_default( ))
             //,transformer_(common::transformers::erseefor::create( "1234", 4 ))
             ,transformer_(common::transformers::none::create( ))
             ,reverter_(common::transformers::none::create( ))
@@ -102,9 +102,9 @@ namespace vtrc { namespace common {
              *  <packed_size(data_length+hash_length)><hash(data)><data>
             */
             std::string result(queue_->pack_size(
-                                length + sign_maker_->hash_size( )));
+                                length + hash_maker_->hash_size( )));
 
-            result.append( sign_maker_->get_data_hash(data, length ));
+            result.append( hash_maker_->get_data_hash(data, length ));
             result.append( data, data + length );
 
             /*
@@ -174,20 +174,20 @@ namespace vtrc { namespace common {
         void parse_message( const std::string &mess,
                             google::protobuf::Message &result )
         {
-            const size_t hash_length = sign_checker_->hash_size( );
+            const size_t hash_length = hash_checker_->hash_size( );
             const size_t diff_len    = mess.size( ) - hash_length;
             result.ParseFromArray( mess.c_str( ) + hash_length, diff_len );
         }
 
         bool check_message( const std::string &mess )
         {
-            const size_t hash_length = sign_checker_->hash_size( );
+            const size_t hash_length = hash_checker_->hash_size( );
             const size_t diff_len    = mess.size( ) - hash_length;
 
             bool result = false;
 
             if( mess.size( ) >= hash_length ) {
-                result = sign_checker_->
+                result = hash_checker_->
                          check_data_hash( mess.c_str( ) + hash_length,
                                           diff_len,
                                           mess.c_str( ) );
@@ -213,12 +213,12 @@ namespace vtrc { namespace common {
 
         void change_sign_checker( hasher_iface *new_signer )
         {
-            sign_checker_.reset(new_signer);
+            hash_checker_.reset(new_signer);
         }
 
         void change_sign_maker( hasher_iface *new_signer )
         {
-            sign_maker_.reset(new_signer);
+            hash_maker_.reset(new_signer);
         }
 
         void change_transformer( transformer_iface *new_transformer )
@@ -345,12 +345,12 @@ namespace vtrc { namespace common {
         return impl_->get_data_queue( );
     }
 
-    void protocol_layer::change_sign_maker( hasher_iface *new_hasher )
+    void protocol_layer::change_hash_maker( hasher_iface *new_hasher )
     {
         impl_->change_sign_maker( new_hasher );
     }
 
-    void protocol_layer::change_sign_checker( hasher_iface *new_hasher )
+    void protocol_layer::change_hash_checker( hasher_iface *new_hasher )
     {
         impl_->change_sign_checker( new_hasher );
     }

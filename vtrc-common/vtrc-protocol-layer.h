@@ -113,8 +113,8 @@ namespace vtrc { namespace common {
 
         /* ==== delete this part ==== */
 
-        void change_sign_maker( hasher_iface *new_hasher );
-        void change_sign_checker( hasher_iface *new_hasher );
+        void change_hash_maker( hasher_iface *new_hasher );
+        void change_hash_checker( hasher_iface *new_hasher );
 
         void change_transformer( transformer_iface *new_transformer);
         void change_reverter( transformer_iface *new_reverter);
