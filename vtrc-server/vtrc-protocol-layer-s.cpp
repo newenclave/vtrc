@@ -134,7 +134,7 @@ namespace vtrc { namespace server {
 
             parent_->set_hasher_transformer(
                         common::hasher::create_by_index( cs.hash( ) ),
-                        NULL);
+                        NULL, NULL);
 
             vtrc_auth::transformer_setup ts;
 
@@ -152,7 +152,6 @@ namespace vtrc { namespace server {
             std::string &mess(parent_->get_data_queue( ).messages( ).front( ));
             bool check = check_message_hash(mess);
             if( !check ) {
-                std::runtime_error("bad hash");
                 connection_->close( );
                 return;
             }

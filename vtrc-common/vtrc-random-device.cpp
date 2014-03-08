@@ -23,10 +23,10 @@ namespace  vtrc { namespace  common {
         }
     };
 
-    struct pseudo_impl: public random_impl {
+    struct mt19937_impl: public random_impl {
 
         boost::mt19937 rng_;
-        pseudo_impl(  )
+        mt19937_impl(  )
         {
             boost::random_device rd;
             rng_.seed( rd( ) );
@@ -48,7 +48,7 @@ namespace  vtrc { namespace  common {
             if( !use_mt19937 ) {
                 random_dev_ = boost::make_shared<device_impl>( );
             } else {
-                random_dev_ = boost::make_shared<pseudo_impl>( );
+                random_dev_ = boost::make_shared<mt19937_impl>( );
             }
         }
         void generate(char *b, char *e)

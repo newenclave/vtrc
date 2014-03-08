@@ -8,8 +8,7 @@ namespace vtrc { namespace common {
 
     struct transformer_iface {
         virtual ~transformer_iface( ) { }
-        virtual void transform_data( char *data, size_t length ) = 0;
-        virtual void revert_data( char *data, size_t length ) = 0;
+        virtual void transform( char *data, size_t length ) = 0;
     };
 
     typedef boost::shared_ptr<transformer_iface> transformer_iface_sptr;
@@ -20,9 +19,7 @@ namespace vtrc { namespace common {
         }
 
         namespace erseefor {
-            transformer_iface *create(
-                        const char *transform_key, size_t t_length,
-                        const char *revert_key,    size_t r_length);
+            transformer_iface *create( const char *key, size_t t_length);
 
         }
 

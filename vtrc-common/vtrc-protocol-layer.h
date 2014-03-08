@@ -114,7 +114,8 @@ namespace vtrc { namespace common {
         /* ==== delete this part ==== */
 
         void set_hasher_transformer( hasher_iface *new_hasher,
-                                     transformer_iface *new_transformer );
+                                     transformer_iface *new_transformer,
+                                     transformer_iface *new_reverter);
 
     };
 }}

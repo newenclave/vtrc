@@ -74,6 +74,8 @@ namespace vtrc { namespace common {
         protocol_layer              *parent_;
         hasher_iface_sptr            hasher_;
         transformer_iface_sptr       transformer_;
+        transformer_iface_sptr       reverter_;
+
         data_queue::queue_base_sptr  queue_;
 
         boost::mutex                 write_locker_; // use strand!
@@ -88,6 +90,7 @@ namespace vtrc { namespace common {
             ,hasher_(common::hasher::create_default( ))
             //,transformer_(common::transformers::erseefor::create( "1234", 4 ))
             ,transformer_(common::transformers::none::create( ))
+            ,reverter_(common::transformers::none::create( ))
             ,queue_(data_queue::varint::create_parser(maximum_message_length))
             ,rpc_index_(100)
         {}
@@ -108,7 +111,7 @@ namespace vtrc { namespace common {
              * message = transform( message )
             */
 
-            transformer_->transform_data(
+            transformer_->transform(
                             result.empty( ) ? NULL : &result[0],
                                             result.size( ) );
             return result;
@@ -120,11 +123,11 @@ namespace vtrc { namespace common {
                 std::string next_data(data, data + length);
 
                 size_t old_size = queue_->messages( ).size( );
+
                 /*
                  * message = revert( message )
                 */
-                transformer_->revert_data( &next_data[0],
-                                            next_data.size( ) );
+                reverter_->transform( &next_data[0], next_data.size( ) );
                 queue_->append( &next_data[0], next_data.size( ));
                 queue_->process( );
 
@@ -212,11 +215,13 @@ namespace vtrc { namespace common {
         }
 
         void set_hash_transformer( hasher_iface *new_hasher,
-                                   transformer_iface *new_transformer )
+                                   transformer_iface *new_transformer,
+                                   transformer_iface *new_reverter)
         {
             boost::mutex::scoped_lock l( write_locker_ );
             if(new_hasher)      hasher_.reset(new_hasher);
             if(new_transformer) transformer_.reset(new_transformer);
+            if(new_reverter)    reverter_.reset(new_reverter);
         }
 
         void pop_message( )
@@ -334,9 +339,11 @@ namespace vtrc { namespace common {
     }
 
     void protocol_layer::set_hasher_transformer( hasher_iface *new_hasher,
-                                        transformer_iface *new_transformer )
+                                        transformer_iface *new_transformer,
+                                        transformer_iface *new_reverter)
     {
-        impl_->set_hash_transformer( new_hasher, new_transformer );
+        impl_->set_hash_transformer( new_hasher,
+                                     new_transformer, new_reverter );
     }
 
     void protocol_layer::pop_message( )

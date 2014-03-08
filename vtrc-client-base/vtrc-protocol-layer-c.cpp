@@ -95,7 +95,7 @@ namespace vtrc { namespace client {
             if( !err ) {
                 parent_->set_hasher_transformer(
                       common::hasher::create_by_index( vtrc_auth::HASH_CRC_64 ),
-                      NULL);
+                      NULL, NULL);
             }
         }
 
