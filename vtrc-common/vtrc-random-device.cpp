@@ -6,7 +6,7 @@
 
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
-#include <limits.h>
+#include <limits>
 
 namespace  vtrc { namespace  common {
 
@@ -16,7 +16,6 @@ namespace  vtrc { namespace  common {
 
     struct device_impl: public random_impl {
         boost::random_device rd_;
-
         void generate( char *b, char *e )
         {
             rd_.generate( b, e );
@@ -29,10 +28,7 @@ namespace  vtrc { namespace  common {
         pseudo_impl(  )
         {
             boost::random_device rd;
-            unsigned seed = 0;
-            rd.generate( reinterpret_cast<char *>(&seed),
-                         reinterpret_cast<char *>(&seed) + sizeof(seed));
-            rng_.seed( seed );
+            rng_.seed( rd( ) );
         }
 
         void generate( char *b, char *e )
@@ -45,7 +41,6 @@ namespace  vtrc { namespace  common {
         }
     };
 
-
     struct random_device::impl {
         boost::shared_ptr<random_impl> random_dev_;
         impl( bool use_mt19937 )
@@ -55,6 +50,10 @@ namespace  vtrc { namespace  common {
             } else {
                 random_dev_ = boost::make_shared<pseudo_impl>( );
             }
+        }
+        void generate(char *b, char *e)
+        {
+            random_dev_->generate( b, e );
         }
     };
 
@@ -67,6 +66,11 @@ namespace  vtrc { namespace  common {
     random_device::~random_device( )
     {
         delete impl_;
+    }
+
+    void random_device::generate(char *b, char *e)
+    {
+        impl_->generate( b, e );
     }
 
 }}

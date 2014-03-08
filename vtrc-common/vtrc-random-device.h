@@ -16,6 +16,8 @@ namespace vtrc { namespace common {
         random_device( bool use_mt19937 = false );
         ~random_device( );
 
+        void generate( char *b, char *e );
+
     };
 
 }}
