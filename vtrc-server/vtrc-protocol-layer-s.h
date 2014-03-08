@@ -13,19 +13,19 @@ namespace server {
 
     class application;
 
-    class protocol_layer: public common::protocol_layer {
+    class protocol_layer_s: public common::protocol_layer {
 
         struct impl;
         impl *impl_;
 
-        protocol_layer( const protocol_layer& other );
-        protocol_layer operator = ( const protocol_layer& other );
+        protocol_layer_s( const protocol_layer_s& other );
+        protocol_layer_s operator = ( const protocol_layer_s& other );
 
     public:
 
-        protocol_layer( application &app,
+        protocol_layer_s( application &app,
                         common::transport_iface *connection);
-        ~protocol_layer( );
+        ~protocol_layer_s( );
 
     public:
 

@@ -1,6 +1,5 @@
 
 #include <boost/thread.hpp>
-#include <boost/weak_ptr.hpp>
 #include <map>
 
 #include "vtrc-connection-list.h"

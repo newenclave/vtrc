@@ -63,7 +63,7 @@ namespace vtrc { namespace common {
         }
 
         typedef vtrc_rpc_lowlevel::lowlevel_unit ll_unit_type;
-        typedef boost::shared_ptr<ll_unit_type>  ll_unit_sptr;
+        typedef shared_ptr<ll_unit_type>  ll_unit_sptr;
 
         typedef conditional_queues<rpc_unit_index, ll_unit_sptr> rpc_queue_type;
 
@@ -239,7 +239,7 @@ namespace vtrc { namespace common {
         }
 
         void push_rpc_message(uint64_t slot_id,
-                    boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess)
+                        shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess)
         {
             if( rpc_queue_.queue_exists( slot_id ) )
                 rpc_queue_.write_queue( slot_id, mess );
@@ -267,7 +267,7 @@ namespace vtrc { namespace common {
         void wait_call_slot(
                     uint64_t slot_id,
                     std::deque<
-                          boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
+                        shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
                     > &data_list,
                     uint32_t millisec )
         {
@@ -396,7 +396,7 @@ namespace vtrc { namespace common {
 
     void protocol_layer::wait_call_slot( uint64_t slot_id,
                          std::deque<
-                            boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
+                                shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
                          > &data_list,
                          uint32_t millisec )
     {
@@ -409,7 +409,7 @@ namespace vtrc { namespace common {
     }
 
     void protocol_layer::push_rpc_message(uint64_t slot_id,
-                      boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess)
+                        shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess)
     {
         impl_->push_rpc_message(slot_id, mess);
     }

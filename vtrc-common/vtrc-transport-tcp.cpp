@@ -1,7 +1,6 @@
 
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/atomic.hpp>
 
 #include <deque>
@@ -9,6 +8,7 @@
 
 #include "vtrc-transport-tcp.h"
 #include "vtrc-enviroment.h"
+#include "vtrc-memory.h"
 
 namespace vtrc { namespace common {
 
@@ -22,10 +22,10 @@ namespace vtrc { namespace common {
 
         struct message_holder {
             std::string message_;
-            // boost::shared_ptr<closure_type> closure_;
+            // shared_ptr<closure_type> closure_;
         };
 
-        boost::shared_ptr<bip::tcp::socket> sock_;
+        shared_ptr<bip::tcp::socket>        sock_;
         basio::io_service                  &ios_;
         enviroment                          env_;
 
@@ -78,15 +78,15 @@ namespace vtrc { namespace common {
             write_dispatcher_.post(
                    boost::bind( &this_type::write_impl, this,
                                 std::string( data, data + length ),
-                                boost::shared_ptr<closure_type>(),
+                                shared_ptr<closure_type>(),
                                 parent_->shared_from_this( )));
         }
 
         void write(const char *data, size_t length,
                                   closure_type &success)
         {
-            boost::shared_ptr<closure_type>
-                    closure(boost::make_shared<closure_type>(success));
+            shared_ptr<closure_type>
+                    closure(make_shared<closure_type>(success));
 
             write_dispatcher_.post(
                    boost::bind( &this_type::write_impl, this,
@@ -117,7 +117,7 @@ namespace vtrc { namespace common {
         }
 
         void write_impl( const std::string data,
-                         boost::shared_ptr<closure_type> closure,
+                         shared_ptr<closure_type> closure,
                          common::connection_iface_sptr inst)
         {
             bool empty = write_queue_.empty( );

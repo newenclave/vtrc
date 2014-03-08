@@ -1,11 +1,11 @@
-#include "vtrc-thread-pool.h"
 
 #include <boost/thread.hpp>
 #include <boost/asio.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
 
 #include <list>
+#include "vtrc-thread-pool.h"
+#include "vtrc-mutex.h"
+#include "vtrc-memory.h"
 
 namespace vtrc { namespace common {
 
@@ -15,7 +15,7 @@ namespace vtrc { namespace common {
 
         struct thread_context {
 
-            typedef boost::shared_ptr<thread_context> shared_type;
+            typedef shared_ptr<thread_context> shared_type;
             boost::thread *thread_;
             bool           in_use_;
 
@@ -35,8 +35,8 @@ namespace vtrc { namespace common {
         basio::io_service::work *wrk_;
         bool                     own_ios_;
 
-        std::list<thread_context::shared_type> threads_;
-        mutable boost::shared_mutex            threads_lock_;
+        std::list<thread_context::shared_type>  threads_;
+        mutable shared_mutex                    threads_lock_;
 
         struct interrupt {
             static void raise ( ) { throw interrupt( ); }
@@ -69,21 +69,21 @@ namespace vtrc { namespace common {
             while( count-- ) {
                 tmp.push_back(create_new_context( ));
             }
-            boost::lock_guard<boost::shared_mutex> lck(threads_lock_);
+            shared_lock lck(threads_lock_);
             threads_.insert(threads_.end(), tmp.begin(), tmp.end());
         }
 
         void inc( )
         {
             thread_context::shared_type n(create_new_context( ));
-            boost::lock_guard<boost::shared_mutex> lck(threads_lock_);
+            unique_shared_lock lck(threads_lock_);
             threads_.push_back(n);
         }
 
         thread_context::shared_type create_new_context( )
         {
             thread_context::shared_type
-                    new_context(boost::make_shared<thread_context>());
+                    new_context(make_shared<thread_context>());
             new_context->thread_ = new boost::thread(
                         boost::bind(&impl::run, this, new_context.get( )) );
             return new_context;
@@ -96,14 +96,14 @@ namespace vtrc { namespace common {
 
         size_t size( ) const
         {
-            boost::shared_lock<boost::shared_mutex> lck(threads_lock_);
+            shared_lock lck(threads_lock_);
             return threads_.size( );
         }
 
         void join_all( )
         {
             typedef std::list<thread_context::shared_type>::iterator iterator;
-            boost::shared_lock<boost::shared_mutex> lck(threads_lock_);
+            shared_lock lck(threads_lock_);
             for(iterator b(threads_.begin()), e(threads_.end()); b!=e; ++b ) {
                 if( (*b)->thread_->joinable( ) )
                     (*b)->thread_->join( );

@@ -2,8 +2,8 @@
 #define VTRC_RCP_CONTROLLER_H
 
 #include <google/protobuf/service.h>
-#include <boost/shared_ptr.hpp>
 #include <string>
+#include "vtrc-memory.h"
 
 namespace vtrc { namespace common {
 
@@ -35,7 +35,7 @@ namespace vtrc { namespace common {
         void NotifyOnCancel(google::protobuf::Closure* callback);
     };
 
-    typedef boost::shared_ptr<rpc_controller> rpc_controller_sptr;
+    typedef shared_ptr<rpc_controller> rpc_controller_sptr;
 
 }}
 

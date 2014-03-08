@@ -8,6 +8,7 @@
 
 #include "vtrc-client.h"
 
+
 namespace vtrc { namespace client {
 
     namespace basio = boost::asio;
@@ -23,7 +24,7 @@ namespace vtrc { namespace client {
 
         vtrc_client             *client_;
 
-        boost::shared_ptr<protocol_layer> protocol_;
+        shared_ptr<protocol_layer_c> protocol_;
 
         impl( boost::asio::io_service &ios, vtrc_client *client )
             :ios_(ios)
@@ -40,7 +41,7 @@ namespace vtrc { namespace client {
 
         void init(  )
         {
-            protocol_.reset(new client::protocol_layer( parent_ ));
+            protocol_.reset(new client::protocol_layer_c( parent_ ));
             start_reading( );
         }
 
@@ -119,10 +120,10 @@ namespace vtrc { namespace client {
         impl_->parent_ = this;
     }
 
-    boost::shared_ptr<client_tcp> client_tcp::create(basio::io_service &ios,
+    shared_ptr<client_tcp> client_tcp::create(basio::io_service &ios,
                                                         vtrc_client *client)
     {
-        boost::shared_ptr<client_tcp> new_inst (new client_tcp( ios, client ));
+        shared_ptr<client_tcp> new_inst (new client_tcp( ios, client ));
         return new_inst;
     }
 

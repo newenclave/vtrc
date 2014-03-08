@@ -2,7 +2,7 @@
 #define VTRC_TRANSFORMER_IFACE_H
 
 #include <stdlib.h>
-#include <boost/shared_ptr.hpp>
+#include "vtrc-memory.h"
 
 namespace vtrc { namespace common {
 
@@ -11,7 +11,7 @@ namespace vtrc { namespace common {
         virtual void transform( char *data, size_t length ) = 0;
     };
 
-    typedef boost::shared_ptr<transformer_iface> transformer_iface_sptr;
+    typedef shared_ptr<transformer_iface> transformer_iface_sptr;
 
     namespace transformers {
         namespace none {

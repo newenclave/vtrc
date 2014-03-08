@@ -1,10 +1,10 @@
 #ifndef VTRC_CLIENT_H
 #define VTRC_CLIENT_H
 
-#include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
 
 #include "vtrc-common/vtrc-connection-iface.h"
+#include "vtrc-common/vtrc-memory.h"
 
 namespace boost {
 
@@ -31,7 +31,7 @@ namespace vtrc { namespace client {
 
         vtrc_client( boost::asio::io_service &ios );
         ~vtrc_client( );
-        boost::shared_ptr<google::protobuf::RpcChannel> get_channel( );
+        shared_ptr<google::protobuf::RpcChannel> get_channel( );
         void connect( const std::string &address, const std::string &service );
         void async_connect( const std::string &address,
                             const std::string &service,

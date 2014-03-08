@@ -1,6 +1,5 @@
 
 #include <boost/asio.hpp>
-#include <boost/make_shared.hpp>
 
 #include "vtrc-application.h"
 #include "vtrc-connection-list.h"
@@ -16,18 +15,18 @@ namespace vtrc { namespace server {
         boost::asio::io_service            *ios_;
         const bool                          own_ios_;
 
-        boost::shared_ptr<connection_list>  clients_;
+        shared_ptr<connection_list>         clients_;
 
         impl( )
             :ios_(new boost::asio::io_service)
             ,own_ios_(true)
-            ,clients_(boost::make_shared<connection_list>( ))
+            ,clients_(make_shared<connection_list>( ))
         { }
 
         impl( boost::asio::io_service *ios )
             :ios_(ios)
             ,own_ios_(false)
-            ,clients_(boost::make_shared<connection_list>( ))
+            ,clients_(make_shared<connection_list>( ))
         { }
 
         ~impl( ) try
@@ -49,7 +48,7 @@ namespace vtrc { namespace server {
             return *ios_;
         }
 
-        boost::shared_ptr<connection_list> get_clients( )
+        shared_ptr<connection_list> get_clients( )
         {
             return clients_;
         }
@@ -79,7 +78,7 @@ namespace vtrc { namespace server {
         return impl_->get_io_service( );
     }
 
-    boost::shared_ptr<connection_list> application::get_clients()
+    shared_ptr<connection_list> application::get_clients()
     {
         return impl_->get_clients( );
     }

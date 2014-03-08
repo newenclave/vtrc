@@ -1,9 +1,10 @@
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
-#include <boost/make_shared.hpp>
 #include <sstream>
 #include <deque>
 #include <algorithm>
+
+#include "vtrc-memory.h"
 
 #include "vtrc-endpoint-iface.h"
 #include "vtrc-application.h"
@@ -41,7 +42,7 @@ namespace vtrc { namespace server { namespace endpoints {
 
             std::vector<char>                   read_buff_;
 
-            boost::shared_ptr<protocol_layer>   protocol_;
+            shared_ptr<protocol_layer_s>        protocol_;
 
             tcp_connection(endpoint_iface &endpoint, bip::tcp::socket *sock)
                 :common::transport_tcp(sock)
@@ -51,15 +52,15 @@ namespace vtrc { namespace server { namespace endpoints {
                 ,env_(endpoint_.get_enviroment( ))
                 ,read_buff_(4096)
             {
-                protocol_ = boost::make_shared<server::protocol_layer>
-                                                       (boost::ref(app_), this);
+                protocol_ = make_shared<server::protocol_layer_s>
+                                                     (boost::ref(app_), this);
             }
 
-            static boost::shared_ptr<tcp_connection> create
+            static shared_ptr<tcp_connection> create
                              (endpoint_iface &endpoint, bip::tcp::socket *sock)
             {
-                boost::shared_ptr<tcp_connection> new_inst
-                                    (boost::make_shared<tcp_connection>
+                shared_ptr<tcp_connection> new_inst
+                                    (make_shared<tcp_connection>
                                                   (boost::ref(endpoint), sock));
                 new_inst->init( );
                 return new_inst;
@@ -119,7 +120,7 @@ namespace vtrc { namespace server { namespace endpoints {
                 }
             }
 
-            protocol_layer &get_protocol( )
+            protocol_layer_s &get_protocol( )
             {
                 return *protocol_;
             }
@@ -191,7 +192,7 @@ namespace vtrc { namespace server { namespace endpoints {
                 } else {
                     try {
                         std::cout << "accept\n";
-                        boost::shared_ptr<tcp_connection> new_conn
+                        shared_ptr<tcp_connection> new_conn
                                          (tcp_connection::create(*this, sock));
                         app_.get_clients( )->store( new_conn );
                         app_.on_new_connection_ready( new_conn.get( ) );

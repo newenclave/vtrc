@@ -2,7 +2,7 @@
 #define VTRC_HASHER_IFACE_H
 
 #include <string>
-#include <boost/shared_ptr.hpp>
+#include "vtrc-memory.h"
 
 namespace vtrc { namespace common {
     struct hash_iface {
@@ -17,7 +17,7 @@ namespace vtrc { namespace common {
                                       const void *hash) const = 0;
     };
 
-    typedef boost::shared_ptr<hash_iface> hasher_iface_sptr;
+    typedef shared_ptr<hash_iface> hasher_iface_sptr;
 
     namespace hash {
 

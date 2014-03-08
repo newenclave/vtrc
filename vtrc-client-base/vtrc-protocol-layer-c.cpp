@@ -17,14 +17,14 @@ namespace vtrc { namespace client {
 
     namespace gpb = google::protobuf;
 
-    struct protocol_layer::impl {
+    struct protocol_layer_c::impl {
 
         typedef impl this_type;
 
         typedef boost::function<void (void)> stage_funcion_type;
 
         common::transport_iface *connection_;
-        protocol_layer          *parent_;
+        protocol_layer_c          *parent_;
         stage_funcion_type       stage_call_;
 
         impl( common::transport_iface *c )
@@ -63,8 +63,9 @@ namespace vtrc { namespace client {
                         (parent_->message_queue( ).front( ));
                 bool check = parent_->check_message( mess );
 
-                boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
-                        llu( new  vtrc_rpc_lowlevel::lowlevel_unit );
+                shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
+                                llu( new  vtrc_rpc_lowlevel::lowlevel_unit );
+
                 parent_->parse_message( mess, *llu );
                 std::cout << "push " << llu->id( ) << "\n";
                 parent_->push_rpc_message( llu->id( ), llu );
@@ -141,29 +142,29 @@ namespace vtrc { namespace client {
 
     };
 
-    protocol_layer::protocol_layer( common::transport_iface *connection )
+    protocol_layer_c::protocol_layer_c( common::transport_iface *connection )
         :common::protocol_layer(connection)
         ,impl_(new impl(connection))
     {
         impl_->parent_ = this;
     }
 
-    protocol_layer::~protocol_layer( )
+    protocol_layer_c::~protocol_layer_c( )
     {
         delete impl_;
     }
 
-    void protocol_layer::init( )
+    void protocol_layer_c::init( )
     {
         impl_->init( );
     }
 
-    void protocol_layer::on_data_ready( )
+    void protocol_layer_c::on_data_ready( )
     {
         impl_->data_ready( );
     }
 
-    bool protocol_layer::ready( ) const
+    bool protocol_layer_c::ready( ) const
     {
         return impl_->ready( );
     }

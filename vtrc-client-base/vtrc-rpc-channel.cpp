@@ -1,7 +1,5 @@
 #include "vtrc-rpc-channel.h"
 
-#include <boost/weak_ptr.hpp>
-
 #include <google/protobuf/service.h>
 #include <google/protobuf/descriptor.h>
 
@@ -16,9 +14,9 @@ namespace vtrc { namespace client {
 
     struct rpc_channel::impl {
 
-        boost::weak_ptr<common::connection_iface> connection_;
+        weak_ptr<common::connection_iface> connection_;
 
-        impl(boost::shared_ptr<common::connection_iface> c)
+        impl(shared_ptr<common::connection_iface> c)
             :connection_(c)
         {}
 
@@ -29,7 +27,7 @@ namespace vtrc { namespace client {
                         gpb::Closure* done)
         {
 
-            boost::shared_ptr<common::connection_iface> cl(connection_.lock());
+            common::connection_iface_sptr cl(connection_.lock());
 
             if( cl.get( ) == NULL )
                 throw std::runtime_error( "Channel is empty" );
@@ -37,7 +35,7 @@ namespace vtrc { namespace client {
             std::string service_name(method->service( )->full_name( ));
             std::string method_name(method->name( ));
 
-            boost::shared_ptr<
+            shared_ptr<
                     vtrc_rpc_lowlevel::lowlevel_unit
             > llu(new vtrc_rpc_lowlevel::lowlevel_unit);
 
@@ -56,8 +54,9 @@ namespace vtrc { namespace client {
 
             cl->get_protocol( ).call_rpc_method( call_id, *llu );
 
-            std::deque<
-               boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
+            std::deque< shared_ptr <
+                        vtrc_rpc_lowlevel::lowlevel_unit
+                      >
             > data_list;
 
             cl->get_protocol( ).wait_call_slot( call_id, data_list, 2000 );
@@ -70,7 +69,7 @@ namespace vtrc { namespace client {
         }
     };
 
-    rpc_channel::rpc_channel( boost::shared_ptr<common::connection_iface> c )
+    rpc_channel::rpc_channel( common::connection_iface_sptr c )
         :impl_(new impl(c))
     {}
 

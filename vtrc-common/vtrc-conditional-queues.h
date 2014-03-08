@@ -3,8 +3,7 @@
 
 #include <deque>
 #include <boost/thread/condition_variable.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
+#include "vtrc-memory.h"
 
 namespace vtrc { namespace common {
 
@@ -40,7 +39,7 @@ namespace vtrc { namespace common {
             {}
         };
 
-        typedef boost::shared_ptr<hold_value_type> hold_value_type_sptr;
+        typedef shared_ptr<hold_value_type> hold_value_type_sptr;
         typedef std::map<key_type, hold_value_type_sptr> map_type;
 
     private:
@@ -181,8 +180,7 @@ namespace vtrc { namespace common {
             typename map_type::iterator f(store_.find( key ));
             if( f == store_.end( ) ) {
                 store_.insert(
-                    std::make_pair( key,
-                        boost::make_shared<hold_value_type>( ) ));
+                    std::make_pair( key, make_shared<hold_value_type>( ) ));
             }
         }
 

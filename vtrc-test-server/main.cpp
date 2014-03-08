@@ -36,6 +36,8 @@
 #include "protocol/vtrc-auth.pb.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
 
+#include "vtrc-common/vtrc-memory.h"
+
 namespace ba = boost::asio;
 
 using namespace vtrc;
@@ -144,7 +146,7 @@ int main( ) try {
     main_app app;
     vtrc::common::thread_pool poll(app.get_io_service( ), 4);
 
-    boost::shared_ptr<vtrc::server::endpoint_iface> tcp_ep
+    shared_ptr<vtrc::server::endpoint_iface> tcp_ep
             (vtrc::server::endpoints::tcp::create(app, "0.0.0.0", 44667));
 
     tcp_ep->start( );

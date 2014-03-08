@@ -4,9 +4,9 @@
 #include <boost/random/random_device.hpp>
 #include <boost/random.hpp>
 
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
 #include <limits>
+
+#include "vtrc-memory.h"
 
 namespace  vtrc { namespace  common {
 
@@ -42,13 +42,13 @@ namespace  vtrc { namespace  common {
     };
 
     struct random_device::impl {
-        boost::shared_ptr<random_impl> random_dev_;
+        shared_ptr<random_impl> random_dev_;
         impl( bool use_mt19937 )
         {
             if( !use_mt19937 ) {
-                random_dev_ = boost::make_shared<device_impl>( );
+                random_dev_ = make_shared<device_impl>( );
             } else {
-                random_dev_ = boost::make_shared<mt19937_impl>( );
+                random_dev_ = make_shared<mt19937_impl>( );
             }
         }
         void generate(char *b, char *e)
