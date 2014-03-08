@@ -79,8 +79,6 @@ namespace vtrc { namespace common {
 
         data_queue::queue_base_sptr  queue_;
 
-        boost::mutex                 write_locker_; // use strand!
-
         rpc_queue_type               rpc_queue_;
         boost::atomic_int64_t        rpc_index_;
 
@@ -183,9 +181,6 @@ namespace vtrc { namespace common {
 
         bool check_message( const std::string &mess )
         {
-
-            boost::mutex::scoped_lock l( write_locker_ );
-
             const size_t hash_length = sign_checker_->hash_size( );
             const size_t diff_len    = mess.size( ) - hash_length;
 
@@ -214,16 +209,6 @@ namespace vtrc { namespace common {
         const call_context *get_call_context( ) const
         {
             return context_.get( );
-        }
-
-        void set_hash_transformer( hasher_iface *new_hasher,
-                                   transformer_iface *new_transformer,
-                                   transformer_iface *new_reverter)
-        {
-            boost::mutex::scoped_lock l( write_locker_ );
-            if(new_hasher)      sign_maker_.reset(new_hasher);
-            if(new_transformer) transformer_.reset(new_transformer);
-            if(new_reverter)    reverter_.reset(new_reverter);
         }
 
         void change_sign_checker( hasher_iface *new_signer )
@@ -358,14 +343,6 @@ namespace vtrc { namespace common {
     const data_queue::queue_base &protocol_layer::get_data_queue( ) const
     {
         return impl_->get_data_queue( );
-    }
-
-    void protocol_layer::set_hasher_transformer( hasher_iface *new_hasher,
-                                        transformer_iface *new_transformer,
-                                        transformer_iface *new_reverter)
-    {
-        impl_->set_hash_transformer( new_hasher,
-                                     new_transformer, new_reverter );
     }
 
     void protocol_layer::change_sign_maker( hasher_iface *new_hasher )
