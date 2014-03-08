@@ -60,9 +60,7 @@ namespace  vtrc { namespace  common {
 
     random_device::random_device( bool use_device )
         :impl_(new impl(use_device))
-    {
-
-    }
+    { }
 
     random_device::~random_device( )
     {
