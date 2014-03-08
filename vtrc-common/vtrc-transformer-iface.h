@@ -20,7 +20,10 @@ namespace vtrc { namespace common {
         }
 
         namespace erseefor {
-            transformer_iface *create( const char *key, size_t keysize );
+            transformer_iface *create(
+                        const char *transform_key, size_t t_length,
+                        const char *revert_key,    size_t r_length);
+
         }
 
 //        transformer_iface *create_by_index( unsigned var );

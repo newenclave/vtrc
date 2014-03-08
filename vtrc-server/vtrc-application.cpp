@@ -22,13 +22,13 @@ namespace vtrc { namespace server {
             :ios_(new boost::asio::io_service)
             ,own_ios_(true)
             ,clients_(boost::make_shared<connection_list>( ))
-        {}
+        { }
 
         impl( boost::asio::io_service *ios )
             :ios_(ios)
             ,own_ios_(false)
             ,clients_(boost::make_shared<connection_list>( ))
-        {}
+        { }
 
         ~impl( ) try
         {
