@@ -7,6 +7,7 @@ list(APPEND src_dirs
         .
         ./hash
         ./proto-helper
+        ./config
     )
 
 foreach( src_dir ${src_dirs} )
@@ -14,6 +15,9 @@ foreach( src_dir ${src_dirs} )
     file(GLOB headers ${src_dir}/*.h)
     list(APPEND lib_src ${headers})
 endforeach( )
+
+set( CONFIG_FILES_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/config)
+include_directories( ${CONFIG_FILES_DIRECTORY} )
 
 ####################### PROTOCOL BASE #######################
 
@@ -83,8 +87,6 @@ foreach( dep ${dependencies} )
 
 endforeach(dep)
 
-
-
 set_target_properties(${lib_name} PROPERTIES COMPILE_DEFINITIONS "STATIC")
 get_target_property(${lib_name}_LOCATION ${lib_name} LOCATION)
 
@@ -93,6 +95,8 @@ set(${lib_name}_DEFINITIONS "-DSTATIC" PARENT_SCOPE)
 set(${lib_name}_INCLUDE_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${GENERATED_FILES_DIR}
+    ${CONFIG_FILES_DIRECTORY}
     PARENT_SCOPE
 )
+
 set(${lib_name}_LIBRARIES ${${lib_name}_LOCATION} PARENT_SCOPE)

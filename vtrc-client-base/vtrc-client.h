@@ -4,7 +4,6 @@
 #include <boost/function.hpp>
 
 #include "vtrc-common/vtrc-connection-iface.h"
-#include "vtrc-common/vtrc-memory.h"
 
 namespace boost {
 

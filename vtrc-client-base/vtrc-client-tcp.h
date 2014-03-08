@@ -4,7 +4,7 @@
 #include <boost/function.hpp>
 
 #include "vtrc-common/vtrc-transport-tcp.h"
-#include "vtrc-common/vtrc-memory.h"
+#include "vtrc-memory.h"
 
 namespace boost { namespace asio {
     class io_service;

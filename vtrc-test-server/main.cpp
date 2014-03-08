@@ -36,7 +36,7 @@
 #include "protocol/vtrc-auth.pb.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
 
-#include "vtrc-common/vtrc-memory.h"
+#include "vtrc-memory.h"
 
 namespace ba = boost::asio;
 

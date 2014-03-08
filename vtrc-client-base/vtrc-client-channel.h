@@ -2,7 +2,7 @@
 #define VTRC_CLIENT_CHANNEL_H
 
 #include <google/protobuf/service.h>
-#include "vtrc-common/vtrc-memory.h"
+#include "vtrc-memory.h"
 
 namespace boost { namespace asio {
     class io_service;
