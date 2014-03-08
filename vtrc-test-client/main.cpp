@@ -19,7 +19,6 @@ void on_connect( const boost::system::error_code &err )
 
 using namespace vtrc;
 
-
 int main( )
 {
 
