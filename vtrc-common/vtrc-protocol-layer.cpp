@@ -8,7 +8,7 @@
 #include "vtrc-protocol-layer.h"
 
 #include "vtrc-data-queue.h"
-#include "vtrc-hasher-iface.h"
+#include "vtrc-hash-iface.h"
 #include "vtrc-transformer-iface.h"
 
 #include "vtrc-transport-iface.h"
@@ -88,8 +88,8 @@ namespace vtrc { namespace common {
 
         impl( transport_iface *c )
             :connection_(c)
-            ,hash_maker_(common::hasher::create_default( ))
-            ,hash_checker_(common::hasher::create_default( ))
+            ,hash_maker_(common::hash::create_default( ))
+            ,hash_checker_(common::hash::create_default( ))
             //,transformer_(common::transformers::erseefor::create( "1234", 4 ))
             ,transformer_(common::transformers::none::create( ))
             ,reverter_(common::transformers::none::create( ))
@@ -213,12 +213,12 @@ namespace vtrc { namespace common {
             return context_.get( );
         }
 
-        void change_sign_checker( hasher_iface *new_signer )
+        void change_sign_checker( hash_iface *new_signer )
         {
             hash_checker_.reset(new_signer);
         }
 
-        void change_sign_maker( hasher_iface *new_signer )
+        void change_sign_maker( hash_iface *new_signer )
         {
             hash_maker_.reset(new_signer);
         }
@@ -347,12 +347,12 @@ namespace vtrc { namespace common {
         return impl_->message_queue( );
     }
 
-    void protocol_layer::change_hash_maker( hasher_iface *new_hasher )
+    void protocol_layer::change_hash_maker( hash_iface *new_hasher )
     {
         impl_->change_sign_maker( new_hasher );
     }
 
-    void protocol_layer::change_hash_checker( hasher_iface *new_hasher )
+    void protocol_layer::change_hash_checker( hash_iface *new_hasher )
     {
         impl_->change_sign_checker( new_hasher );
     }

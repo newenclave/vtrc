@@ -5,8 +5,8 @@
 #include <boost/shared_ptr.hpp>
 
 namespace vtrc { namespace common {
-    struct hasher_iface {
-        virtual ~hasher_iface( ) { }
+    struct hash_iface {
+        virtual ~hash_iface( ) { }
 
         virtual size_t hash_size( ) const = 0;
 
@@ -17,28 +17,28 @@ namespace vtrc { namespace common {
                                       const void *hash) const = 0;
     };
 
-    typedef boost::shared_ptr<hasher_iface> hasher_iface_sptr;
+    typedef boost::shared_ptr<hash_iface> hasher_iface_sptr;
 
-    namespace hasher {
+    namespace hash {
 
         namespace  none {
-            hasher_iface *create( );
+            hash_iface *create( );
         }
 
         namespace sha2 {
-            hasher_iface *create256( );
-            hasher_iface *create384( );
-            hasher_iface *create512( );
+            hash_iface *create256( );
+            hash_iface *create384( );
+            hash_iface *create512( );
         }
 
         namespace crc {
-            hasher_iface *create16( );
-            hasher_iface *create32( );
-            hasher_iface *create64( );
+            hash_iface *create16( );
+            hash_iface *create32( );
+            hash_iface *create64( );
         }
 
-        hasher_iface *create_by_index( unsigned var );
-        hasher_iface *create_default( );
+        hash_iface *create_by_index( unsigned var );
+        hash_iface *create_default( );
 
     }
 

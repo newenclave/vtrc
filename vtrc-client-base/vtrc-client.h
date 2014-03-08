@@ -35,7 +35,7 @@ namespace vtrc { namespace client {
         void connect( const std::string &address, const std::string &service );
         void async_connect( const std::string &address,
                             const std::string &service,
-                            common::closure_type &closure);
+                            common::closure_type closure);
 
     };
 

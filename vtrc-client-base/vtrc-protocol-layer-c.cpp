@@ -4,12 +4,11 @@
 #include <boost/asio.hpp>
 
 #include "vtrc-common/vtrc-data-queue.h"
-#include "vtrc-common/vtrc-hasher-iface.h"
+#include "vtrc-common/vtrc-hash-iface.h"
 #include "vtrc-common/vtrc-transformer-iface.h"
 
 #include "vtrc-protocol-layer-c.h"
 #include "vtrc-transport-iface.h"
-#include "vtrc-common/vtrc-hasher-iface.h"
 
 #include "protocol/vtrc-auth.pb.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
@@ -91,7 +90,7 @@ namespace vtrc { namespace client {
         {
             if( !err ) {
                 parent_->change_hash_maker(
-                   common::hasher::create_by_index( vtrc_auth::HASH_CRC_64 ));
+                   common::hash::create_by_index( vtrc_auth::HASH_CRC_64 ));
             }
         }
 
@@ -116,7 +115,7 @@ namespace vtrc { namespace client {
             select.set_hello_message( "Miten menee?" );
 
             parent_->change_hash_checker(
-               common::hasher::create_by_index( vtrc_auth::HASH_CRC_64 ));
+               common::hash::create_by_index( vtrc_auth::HASH_CRC_64 ));
 
             send_proto_message( select,
                     boost::bind( &this_type::set_options, this, _1 ) );

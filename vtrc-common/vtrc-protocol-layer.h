@@ -25,7 +25,7 @@ namespace vtrc { namespace common {
     }
 
     struct connection_iface;
-    struct hasher_iface;
+    struct hash_iface;
     struct transformer_iface;
     struct transport_iface;
     class  call_context;
@@ -115,8 +115,8 @@ namespace vtrc { namespace common {
 
         /* ==== delete this part ==== */
 
-        void change_hash_maker( hasher_iface *new_hasher );
-        void change_hash_checker( hasher_iface *new_hasher );
+        void change_hash_maker( hash_iface *new_hasher );
+        void change_hash_checker( hash_iface *new_hasher );
 
         void change_transformer( transformer_iface *new_transformer);
         void change_reverter( transformer_iface *new_reverter);

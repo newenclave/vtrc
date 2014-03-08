@@ -1,10 +1,10 @@
-#include "vtrc-hasher-iface.h"
+#include "vtrc-hash-iface.h"
 
-namespace vtrc { namespace common {  namespace hasher {
+namespace vtrc { namespace common {  namespace hash {
 
     namespace {
 
-        struct hasher_none: public hasher_iface {
+        struct hasher_none: public hash_iface {
 
             size_t hash_size( ) const
             {
@@ -29,7 +29,7 @@ namespace vtrc { namespace common {  namespace hasher {
     }
 
     namespace none {
-        hasher_iface *create( )
+        hash_iface *create( )
         {
             return new hasher_none;
         }

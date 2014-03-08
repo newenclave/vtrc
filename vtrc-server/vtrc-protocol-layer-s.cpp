@@ -10,7 +10,7 @@
 
 #include "vtrc-monotonic-timer.h"
 #include "vtrc-data-queue.h"
-#include "vtrc-hasher-iface.h"
+#include "vtrc-hash-iface.h"
 #include "vtrc-transformer-iface.h"
 
 #include "vtrc-transport-iface.h"
@@ -133,9 +133,9 @@ namespace vtrc { namespace server {
             pop_message( );
 
             parent_->change_hash_checker(
-                        common::hasher::create_by_index( cs.hash( ) ));
+                        common::hash::create_by_index( cs.hash( ) ));
             parent_->change_hash_maker(
-                        common::hasher::create_by_index( cs.hash( ) ));
+                        common::hash::create_by_index( cs.hash( ) ));
 
             vtrc_auth::transformer_setup ts;
 

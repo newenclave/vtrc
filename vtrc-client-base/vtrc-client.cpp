@@ -91,7 +91,7 @@ namespace vtrc { namespace client {
 
     void vtrc_client::async_connect( const std::string &address,
                             const std::string &service,
-                            common::closure_type &closure )
+                            common::closure_type closure )
     {
         impl_->async_connect( address, service, closure );
     }
