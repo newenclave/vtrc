@@ -11,6 +11,7 @@
 namespace  vtrc { namespace  common {
 
     struct random_impl {
+        virtual ~random_impl( );
         virtual void generate( char *b, char *e ) = 0;
     };
 
