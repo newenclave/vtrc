@@ -42,6 +42,8 @@ namespace vtrc { namespace common {
 
     public:
 
+        typedef std::deque<std::string> message_queue_type;
+
         protocol_layer( transport_iface *connection );
         virtual ~protocol_layer( );
 
@@ -108,8 +110,8 @@ namespace vtrc { namespace common {
 
         /* ==== delete this part ==== */
 
-        data_queue::queue_base &get_data_queue( );
-        const data_queue::queue_base &get_data_queue( ) const;
+        message_queue_type &message_queue( );
+        const message_queue_type &message_queue( ) const;
 
         /* ==== delete this part ==== */
 

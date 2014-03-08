@@ -121,7 +121,7 @@ namespace vtrc { namespace server {
 
         void on_client_selection( )
         {
-            std::string &mess(parent_->get_data_queue( ).messages( ).front( ));
+            std::string &mess(parent_->message_queue( ).front( ));
             bool check = check_message_hash(mess);
             if( !check ) {
                 connection_->close( );
@@ -150,7 +150,7 @@ namespace vtrc { namespace server {
 
         void get_pop_message( gpb::Message &capsule )
         {
-            std::string &mess(parent_->get_data_queue( ).messages( ).front( ));
+            std::string &mess(parent_->message_queue( ).front( ));
             bool check = check_message_hash(mess);
             if( !check ) {
                 connection_->close( );
@@ -255,7 +255,7 @@ namespace vtrc { namespace server {
 
         void on_rcp_call_ready( )
         {
-            while( !parent_->get_data_queue( ).messages( ).empty( ) ) {
+            while( !parent_->message_queue( ).empty( ) ) {
                 boost::shared_ptr <
                             vtrc_rpc_lowlevel::lowlevel_unit
                         > llu(new vtrc_rpc_lowlevel::lowlevel_unit);

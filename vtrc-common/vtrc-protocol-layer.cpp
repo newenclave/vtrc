@@ -26,6 +26,8 @@ namespace vtrc { namespace common {
 
     namespace {
 
+        typedef protocol_layer::message_queue_type message_queue_type;
+
         void raise_error( unsigned code )
         {
             throw vtrc::common::exception( code );
@@ -161,14 +163,14 @@ namespace vtrc { namespace common {
 
         // --------------- sett ----------------- //
 
-        data_queue::queue_base &get_data_queue( )
+        message_queue_type &message_queue( )
         {
-            return *queue_;
+            return queue_->messages( );
         }
 
-        const data_queue::queue_base &get_data_queue( ) const
+        const message_queue_type &message_queue( ) const
         {
-            return *queue_;
+            return queue_->messages( );
         }
 
         void parse_message( const std::string &mess,
@@ -335,14 +337,14 @@ namespace vtrc { namespace common {
         impl_->parse_message(mess, result);
     }
 
-    data_queue::queue_base &protocol_layer::get_data_queue( )
+    message_queue_type &protocol_layer::message_queue( )
     {
-        return impl_->get_data_queue( );
+        return impl_->message_queue( );
     }
 
-    const data_queue::queue_base &protocol_layer::get_data_queue( ) const
+    const message_queue_type &protocol_layer::message_queue( ) const
     {
-        return impl_->get_data_queue( );
+        return impl_->message_queue( );
     }
 
     void protocol_layer::change_hash_maker( hasher_iface *new_hasher )

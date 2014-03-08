@@ -59,9 +59,9 @@ namespace vtrc { namespace client {
 
         void on_rpc_process( )
         {
-            while( !parent_->get_data_queue( ).messages( ).empty( ) ) {
+            while( !parent_->message_queue( ).empty( ) ) {
                 std::string &mess
-                        (parent_->get_data_queue( ).messages( ).front( ));
+                        (parent_->message_queue( ).front( ));
                 bool check = parent_->check_message( mess );
 
                 boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
@@ -75,7 +75,7 @@ namespace vtrc { namespace client {
 
         void on_server_ready( )
         {
-            std::string &mess = parent_->get_data_queue( ).messages( ).front( );
+            std::string &mess = parent_->message_queue( ).front( );
             bool check = parent_->check_message( mess );
             vtrc_auth::transformer_setup transformer_proto;
 
@@ -97,7 +97,7 @@ namespace vtrc { namespace client {
 
         void on_hello_call( )
         {
-            std::string &mess = parent_->get_data_queue( ).messages( ).front( );
+            std::string &mess = parent_->message_queue( ).front( );
             bool check = parent_->check_message( mess );
             std::cout << "Message check: " << check << "\n";
             vtrc_auth::init_protocol init_proto;
