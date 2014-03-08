@@ -34,8 +34,7 @@ namespace  vtrc { namespace  common {
 
         void generate( char *b, char *e )
         {
-            boost::random::uniform_int_distribution<>
-                                        index_dist(0, UCHAR_MAX);
+            boost::random::uniform_int_distribution< > index_dist(0, UCHAR_MAX);
             for( ;b!=e ;++b ) {
                 *b = index_dist(rng_);
             }

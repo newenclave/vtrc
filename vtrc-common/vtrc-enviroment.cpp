@@ -46,7 +46,9 @@ namespace vtrc { namespace common {
         void set( const std::string &name, const std::string &value )
         {
             unique_lock l(data_lock_);
+
             data_type::iterator f(data_.find(name));
+
             if( f == data_.end( ) ) {
                 data_.insert( std::make_pair(name, value) );
             } else {
