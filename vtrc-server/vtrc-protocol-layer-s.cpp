@@ -124,14 +124,11 @@ namespace vtrc { namespace server {
             std::string &mess(parent_->get_data_queue( ).messages( ).front( ));
             bool check = check_message_hash(mess);
             if( !check ) {
-                std::cout << "bad hash\n";
                 connection_->close( );
                 return;
             }
             vtrc_auth::client_selection cs;
             parse_message( mess, cs );
-
-            std::cout << cs.DebugString( ) << "\n";
 
             pop_message( );
 
@@ -142,7 +139,6 @@ namespace vtrc { namespace server {
             vtrc_auth::transformer_setup ts;
 
             ts.set_ready( true );
-            ts.set_opt_message( "good" );
 
             stage_function_ =
                     boost::bind( &this_type::on_rcp_call_ready, this );
