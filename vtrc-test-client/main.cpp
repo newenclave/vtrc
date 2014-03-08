@@ -7,6 +7,9 @@
 #include "vtrc-client-base/vtrc-client.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
 
+#include <boost/random.hpp>
+#include <boost/random/random_device.hpp>
+
 void on_connect( const boost::system::error_code &err )
 {
     std::cout << "connected "
@@ -19,7 +22,19 @@ using namespace vtrc;
 
 int main( )
 {
+    boost::mt19937 rng_;
+    boost::random_device rd;
+    unsigned seed = 0;
+    rd.generate( reinterpret_cast<char *>(&seed),
+                 reinterpret_cast<char *>(&seed) + sizeof(seed));
+    rng_.seed( seed );
+    boost::random::uniform_int_distribution<>
+                                index_dist(0, UCHAR_MAX);
+    for( int i=0 ;i< 255 ;++i ) {
+        std::cout << index_dist(rng_) << "\n";
+    }
 
+    return 0;
     common::thread_pool tp(4);
     client::vtrc_client cl( tp.get_io_service( ) );
 

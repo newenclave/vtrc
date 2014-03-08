@@ -6,18 +6,18 @@
 
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
+#include <limits.h>
 
 namespace  vtrc { namespace  common {
 
     struct random_impl {
-        template <typename IterType>
-        virtual void generate( IterType b, const IterType e ) = 0;
+        virtual void generate( char *b, char *e ) = 0;
     };
 
     struct device_impl: public random_impl {
         boost::random_device rd_;
-        template <typename IterType>
-        void generate( IterType b, const IterType e )
+
+        void generate( char *b, char *e )
         {
             rd_.generate( b, e );
         }
@@ -26,7 +26,7 @@ namespace  vtrc { namespace  common {
     struct pseudo_impl: public random_impl {
 
         boost::mt19937 rng_;
-        random_impl(  )
+        pseudo_impl(  )
         {
             boost::random_device rd;
             unsigned seed = 0;
@@ -35,10 +35,13 @@ namespace  vtrc { namespace  common {
             rng_.seed( seed );
         }
 
-        template <typename IterType>
-        void generate( IterType b, const IterType e )
+        void generate( char *b, char *e )
         {
-
+            boost::random::uniform_int_distribution<>
+                                        index_dist(0, UCHAR_MAX);
+            for( ;b!=e ;++b ) {
+                *b = index_dist(rng_);
+            }
         }
     };
 

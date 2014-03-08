@@ -21,6 +21,7 @@ find_package( Boost 1.50 COMPONENTS
                     regex
                     thread
                     atomic
+                    random
                 REQUIRED)
 find_package( Protobuf REQUIRED)
 

@@ -13,7 +13,7 @@ namespace vtrc { namespace common {
 
     public:
 
-        random_device( bool use_mt19937 );
+        random_device( bool use_mt19937 = false );
         ~random_device( );
 
     };
