@@ -72,7 +72,8 @@ namespace vtrc { namespace common {
 
         transport_iface             *connection_;
         protocol_layer              *parent_;
-        hasher_iface_sptr            hasher_;
+        hasher_iface_sptr            sign_maker_;
+        hasher_iface_sptr            sign_checker_;
         transformer_iface_sptr       transformer_;
         transformer_iface_sptr       reverter_;
 
@@ -87,7 +88,8 @@ namespace vtrc { namespace common {
 
         impl( transport_iface *c )
             :connection_(c)
-            ,hasher_(common::hasher::create_default( ))
+            ,sign_maker_(common::hasher::create_default( ))
+            ,sign_checker_(common::hasher::create_default( ))
             //,transformer_(common::transformers::erseefor::create( "1234", 4 ))
             ,transformer_(common::transformers::none::create( ))
             ,reverter_(common::transformers::none::create( ))
@@ -102,9 +104,9 @@ namespace vtrc { namespace common {
              *  <packed_size(data_length+hash_length)><hash(data)><data>
             */
             std::string result(queue_->pack_size(
-                                length + hasher_->hash_size( )));
+                                length + sign_maker_->hash_size( )));
 
-            result.append( hasher_->get_data_hash(data, length ));
+            result.append( sign_maker_->get_data_hash(data, length ));
             result.append( data, data + length );
 
             /*
@@ -174,7 +176,7 @@ namespace vtrc { namespace common {
         void parse_message( const std::string &mess,
                             google::protobuf::Message &result )
         {
-            const size_t hash_length = hasher_->hash_size( );
+            const size_t hash_length = sign_checker_->hash_size( );
             const size_t diff_len    = mess.size( ) - hash_length;
             result.ParseFromArray( mess.c_str( ) + hash_length, diff_len );
         }
@@ -184,13 +186,13 @@ namespace vtrc { namespace common {
 
             boost::mutex::scoped_lock l( write_locker_ );
 
-            const size_t hash_length = hasher_->hash_size( );
+            const size_t hash_length = sign_checker_->hash_size( );
             const size_t diff_len    = mess.size( ) - hash_length;
 
             bool result = false;
 
             if( mess.size( ) >= hash_length ) {
-                result = hasher_->
+                result = sign_checker_->
                          check_data_hash( mess.c_str( ) + hash_length,
                                           diff_len,
                                           mess.c_str( ) );
@@ -219,9 +221,29 @@ namespace vtrc { namespace common {
                                    transformer_iface *new_reverter)
         {
             boost::mutex::scoped_lock l( write_locker_ );
-            if(new_hasher)      hasher_.reset(new_hasher);
+            if(new_hasher)      sign_maker_.reset(new_hasher);
             if(new_transformer) transformer_.reset(new_transformer);
             if(new_reverter)    reverter_.reset(new_reverter);
+        }
+
+        void change_sign_checker( hasher_iface *new_signer )
+        {
+            sign_checker_.reset(new_signer);
+        }
+
+        void change_sign_maker( hasher_iface *new_signer )
+        {
+            sign_maker_.reset(new_signer);
+        }
+
+        void change_transformer( transformer_iface *new_transformer )
+        {
+            transformer_.reset(new_transformer);
+        }
+
+        void change_reverter( transformer_iface *new_reverter)
+        {
+            reverter_.reset(new_reverter);
         }
 
         void pop_message( )
@@ -344,6 +366,26 @@ namespace vtrc { namespace common {
     {
         impl_->set_hash_transformer( new_hasher,
                                      new_transformer, new_reverter );
+    }
+
+    void protocol_layer::change_sign_maker( hasher_iface *new_hasher )
+    {
+        impl_->change_sign_maker( new_hasher );
+    }
+
+    void protocol_layer::change_sign_checker( hasher_iface *new_hasher )
+    {
+        impl_->change_sign_checker( new_hasher );
+    }
+
+    void protocol_layer::change_transformer( transformer_iface *new_transformer)
+    {
+        impl_->change_transformer( new_transformer );
+    }
+
+    void protocol_layer::change_reverter( transformer_iface *new_reverter)
+    {
+        impl_->change_reverter( new_reverter );
     }
 
     void protocol_layer::pop_message( )

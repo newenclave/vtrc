@@ -77,13 +77,10 @@ namespace vtrc { namespace client {
         {
             std::string &mess = parent_->get_data_queue( ).messages( ).front( );
             bool check = parent_->check_message( mess );
-            std::cout << "Message check: " << check << "\n";
             vtrc_auth::transformer_setup transformer_proto;
 
             if( check ) {
                 parent_->parse_message( mess, transformer_proto );
-                std::cout << "transformer Message is: "
-                          << transformer_proto.DebugString( ) << "\n";
             }
 
             pop_message( );
@@ -93,9 +90,8 @@ namespace vtrc { namespace client {
         void set_options( const boost::system::error_code &err )
         {
             if( !err ) {
-                parent_->set_hasher_transformer(
-                      common::hasher::create_by_index( vtrc_auth::HASH_CRC_64 ),
-                      NULL, NULL);
+                parent_->change_sign_maker(
+                   common::hasher::create_by_index( vtrc_auth::HASH_CRC_64 ));
             }
         }
 
@@ -118,6 +114,9 @@ namespace vtrc { namespace client {
             select.set_transform( vtrc_auth::TRANSFORM_NONE );
             select.set_ready( true );
             select.set_hello_message( "Miten menee?" );
+
+            parent_->change_sign_checker(
+               common::hasher::create_by_index( vtrc_auth::HASH_CRC_64 ));
 
             send_proto_message( select,
                     boost::bind( &this_type::set_options, this, _1 ) );
