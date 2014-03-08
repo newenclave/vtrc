@@ -113,6 +113,12 @@ namespace vtrc { namespace common { namespace data_queue {
                 return SizePackPolicy::pack( size );
             }
 
+            std::string *process_one( )
+            {
+                process( );
+                return &messages( ).back( );
+            }
+
             void process( )
             {
                 typedef SizePackPolicy SSP;
@@ -145,16 +151,16 @@ namespace vtrc { namespace common { namespace data_queue {
                 return SizePackPolicy::pack( size );
             }
 
-            void process( )
+            std::string *process_one( )
             {
+                std::string *result = NULL;
                 typedef SizePackPolicy SPP;
+
                 plain_data_type &data(plain_data( ));
 
-                size_t next;
-                bool valid_data = true;
-                while( valid_data &&
-                     ( next = SPP::size_length(data.begin( ), data.end( ))) )
-                {
+                size_t next(SPP::size_length(data.begin( ), data.end( )));
+
+                if( next > 0 ) {
 
                     if( next > SPP::max_length ) {
                         throw std::length_error
@@ -177,13 +183,20 @@ namespace vtrc { namespace common { namespace data_queue {
 
                         std::string mess( n, e );
                         messages( ).push_back( mess );
+                        result = &messages( ).back( );
                         data.erase( b, e );
-
-                    } else {
-                        valid_data = false;
                     }
                 }
 
+                return result;
+            }
+
+            void process( )
+            {
+                std::string *r = process_one( );
+                while( r ) {
+                    r = process_one( );
+                }
             }
         };
     }
