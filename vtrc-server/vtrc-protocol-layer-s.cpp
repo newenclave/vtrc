@@ -162,7 +162,7 @@ namespace vtrc { namespace server {
 
         void closure( common::rpc_controller_sptr controller,
                            boost::shared_ptr <
-                            vtrc_rpc_lowlevel::lowlevel_unit
+                                vtrc_rpc_lowlevel::lowlevel_unit
                            > llu)
         {
             ;;;
