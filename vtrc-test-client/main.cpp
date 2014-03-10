@@ -10,6 +10,8 @@
 #include <boost/random.hpp>
 #include <boost/random/random_device.hpp>
 
+#include "vtrc-thread.h"
+
 void on_connect( const boost::system::error_code &err )
 {
     std::cout << "connected "
