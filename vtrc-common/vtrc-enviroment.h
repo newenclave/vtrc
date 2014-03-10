@@ -22,9 +22,9 @@ namespace vtrc { namespace common {
         ~enviroment( );
 
         void set( const std::string &name, const std::string &value );
-        const std::string &get( const std::string &name ) const;
-        const std::string &get( const std::string &name,
-                                const std::string &default_value ) const;
+        const std::string get( const std::string &name ) const;
+        const std::string get( const std::string &name,
+                               const std::string &default_value ) const;
     };
 
 }}

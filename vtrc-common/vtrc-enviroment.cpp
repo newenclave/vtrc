@@ -52,13 +52,13 @@ namespace vtrc { namespace common {
             }
         }
 
-        const std::string &get( const std::string &name ) const
+        const std::string get( const std::string &name ) const
         {
             const static std::string empty_;
             return get(name, empty_);
         }
 
-        const std::string &get( const std::string &name,
+        const std::string get( const std::string &name,
                                 const std::string &default_value ) const
         {
             shared_lock l(data_lock_);
@@ -96,12 +96,12 @@ namespace vtrc { namespace common {
         impl_->set( name, value );
     }
 
-    const std::string &enviroment::get( const std::string &name ) const
+    const std::string enviroment::get( const std::string &name ) const
     {
         return impl_->get( name );
     }
 
-    const std::string &enviroment::get( const std::string &name,
+    const std::string enviroment::get( const std::string &name,
                                         const std::string &default_value ) const
     {
         return impl_->get( name, default_value );
