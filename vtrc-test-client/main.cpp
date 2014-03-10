@@ -29,7 +29,7 @@ int main( )
     ///cl.connect( "127.0.0.1", "44667" );
     cl.async_connect( "127.0.0.1", "44667", on_connect );
 
-    boost::this_thread::sleep_for( boost::chrono::milliseconds(2000) );
+    vtrc::this_thread::sleep_for( boost::chrono::milliseconds(2000) );
 
     vtrc_rpc_lowlevel::test_rpc::Stub s( cl.get_channel( ).get( ) );
 
