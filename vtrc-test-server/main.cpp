@@ -149,7 +149,7 @@ int main( ) try {
 
     tcp_ep->start( );
 
-    boost::this_thread::sleep_for( boost::chrono::milliseconds(10000) );
+    boost::this_thread::sleep_for( boost::chrono::milliseconds(12000) );
     poll.stop( );
     poll.join_all( );
 
