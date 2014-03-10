@@ -1,7 +1,7 @@
 
 #include <boost/asio.hpp>
 
-#include "vtrc-common/vtrc-mutex.h"
+#include "vtrc-common/vtrc-mutex-typedefs.h"
 #include "vtrc-bind.h"
 #include "vtrc-function.h"
 

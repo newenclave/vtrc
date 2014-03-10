@@ -3,7 +3,7 @@
 
 #include <list>
 #include "vtrc-thread-pool.h"
-#include "vtrc-mutex.h"
+#include "vtrc-mutex-typedefs.h"
 #include "vtrc-memory.h"
 #include "vtrc-bind.h"
 #include "vtrc-thread.h"

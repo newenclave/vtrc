@@ -4,7 +4,7 @@
 #include <boost/thread/shared_mutex.hpp>
 #include <boost/thread.hpp>
 #include <map>
-#include "vtrc-mutex.h"
+#include "vtrc-mutex-typedefs.h"
 
 namespace vtrc { namespace common {
 

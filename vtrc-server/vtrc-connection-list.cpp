@@ -3,7 +3,7 @@
 #include <map>
 
 #include "vtrc-connection-list.h"
-#include "vtrc-common/vtrc-mutex.h"
+#include "vtrc-common/vtrc-mutex-typedefs.h"
 
 namespace vtrc { namespace server {
 
