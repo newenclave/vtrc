@@ -2,7 +2,7 @@
 #define VTRC_CONDITIONAL_QUEUES_H
 
 #include <deque>
-#include <boost/thread/condition_variable.hpp>
+#include "vtrc-conditional-variable.h"
 #include "vtrc-memory.h"
 #include "vtrc-bind.h"
 #include "vtrc-ref.h"
@@ -34,7 +34,7 @@ namespace vtrc { namespace common {
         typedef queue_wait_result wait_result;
 
         struct hold_value_type {
-            boost::condition_variable cond_;
+            vtrc::condition_variable  cond_;
             queue_type                data_;
             bool                      canceled_;
             hold_value_type( )
