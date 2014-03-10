@@ -131,6 +131,7 @@ namespace vtrc { namespace common {
                 */
                 reverter_->transform( &next_data[0], next_data.size( ) );
                 queue_->append( &next_data[0], next_data.size( ));
+
                 queue_->process( );
 
                 if( queue_->messages( ).size( ) > old_size ) {
