@@ -224,7 +224,7 @@ namespace vtrc { namespace common {
             typename map_type::iterator f(at( key ));
 
             f->second->data_.push_back( data );
-            f->second->cond_.notify_all( );
+            f->second->cond_.notify_one( );
         }
 
         void write_queue( const key_type &key, const queue_type &data )
@@ -234,7 +234,7 @@ namespace vtrc { namespace common {
 
             f->second->data_.insert( f->second->data_.end( ),
                                      data.begin( ), data.end( ));
-            f->second->cond_.notify_all( );
+            f->second->cond_.notify_one( );
         }
 
         queue_wait_result wait_queue( const key_type &key )
