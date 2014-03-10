@@ -261,7 +261,7 @@ namespace vtrc { namespace common {
         void wait_call_slot( uint64_t slot_id, uint32_t millisec)
         {
             queue_wait_result qwr = rpc_queue_.wait_queue( slot_id,
-                             boost::chrono::milliseconds(millisec) );
+                             vtrc::chrono::milliseconds(millisec) );
             raise_wait_error( qwr );
         }
 
@@ -274,7 +274,7 @@ namespace vtrc { namespace common {
         {
             queue_wait_result qwr = rpc_queue_.read_queue(
                         slot_id, data_list,
-                        boost::chrono::milliseconds(millisec)) ;
+                        vtrc::chrono::milliseconds(millisec)) ;
             raise_wait_error( qwr );
         }
 
