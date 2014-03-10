@@ -6,6 +6,7 @@
 namespace vtrc {
     using boost::mutex;
     using boost::unique_lock;
+    using boost::lock_guard;
 }
 
 #endif // VTRC_MUTEX_H
