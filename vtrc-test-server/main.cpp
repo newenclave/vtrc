@@ -9,7 +9,6 @@
 #include <boost/asio.hpp>
 #include <boost/chrono.hpp>
 
-#include <boost/atomic.hpp>
 #include <boost/thread.hpp>
 #include <boost/thread/shared_mutex.hpp>
 
