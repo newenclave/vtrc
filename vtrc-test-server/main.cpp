@@ -144,12 +144,12 @@ int main( ) try {
     main_app app;
     vtrc::common::thread_pool poll(app.get_io_service( ), 4);
 
-    shared_ptr<vtrc::server::endpoint_iface> tcp_ep
+    vtrc::shared_ptr<vtrc::server::endpoint_iface> tcp_ep
             (vtrc::server::endpoints::tcp::create(app, "0.0.0.0", 44667));
 
     tcp_ep->start( );
 
-    sleep( 10 );
+    boost::this_thread::sleep_for( boost::chrono::milliseconds(10000) );
     poll.stop( );
     poll.join_all( );
 

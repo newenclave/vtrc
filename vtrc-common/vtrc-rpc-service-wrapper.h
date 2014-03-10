@@ -38,7 +38,7 @@ namespace vtrc { namespace common {
 
     };
 
-    typedef shared_ptr<rpc_service_wrapper> rpc_service_wrapper_sptr;
+    typedef vtrc::shared_ptr<rpc_service_wrapper> rpc_service_wrapper_sptr;
 
 }}
 

@@ -29,7 +29,7 @@ namespace client {
 
     public:
 
-        explicit rpc_channel( shared_ptr<common::connection_iface> conn);
+        explicit rpc_channel( vtrc::shared_ptr<common::connection_iface> conn);
         ~rpc_channel( );
 
     private:
@@ -41,7 +41,7 @@ namespace client {
                         google::protobuf::Closure* done);
     };
 
-    typedef shared_ptr<rpc_channel> rpc_channel_sptr;
+    typedef vtrc::shared_ptr<rpc_channel> rpc_channel_sptr;
 
 }}
 

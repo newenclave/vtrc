@@ -27,7 +27,7 @@ namespace client {
 
     public:
 
-        typedef shared_ptr<client_tcp> shared_type;
+        typedef vtrc::shared_ptr<client_tcp> shared_type;
 
         static shared_type create (
                             boost::asio::io_service &ios, vtrc_client *client );

@@ -35,7 +35,7 @@ namespace vtrc { namespace common {
         void NotifyOnCancel(google::protobuf::Closure* callback);
     };
 
-    typedef shared_ptr<rpc_controller> rpc_controller_sptr;
+    typedef vtrc::shared_ptr<rpc_controller> rpc_controller_sptr;
 
 }}
 

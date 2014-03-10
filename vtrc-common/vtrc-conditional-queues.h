@@ -41,7 +41,7 @@ namespace vtrc { namespace common {
             {}
         };
 
-        typedef shared_ptr<hold_value_type> hold_value_type_sptr;
+        typedef vtrc::shared_ptr<hold_value_type> hold_value_type_sptr;
         typedef std::map<key_type, hold_value_type_sptr> map_type;
 
     private:
@@ -182,7 +182,8 @@ namespace vtrc { namespace common {
             typename map_type::iterator f(store_.find( key ));
             if( f == store_.end( ) ) {
                 store_.insert(
-                    std::make_pair( key, make_shared<hold_value_type>( ) ));
+                    std::make_pair( key,
+                                    vtrc::make_shared<hold_value_type>( ) ));
             }
         }
 

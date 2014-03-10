@@ -160,14 +160,14 @@ namespace vtrc { namespace server {
         }
 
         void closure( common::rpc_controller_sptr controller,
-                           shared_ptr <
+                           vtrc::shared_ptr <
                                 vtrc_rpc_lowlevel::lowlevel_unit
                            > llu)
         {
             ;;;
         }
 
-        void make_call_impl( shared_ptr <
+        void make_call_impl( vtrc::shared_ptr <
                               vtrc_rpc_lowlevel::lowlevel_unit> llu )
         {
 
@@ -188,19 +188,19 @@ namespace vtrc { namespace server {
                 throw vtrc::common::exception( vtrc_errors::ERR_NO_FUNC );
             }
 
-            shared_ptr<gpb::Message> req
+            vtrc::shared_ptr<gpb::Message> req
                 (service->service( )->GetRequestPrototype( meth ).New( ));
 
             req->ParseFromString( llu->request( ) );
 
-            shared_ptr<gpb::Message> res
+            vtrc::shared_ptr<gpb::Message> res
                 (service->service( )->GetResponsePrototype( meth ).New( ));
             res->ParseFromString( llu->response( ) );
 
             common::rpc_controller_sptr controller
-                                (make_shared<common::rpc_controller>( ));
+                                (vtrc::make_shared<common::rpc_controller>( ));
 
-            shared_ptr<gpb::Closure> clos
+            vtrc::shared_ptr<gpb::Closure> clos
                     (gpb::NewPermanentCallback( this, &this_type::closure,
                                                 controller, llu ));
 
@@ -217,7 +217,7 @@ namespace vtrc { namespace server {
             llu->set_response( res->SerializeAsString( ) );
         }
 
-        void make_call( shared_ptr <vtrc_rpc_lowlevel::lowlevel_unit> llu )
+        void make_call( vtrc::shared_ptr <vtrc_rpc_lowlevel::lowlevel_unit> llu)
         {
             bool failed = false;
             unsigned errorcode = 0;
@@ -254,7 +254,7 @@ namespace vtrc { namespace server {
         void on_rcp_call_ready( )
         {
             while( !parent_->message_queue( ).empty( ) ) {
-               shared_ptr < vtrc_rpc_lowlevel::lowlevel_unit >
+               vtrc::shared_ptr < vtrc_rpc_lowlevel::lowlevel_unit >
                                     llu(new vtrc_rpc_lowlevel::lowlevel_unit);
                 get_pop_message( *llu );
                 switch (llu->info( ).message_type( )) {

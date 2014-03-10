@@ -11,7 +11,7 @@ namespace vtrc { namespace common {
         virtual void transform( char *data, size_t length ) = 0;
     };
 
-    typedef shared_ptr<transformer_iface> transformer_iface_sptr;
+    typedef vtrc::shared_ptr<transformer_iface> transformer_iface_sptr;
 
     namespace transformers {
         namespace none {

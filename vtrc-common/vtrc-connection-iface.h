@@ -37,7 +37,7 @@ namespace vtrc { namespace common {
 
     };
 
-    typedef shared_ptr<connection_iface> connection_iface_sptr;
+    typedef vtrc::shared_ptr<connection_iface> connection_iface_sptr;
     typedef weak_ptr<connection_iface>   connection_iface_wptr;
 
 }}

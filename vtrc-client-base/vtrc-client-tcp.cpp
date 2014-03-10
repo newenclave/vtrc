@@ -22,7 +22,7 @@ namespace vtrc { namespace client {
 
         vtrc_client             *client_;
 
-        shared_ptr<protocol_layer_c> protocol_;
+        vtrc::shared_ptr<protocol_layer_c> protocol_;
 
         impl( boost::asio::io_service &ios, vtrc_client *client )
             :ios_(ios)
@@ -118,10 +118,10 @@ namespace vtrc { namespace client {
         impl_->parent_ = this;
     }
 
-    shared_ptr<client_tcp> client_tcp::create(basio::io_service &ios,
+    vtrc::shared_ptr<client_tcp> client_tcp::create(basio::io_service &ios,
                                                         vtrc_client *client)
     {
-        shared_ptr<client_tcp> new_inst (new client_tcp( ios, client ));
+        vtrc::shared_ptr<client_tcp> new_inst (new client_tcp( ios, client ));
         return new_inst;
     }
 

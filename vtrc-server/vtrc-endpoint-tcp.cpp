@@ -43,7 +43,7 @@ namespace vtrc { namespace server { namespace endpoints {
 
             std::vector<char>                   read_buff_;
 
-            shared_ptr<protocol_layer_s>        protocol_;
+            vtrc::shared_ptr<protocol_layer_s>        protocol_;
 
             tcp_connection(endpoint_iface &endpoint, bip::tcp::socket *sock)
                 :common::transport_tcp(sock)
@@ -53,15 +53,15 @@ namespace vtrc { namespace server { namespace endpoints {
                 ,env_(endpoint_.get_enviroment( ))
                 ,read_buff_(4096)
             {
-                protocol_ = make_shared<server::protocol_layer_s>
+                protocol_ = vtrc::make_shared<server::protocol_layer_s>
                                                      (vtrc::ref(app_), this);
             }
 
-            static shared_ptr<tcp_connection> create
+            static vtrc::shared_ptr<tcp_connection> create
                              (endpoint_iface &endpoint, bip::tcp::socket *sock)
             {
-                shared_ptr<tcp_connection> new_inst
-                                    (make_shared<tcp_connection>
+                vtrc::shared_ptr<tcp_connection> new_inst
+                                    (vtrc::make_shared<tcp_connection>
                                                   (vtrc::ref(endpoint), sock));
                 new_inst->init( );
                 return new_inst;
@@ -193,7 +193,7 @@ namespace vtrc { namespace server { namespace endpoints {
                 } else {
                     try {
                         std::cout << "accept\n";
-                        shared_ptr<tcp_connection> new_conn
+                        vtrc::shared_ptr<tcp_connection> new_conn
                                          (tcp_connection::create(*this, sock));
                         app_.get_clients( )->store( new_conn );
                         app_.on_new_connection_ready( new_conn.get( ) );

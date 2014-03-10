@@ -16,7 +16,7 @@ namespace vtrc { namespace client {
 
         weak_ptr<common::connection_iface> connection_;
 
-        impl(shared_ptr<common::connection_iface> c)
+        impl(vtrc::shared_ptr<common::connection_iface> c)
             :connection_(c)
         {}
 
@@ -35,7 +35,7 @@ namespace vtrc { namespace client {
             std::string service_name(method->service( )->full_name( ));
             std::string method_name(method->name( ));
 
-            shared_ptr<
+            vtrc::shared_ptr<
                     vtrc_rpc_lowlevel::lowlevel_unit
             > llu(new vtrc_rpc_lowlevel::lowlevel_unit);
 
@@ -54,7 +54,7 @@ namespace vtrc { namespace client {
 
             cl->get_protocol( ).call_rpc_method( call_id, *llu );
 
-            std::deque< shared_ptr <
+            std::deque< vtrc::shared_ptr <
                         vtrc_rpc_lowlevel::lowlevel_unit
                       >
             > data_list;

@@ -35,7 +35,7 @@ namespace vtrc { namespace common { namespace data_queue {
         virtual std::string pack_size( size_t size ) const = 0;
     };
 
-    typedef shared_ptr<queue_base> queue_base_sptr;
+    typedef vtrc::shared_ptr<queue_base> queue_base_sptr;
 
     namespace varint {
         queue_base *create_parser    ( size_t max_valid_length );

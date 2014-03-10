@@ -14,7 +14,7 @@ namespace vtrc { namespace client { namespace rpc {
         virtual ~channel( ) { }
     };
 
-    typedef shared_ptr<channel> rpc_channel_sptr;
+    typedef vtrc::shared_ptr<channel> rpc_channel_sptr;
 
     channel *create_channel( boost::asio::io_service &ios );
 

@@ -40,9 +40,9 @@ namespace server {
         common::enviroment      &get_enviroment( );
         boost::asio::io_service &get_io_service( );
 
-        shared_ptr<connection_list>      get_clients( );
+        vtrc::shared_ptr<connection_list>      get_clients( );
 
-        virtual shared_ptr<common::rpc_service_wrapper>
+        virtual vtrc::shared_ptr<common::rpc_service_wrapper>
                  get_service_by_name( common::connection_iface* connection,
                                       const std::string &service_name );
 

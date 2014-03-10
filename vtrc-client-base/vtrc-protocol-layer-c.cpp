@@ -64,7 +64,7 @@ namespace vtrc { namespace client {
                         (parent_->message_queue( ).front( ));
                 bool check = parent_->check_message( mess );
 
-                shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
+                vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
                                 llu( new  vtrc_rpc_lowlevel::lowlevel_unit );
 
                 parent_->parse_message( mess, *llu );

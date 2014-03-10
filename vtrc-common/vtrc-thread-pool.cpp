@@ -16,7 +16,7 @@ namespace vtrc { namespace common {
 
         struct thread_context {
 
-            typedef shared_ptr<thread_context> shared_type;
+            typedef vtrc::shared_ptr<thread_context> shared_type;
             vtrc::thread  *thread_;
             bool           in_use_;
 
@@ -84,7 +84,7 @@ namespace vtrc { namespace common {
         thread_context::shared_type create_new_context( )
         {
             thread_context::shared_type
-                    new_context(make_shared<thread_context>());
+                    new_context(vtrc::make_shared<thread_context>());
             new_context->thread_ = new vtrc::thread(
                         vtrc::bind(&impl::run, this, new_context.get( )) );
             return new_context;

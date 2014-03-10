@@ -65,10 +65,10 @@ namespace vtrc { namespace common {
 
         void wait_call_slot( uint64_t slot_id, uint32_t millisec );
         void wait_call_slot( uint64_t slot_id,
-                             std::deque<
-                                shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
-                             > &data_list,
-                             uint32_t millisec );
+                           std::deque<
+                              vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
+                           > &data_list,
+                           uint32_t millisec );
 
         void close_slot( uint64_t slot_id );
 
@@ -93,7 +93,7 @@ namespace vtrc { namespace common {
         };
 
         void push_rpc_message( uint64_t slot_id,
-                    shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess);
+                    vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess);
 
         virtual void init( )            = 0;
         virtual void on_data_ready( )   = 0;

@@ -22,10 +22,10 @@ namespace vtrc { namespace common {
 
         struct message_holder {
             std::string message_;
-            // shared_ptr<closure_type> closure_;
+            // vtrc::shared_ptr<closure_type> closure_;
         };
 
-        shared_ptr<bip::tcp::socket>        sock_;
+        vtrc::shared_ptr<bip::tcp::socket>        sock_;
         basio::io_service                  &ios_;
         enviroment                          env_;
 
@@ -78,15 +78,15 @@ namespace vtrc { namespace common {
             write_dispatcher_.post(
                    vtrc::bind( &this_type::write_impl, this,
                                 std::string( data, data + length ),
-                                shared_ptr<closure_type>(),
+                                vtrc::shared_ptr<closure_type>(),
                                 parent_->shared_from_this( )));
         }
 
         void write(const char *data, size_t length,
                                   closure_type &success)
         {
-            shared_ptr<closure_type>
-                    closure(make_shared<closure_type>(success));
+            vtrc::shared_ptr<closure_type>
+                    closure(vtrc::make_shared<closure_type>(success));
 
             write_dispatcher_.post(
                    vtrc::bind( &this_type::write_impl, this,
@@ -117,7 +117,7 @@ namespace vtrc { namespace common {
         }
 
         void write_impl( const std::string data,
-                         shared_ptr<closure_type> closure,
+                         vtrc::shared_ptr<closure_type> closure,
                          common::connection_iface_sptr inst)
         {
             bool empty = write_queue_.empty( );
