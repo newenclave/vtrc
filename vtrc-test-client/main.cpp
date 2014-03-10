@@ -11,6 +11,7 @@
 #include <boost/random/random_device.hpp>
 
 #include "vtrc-thread.h"
+#include "vtrc-chrono.h"
 
 void on_connect( const boost::system::error_code &err )
 {
@@ -29,7 +30,7 @@ int main( )
     ///cl.connect( "127.0.0.1", "44667" );
     cl.async_connect( "127.0.0.1", "44667", on_connect );
 
-    vtrc::this_thread::sleep_for( boost::chrono::milliseconds(2000) );
+    vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(2000) );
 
     vtrc_rpc_lowlevel::test_rpc::Stub s( cl.get_channel( ).get( ) );
 

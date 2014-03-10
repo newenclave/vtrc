@@ -35,6 +35,7 @@
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
 
 #include "vtrc-memory.h"
+#include "vtrc-chrono.h"
 
 namespace ba = boost::asio;
 
@@ -149,7 +150,7 @@ int main( ) try {
 
     tcp_ep->start( );
 
-    boost::this_thread::sleep_for( boost::chrono::milliseconds(12000) );
+    boost::this_thread::sleep_for( vtrc::chrono::milliseconds(12000) );
     poll.stop( );
     poll.join_all( );
 
