@@ -1,9 +1,9 @@
 #include <boost/thread.hpp>
 #include <boost/thread/tss.hpp>
 
-#include <boost/atomic.hpp>
-
 #include <google/protobuf/message.h>
+
+#include "vtrc-atomic.h"
 
 #include "vtrc-protocol-layer.h"
 
@@ -82,7 +82,7 @@ namespace vtrc { namespace common {
         data_queue::queue_base_sptr  queue_;
 
         rpc_queue_type               rpc_queue_;
-        boost::atomic_int64_t        rpc_index_;
+        vtrc::atomic<uint64_t>       rpc_index_;
 
         call_context_ptr             context_;
 
