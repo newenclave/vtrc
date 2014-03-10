@@ -5,6 +5,7 @@
 #include "vtrc-conditional-variable.h"
 #include "vtrc-memory.h"
 #include "vtrc-bind.h"
+#include "vtrc-mutex.h"
 #include "vtrc-ref.h"
 #include "vtrc-chrono.h"
 
@@ -20,8 +21,8 @@ namespace vtrc { namespace common {
     class conditional_queues {
 
         typedef conditional_queues              this_type;
-        typedef boost::mutex                    mutex_type;
-        typedef boost::unique_lock<mutex_type>  unique_lock;
+        typedef vtrc::mutex                     mutex_type;
+        typedef vtrc::unique_lock<mutex_type>   unique_lock;
 
     public:
 
