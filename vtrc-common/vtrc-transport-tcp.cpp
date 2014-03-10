@@ -25,7 +25,7 @@ namespace vtrc { namespace common {
             // vtrc::shared_ptr<closure_type> closure_;
         };
 
-        vtrc::shared_ptr<bip::tcp::socket>        sock_;
+        vtrc::shared_ptr<bip::tcp::socket>  sock_;
         basio::io_service                  &ios_;
         enviroment                          env_;
 
