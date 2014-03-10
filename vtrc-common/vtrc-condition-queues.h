@@ -1,5 +1,5 @@
-#ifndef VTRC_CONDITIONAL_QUEUES_H
-#define VTRC_CONDITIONAL_QUEUES_H
+#ifndef VTRC_CONDITION_QUEUES_H
+#define VTRC_CONDITION_QUEUES_H
 
 #include <deque>
 #include "vtrc-condition-variable.h"
