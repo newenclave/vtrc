@@ -1,6 +1,5 @@
 
 #include <boost/asio.hpp>
-#include <boost/atomic.hpp>
 
 #include <deque>
 #include <string>
@@ -9,6 +8,7 @@
 #include "vtrc-enviroment.h"
 #include "vtrc-memory.h"
 #include "vtrc-bind.h"
+#include "vtrc-atomic.h"
 
 namespace vtrc { namespace common {
 
@@ -33,7 +33,7 @@ namespace vtrc { namespace common {
         std::deque<message_holder>          write_queue_;
 
         transport_tcp                       *parent_;
-        boost::atomic_bool                   closed_;
+        vtrc::atomic<bool>                   closed_;
 
         impl( bip::tcp::socket *s )
             :sock_(s)
