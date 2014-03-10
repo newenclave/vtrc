@@ -1,10 +1,8 @@
 #ifndef VTRC_CONNECTION_IFACE_H
 #define VTRC_CONNECTION_IFACE_H
 
-#include <boost/function.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/weak_ptr.hpp>
-#include <boost/enable_shared_from_this.hpp>
+#include "vtrc-memory.h"
+#include "vtrc-function.h"
 
 namespace boost {
 
@@ -19,15 +17,14 @@ namespace boost {
 
 namespace vtrc { namespace common {
 
-    typedef boost::function <
+    typedef vtrc::function <
                 void (const boost::system::error_code &)
             > closure_type;
 
     class enviroment;
     class protocol_layer;
 
-    struct connection_iface:
-            public boost::enable_shared_from_this<connection_iface> {
+    struct connection_iface: public enable_shared_from_this<connection_iface> {
 
         virtual ~connection_iface( ) { }
 
@@ -40,8 +37,8 @@ namespace vtrc { namespace common {
 
     };
 
-    typedef boost::shared_ptr<connection_iface> connection_iface_sptr;
-    typedef boost::weak_ptr<connection_iface>   connection_iface_wptr;
+    typedef shared_ptr<connection_iface> connection_iface_sptr;
+    typedef weak_ptr<connection_iface>   connection_iface_wptr;
 
 }}
 

@@ -1,9 +1,8 @@
 #ifndef VTRC_CLIENT_TCP_H
 #define VTRC_CLIENT_TCP_H
 
-#include <boost/function.hpp>
-
 #include "vtrc-common/vtrc-transport-tcp.h"
+#include "vtrc-memory.h"
 
 namespace boost { namespace asio {
     class io_service;
@@ -28,8 +27,10 @@ namespace client {
 
     public:
 
-        static boost::shared_ptr<client_tcp> create
-                         ( boost::asio::io_service &ios, vtrc_client *client );
+        typedef shared_ptr<client_tcp> shared_type;
+
+        static shared_type create (
+                            boost::asio::io_service &ios, vtrc_client *client );
 
         ~client_tcp( );
         void init( );

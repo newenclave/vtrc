@@ -1,12 +1,11 @@
 #include <boost/asio.hpp>
-#include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/make_shared.hpp>
 
 #include "vtrc-client-tcp.h"
 #include "vtrc-protocol-layer-c.h"
 
 #include "vtrc-client.h"
+#include "vtrc-bind.h"
 
 namespace vtrc { namespace client {
 
@@ -23,7 +22,7 @@ namespace vtrc { namespace client {
 
         vtrc_client             *client_;
 
-        boost::shared_ptr<protocol_layer> protocol_;
+        shared_ptr<protocol_layer_c> protocol_;
 
         impl( boost::asio::io_service &ios, vtrc_client *client )
             :ios_(ios)
@@ -40,7 +39,7 @@ namespace vtrc { namespace client {
 
         void init(  )
         {
-            protocol_.reset(new client::protocol_layer( parent_ ));
+            protocol_.reset(new client::protocol_layer_c( parent_ ));
             start_reading( );
         }
 
@@ -71,7 +70,7 @@ namespace vtrc { namespace client {
                     (basio::ip::address::from_string(address),
                      boost::lexical_cast<unsigned short>(service) );
             sock( ).async_connect( ep,
-                    boost::bind( &this_type::on_connect, this,
+                    vtrc::bind( &this_type::on_connect, this,
                                  basio::placeholders::error, closure) );
         }
 
@@ -79,7 +78,7 @@ namespace vtrc { namespace client {
         {
             sock( ).async_read_some(
                     basio::buffer( &read_buff_[0], read_buff_.size( ) ),
-                    boost::bind( &this_type::read_handler, this,
+                    vtrc::bind( &this_type::read_handler, this,
                          basio::placeholders::error,
                          basio::placeholders::bytes_transferred)
                 );
@@ -119,10 +118,10 @@ namespace vtrc { namespace client {
         impl_->parent_ = this;
     }
 
-    boost::shared_ptr<client_tcp> client_tcp::create(basio::io_service &ios,
+    shared_ptr<client_tcp> client_tcp::create(basio::io_service &ios,
                                                         vtrc_client *client)
     {
-        boost::shared_ptr<client_tcp> new_inst (new client_tcp( ios, client ));
+        shared_ptr<client_tcp> new_inst (new client_tcp( ios, client ));
         return new_inst;
     }
 
@@ -139,7 +138,7 @@ namespace vtrc { namespace client {
 
     void client_tcp::async_connect( const std::string &address,
                                     const std::string &service,
-                                    boost::function <
+                                    vtrc::function <
                                     void (const boost::system::error_code &)
                                     >   closure )
     {

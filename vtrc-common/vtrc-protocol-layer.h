@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <string>
 #include <deque>
-#include <boost/shared_ptr.hpp>
+#include "vtrc-memory.h"
 
 namespace google { namespace protobuf {
     class Message;
@@ -25,7 +25,7 @@ namespace vtrc { namespace common {
     }
 
     struct connection_iface;
-    struct hasher_iface;
+    struct hash_iface;
     struct transformer_iface;
     struct transport_iface;
     class  call_context;
@@ -66,7 +66,7 @@ namespace vtrc { namespace common {
         void wait_call_slot( uint64_t slot_id, uint32_t millisec );
         void wait_call_slot( uint64_t slot_id,
                              std::deque<
-                             boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
+                                shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
                              > &data_list,
                              uint32_t millisec );
 
@@ -93,7 +93,7 @@ namespace vtrc { namespace common {
         };
 
         void push_rpc_message( uint64_t slot_id,
-                  boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess);
+                    shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess);
 
         virtual void init( )            = 0;
         virtual void on_data_ready( )   = 0;
@@ -115,8 +115,8 @@ namespace vtrc { namespace common {
 
         /* ==== delete this part ==== */
 
-        void change_hash_maker( hasher_iface *new_hasher );
-        void change_hash_checker( hasher_iface *new_hasher );
+        void change_hash_maker( hash_iface *new_hasher );
+        void change_hash_checker( hash_iface *new_hasher );
 
         void change_transformer( transformer_iface *new_transformer);
         void change_reverter( transformer_iface *new_reverter);

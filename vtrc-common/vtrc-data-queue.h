@@ -3,7 +3,7 @@
 
 #include <string>
 #include <deque>
-#include <boost/shared_ptr.hpp>
+#include "vtrc-memory.h"
 
 namespace vtrc { namespace common { namespace data_queue {
 
@@ -35,7 +35,7 @@ namespace vtrc { namespace common { namespace data_queue {
         virtual std::string pack_size( size_t size ) const = 0;
     };
 
-    typedef boost::shared_ptr<queue_base> queue_base_sptr;
+    typedef shared_ptr<queue_base> queue_base_sptr;
 
     namespace varint {
         queue_base *create_parser    ( size_t max_valid_length );

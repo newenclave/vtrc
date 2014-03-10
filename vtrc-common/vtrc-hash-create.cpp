@@ -1,16 +1,16 @@
 
 #include <memory.h>
 
-#include "vtrc-hasher-iface.h"
+#include "vtrc-hash-iface.h"
 #include "protocol/vtrc-auth.pb.h"
 
-namespace vtrc { namespace common {  namespace hasher {
+namespace vtrc { namespace common {  namespace hash {
 
     namespace gpb = google::protobuf;
 
-    hasher_iface *create_by_index( unsigned var )
+    hash_iface *create_by_index( unsigned var )
     {
-        hasher_iface *result = NULL;
+        hash_iface *result = NULL;
         switch( var ) {
         case vtrc_auth::HASH_NONE:
             result = none::create( );
@@ -31,7 +31,7 @@ namespace vtrc { namespace common {  namespace hasher {
         return result;
     }
 
-    hasher_iface *create_default( )
+    hash_iface *create_default( )
     {
         static const gpb::uint32 def_hasher =
                     vtrc_auth::client_selection::default_instance( ).hash( );

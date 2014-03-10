@@ -21,12 +21,11 @@ using namespace vtrc;
 
 int main( )
 {
-
     common::thread_pool tp(4);
     client::vtrc_client cl( tp.get_io_service( ) );
 
-    cl.connect( "127.0.0.1", "44667" );
-    ///cl.async_connect( "127.0.0.1", "44667", on_connect );
+    ///cl.connect( "127.0.0.1", "44667" );
+    cl.async_connect( "127.0.0.1", "44667", on_connect );
 
     sleep( 2 );
 

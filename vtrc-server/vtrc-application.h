@@ -1,7 +1,7 @@
 #ifndef VTRC_APPLICATION_IFACE_H
 #define VTRC_APPLICATION_IFACE_H
 
-#include <boost/shared_ptr.hpp>
+#include "vtrc-memory.h"
 
 namespace boost { namespace asio {
     class io_service;
@@ -40,9 +40,9 @@ namespace server {
         common::enviroment      &get_enviroment( );
         boost::asio::io_service &get_io_service( );
 
-        boost::shared_ptr<connection_list>      get_clients( );
+        shared_ptr<connection_list>      get_clients( );
 
-        virtual boost::shared_ptr<common::rpc_service_wrapper>
+        virtual shared_ptr<common::rpc_service_wrapper>
                  get_service_by_name( common::connection_iface* connection,
                                       const std::string &service_name );
 

@@ -13,18 +13,18 @@ namespace common {
 
 namespace client {
 
-    class protocol_layer: public common::protocol_layer {
+    class protocol_layer_c: public common::protocol_layer {
 
         struct impl;
         impl *impl_;
 
-        protocol_layer( const protocol_layer& other );
-        protocol_layer &operator = ( const protocol_layer& other );
+        protocol_layer_c( const protocol_layer_c& other );
+        protocol_layer_c &operator = ( const protocol_layer_c& other );
 
     public:
 
-        protocol_layer( common::transport_iface *connection );
-        ~protocol_layer( );
+        protocol_layer_c( common::transport_iface *connection );
+        ~protocol_layer_c( );
 
     public:
 

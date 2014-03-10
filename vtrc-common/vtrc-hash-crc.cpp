@@ -1,14 +1,14 @@
 #include <boost/crc.hpp>
 #include <memory.h>
 
-#include "vtrc-hasher-iface.h"
+#include "vtrc-hash-iface.h"
 
-namespace vtrc { namespace common {  namespace hasher {
+namespace vtrc { namespace common {  namespace hash {
 
     namespace {
 
         template <typename CRCImpl>
-        struct hasher_crc_base: public hasher_iface {
+        struct hasher_crc_base: public hash_iface {
 
             size_t hash_size( ) const
             {
@@ -92,17 +92,17 @@ namespace vtrc { namespace common {  namespace hasher {
 
     namespace crc {
 
-        hasher_iface *create16( )
+        hash_iface *create16( )
         {
             return new hasher_crc16;
         }
 
-        hasher_iface *create32( )
+        hash_iface *create32( )
         {
             return new hasher_crc32;
         }
 
-        hasher_iface *create64( )
+        hash_iface *create64( )
         {
             return new hasher_crc64;
         }

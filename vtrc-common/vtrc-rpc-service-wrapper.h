@@ -1,8 +1,8 @@
 #ifndef VTRC_RPCSERVICE_WRAPPER_H
 #define VTRC_RPCSERVICE_WRAPPER_H
 
-#include <boost/shared_ptr.hpp>
 #include <string>
+#include "vtrc-memory.h"
 
 namespace google { namespace protobuf {
     class Service;
@@ -38,7 +38,7 @@ namespace vtrc { namespace common {
 
     };
 
-    typedef boost::shared_ptr<rpc_service_wrapper> rpc_service_wrapper_sptr;
+    typedef shared_ptr<rpc_service_wrapper> rpc_service_wrapper_sptr;
 
 }}
 

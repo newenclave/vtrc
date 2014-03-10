@@ -2,7 +2,7 @@
 #define VTRC_RCP_CHANNEL_H
 
 #include <google/protobuf/service.h>
-#include <boost/shared_ptr.hpp>
+#include "vtrc-memory.h"
 
 namespace google { namespace protobuf {
     class Message;
@@ -29,7 +29,7 @@ namespace client {
 
     public:
 
-        explicit rpc_channel( boost::shared_ptr<common::connection_iface> conn);
+        explicit rpc_channel( shared_ptr<common::connection_iface> conn);
         ~rpc_channel( );
 
     private:
@@ -41,7 +41,7 @@ namespace client {
                         google::protobuf::Closure* done);
     };
 
-    typedef boost::shared_ptr<rpc_channel> rpc_channel_sptr;
+    typedef shared_ptr<rpc_channel> rpc_channel_sptr;
 
 }}
 

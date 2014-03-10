@@ -7,7 +7,6 @@
 #include <google/protobuf/descriptor.h>
 
 #include <boost/asio.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/chrono.hpp>
 
 #include <boost/atomic.hpp>
@@ -24,7 +23,7 @@
 #include "vtrc-common/vtrc-thread-pool.h"
 #include "vtrc-common/vtrc-sizepack-policy.h"
 
-#include "vtrc-common/vtrc-hasher-iface.h"
+#include "vtrc-common/vtrc-hash-iface.h"
 
 #include "vtrc-common/vtrc-data-queue.h"
 #include "vtrc-common/vtrc-conditional-queues.h"
@@ -35,6 +34,8 @@
 #include "protocol/vtrc-errors.pb.h"
 #include "protocol/vtrc-auth.pb.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
+
+#include "vtrc-memory.h"
 
 namespace ba = boost::asio;
 
@@ -144,7 +145,7 @@ int main( ) try {
     main_app app;
     vtrc::common::thread_pool poll(app.get_io_service( ), 4);
 
-    boost::shared_ptr<vtrc::server::endpoint_iface> tcp_ep
+    shared_ptr<vtrc::server::endpoint_iface> tcp_ep
             (vtrc::server::endpoints::tcp::create(app, "0.0.0.0", 44667));
 
     tcp_ep->start( );

@@ -1,15 +1,15 @@
 
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
 #include <boost/asio.hpp>
 
+#include "vtrc-bind.h"
+#include "vtrc-function.h"
+
 #include "vtrc-common/vtrc-data-queue.h"
-#include "vtrc-common/vtrc-hasher-iface.h"
+#include "vtrc-common/vtrc-hash-iface.h"
 #include "vtrc-common/vtrc-transformer-iface.h"
 
 #include "vtrc-protocol-layer-c.h"
 #include "vtrc-transport-iface.h"
-#include "vtrc-common/vtrc-hasher-iface.h"
 
 #include "protocol/vtrc-auth.pb.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
@@ -18,20 +18,20 @@ namespace vtrc { namespace client {
 
     namespace gpb = google::protobuf;
 
-    struct protocol_layer::impl {
+    struct protocol_layer_c::impl {
 
         typedef impl this_type;
 
-        typedef boost::function<void (void)> stage_funcion_type;
+        typedef vtrc::function<void (void)> stage_funcion_type;
 
         common::transport_iface *connection_;
-        protocol_layer          *parent_;
+        protocol_layer_c          *parent_;
         stage_funcion_type       stage_call_;
 
         impl( common::transport_iface *c )
             :connection_(c)
         {
-            stage_call_ = boost::bind( &this_type::on_hello_call, this );
+            stage_call_ = vtrc::bind( &this_type::on_hello_call, this );
         }
 
         void init( )
@@ -64,8 +64,9 @@ namespace vtrc { namespace client {
                         (parent_->message_queue( ).front( ));
                 bool check = parent_->check_message( mess );
 
-                boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
-                        llu( new  vtrc_rpc_lowlevel::lowlevel_unit );
+                shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
+                                llu( new  vtrc_rpc_lowlevel::lowlevel_unit );
+
                 parent_->parse_message( mess, *llu );
                 std::cout << "push " << llu->id( ) << "\n";
                 parent_->push_rpc_message( llu->id( ), llu );
@@ -84,14 +85,14 @@ namespace vtrc { namespace client {
             }
 
             pop_message( );
-            stage_call_ = boost::bind( &this_type::on_rpc_process, this );
+            stage_call_ = vtrc::bind( &this_type::on_rpc_process, this );
         }
 
         void set_options( const boost::system::error_code &err )
         {
             if( !err ) {
                 parent_->change_hash_maker(
-                   common::hasher::create_by_index( vtrc_auth::HASH_CRC_64 ));
+                   common::hash::create_by_index( vtrc_auth::HASH_CRC_64 ));
             }
         }
 
@@ -116,12 +117,12 @@ namespace vtrc { namespace client {
             select.set_hello_message( "Miten menee?" );
 
             parent_->change_hash_checker(
-               common::hasher::create_by_index( vtrc_auth::HASH_CRC_64 ));
+               common::hash::create_by_index( vtrc_auth::HASH_CRC_64 ));
 
             send_proto_message( select,
-                    boost::bind( &this_type::set_options, this, _1 ) );
+                    vtrc::bind( &this_type::set_options, this, _1 ) );
 
-            stage_call_ = boost::bind( &this_type::on_server_ready, this );
+            stage_call_ = vtrc::bind( &this_type::on_server_ready, this );
 
         }
 
@@ -142,29 +143,29 @@ namespace vtrc { namespace client {
 
     };
 
-    protocol_layer::protocol_layer( common::transport_iface *connection )
+    protocol_layer_c::protocol_layer_c( common::transport_iface *connection )
         :common::protocol_layer(connection)
         ,impl_(new impl(connection))
     {
         impl_->parent_ = this;
     }
 
-    protocol_layer::~protocol_layer( )
+    protocol_layer_c::~protocol_layer_c( )
     {
         delete impl_;
     }
 
-    void protocol_layer::init( )
+    void protocol_layer_c::init( )
     {
         impl_->init( );
     }
 
-    void protocol_layer::on_data_ready( )
+    void protocol_layer_c::on_data_ready( )
     {
         impl_->data_ready( );
     }
 
-    bool protocol_layer::ready( ) const
+    bool protocol_layer_c::ready( ) const
     {
         return impl_->ready( );
     }

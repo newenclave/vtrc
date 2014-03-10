@@ -1,14 +1,14 @@
 #include <memory.h>
 
-#include "vtrc-hasher-iface.h"
+#include "vtrc-hash-iface.h"
 #include "hash/sha2-traits.h"
 
-namespace vtrc { namespace common {  namespace hasher {
+namespace vtrc { namespace common {  namespace hash {
 
     namespace {
 
         template <typename HashTraits>
-        struct hasher_sha: public hasher_iface {
+        struct hasher_sha: public hash_iface {
 
             size_t hash_size( ) const
             {
@@ -39,17 +39,17 @@ namespace vtrc { namespace common {  namespace hasher {
     }
 
     namespace sha2 {
-        hasher_iface *create256( )
+        hash_iface *create256( )
         {
             return new hasher_sha<vtrc::hash::hash_SHA256_traits>;
         }
 
-        hasher_iface *create348( )
+        hash_iface *create348( )
         {
             return new hasher_sha<vtrc::hash::hash_SHA384_traits>;
         }
 
-        hasher_iface *create512( )
+        hash_iface *create512( )
         {
             return new hasher_sha<vtrc::hash::hash_SHA512_traits>;
         }

@@ -3,8 +3,9 @@
 
 #include <deque>
 #include <boost/thread/condition_variable.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
+#include "vtrc-memory.h"
+#include "vtrc-bind.h"
+#include "vtrc-ref.h"
 
 namespace vtrc { namespace common {
 
@@ -40,7 +41,7 @@ namespace vtrc { namespace common {
             {}
         };
 
-        typedef boost::shared_ptr<hold_value_type> hold_value_type_sptr;
+        typedef shared_ptr<hold_value_type> hold_value_type_sptr;
         typedef std::map<key_type, hold_value_type_sptr> map_type;
 
     private:
@@ -145,7 +146,7 @@ namespace vtrc { namespace common {
                         hold_value_type_sptr &value )
         {
             value->cond_.wait( lck,
-                          boost::bind( &this_type::queue_empty_predic, value ));
+                          vtrc::bind( &this_type::queue_empty_predic, value ));
             return true;
         }
 
@@ -181,8 +182,7 @@ namespace vtrc { namespace common {
             typename map_type::iterator f(store_.find( key ));
             if( f == store_.end( ) ) {
                 store_.insert(
-                    std::make_pair( key,
-                        boost::make_shared<hold_value_type>( ) ));
+                    std::make_pair( key, make_shared<hold_value_type>( ) ));
             }
         }
 
@@ -237,19 +237,19 @@ namespace vtrc { namespace common {
         queue_wait_result wait_queue( const key_type &key )
         {
             return wait_queue_impl( key,
-                        boost::bind( &this_type::cond_wait, _1, _2) );
+                        vtrc::bind( &this_type::cond_wait, _1, _2) );
         }
 
         queue_wait_result read( const key_type &key, queue_value_type &result )
         {
             return read_impl( key, result,
-                        boost::bind( &this_type::cond_wait, _1, _2 ) );
+                        vtrc::bind( &this_type::cond_wait, _1, _2 ) );
         }
 
         queue_wait_result read_queue( const key_type &key, queue_type &result )
         {
             return read_queue_impl( key, result,
-                        boost::bind( &this_type::cond_wait, _1, _2) );
+                        vtrc::bind( &this_type::cond_wait, _1, _2) );
         }
 
         bool queue_exists( const key_type &key ) const
@@ -268,7 +268,7 @@ namespace vtrc { namespace common {
                         const TimeType &tt)
         {
             return value->cond_.timed_wait( lck, tt,
-                          boost::bind( &this_type::queue_empty_predic, value ));
+                          vtrc::bind( &this_type::queue_empty_predic, value ));
         }
 
     public:
@@ -277,8 +277,8 @@ namespace vtrc { namespace common {
         queue_wait_result wait_queue( const key_type &key, const TimeType &tt )
         {
             return wait_queue_impl( key,
-                        boost::bind( &this_type::cond_timed_wait<TimeType>,
-                                     _1, _2, boost::cref(tt) ) );
+                        vtrc::bind( &this_type::cond_timed_wait<TimeType>,
+                                     _1, _2, vtrc::cref(tt) ) );
         }
 
         template <typename TimeType>
@@ -286,8 +286,8 @@ namespace vtrc { namespace common {
                                 const TimeType &tt )
         {
             return read_impl( key, result,
-                        boost::bind( &this_type::cond_timed_wait<TimeType>,
-                                     _1, _2, boost::cref(tt) ) );
+                        vtrc::bind( &this_type::cond_timed_wait<TimeType>,
+                                     _1, _2, vtrc::cref(tt) ) );
         }
 
         template <typename TimeType>
@@ -295,8 +295,8 @@ namespace vtrc { namespace common {
                                 const TimeType &tt )
         {
             return read_queue_impl( key, result,
-                        boost::bind( &this_type::cond_timed_wait<TimeType>,
-                                     _1, _2, boost::cref(tt) ) );
+                        vtrc::bind( &this_type::cond_timed_wait<TimeType>,
+                                     _1, _2, vtrc::cref(tt) ) );
         }
 
 #endif
@@ -311,7 +311,7 @@ namespace vtrc { namespace common {
                         const boost::chrono::duration<Rep, Period>& duration)
         {
             return value->cond_.wait_for( lck, duration,
-                        boost::bind( &this_type::queue_empty_predic, value ));
+                        vtrc::bind( &this_type::queue_empty_predic, value ));
         }
 
     public:
@@ -320,8 +320,8 @@ namespace vtrc { namespace common {
                          const boost::chrono::duration<Rep, Period>& duration )
         {
             return wait_queue_impl( key,
-                        boost::bind( &this_type::cond_wait_for<Rep, Period>,
-                                     _1, _2, boost::cref(duration) ) );
+                        vtrc::bind( &this_type::cond_wait_for<Rep, Period>,
+                                     _1, _2, vtrc::cref(duration) ) );
         }
 
         template <typename Rep, typename Period>
@@ -329,8 +329,8 @@ namespace vtrc { namespace common {
                          const boost::chrono::duration<Rep, Period>& duration )
         {
             return read_impl( key, result,
-                        boost::bind( &this_type::cond_wait_for<Rep, Period>,
-                                     _1, _2, boost::cref(duration) ) );
+                        vtrc::bind( &this_type::cond_wait_for<Rep, Period>,
+                                     _1, _2, vtrc::cref(duration) ) );
         }
 
         template <typename Rep, typename Period>
@@ -338,8 +338,8 @@ namespace vtrc { namespace common {
                          const boost::chrono::duration<Rep, Period>& duration )
         {
             return read_queue_impl( key, result,
-                        boost::bind( &this_type::cond_wait_for<Rep, Period>,
-                                     _1, _2, boost::cref(duration) ) );
+                        vtrc::bind( &this_type::cond_wait_for<Rep, Period>,
+                                     _1, _2, vtrc::cref(duration) ) );
         }
 #endif
 

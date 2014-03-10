@@ -4,20 +4,16 @@
 #include <boost/thread/shared_mutex.hpp>
 #include <boost/thread.hpp>
 #include <map>
+#include "vtrc-mutex.h"
 
 namespace vtrc { namespace common {
-
-    namespace {
-        typedef boost::unique_lock<boost::shared_mutex> unique_lock;
-        typedef boost::shared_lock<boost::shared_mutex> shared_lock;
-    }
 
     struct enviroment::impl {
 
         typedef std::map<std::string, std::string> data_type;
 
-        data_type                   data_;
-        mutable boost::shared_mutex data_lock_;
+        data_type             data_;
+        mutable shared_mutex  data_lock_;
 
         impl( ) { }
 
@@ -39,13 +35,13 @@ namespace vtrc { namespace common {
             data_type tmp;
             other_data.get_data( tmp );
 
-            unique_lock l(data_lock_);
+            unique_shared_lock l(data_lock_);
             data_.swap( tmp );
         }
 
         void set( const std::string &name, const std::string &value )
         {
-            unique_lock l(data_lock_);
+            unique_shared_lock l(data_lock_);
 
             data_type::iterator f(data_.find(name));
 

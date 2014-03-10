@@ -2,7 +2,6 @@
 #include "vtrc-transport-iface.h"
 
 #include <boost/asio/ip/tcp.hpp>
-#include <boost/shared_ptr.hpp>
 
 namespace boost {
 

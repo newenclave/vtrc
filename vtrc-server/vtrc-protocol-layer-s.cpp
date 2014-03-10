@@ -1,16 +1,15 @@
 
 #include <boost/asio.hpp>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
-#include <boost/make_shared.hpp>
 
 #include "vtrc-common/vtrc-mutex.h"
+#include "vtrc-bind.h"
+#include "vtrc-function.h"
 
 #include "vtrc-protocol-layer-s.h"
 
 #include "vtrc-monotonic-timer.h"
 #include "vtrc-data-queue.h"
-#include "vtrc-hasher-iface.h"
+#include "vtrc-hash-iface.h"
 #include "vtrc-transformer-iface.h"
 
 #include "vtrc-transport-iface.h"
@@ -45,19 +44,19 @@ namespace vtrc { namespace server {
 
     namespace data_queue = common::data_queue;
 
-    struct protocol_layer::impl {
+    struct protocol_layer_s::impl {
 
         typedef impl this_type;
 
         application             &app_;
         common::transport_iface *connection_;
-        protocol_layer          *parent_;
+        protocol_layer_s          *parent_;
         bool                     ready_;
 
         service_map              services_;
         shared_mutex             services_lock_;
 
-        typedef boost::function<void (void)> stage_function_type;
+        typedef vtrc::function<void (void)> stage_function_type;
         stage_function_type  stage_function_;
 
         impl( application &a, common::transport_iface *c )
@@ -66,7 +65,7 @@ namespace vtrc { namespace server {
             ,ready_(false)
         {
             stage_function_ =
-                    boost::bind( &this_type::on_client_selection, this );
+                    vtrc::bind( &this_type::on_client_selection, this );
         }
 
         common::rpc_service_wrapper_sptr get_service( const std::string &name )
@@ -133,16 +132,16 @@ namespace vtrc { namespace server {
             pop_message( );
 
             parent_->change_hash_checker(
-                        common::hasher::create_by_index( cs.hash( ) ));
+                        common::hash::create_by_index( cs.hash( ) ));
             parent_->change_hash_maker(
-                        common::hasher::create_by_index( cs.hash( ) ));
+                        common::hash::create_by_index( cs.hash( ) ));
 
             vtrc_auth::transformer_setup ts;
 
             ts.set_ready( true );
 
             stage_function_ =
-                    boost::bind( &this_type::on_rcp_call_ready, this );
+                    vtrc::bind( &this_type::on_rcp_call_ready, this );
 
             send_proto_message( ts );
 
@@ -161,18 +160,18 @@ namespace vtrc { namespace server {
         }
 
         void closure( common::rpc_controller_sptr controller,
-                           boost::shared_ptr <
+                           shared_ptr <
                                 vtrc_rpc_lowlevel::lowlevel_unit
                            > llu)
         {
             ;;;
         }
 
-        void make_call_impl( boost::shared_ptr <
+        void make_call_impl( shared_ptr <
                               vtrc_rpc_lowlevel::lowlevel_unit> llu )
         {
 
-            protocol_layer::context_holder ch( parent_, llu.get( ) );
+            protocol_layer_s::context_holder ch( parent_, llu.get( ) );
 
             common::rpc_service_wrapper_sptr
                     service(get_service(llu->call().service()));
@@ -189,19 +188,19 @@ namespace vtrc { namespace server {
                 throw vtrc::common::exception( vtrc_errors::ERR_NO_FUNC );
             }
 
-            boost::shared_ptr<gpb::Message> req
+            shared_ptr<gpb::Message> req
                 (service->service( )->GetRequestPrototype( meth ).New( ));
 
             req->ParseFromString( llu->request( ) );
 
-            boost::shared_ptr<gpb::Message> res
+            shared_ptr<gpb::Message> res
                 (service->service( )->GetResponsePrototype( meth ).New( ));
             res->ParseFromString( llu->response( ) );
 
             common::rpc_controller_sptr controller
-                                (boost::make_shared<common::rpc_controller>( ));
+                                (make_shared<common::rpc_controller>( ));
 
-            boost::shared_ptr<gpb::Closure> clos
+            shared_ptr<gpb::Closure> clos
                     (gpb::NewPermanentCallback( this, &this_type::closure,
                                                 controller, llu ));
 
@@ -218,8 +217,7 @@ namespace vtrc { namespace server {
             llu->set_response( res->SerializeAsString( ) );
         }
 
-        void make_call( boost::shared_ptr <
-                            vtrc_rpc_lowlevel::lowlevel_unit> llu )
+        void make_call( shared_ptr <vtrc_rpc_lowlevel::lowlevel_unit> llu )
         {
             bool failed = false;
             unsigned errorcode = 0;
@@ -256,9 +254,8 @@ namespace vtrc { namespace server {
         void on_rcp_call_ready( )
         {
             while( !parent_->message_queue( ).empty( ) ) {
-                boost::shared_ptr <
-                            vtrc_rpc_lowlevel::lowlevel_unit
-                        > llu(new vtrc_rpc_lowlevel::lowlevel_unit);
+               shared_ptr < vtrc_rpc_lowlevel::lowlevel_unit >
+                                    llu(new vtrc_rpc_lowlevel::lowlevel_unit);
                 get_pop_message( *llu );
                 switch (llu->info( ).message_type( )) {
                 case vtrc_rpc_lowlevel::message_info::MESSAGE_CALL:
@@ -310,7 +307,7 @@ namespace vtrc { namespace server {
 
     };
 
-    protocol_layer::protocol_layer( application &a,
+    protocol_layer_s::protocol_layer_s( application &a,
                                     common::transport_iface *connection )
         :common::protocol_layer(connection)
         ,impl_(new impl(a, connection))
@@ -318,22 +315,22 @@ namespace vtrc { namespace server {
         impl_->parent_ = this;
     }
 
-    protocol_layer::~protocol_layer( )
+    protocol_layer_s::~protocol_layer_s( )
     {
         delete impl_;
     }
 
-    void protocol_layer::init( )
+    void protocol_layer_s::init( )
     {
         impl_->init( );
     }
 
-    void protocol_layer::on_data_ready( )
+    void protocol_layer_s::on_data_ready( )
     {
         impl_->data_ready( );
     }
 
-    bool protocol_layer::ready( ) const
+    bool protocol_layer_s::ready( ) const
     {
         return impl_->ready( );
     }

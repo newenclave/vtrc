@@ -1,7 +1,6 @@
 #ifndef VTRC_CONNECTION_LIST_H
 #define VTRC_CONNECTION_LIST_H
 
-#include <boost/shared_ptr.hpp>
 #include "vtrc-common/vtrc-connection-iface.h"
 
 namespace vtrc {
@@ -19,7 +18,7 @@ namespace server {
 
     public:
 
-        typedef boost::function <
+        typedef vtrc::function <
                 bool (common::connection_iface_sptr)
         > client_predic;
 

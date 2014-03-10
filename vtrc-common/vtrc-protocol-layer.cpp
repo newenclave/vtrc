@@ -8,7 +8,7 @@
 #include "vtrc-protocol-layer.h"
 
 #include "vtrc-data-queue.h"
-#include "vtrc-hasher-iface.h"
+#include "vtrc-hash-iface.h"
 #include "vtrc-transformer-iface.h"
 
 #include "vtrc-transport-iface.h"
@@ -63,7 +63,7 @@ namespace vtrc { namespace common {
         }
 
         typedef vtrc_rpc_lowlevel::lowlevel_unit ll_unit_type;
-        typedef boost::shared_ptr<ll_unit_type>  ll_unit_sptr;
+        typedef shared_ptr<ll_unit_type>  ll_unit_sptr;
 
         typedef conditional_queues<rpc_unit_index, ll_unit_sptr> rpc_queue_type;
 
@@ -88,8 +88,8 @@ namespace vtrc { namespace common {
 
         impl( transport_iface *c )
             :connection_(c)
-            ,hash_maker_(common::hasher::create_default( ))
-            ,hash_checker_(common::hasher::create_default( ))
+            ,hash_maker_(common::hash::create_default( ))
+            ,hash_checker_(common::hash::create_default( ))
             //,transformer_(common::transformers::erseefor::create( "1234", 4 ))
             ,transformer_(common::transformers::none::create( ))
             ,reverter_(common::transformers::none::create( ))
@@ -214,12 +214,12 @@ namespace vtrc { namespace common {
             return context_.get( );
         }
 
-        void change_sign_checker( hasher_iface *new_signer )
+        void change_sign_checker( hash_iface *new_signer )
         {
             hash_checker_.reset(new_signer);
         }
 
-        void change_sign_maker( hasher_iface *new_signer )
+        void change_sign_maker( hash_iface *new_signer )
         {
             hash_maker_.reset(new_signer);
         }
@@ -240,7 +240,7 @@ namespace vtrc { namespace common {
         }
 
         void push_rpc_message(uint64_t slot_id,
-                    boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess)
+                        shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess)
         {
             if( rpc_queue_.queue_exists( slot_id ) )
                 rpc_queue_.write_queue( slot_id, mess );
@@ -268,7 +268,7 @@ namespace vtrc { namespace common {
         void wait_call_slot(
                     uint64_t slot_id,
                     std::deque<
-                          boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
+                        shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
                     > &data_list,
                     uint32_t millisec )
         {
@@ -348,12 +348,12 @@ namespace vtrc { namespace common {
         return impl_->message_queue( );
     }
 
-    void protocol_layer::change_hash_maker( hasher_iface *new_hasher )
+    void protocol_layer::change_hash_maker( hash_iface *new_hasher )
     {
         impl_->change_sign_maker( new_hasher );
     }
 
-    void protocol_layer::change_hash_checker( hasher_iface *new_hasher )
+    void protocol_layer::change_hash_checker( hash_iface *new_hasher )
     {
         impl_->change_sign_checker( new_hasher );
     }
@@ -397,7 +397,7 @@ namespace vtrc { namespace common {
 
     void protocol_layer::wait_call_slot( uint64_t slot_id,
                          std::deque<
-                            boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
+                                shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
                          > &data_list,
                          uint32_t millisec )
     {
@@ -410,7 +410,7 @@ namespace vtrc { namespace common {
     }
 
     void protocol_layer::push_rpc_message(uint64_t slot_id,
-                      boost::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess)
+                        shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess)
     {
         impl_->push_rpc_message(slot_id, mess);
     }
