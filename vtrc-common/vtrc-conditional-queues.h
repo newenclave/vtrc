@@ -261,7 +261,7 @@ namespace vtrc { namespace common {
             return store_.find( key ) != store_.end( );
         }
 
-#if defined BOOST_THREAD_USES_DATETIME
+#if 0 // defined BOOST_THREAD_USES_DATETIME
 
     private:
 
