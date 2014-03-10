@@ -25,7 +25,7 @@
 #include "vtrc-common/vtrc-hash-iface.h"
 
 #include "vtrc-common/vtrc-data-queue.h"
-#include "vtrc-common/vtrc-conditional-queues.h"
+#include "vtrc-common/vtrc-condition-queues.h"
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"
 #include "vtrc-common/vtrc-protocol-layer.h"
 #include "vtrc-common/vtrc-call-context.h"

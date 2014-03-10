@@ -2,7 +2,7 @@
 #define VTRC_CONDITIONAL_QUEUES_H
 
 #include <deque>
-#include "vtrc-conditional-variable.h"
+#include "vtrc-condition-variable.h"
 #include "vtrc-memory.h"
 #include "vtrc-bind.h"
 #include "vtrc-mutex.h"
@@ -18,9 +18,9 @@ namespace vtrc { namespace common {
     };
 
     template <typename KeyType, typename QueueValueType>
-    class conditional_queues {
+    class condition_queues {
 
-        typedef conditional_queues              this_type;
+        typedef condition_queues                this_type;
         typedef vtrc::mutex                     mutex_type;
         typedef vtrc::unique_lock<mutex_type>   unique_lock;
 
@@ -152,15 +152,15 @@ namespace vtrc { namespace common {
             return true;
         }
 
-        conditional_queues( const conditional_queues &other );
-        conditional_queues& operator = (const conditional_queues &other);
+        condition_queues( const condition_queues &other );
+        condition_queues& operator = (const condition_queues &other);
 
     public:
 
-        conditional_queues( )
+        condition_queues( )
         { }
 
-        ~conditional_queues( )
+        ~condition_queues( )
         {
             cancel_all( );
         }

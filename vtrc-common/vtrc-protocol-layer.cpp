@@ -13,7 +13,7 @@
 
 #include "vtrc-transport-iface.h"
 
-#include "vtrc-conditional-queues.h"
+#include "vtrc-condition-queues.h"
 #include "vtrc-exception.h"
 #include "vtrc-call-context.h"
 
@@ -65,7 +65,7 @@ namespace vtrc { namespace common {
         typedef vtrc_rpc_lowlevel::lowlevel_unit ll_unit_type;
         typedef vtrc::shared_ptr<ll_unit_type>  ll_unit_sptr;
 
-        typedef conditional_queues<rpc_unit_index, ll_unit_sptr> rpc_queue_type;
+        typedef condition_queues<rpc_unit_index, ll_unit_sptr> rpc_queue_type;
 
         typedef boost::thread_specific_ptr<call_context> call_context_ptr;
     }
