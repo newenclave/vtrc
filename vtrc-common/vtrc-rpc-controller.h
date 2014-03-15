@@ -30,9 +30,9 @@ namespace vtrc { namespace common {
         void StartCancel( );
 
         // Server-side
-        void SetFailed(const std::string& reason);
-        bool IsCanceled() const;
-        void NotifyOnCancel(google::protobuf::Closure* callback);
+        void SetFailed( const std::string& reason );
+        bool IsCanceled( ) const;
+        void NotifyOnCancel( google::protobuf::Closure* callback );
     };
 
     typedef vtrc::shared_ptr<rpc_controller> rpc_controller_sptr;
