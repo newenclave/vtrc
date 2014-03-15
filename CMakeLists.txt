@@ -22,7 +22,7 @@ find_package( Boost 1.50 COMPONENTS
                     thread
                     atomic
                     random
-                REQUIRED)
+              REQUIRED)
 find_package( Protobuf REQUIRED)
 
 #add_subdirectory(vtrc-protocol)
