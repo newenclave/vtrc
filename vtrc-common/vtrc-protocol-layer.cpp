@@ -315,13 +315,11 @@ namespace vtrc { namespace common {
                   .GetExtension( vtrc_rpc_lowlevel::method_options));
 
             if( f == options_map_.end( ) ) {
-                std::cout << "opt not found:\n";
+
                 result = vtrc::make_shared<vtrc_rpc_lowlevel::options>
                                                                 (serv.opt( ));
                 if( meth.has_opt( ) )
                     utilities::merge_messages( *result, meth.opt( ) );
-
-                std::cout << "\nopt: " << result->DebugString( ) << "\n";
 
                 upgrade_to_unique ulck( lck );
                 options_map_.insert( std::make_pair( method, result ) );
