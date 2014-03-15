@@ -8,16 +8,15 @@ namespace vtrc { namespace common {
     namespace gpb = google::protobuf;
 
     struct rpc_service_wrapper::impl {
-        gpb::Service *service_;
+
+        vtrc::shared_ptr<gpb::Service> service_;
 
         impl( gpb::Service *s )
             :service_(s)
-        {}
+        { }
 
         ~impl( )
-        {
-            delete service_;
-        }
+        { }
 
         const std::string &name( )
         {
@@ -29,8 +28,8 @@ namespace vtrc { namespace common {
             return service_->GetDescriptor( )->FindMethodByName( name );
         }
 
-        gpb::Service *service( ) { return service_; }
-        const gpb::Service *service( ) const { return service_; }
+        gpb::Service *service( ) { return service_.get( ); }
+        const gpb::Service *service( ) const { return service_.get( ); }
 
     };
 
