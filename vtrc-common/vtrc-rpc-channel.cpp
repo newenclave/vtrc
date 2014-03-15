@@ -12,6 +12,7 @@
 namespace vtrc { namespace common  {
 
     namespace {
+
     }
 
     struct rpc_channel::impl {
