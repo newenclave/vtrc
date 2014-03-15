@@ -36,9 +36,13 @@ int main( )
 
     vtrc_rpc_lowlevel::message_info mi;
 
-    for( int i=0; i<2; ++i ) {
-        s.test( NULL, &mi, &mi, NULL );
-        std::cout << "response: " << mi.message_type( ) << "\n";
+    for( int i=0; i<200000000; ++i ) {
+        try {
+            s.test( NULL, &mi, &mi, NULL );
+            std::cout << "response: " << mi.message_type( ) << "\n";
+        } catch( const std::exception &ex ) {
+            std::cout << "call error: " << ex.what( ) << "\n";
+        }
     }
 
     tp.join_all( );

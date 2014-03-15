@@ -3,6 +3,7 @@
 
 namespace vtrc_rpc_lowlevel {
     class lowlevel_unit;
+    class options;
 }
 
 namespace vtrc { namespace common {
@@ -21,6 +22,9 @@ namespace vtrc { namespace common {
 
         const vtrc_rpc_lowlevel::lowlevel_unit *get_lowlevel_message( ) const;
         vtrc_rpc_lowlevel::lowlevel_unit *get_lowlevel_message( );
+
+        const vtrc_rpc_lowlevel::options *get_call_options( ) const;
+        void set_call_options(const vtrc_rpc_lowlevel::options &opts);
 
         virtual ~call_context( );
 

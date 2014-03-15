@@ -17,6 +17,7 @@
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"
 #include "vtrc-common/vtrc-exception.h"
 #include "vtrc-common/vtrc-rpc-controller.h"
+#include "vtrc-common/vtrc-call-context.h"
 
 #include "vtrc-application.h"
 
@@ -167,14 +168,14 @@ namespace vtrc { namespace server {
             ;;;
         }
 
-        void make_call_impl( vtrc::shared_ptr <
+        bool make_call_impl( vtrc::shared_ptr <
                               vtrc_rpc_lowlevel::lowlevel_unit> llu )
         {
 
             protocol_layer_s::context_holder ch( parent_, llu.get( ) );
 
             common::rpc_service_wrapper_sptr
-                    service(get_service(llu->call().service()));
+                    service(get_service(llu->call( ).service()));
 
             if( !service ) {
                 throw vtrc::common::exception( vtrc_errors::ERR_BAD_FILE,
@@ -187,6 +188,11 @@ namespace vtrc { namespace server {
             if( !meth ) {
                 throw vtrc::common::exception( vtrc_errors::ERR_NO_FUNC );
             }
+
+            const vtrc_rpc_lowlevel::options &call_opts
+                                            ( parent_->select_options( meth ) );
+
+            ch.ctx_->set_call_options( call_opts );
 
             vtrc::shared_ptr<gpb::Message> req
                 (service->service( )->GetRequestPrototype( meth ).New( ));
@@ -215,37 +221,41 @@ namespace vtrc { namespace server {
             }
 
             llu->set_response( res->SerializeAsString( ) );
+            return call_opts.wait( );
         }
 
         void make_call( vtrc::shared_ptr <vtrc_rpc_lowlevel::lowlevel_unit> llu)
         {
-            bool failed = false;
+            bool failed       = true;
+            bool opt_wait     = true;
+            bool request_wait = llu->info( ).wait_for_response( );
+
             unsigned errorcode = 0;
             try {
-                make_call_impl( llu );
+                opt_wait = make_call_impl( llu );
+                failed = false;
             } catch ( const vtrc::common::exception &ex ) {
                 errorcode = ex.code( );
                 llu->mutable_error( )
                         ->set_additional( ex.additional( ) );
-                failed = true;
             } catch ( const std::exception &ex ) {
                 errorcode = vtrc_errors::ERR_INTERNAL;
                 llu->mutable_error( )
                         ->set_additional( ex.what( ) );
-                failed = true;
             } catch ( ... ) {
                 errorcode = vtrc_errors::ERR_UNKNOWN;
                 llu->mutable_error( )
                         ->set_additional( "..." );
-                failed = true;
             }
 
-            llu->clear_request( );
-            llu->clear_call( );
-            if( failed ) {
-                llu->clear_response( );
+            if( opt_wait && request_wait ) {
+                llu->clear_request( );
+                llu->clear_call( );
+                if( failed ) {
+                    llu->clear_response( );
+                }
+                send_proto_message( *llu );
             }
-            send_proto_message( *llu );
         }
 
         void on_rcp_call_ready( )

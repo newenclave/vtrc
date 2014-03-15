@@ -59,26 +59,32 @@ namespace vtrc { namespace client {
 
             llu->set_id( call_id );
 
-            cl->get_protocol( ).call_rpc_method( call_id, *llu );
+            if( call_opt.wait( ) ) { // WAITABLE CALL
 
-            std::deque< vtrc::shared_ptr <
-                        vtrc_rpc_lowlevel::lowlevel_unit
-                      >
-            > data_list;
+                cl->get_protocol( ).call_rpc_method( call_id, *llu );
 
-            cl->get_protocol( ).wait_call_slot( call_id, data_list,
-                                                  call_opt.call_timeout( ) );
+                std::deque< vtrc::shared_ptr <
+                            vtrc_rpc_lowlevel::lowlevel_unit
+                          >
+                > data_list;
 
-            vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> top
-                                                    ( data_list.front( ) );
+                cl->get_protocol( ).wait_call_slot( call_id, data_list,
+                                                   call_opt.call_timeout( ) );
 
-            if( top->error( ).code( ) != vtrc_errors::ERR_NO_ERROR )
-                throw vtrc::common::exception( top->error( ).code( ),
-                                               top->error( ).additional( ) );
+                vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> top
+                                                        ( data_list.front( ) );
 
-            response->ParseFromString( top->response( ) );
+                if( top->error( ).code( ) != vtrc_errors::ERR_NO_ERROR )
+                    throw vtrc::common::exception( top->error( ).code( ),
+                                                 top->error( ).additional( ) );
 
-            cl->get_protocol( ).close_slot( call_id );
+                response->ParseFromString( top->response( ) );
+
+                cl->get_protocol( ).close_slot( call_id );
+
+            } else { // NOT WAITABLE CALL
+                cl->get_protocol( ).call_rpc_method( *llu );
+            }
 
             if( done ) done->Run( );
         }

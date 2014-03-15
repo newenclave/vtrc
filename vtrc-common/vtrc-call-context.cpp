@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "vtrc-call-context.h"
 
 namespace vtrc { namespace common {
@@ -6,6 +7,10 @@ namespace vtrc { namespace common {
 
     struct call_context::impl {
         lowlevel_unit *llu_;
+        const vtrc_rpc_lowlevel::options *opts_;
+        impl( )
+            :opts_(NULL)
+        {}
     };
 
     call_context::call_context( lowlevel_unit *lowlevel )
@@ -32,6 +37,16 @@ namespace vtrc { namespace common {
     lowlevel_unit *call_context::get_lowlevel_message( )
     {
         return impl_->llu_;
+    }
+
+    const vtrc_rpc_lowlevel::options *call_context::get_call_options( ) const
+    {
+        impl_->opts_;
+    }
+
+    void call_context::set_call_options(const vtrc_rpc_lowlevel::options &opts)
+    {
+        impl_->opts_ = &opts;
     }
 
     call_context::~call_context( )

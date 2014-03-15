@@ -62,13 +62,13 @@ namespace vtrc { namespace client {
             while( !parent_->message_queue( ).empty( ) ) {
                 std::string &mess
                         (parent_->message_queue( ).front( ));
+
                 bool check = parent_->check_message( mess );
 
                 vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
                                 llu( new  vtrc_rpc_lowlevel::lowlevel_unit );
 
                 parent_->parse_message( mess, *llu );
-                std::cout << "push " << llu->id( ) << "\n";
                 parent_->push_rpc_message( llu->id( ), llu );
                 pop_message( );
             }
