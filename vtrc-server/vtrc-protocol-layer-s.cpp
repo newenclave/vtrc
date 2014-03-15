@@ -252,6 +252,7 @@ namespace vtrc { namespace server {
                 llu->clear_request( );
                 llu->clear_call( );
                 if( failed ) {
+                    llu->mutable_error( )->set_code( errorcode );
                     llu->clear_response( );
                 }
                 send_proto_message( *llu );

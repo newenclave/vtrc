@@ -53,7 +53,7 @@ namespace vtrc { namespace client {
             llu->set_response( response->SerializeAsString( ) );
 
             llu->mutable_info( )->set_message_type(
-                        vtrc_rpc_lowlevel::message_info::MESSAGE_CALL );
+                               vtrc_rpc_lowlevel::message_info::MESSAGE_CALL );
 
             uint64_t call_id = cl->get_protocol( ).next_index( );
 
@@ -69,7 +69,7 @@ namespace vtrc { namespace client {
                 > data_list;
 
                 cl->get_protocol( ).wait_call_slot( call_id, data_list,
-                                                   call_opt.call_timeout( ) );
+                                                    call_opt.call_timeout( ) );
 
                 vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> top
                                                         ( data_list.front( ) );

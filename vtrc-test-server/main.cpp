@@ -66,6 +66,8 @@ public:
 
         //boost::this_thread::sleep_for( vtrc::chrono::milliseconds(900) );
         response->set_message_type( id_++ );
+        if( (id_ % 100) == 0 )
+            throw std::runtime_error( "oops 10 =)" );
         if( done ) done->Run( );
     }
 };
