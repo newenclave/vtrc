@@ -38,9 +38,8 @@ message message_info {
         MESSAGE_SERVICE = 2;
     }
     optional uint32 message_type                = 1 [default = 0];
-                                                 // @message_type_enum
-    optional vtrc_errors.error_container error  = 2;
-    optional bool wait_for_response             = 3;
+                                                        // @message_type_enum
+    optional bool wait_for_response             = 2 [default = true];
 }
 
 message call_info {
@@ -51,13 +50,14 @@ message call_info {
 message lowlevel_unit {
 
     // --- header --- //
-    optional uint64 id               =  1;
-    optional message_info    info    =  2;
-    optional call_info       call    =  3;
+    optional uint64                      id      =  1;
+    optional message_info                info    =  2;
+    optional call_info                   call    =  3;
+    optional vtrc_errors.error_container error   =  4;
 
     // --- //
-    optional bytes request           = 20;
-    optional bytes response          = 21;
+    optional bytes request                       = 20;
+    optional bytes response                      = 21;
 }
 
 service test_rpc {

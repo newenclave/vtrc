@@ -6,11 +6,15 @@
 namespace vtrc { namespace common {
 
     class common_channel: public google::protobuf::RpcChannel {
+
         struct impl;
         impl  *impl_;
+
     public:
+
         common_channel( );
-        ~common_channel( );
+        virtual ~common_channel( );
+
     private:
         void CallMethod(const google::protobuf::MethodDescriptor* method,
                         google::protobuf::RpcController* controller,

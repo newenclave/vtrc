@@ -225,20 +225,17 @@ namespace vtrc { namespace server {
                 make_call_impl( llu );
             } catch ( const vtrc::common::exception &ex ) {
                 errorcode = ex.code( );
-                llu->mutable_info( )
-                        ->mutable_error( )
+                llu->mutable_error( )
                         ->set_additional( ex.additional( ) );
                 failed = true;
             } catch ( const std::exception &ex ) {
                 errorcode = vtrc_errors::ERR_INTERNAL;
-                llu->mutable_info( )
-                        ->mutable_error( )
+                llu->mutable_error( )
                         ->set_additional( ex.what( ) );
                 failed = true;
             } catch ( ... ) {
                 errorcode = vtrc_errors::ERR_UNKNOWN;
-                llu->mutable_info( )
-                        ->mutable_error( )
+                llu->mutable_error( )
                         ->set_additional( "..." );
                 failed = true;
             }
