@@ -7,6 +7,7 @@
 
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-protocol-layer.h"
+#include "vtrc-common/vtrc-exception.h"
 
 namespace vtrc { namespace client {
 
@@ -61,7 +62,14 @@ namespace vtrc { namespace client {
 
             cl->get_protocol( ).wait_call_slot( call_id, data_list, 2000 );
 
-            response->ParseFromString( data_list.front( )->response( ) );
+            vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> top
+                                                    (data_list.front( ));
+
+            if( top->error( ).code( ) != vtrc_errors::ERR_NO_ERROR )
+                throw vtrc::common::exception( top->error( ).code( ),
+                                               top->error( ).additional( ) );
+
+            response->ParseFromString( top->response( ) );
 
             cl->get_protocol( ).close_slot( call_id );
 
