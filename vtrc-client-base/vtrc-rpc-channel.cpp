@@ -14,7 +14,7 @@ namespace vtrc { namespace client {
 
     struct rpc_channel::impl {
 
-        weak_ptr<common::connection_iface> connection_;
+        vtrc::weak_ptr<common::connection_iface> connection_;
 
         impl(vtrc::shared_ptr<common::connection_iface> c)
             :connection_(c)
