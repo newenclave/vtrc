@@ -42,6 +42,7 @@ namespace vtrc { namespace common  {
                   .GetExtension( vtrc_rpc_lowlevel::method_options));
 
             if( f == options_map_.end( ) ) {
+                std::cout << "opt not found:\n";
                 result = vtrc::make_shared<vtrc_rpc_lowlevel::options>
                                                                 (serv.opt( ));
                 if( meth.has_opt( ) )

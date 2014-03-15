@@ -21,8 +21,9 @@ namespace client {
 
     class rpc_channel: public vtrc::common::rpc_channel {
 
-        struct impl;
-        impl  *impl_;
+        struct        impl;
+        friend struct impl;
+        impl         *impl_;
 
         rpc_channel & operator = ( const rpc_channel & );
         rpc_channel( );

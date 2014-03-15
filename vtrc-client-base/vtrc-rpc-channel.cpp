@@ -17,6 +17,8 @@ namespace vtrc { namespace client {
 
         vtrc::weak_ptr<common::connection_iface> connection_;
 
+        rpc_channel *parent_;
+
         impl(vtrc::shared_ptr<common::connection_iface> c)
             :connection_(c)
         {}
@@ -28,7 +30,10 @@ namespace vtrc { namespace client {
                         gpb::Closure* done)
         {
 
-            common::connection_iface_sptr cl(connection_.lock());
+            common::connection_iface_sptr cl(connection_.lock( ));
+
+            vtrc_rpc_lowlevel::options call_opt
+                                        ( parent_->select_options( method) );
 
             if( cl.get( ) == NULL )
                 throw std::runtime_error( "Channel is empty" );
@@ -60,10 +65,11 @@ namespace vtrc { namespace client {
                       >
             > data_list;
 
-            cl->get_protocol( ).wait_call_slot( call_id, data_list, 2000 );
+            cl->get_protocol( ).wait_call_slot( call_id, data_list,
+                                                  call_opt.call_timeout( ) );
 
             vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> top
-                                                    (data_list.front( ));
+                                                    ( data_list.front( ) );
 
             if( top->error( ).code( ) != vtrc_errors::ERR_NO_ERROR )
                 throw vtrc::common::exception( top->error( ).code( ),
@@ -79,7 +85,9 @@ namespace vtrc { namespace client {
 
     rpc_channel::rpc_channel( common::connection_iface_sptr c )
         :impl_(new impl(c))
-    {}
+    {
+        impl_->parent_ = this;
+    }
 
     rpc_channel::~rpc_channel( )
     {

@@ -62,5 +62,14 @@ message lowlevel_unit {
 
 service test_rpc {
 
-    rpc test( message_info ) returns ( message_info );
+    option (vtrc_rpc_lowlevel.service_options ) = {
+        opt: { secure_level: 1, call_timeout: 30000, wait: true }
+    };
+
+    rpc test( message_info ) returns ( message_info )
+    {
+        option (vtrc_rpc_lowlevel.method_options) = {
+            opt: { secure_level: 2, wait: false }
+        };
+    };
 }
