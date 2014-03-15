@@ -33,13 +33,13 @@ namespace vtrc { namespace common {
             throw vtrc::common::exception( code );
         }
 
-        void raise_wait_error( queue_wait_result wr )
+        void raise_wait_error( wait_result_codes wr )
         {
             switch ( wr ) {
-            case QUEUE_WAIT_CANCELED:
+            case WAIT_RESULT_CANCELED:
                 raise_error( vtrc_errors::ERR_CANCELED );
                 break;
-            case QUEUE_WAIT_TIMEOUT:
+            case  WAIT_RESULT_TIMEOUT:
                 raise_error( vtrc_errors::ERR_TIMEOUT );
                 break;
             default:
@@ -260,7 +260,7 @@ namespace vtrc { namespace common {
 
         void wait_call_slot( uint64_t slot_id, uint32_t millisec)
         {
-            queue_wait_result qwr = rpc_queue_.wait_queue( slot_id,
+            wait_result_codes qwr = rpc_queue_.wait_queue( slot_id,
                              vtrc::chrono::milliseconds(millisec) );
             raise_wait_error( qwr );
         }
@@ -272,7 +272,7 @@ namespace vtrc { namespace common {
                     > &data_list,
                     uint32_t millisec )
         {
-            queue_wait_result qwr = rpc_queue_.read_queue(
+            wait_result_codes qwr = rpc_queue_.read_queue(
                         slot_id, data_list,
                         vtrc::chrono::milliseconds(millisec)) ;
             raise_wait_error( qwr );
