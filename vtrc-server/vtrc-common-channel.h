@@ -1,11 +1,11 @@
 #ifndef VTRC_COMMON_CHANNEL_H
 #define VTRC_COMMON_CHANNEL_H
 
-#include <google/protobuf/service.h>
+#include "vtrc-common/vtrc-rpc-channel.h"
 
 namespace vtrc { namespace common {
 
-    class common_channel: public google::protobuf::RpcChannel {
+    class common_channel: public vtrc::common::rpc_channel {
 
         struct impl;
         impl  *impl_;
