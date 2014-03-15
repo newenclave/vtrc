@@ -32,11 +32,12 @@ namespace vtrc { namespace client {
 
             common::connection_iface_sptr cl(connection_.lock( ));
 
-            vtrc_rpc_lowlevel::options call_opt
-                                        ( parent_->select_options( method) );
 
             if( cl.get( ) == NULL )
                 throw std::runtime_error( "Channel is empty" );
+
+            vtrc_rpc_lowlevel::options call_opt
+                                ( cl->get_protocol( ).select_options(method) );
 
             std::string service_name(method->service( )->full_name( ));
             std::string method_name(method->name( ));

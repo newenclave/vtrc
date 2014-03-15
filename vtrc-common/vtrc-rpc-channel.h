@@ -15,10 +15,6 @@ namespace vtrc { namespace common  {
     public:
         rpc_channel( );
         virtual ~rpc_channel( );
-
-    protected:
-        const vtrc_rpc_lowlevel::options &select_options(
-                            const google::protobuf::MethodDescriptor* method );
     };
 }}
 

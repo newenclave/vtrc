@@ -16,6 +16,7 @@ namespace google { namespace protobuf {
 
 namespace vtrc_rpc_lowlevel {
     class lowlevel_unit;
+    class options;
 }
 
 namespace vtrc { namespace common {
@@ -72,6 +73,9 @@ namespace vtrc { namespace common {
 
         void close_slot( uint64_t slot_id );
 
+        const vtrc_rpc_lowlevel::options &select_options(
+                            const google::protobuf::MethodDescriptor* method );
+
     protected:
 
         struct context_holder {
@@ -104,6 +108,7 @@ namespace vtrc { namespace common {
 
         call_context *create_call_context (
                                         vtrc_rpc_lowlevel::lowlevel_unit *llu );
+
         void clear_call_context( );
 
         void pop_message( );

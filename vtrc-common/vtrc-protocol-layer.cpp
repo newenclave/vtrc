@@ -2,8 +2,11 @@
 #include <boost/thread/tss.hpp>
 
 #include <google/protobuf/message.h>
+#include <google/protobuf/descriptor.h>
 
 #include "vtrc-atomic.h"
+#include "vtrc-mutex.h"
+#include "vtrc-mutex-typedefs.h"
 
 #include "vtrc-protocol-layer.h"
 
@@ -16,6 +19,8 @@
 #include "vtrc-condition-queues.h"
 #include "vtrc-exception.h"
 #include "vtrc-call-context.h"
+
+#include "proto-helper/message-utilities.h"
 
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
 #include "protocol/vtrc-errors.pb.h"
@@ -68,6 +73,12 @@ namespace vtrc { namespace common {
         typedef condition_queues<rpc_unit_index, ll_unit_sptr> rpc_queue_type;
 
         typedef boost::thread_specific_ptr<call_context> call_context_ptr;
+
+        typedef std::map <
+             const google::protobuf::MethodDescriptor *
+            ,vtrc::shared_ptr<vtrc_rpc_lowlevel::options>
+        > options_map_type;
+
     }
 
     struct protocol_layer::impl {
@@ -85,6 +96,9 @@ namespace vtrc { namespace common {
         vtrc::atomic<uint64_t>       rpc_index_;
 
         call_context_ptr             context_;
+
+        options_map_type           options_map_;
+        mutable vtrc::shared_mutex options_map_lock_;
 
         impl( transport_iface *c )
             :connection_(c)
@@ -283,6 +297,42 @@ namespace vtrc { namespace common {
             rpc_queue_.erase_queue( slot_id );
         }
 
+        const vtrc_rpc_lowlevel::options &select_options(
+                              const gpb::MethodDescriptor *method)
+        {
+            upgradable_lock lck(options_map_lock_);
+
+            options_map_type::const_iterator f(options_map_.find(method));
+
+            vtrc::shared_ptr<vtrc_rpc_lowlevel::options> result;
+
+            const vtrc_rpc_lowlevel::service_options_type &serv (
+               method->service( )->options( )
+                    .GetExtension( vtrc_rpc_lowlevel::service_options ));
+
+            const vtrc_rpc_lowlevel::method_options_type &meth (
+               method->options( )
+                  .GetExtension( vtrc_rpc_lowlevel::method_options));
+
+            if( f == options_map_.end( ) ) {
+                std::cout << "opt not found:\n";
+                result = vtrc::make_shared<vtrc_rpc_lowlevel::options>
+                                                                (serv.opt( ));
+                if( meth.has_opt( ) )
+                    utilities::merge_messages( *result, meth.opt( ) );
+
+                std::cout << "\nopt: " << result->DebugString( ) << "\n";
+
+                upgrade_to_unique ulck( lck );
+                options_map_.insert( std::make_pair( method, result ) );
+
+            } else {
+                result = f->second;
+            }
+
+            return *result;
+        }
+
     };
 
     protocol_layer::protocol_layer( transport_iface *connection )
@@ -315,6 +365,12 @@ namespace vtrc { namespace common {
                             vtrc_rpc_lowlevel::lowlevel_unit *llu )
     {
         return impl_->create_call_context( llu );
+    }
+
+    const vtrc_rpc_lowlevel::options &protocol_layer::select_options(
+                              const gpb::MethodDescriptor *method)
+    {
+        return impl_->select_options( method );
     }
 
     void protocol_layer::clear_call_context( )
