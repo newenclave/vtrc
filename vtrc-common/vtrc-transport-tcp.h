@@ -21,6 +21,8 @@ namespace vtrc { namespace common {
         friend struct impl;
         impl *impl_;
 
+        transport_tcp( const transport_tcp & );
+        transport_tcp& operator = ( const transport_tcp & );
 
     public:
 

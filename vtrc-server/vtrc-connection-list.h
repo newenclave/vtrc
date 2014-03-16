@@ -16,6 +16,9 @@ namespace server {
         struct impl;
         impl  *impl_;
 
+        connection_list( const connection_list & );
+        connection_list& operator = ( const connection_list & );
+
     public:
 
         typedef vtrc::function <

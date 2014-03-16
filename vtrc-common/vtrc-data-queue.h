@@ -15,6 +15,9 @@ namespace vtrc { namespace common { namespace data_queue {
         struct impl;
         impl  *impl_;
 
+        queue_base ( const queue_base &);
+        queue_base & operator = ( const queue_base &);
+
     public:
 
         queue_base( );

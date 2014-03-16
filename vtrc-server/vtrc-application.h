@@ -31,6 +31,9 @@ namespace server {
         friend struct impl;
         impl  *impl_;
 
+        application( const application & );
+        application& operator = ( const application & );
+
     public:
 
         application( );
