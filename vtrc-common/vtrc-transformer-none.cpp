@@ -8,10 +8,6 @@ namespace vtrc { namespace common {
             {
 
             }
-            void revert_data( char * /*data*/, size_t /*length*/ )
-            {
-
-            }
         };
 
     }
