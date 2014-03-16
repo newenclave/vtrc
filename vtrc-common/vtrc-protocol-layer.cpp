@@ -306,15 +306,15 @@ namespace vtrc { namespace common {
 
             vtrc::shared_ptr<vtrc_rpc_lowlevel::options> result;
 
-            const vtrc_rpc_lowlevel::rpc_options_type &serv (
-               method->service( )->options( )
-                    .GetExtension( vtrc_rpc_lowlevel::service_options ));
-
-            const vtrc_rpc_lowlevel::rpc_options_type &meth (
-               method->options( )
-                  .GetExtension( vtrc_rpc_lowlevel::method_options));
-
             if( f == options_map_.end( ) ) {
+
+                const vtrc_rpc_lowlevel::rpc_options_type &serv (
+                    method->service( )->options( )
+                        .GetExtension( vtrc_rpc_lowlevel::service_options ));
+
+                const vtrc_rpc_lowlevel::rpc_options_type &meth (
+                    method->options( )
+                        .GetExtension( vtrc_rpc_lowlevel::method_options));
 
                 result = vtrc::make_shared<vtrc_rpc_lowlevel::options>
                                                                 (serv.opt( ));
