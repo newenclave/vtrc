@@ -162,7 +162,6 @@ namespace vtrc { namespace client {
 
     void client_tcp::init( )
     {
-        //impl_->init( );
     }
 
 }}

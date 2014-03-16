@@ -1,8 +1,6 @@
 
 #include "vtrc-enviroment.h"
 
-#include <boost/thread/shared_mutex.hpp>
-#include <boost/thread.hpp>
 #include <map>
 #include "vtrc-mutex-typedefs.h"
 

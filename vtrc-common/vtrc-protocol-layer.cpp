@@ -1,5 +1,6 @@
-#include <boost/thread.hpp>
+
 #include <boost/thread/tss.hpp>
+#include "vtrc-thread.h"
 
 #include <google/protobuf/message.h>
 #include <google/protobuf/descriptor.h>

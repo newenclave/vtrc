@@ -1,5 +1,4 @@
 
-#include <boost/thread.hpp>
 #include <map>
 
 #include "vtrc-connection-list.h"
