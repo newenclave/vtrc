@@ -43,7 +43,7 @@ message message_info {
 }
 
 message call_info {
-    optional bytes service = 1;
+    optional bytes service = 1; // we can use full_name for example or crc :]
     optional bytes method  = 2;
 }
 
