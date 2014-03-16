@@ -306,11 +306,11 @@ namespace vtrc { namespace common {
 
             vtrc::shared_ptr<vtrc_rpc_lowlevel::options> result;
 
-            const vtrc_rpc_lowlevel::service_options_type &serv (
+            const vtrc_rpc_lowlevel::rpc_options_type &serv (
                method->service( )->options( )
                     .GetExtension( vtrc_rpc_lowlevel::service_options ));
 
-            const vtrc_rpc_lowlevel::method_options_type &meth (
+            const vtrc_rpc_lowlevel::rpc_options_type &meth (
                method->options( )
                   .GetExtension( vtrc_rpc_lowlevel::method_options));
 

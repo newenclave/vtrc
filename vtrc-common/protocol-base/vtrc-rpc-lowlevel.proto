@@ -13,21 +13,17 @@ message options {
     optional bool       wait            = 3 [default = true];
 };
 
-message service_options_type {
-    optional options opt = 1;
-};
-
-message method_options_type {
+message rpc_options_type {
     optional options opt = 1;
 };
 
 
 extend google.protobuf.ServiceOptions {
-    optional service_options_type service_options = 51301;
+    optional rpc_options_type service_options = 51301;
 }
 
 extend google.protobuf.MethodOptions {
-    optional method_options_type  method_options = 51302;
+    optional rpc_options_type  method_options = 51302;
 }
 
 
