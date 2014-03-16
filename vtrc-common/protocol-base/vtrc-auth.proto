@@ -17,8 +17,7 @@ enum hash_variant {
 
 enum transformer_variant {
     TRANSFORM_NONE       = 0;
-    TRANSFORM_SIMPLE_XOR = 1;
-    TRANSFORM_ERSEEFOR   = 2;
+    TRANSFORM_ERSEEFOR   = 1;
 };
 
 message error_info {
