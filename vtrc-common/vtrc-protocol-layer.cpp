@@ -298,7 +298,7 @@ namespace vtrc { namespace common {
             rpc_queue_.erase_queue( slot_id );
         }
 
-        const vtrc_rpc_lowlevel::options &select_options(
+        const vtrc_rpc_lowlevel::options &get_method_options(
                               const gpb::MethodDescriptor *method)
         {
             upgradable_lock lck(options_map_lock_);
@@ -366,10 +366,10 @@ namespace vtrc { namespace common {
         return impl_->create_call_context( llu );
     }
 
-    const vtrc_rpc_lowlevel::options &protocol_layer::select_options(
+    const vtrc_rpc_lowlevel::options &protocol_layer::get_method_options(
                               const gpb::MethodDescriptor *method)
     {
-        return impl_->select_options( method );
+        return impl_->get_method_options( method );
     }
 
     void protocol_layer::clear_call_context( )

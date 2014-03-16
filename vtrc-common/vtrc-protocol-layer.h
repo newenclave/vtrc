@@ -73,7 +73,7 @@ namespace vtrc { namespace common {
 
         void close_slot( uint64_t slot_id );
 
-        const vtrc_rpc_lowlevel::options &select_options(
+        const vtrc_rpc_lowlevel::options &get_method_options(
                             const google::protobuf::MethodDescriptor* method );
 
     protected:

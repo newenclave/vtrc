@@ -190,7 +190,7 @@ namespace vtrc { namespace server {
             }
 
             const vtrc_rpc_lowlevel::options &call_opts
-                                            ( parent_->select_options( meth ) );
+                                        ( parent_->get_method_options( meth ) );
 
             ch.ctx_->set_call_options( call_opts );
 
