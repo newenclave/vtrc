@@ -91,12 +91,12 @@ namespace vtrc { namespace common {
 
         struct context_holder {
             protocol_layer *p_;
-            call_context   *old_context_;
+            call_context   *old_ctx_;
             call_context   *ctx_;
             context_holder( protocol_layer *parent,
                             vtrc_rpc_lowlevel::lowlevel_unit *llu )
                 :p_(parent)
-                ,old_context_(p_->get_call_context( ))
+                ,old_ctx_(p_->get_call_context( ))
                 ,ctx_(p_->reset_call_context( new call_context( llu ) ))
             {
             }
@@ -104,7 +104,7 @@ namespace vtrc { namespace common {
             ~context_holder( ) try
             {
                 //p_->release_call_context( );
-                p_->reset_call_context( old_context_ );
+                p_->reset_call_context( old_ctx_ );
                 //delete ctx_;
             } catch( ... ) { }
 

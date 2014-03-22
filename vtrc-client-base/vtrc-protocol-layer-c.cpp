@@ -35,6 +35,7 @@ namespace vtrc { namespace client {
     struct protocol_layer_c::impl {
 
         typedef impl this_type;
+        typedef protocol_layer_c parent_type;
 
         typedef vtrc::function<void (void)> stage_funcion_type;
 
@@ -42,16 +43,19 @@ namespace vtrc { namespace client {
         protocol_layer_c            *parent_;
         stage_funcion_type           stage_call_;
         vtrc_client                 *client_;
+        vtrc::shared_ptr<int>        track_;
 
         impl( common::transport_iface *c, vtrc_client *client )
             :connection_(c)
             ,client_(client)
+            ,track_(vtrc::make_shared<int>(1))
         {
             stage_call_ = vtrc::bind( &this_type::on_hello_call, this );
         }
 
         void init( )
         {
+
         }
 
         void pop_message( )
@@ -72,22 +76,31 @@ namespace vtrc { namespace client {
             connection_->write(s.c_str( ), s.size( ), closure );
         }
 
+
+        void process_event_impl( lowlevel_unit_sptr llu,
+                                 service_str serv,
+                                 const gpb::MethodDescriptor *meth )
+        {
+            protocol_layer::context_holder ch( parent_, llu.get( ) );
+
+            const vtrc_rpc_lowlevel::options &opts(
+                        parent_->get_method_options( meth ) );
+
+            ch.ctx_->set_call_options( opts );
+        }
+
         void process_event( lowlevel_unit_sptr &llu )
         {
             const std::string serv_name( llu->call( ).service( ) );
             service_str serv = client_->get_handler( serv_name );
 
             if( serv ) {
+
                 const std::string meth_name( llu->call( ).method( ) );
                 const gpb::MethodDescriptor *meth =
                         serv->GetDescriptor( )->FindMethodByName( meth_name );
                 if( meth ) {
-                    protocol_layer::context_holder ch( parent_, llu.get( ) );
-
-                    const vtrc_rpc_lowlevel::options &opts(
-                                parent_->get_method_options( meth ) );
-
-                    ch.ctx_->set_call_options( opts );
+                    client_->get_io_service( );
                 }
             }
         }
