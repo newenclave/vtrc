@@ -21,14 +21,21 @@ namespace google { namespace protobuf {
 
 namespace vtrc { namespace client {
 
-    class vtrc_client {
+    class vtrc_client: public vtrc::enable_shared_from_this<vtrc_client> {
 
         struct impl;
         impl *impl_;
 
-    public:
+        vtrc_client( const vtrc_client &other );
+        vtrc_client & operator = ( const vtrc_client &other );
 
         vtrc_client( boost::asio::io_service &ios );
+
+    public:
+
+        static
+        vtrc::shared_ptr<vtrc_client> create( boost::asio::io_service &ios );
+
         ~vtrc_client( );
 
         boost::asio::io_service       &get_io_service( );
@@ -48,6 +55,9 @@ namespace vtrc { namespace client {
 
 
     };
+
+    typedef vtrc::shared_ptr<vtrc_client> vtrc_client_sptr;
+    typedef vtrc::weak_ptr<vtrc_client>   vtrc_client_wptr;
 
 }}
 

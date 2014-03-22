@@ -142,6 +142,13 @@ namespace vtrc { namespace client {
         impl_->parent_ = this;
     }
 
+    vtrc::shared_ptr<vtrc_client> vtrc_client::create(basio::io_service &ios)
+    {
+        vtrc::shared_ptr<vtrc_client> new_inst( new vtrc_client( ios ) );
+
+        return new_inst;
+    }
+
     vtrc_client::~vtrc_client( )
     {
         delete impl_;

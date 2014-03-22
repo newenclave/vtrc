@@ -27,14 +27,15 @@ using namespace vtrc;
 int main( )
 {
     common::thread_pool tp(4);
-    client::vtrc_client cl( tp.get_io_service( ) );
+    vtrc::shared_ptr<client::vtrc_client> cl(
+                          client::vtrc_client::create((tp.get_io_service( ))));
 
     ///cl.connect( "127.0.0.1", "44667" );
-    cl.async_connect( "127.0.0.1", "44667", on_connect );
+    cl->async_connect( "127.0.0.1", "44667", on_connect );
 
     vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(2000) );
 
-    vtrc_rpc_lowlevel::test_rpc::Stub s( cl.get_channel( ).get( ) );
+    vtrc_rpc_lowlevel::test_rpc::Stub s( cl->get_channel( ).get( ) );
 
     vtrc_rpc_lowlevel::message_info mi;
 

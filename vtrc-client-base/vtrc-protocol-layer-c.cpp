@@ -76,11 +76,14 @@ namespace vtrc { namespace client {
             connection_->write(s.c_str( ), s.size( ), closure );
         }
 
-
-        void process_event_impl( lowlevel_unit_sptr llu,
+        void process_event_impl( vtrc_client_wptr client,
+                                 lowlevel_unit_sptr llu,
                                  service_str serv,
                                  const gpb::MethodDescriptor *meth )
         {
+            vtrc_client_sptr c(client.lock( ));
+            if( !c ) return;
+
             protocol_layer::context_holder ch( parent_, llu.get( ) );
 
             const vtrc_rpc_lowlevel::options &opts(
@@ -95,12 +98,14 @@ namespace vtrc { namespace client {
             service_str serv = client_->get_handler( serv_name );
 
             if( serv ) {
-
                 const std::string meth_name( llu->call( ).method( ) );
                 const gpb::MethodDescriptor *meth =
                         serv->GetDescriptor( )->FindMethodByName( meth_name );
                 if( meth ) {
-                    client_->get_io_service( );
+                    client_->get_io_service( ).post(
+                        vtrc::bind( &this_type::process_event_impl, this,
+                                 vtrc_client_wptr(client_->shared_from_this( )),
+                                 llu, serv, meth));
                 }
             }
         }
