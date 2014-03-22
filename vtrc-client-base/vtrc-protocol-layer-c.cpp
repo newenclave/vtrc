@@ -166,11 +166,12 @@ namespace vtrc { namespace client {
 
                     vtrc_errors::error_container *err = llu->mutable_error( );
                     err->set_code(vtrc_errors::ERR_PROTOCOL);
-                    err->set_additional("Bad message hash");
+                    err->set_additional("Bad message was received");
                     err->set_fatal( true );
 
                     parent_->push_rpc_message_all( llu );
                     connection_->close( );
+
                     return;
                 }
 
