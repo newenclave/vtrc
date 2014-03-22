@@ -40,19 +40,21 @@ int main( )
 
     vtrc_rpc_lowlevel::message_info mi;
 
+    size_t last = 0;
     for( int i=0; i<200000000; ++i ) {
         try {
             s.test( NULL, &mi, &mi, NULL );
-            std::cout << "response: " << mi.message_type( ) << "\n";
+            last = mi.message_type( );
+            //std::cout << "response: " << last << "\n";
             //cl.reset( );
         } catch( const vtrc::common::exception &ex ) {
-
-            std::cout << "call error: "
-                      << " code (" << ex.code( ) << ")"
-                      << " category (" << ex.category( ) << ")"
-                      << " what: " << ex.what( )
-                      << " (" << ex.additional( ) << ")"
-                      << "\n";
+//            std::cout << "call error: "
+//                      << " code (" << ex.code( ) << ")"
+//                      << " category (" << ex.category( ) << ")"
+//                      << " what: " << ex.what( )
+//                      << " (" << ex.additional( ) << ")"
+//                      << "\n";
+            std::cout << " last  " << last << "\n";
         } catch( const std::exception &ex ) {
             std::cout << "call error: " << ex.what( ) << "\n";
         }
