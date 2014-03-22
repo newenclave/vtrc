@@ -51,8 +51,8 @@ int main( )
             std::cout << "call error: "
                       << " code (" << ex.code( ) << ")"
                       << " category (" << ex.category( ) << ")"
-                      << " addition (" << ex.additional( ) << ")"
                       << " what (" << ex.what( ) << ")"
+                      << " addition (" << ex.additional( ) << ")"
                       << "\n";
         } catch( const std::exception &ex ) {
             std::cout << "call error: " << ex.what( ) << "\n";

@@ -8,6 +8,7 @@
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-protocol-layer.h"
 #include "vtrc-common/vtrc-exception.h"
+#include "vtrc-common/vtrc-closure-holder.h"
 
 namespace vtrc { namespace client {
 
@@ -29,12 +30,14 @@ namespace vtrc { namespace client {
                         gpb::Message* response,
                         gpb::Closure* done)
         {
+            common::closure_holder hold(done);
 
             common::connection_iface_sptr cl(connection_.lock( ));
 
-
-            if( cl.get( ) == NULL )
-                throw std::runtime_error( "Channel is empty" );
+            if( cl.get( ) == NULL ) {
+                throw vtrc::common::exception( vtrc_errors::ERR_CHANNEL,
+                                               "Connection is lost");
+            }
 
             vtrc_rpc_lowlevel::options call_opt
                              ( cl->get_protocol( ).get_method_options(method) );
@@ -86,8 +89,6 @@ namespace vtrc { namespace client {
             } else { // NOT WAITABLE CALL
                 cl->get_protocol( ).call_rpc_method( *llu );
             }
-
-            if( done ) done->Run( );
         }
     };
 

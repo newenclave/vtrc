@@ -33,6 +33,7 @@ enum errors_numbers { // CATEGORY_INTERNAL
     ERR_UNKNOWN       = 1000 [(error_description) = "Unknown error"];
     ERR_CALL_FAILED   = 1001 [(error_description) = "Call failed"];
     ERR_INTERNAL      = 1002 [(error_description) = "Internal error"];
+    ERR_CHANNEL       = 1003 [(error_description) = "Channel error"];
 
 }
 
