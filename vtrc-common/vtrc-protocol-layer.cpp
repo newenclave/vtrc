@@ -214,15 +214,17 @@ namespace vtrc { namespace common {
             return result;
         }
 
-        void clear_call_context( )
+        call_context *release_call_context( )
         {
-            context_.reset( );
+            call_context *old = context_.get( );
+            context_.release( );
+            return old;
         }
 
-        call_context *create_call_context( vtrc_rpc_lowlevel::lowlevel_unit *ll)
+        call_context *set_call_context( call_context *cc )
         {
-            context_.reset( new call_context( ll ) );
-            return context_.get( );
+            context_.reset( cc );
+            return cc;
         }
 
         const call_context *get_call_context( ) const
@@ -230,24 +232,9 @@ namespace vtrc { namespace common {
             return context_.get( );
         }
 
-        vtrc::shared_ptr<call_context> copy_call_context( ) const
+        call_context *get_call_context( )
         {
-            vtrc::shared_ptr<call_context> res;
-            if( context_.get( ) )
-                res = vtrc::make_shared<call_context>( *context_ );
-            return res;
-        }
-
-        void restore_call_context( vtrc::shared_ptr<call_context> ctx)
-        {
-            if( ctx ) {
-                if( context_.get( ) )
-                    (*context_) = (*ctx);
-                else
-                    context_.reset( new call_context( *ctx ) );
-            } else {
-                clear_call_context( );
-            }
+            return context_.get( );
         }
 
         void change_sign_checker( hash_iface *new_signer )
@@ -395,10 +382,14 @@ namespace vtrc { namespace common {
         impl_->send_message( message );
     }
 
-    call_context *protocol_layer::create_call_context(
-                            vtrc_rpc_lowlevel::lowlevel_unit *llu )
+    call_context *protocol_layer::reset_call_context(call_context *cc)
     {
-        return impl_->create_call_context( llu );
+        return impl_->set_call_context( cc );
+    }
+
+    call_context *protocol_layer::release_call_context( )
+    {
+        return impl_->release_call_context( );
     }
 
     const vtrc_rpc_lowlevel::options &protocol_layer::get_method_options(
@@ -407,25 +398,15 @@ namespace vtrc { namespace common {
         return impl_->get_method_options( method );
     }
 
-    void protocol_layer::clear_call_context( )
-    {
-        impl_->clear_call_context( );
-    }
 
     const call_context *protocol_layer::get_call_context( ) const
     {
         return impl_->get_call_context( );
     }
 
-    vtrc::shared_ptr<call_context> protocol_layer::copy_call_context( ) const
+    call_context *protocol_layer::get_call_context( )
     {
-        return impl_->copy_call_context( );
-    }
-
-    void protocol_layer::restore_call_context(
-                                            vtrc::shared_ptr<call_context> ctx)
-    {
-        impl_->restore_call_context( ctx );
+        return impl_->get_call_context( );
     }
 
     bool protocol_layer::check_message( const std::string &mess )

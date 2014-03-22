@@ -7,6 +7,8 @@
 #include <deque>
 #include "vtrc-memory.h"
 
+#include "vtrc-call-context.h"
+
 namespace google { namespace protobuf {
     class Message;
     class RpcController;
@@ -87,22 +89,24 @@ namespace vtrc { namespace common {
 
     protected:
 
-        vtrc::shared_ptr<call_context> copy_call_context( ) const;
-        void restore_call_context( vtrc::shared_ptr<call_context> ctx );
-
         struct context_holder {
             protocol_layer *p_;
+            call_context   *old_context_;
             call_context   *ctx_;
             context_holder( protocol_layer *parent,
                             vtrc_rpc_lowlevel::lowlevel_unit *llu )
                 :p_(parent)
-                ,ctx_(p_->create_call_context( llu ))
-            { }
-
-            ~context_holder( )
+                ,old_context_(p_->get_call_context( ))
+                ,ctx_(p_->reset_call_context( new call_context( llu ) ))
             {
-                p_->clear_call_context( );
             }
+
+            ~context_holder( ) try
+            {
+                //p_->release_call_context( );
+                p_->reset_call_context( old_context_ );
+                //delete ctx_;
+            } catch( ... ) { }
 
         private:
             context_holder( context_holder const & );
@@ -124,10 +128,9 @@ namespace vtrc { namespace common {
         void parse_message( const std::string &mess,
                             google::protobuf::Message &result );
 
-        call_context *create_call_context (
-                                        vtrc_rpc_lowlevel::lowlevel_unit *llu );
-
-        void clear_call_context( );
+        call_context *reset_call_context ( call_context *cc );
+        call_context *get_call_context( );
+        call_context *release_call_context( );
 
         void pop_message( );
 

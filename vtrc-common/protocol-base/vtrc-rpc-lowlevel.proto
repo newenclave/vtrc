@@ -26,7 +26,6 @@ extend google.protobuf.MethodOptions {
     optional rpc_options_type  method_options = 51302;
 }
 
-
 message message_info {
     enum message_type_enum {
         MESSAGE_CALL        = 0;

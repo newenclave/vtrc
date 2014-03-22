@@ -23,9 +23,6 @@ namespace vtrc { namespace common {
 
         }
 
-//        transformer_iface *create_by_index( unsigned var );
-//        transformer_iface *create_default( );
-
     }
 }}
 
