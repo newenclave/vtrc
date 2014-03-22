@@ -36,7 +36,7 @@ namespace vtrc { namespace client {
 
             if( cl.get( ) == NULL ) {
                 throw vtrc::common::exception( vtrc_errors::ERR_CHANNEL,
-                                               "Connection is lost");
+                                               "Connection lost");
             }
 
             vtrc_rpc_lowlevel::options call_opt
