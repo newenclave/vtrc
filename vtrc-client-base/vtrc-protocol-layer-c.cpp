@@ -102,6 +102,10 @@ namespace vtrc { namespace client {
                 const gpb::MethodDescriptor *meth =
                         serv->GetDescriptor( )->FindMethodByName( meth_name );
                 if( meth ) {
+
+                    const vtrc_rpc_lowlevel::options &opts(
+                                parent_->get_method_options( meth ) );
+
                     client_->get_io_service( ).post(
                         vtrc::bind( &this_type::process_event_impl, this,
                                  vtrc_client_wptr(client_->shared_from_this( )),
