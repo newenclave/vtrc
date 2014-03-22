@@ -88,8 +88,9 @@ namespace vtrc { namespace server { namespace endpoints {
                 return protocol_->prepare_data( data, length );
             }
 
-            void on_write_error( const bsys::error_code & /*error*/ )
+            void on_write_error( const bsys::error_code &error )
             {
+                protocol_->on_write_error( error );
                 close( );
                 //app_.get_clients( )->drop(this); // delete
             }
@@ -116,6 +117,7 @@ namespace vtrc { namespace server { namespace endpoints {
                     }
                     start_reading( );
                 } else {
+                    protocol_->on_read_error( error );
                     close( );
                     app_.get_clients( )->drop(this); // delete
                 }

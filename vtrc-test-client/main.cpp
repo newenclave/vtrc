@@ -4,6 +4,8 @@
 #include <google/protobuf/service.h>
 
 #include "vtrc-common/vtrc-thread-pool.h"
+#include "vtrc-common/vtrc-exception.h"
+
 #include "vtrc-client-base/vtrc-client.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
 
@@ -40,6 +42,14 @@ int main( )
         try {
             s.test( NULL, &mi, &mi, NULL );
             std::cout << "response: " << mi.message_type( ) << "\n";
+        } catch( const vtrc::common::exception &ex ) {
+
+            std::cout << "call error: "
+                      << " code (" << ex.code( ) << ")"
+                      << " category (" << ex.category( ) << ")"
+                      << " addition (" << ex.additional( ) << ")"
+                      << "\n";
+
         } catch( const std::exception &ex ) {
             std::cout << "call error: " << ex.what( ) << "\n";
         }

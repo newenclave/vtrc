@@ -1,4 +1,5 @@
 #include <google/protobuf/descriptor.h>
+#include <boost/system/error_code.hpp>
 
 #include "vtrc-exception.h"
 #include "protocol/vtrc-errors.pb.h"
@@ -27,15 +28,34 @@ namespace vtrc { namespace common {
         {
             if( category == vtrc_errors::CATEGORY_INTERNAL ) {
                 return get_internal_error( code );
+            } else if( category == vtrc_errors::CATEGORY_SYSTEM ) {
+                try {
+                    boost::system::error_code ec(code,
+                                             boost::system::system_category());
+                    return ec.message( );
+                } catch( const std::exception &ex ) {
+                    return ex.what( );
+                }
             }
             return unknown_error;
         }
     }
 
-    exception::exception( unsigned code, unsigned category )
+    exception::exception( unsigned code, unsigned code_category )
         :code_(code)
-        ,category_(category)
+        ,category_(code_category)
         ,what_(get_error_code_string(code_, category_))
+    {
+
+    }
+
+    exception::exception(unsigned code,
+                         unsigned code_category,
+                         const std::string &additional)
+        :code_(code)
+        ,category_(code_category)
+        ,what_(get_error_code_string(code_, category_))
+        ,additional_(additional)
     {
 
     }
@@ -69,6 +89,11 @@ namespace vtrc { namespace common {
     unsigned exception::code( ) const
     {
         return code_;
+    }
+
+    unsigned exception::category( ) const
+    {
+        return category_;
     }
 
 }}

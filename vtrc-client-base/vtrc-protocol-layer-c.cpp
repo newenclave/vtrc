@@ -92,8 +92,22 @@ namespace vtrc { namespace client {
 
         }
 
+        void on_system_error(const boost::system::error_code &err,
+                             const std::string &add)
+        {
+            vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
+                            llu( new  vtrc_rpc_lowlevel::lowlevel_unit );
+            llu->mutable_error( )->set_code(err.value( ));
+            llu->mutable_error( )->set_category(vtrc_errors::CATEGORY_SYSTEM);
+            llu->mutable_error( )->set_fatal( true );
+            llu->mutable_error( )->set_additional( add );
+
+            parent_->push_rpc_message_all( llu );
+        }
+
         void on_rpc_process( )
         {
+
             while( !parent_->message_queue( ).empty( ) ) {
                 std::string &mess
                         (parent_->message_queue( ).front( ));
@@ -119,7 +133,6 @@ namespace vtrc { namespace client {
                 case vtrc_rpc_lowlevel::message_info::MESSAGE_EVENT:
                     process_event( llu );
                     break;
-
                 case vtrc_rpc_lowlevel::message_info::MESSAGE_CALLBACK:
                     process_callback( llu );
                     break;
@@ -219,6 +232,16 @@ namespace vtrc { namespace client {
         delete impl_;
     }
 
+    void protocol_layer_c::on_read_error(const boost::system::error_code &err)
+    {
+        impl_->on_system_error( err, "Transport read error." );
+    }
+
+    void protocol_layer_c::on_write_error(const boost::system::error_code &err)
+    {
+        impl_->on_system_error( err, "Transport write error." );
+    }
+
     void protocol_layer_c::init( )
     {
         impl_->init( );
@@ -233,5 +256,6 @@ namespace vtrc { namespace client {
     {
         return impl_->ready( );
     }
+
 
 }}

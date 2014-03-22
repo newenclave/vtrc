@@ -95,6 +95,7 @@ namespace vtrc { namespace client {
                 }
                 start_reading( );
             } else {
+                protocol_->on_read_error( error );
                 parent_->close( );
             }
         }
@@ -107,6 +108,11 @@ namespace vtrc { namespace client {
         common::protocol_layer &get_protocol( )
         {
             return *protocol_;
+        }
+
+        void on_write_error( const boost::system::error_code &err )
+        {
+            protocol_->on_write_error( err );
         }
 
     };
@@ -139,7 +145,7 @@ namespace vtrc { namespace client {
     void client_tcp::async_connect( const std::string &address,
                                     const std::string &service,
                                     vtrc::function <
-                                    void (const boost::system::error_code &)
+                                        void (const boost::system::error_code &)
                                     >   closure )
     {
         impl_->async_connect( address, service, closure );
@@ -147,6 +153,7 @@ namespace vtrc { namespace client {
 
     void client_tcp::on_write_error( const boost::system::error_code &err )
     {
+        impl_->on_write_error( err );
         close( );
     }
 

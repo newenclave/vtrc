@@ -20,15 +20,20 @@ namespace vtrc { namespace common {
 
     public:
 
-        explicit exception( unsigned code, unsigned category );
-        exception( unsigned code );
+        explicit exception( unsigned code ); // internal category
+
+        exception( unsigned code, unsigned code_category );
+        exception( unsigned code,
+                   unsigned code_category,
+                   const std::string &additional );
         exception( unsigned code, const std::string &additional );
 
         virtual ~exception( ) throw ( );
 
         const char *what( ) const throw ( );
         const char *additional( ) const;
-        unsigned   code( ) const;
+        unsigned    code( ) const;
+        unsigned    category( ) const;
     };
 
 }}

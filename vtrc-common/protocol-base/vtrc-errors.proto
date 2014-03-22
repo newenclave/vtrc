@@ -10,8 +10,9 @@ extend google.protobuf.EnumValueOptions {
 }
 
 enum error_category {
-    CATEGORY_INTERNAL = 0;
-    CATEGORY_PROTOCOL = 1;
+    CATEGORY_INTERNAL   = 0;
+    CATEGORY_PROTOCOL   = 1;
+    CATEGORY_SYSTEM     = 2;
 }
 
 enum errors_numbers { // CATEGORY_INTERNAL

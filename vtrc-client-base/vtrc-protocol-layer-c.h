@@ -15,6 +15,8 @@ namespace common {
     struct transport_iface;
 }
 
+
+
 namespace client {
 
     class protocol_layer_c: public common::protocol_layer {
@@ -30,6 +32,9 @@ namespace client {
         protocol_layer_c( common::transport_iface *connection,
                           vtrc::client::vtrc_client *client );
         ~protocol_layer_c( );
+
+        void on_write_error( const boost::system::error_code &err );
+        void on_read_error( const boost::system::error_code &err );
 
     public:
 

@@ -495,4 +495,14 @@ namespace vtrc { namespace common {
         impl_->push_rpc_message_all( mess );
     }
 
+    void protocol_layer::on_write_error(const boost::system::error_code & /*e*/)
+    {
+
+    }
+
+    void protocol_layer::on_read_error(const boost::system::error_code & /*e*/)
+    {
+
+    }
+
 }}

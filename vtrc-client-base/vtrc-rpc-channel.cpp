@@ -76,6 +76,7 @@ namespace vtrc { namespace client {
 
                 if( top->error( ).code( ) != vtrc_errors::ERR_NO_ERROR )
                     throw vtrc::common::exception( top->error( ).code( ),
+                                                 top->error( ).category( ),
                                                  top->error( ).additional( ) );
 
                 response->ParseFromString( top->response( ) );

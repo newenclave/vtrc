@@ -19,6 +19,10 @@ namespace vtrc_rpc_lowlevel {
     class options;
 }
 
+namespace boost { namespace system {
+    class error_code;
+}}
+
 namespace vtrc { namespace common {
 
     namespace data_queue {
@@ -55,6 +59,9 @@ namespace vtrc { namespace common {
 
         void process_data( const char *data, size_t length );
         std::string prepare_data( const char *data, size_t length );
+
+        virtual void on_write_error( const boost::system::error_code &err );
+        virtual void on_read_error( const boost::system::error_code &err );
 
         void send_message( const google::protobuf::Message &message );
 
