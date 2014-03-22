@@ -53,7 +53,7 @@ namespace vtrc { namespace common {
         {
             typename map_type::iterator f(store_.find( key ));
             if( f == store_.end( ) ) {
-                throw std::out_of_range( "Bad index" );
+                throw std::out_of_range( "Bad queue index" );
             }
             return f;
         }
@@ -62,7 +62,7 @@ namespace vtrc { namespace common {
         {
             typename map_type::const_iterator f(store_.find( key ));
             if( f == store_.end( ) ) {
-                throw std::out_of_range( "Bad index" );
+                throw std::out_of_range( "Bad queue index" );
             }
             return f;
         }

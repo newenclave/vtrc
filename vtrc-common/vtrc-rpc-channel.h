@@ -3,10 +3,6 @@
 
 #include <google/protobuf/service.h>
 
-namespace vtrc_rpc_lowlevel {
-    class options;
-}
-
 namespace vtrc { namespace common  {
 
     class rpc_channel: public google::protobuf::RpcChannel {
