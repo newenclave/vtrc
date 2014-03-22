@@ -261,6 +261,12 @@ namespace vtrc { namespace common {
                 rpc_queue_.write_queue( slot_id, mess );
         }
 
+        void push_rpc_message_all(
+                       vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess)
+        {
+            rpc_queue_.write_all( mess );
+        }
+
         void call_rpc_method( uint64_t slot_id,
                               const vtrc_rpc_lowlevel::lowlevel_unit &llu )
         {
@@ -330,6 +336,14 @@ namespace vtrc { namespace common {
             }
 
             return *result;
+        }
+
+        void cancel_all_slots( bool erase )
+        {
+            if( erase )
+                rpc_queue_.erase_all( );
+            else
+                rpc_queue_.cancel_all( );
         }
 
     };
@@ -464,10 +478,21 @@ namespace vtrc { namespace common {
         impl_->close_slot( slot_id );
     }
 
+    void protocol_layer::cancel_all_slots( bool erase  )
+    {
+        impl_->cancel_all_slots( erase );
+    }
+
     void protocol_layer::push_rpc_message(uint64_t slot_id,
                         vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess)
     {
         impl_->push_rpc_message(slot_id, mess);
+    }
+
+    void protocol_layer::push_rpc_message_all(
+                        vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess)
+    {
+        impl_->push_rpc_message_all( mess );
     }
 
 }}

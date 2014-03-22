@@ -104,7 +104,6 @@ namespace vtrc { namespace client {
                 if( !check ) {
                     connection_->close( );
                     return;
-                    //parent_->
                 }
 
                 vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>

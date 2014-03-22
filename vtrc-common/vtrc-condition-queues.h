@@ -196,6 +196,18 @@ namespace vtrc { namespace common {
             }
         }
 
+        void erase_all(  )
+        {
+            unique_lock lck(lock_);
+            for(typename map_type::iterator b(store_.begin()), e(store_.end());
+                                            b!=e; ++b)
+            {
+                b->second->canceled_ = true;
+                b->second->cond_.notify_all( );
+            }
+            store_.clear( );
+        }
+
         void cancel_all( )
         {
             unique_lock lck(lock_);
@@ -221,6 +233,21 @@ namespace vtrc { namespace common {
 
             f->second->data_.push_back( data );
             f->second->cond_.notify_one( );
+        }
+
+        static void write_all_impl( typename map_type::value_type &f,
+                                    const queue_value_type &data )
+        {
+            f.second->data_.push_back( data );
+            f.second->cond_.notify_one( );
+        }
+
+        void write_all( const queue_value_type &data )
+        {
+            unique_lock lck(lock_);
+            std::for_each( store_.begin( ), store_.end( ),
+                           vtrc::bind( this_type::write_all_impl,
+                                       _1, vtrc::cref(data)));
         }
 
         void write_queue( const key_type &key, const queue_type &data )

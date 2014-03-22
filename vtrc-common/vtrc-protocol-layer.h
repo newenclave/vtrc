@@ -73,6 +73,8 @@ namespace vtrc { namespace common {
 
         void close_slot( uint64_t slot_id );
 
+        void cancel_all_slots( bool erase );
+
         const vtrc_rpc_lowlevel::options &get_method_options(
                             const google::protobuf::MethodDescriptor* method );
 
@@ -98,6 +100,9 @@ namespace vtrc { namespace common {
 
         void push_rpc_message( uint64_t slot_id,
                     vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess);
+
+        void push_rpc_message_all(
+                vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess);
 
         virtual void init( )            = 0;
         virtual void on_data_ready( )   = 0;
