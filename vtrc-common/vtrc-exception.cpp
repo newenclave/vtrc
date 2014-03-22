@@ -31,7 +31,7 @@ namespace vtrc { namespace common {
             } else if( category == vtrc_errors::CATEGORY_SYSTEM ) {
                 try {
                     boost::system::error_code ec(code,
-                                             boost::system::system_category());
+                                             boost::system::system_category( ));
                     return ec.message( );
                 } catch( const std::exception &ex ) {
                     return ex.what( );
