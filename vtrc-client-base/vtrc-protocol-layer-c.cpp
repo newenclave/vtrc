@@ -217,6 +217,7 @@ namespace vtrc { namespace client {
             if( !err ) {
                 parent_->change_hash_maker(
                    common::hash::create_by_index( vtrc_auth::HASH_CRC_64 ));
+                std::cout << "Set option called\n";
             }
         }
 
