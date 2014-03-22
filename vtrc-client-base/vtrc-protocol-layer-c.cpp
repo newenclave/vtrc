@@ -92,7 +92,6 @@ namespace vtrc { namespace client {
 
         }
 
-
         void on_rpc_process( )
         {
             while( !parent_->message_queue( ).empty( ) ) {
@@ -101,13 +100,18 @@ namespace vtrc { namespace client {
 
                 bool check = parent_->check_message( mess );
 
+                vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
+                                llu( new  vtrc_rpc_lowlevel::lowlevel_unit );
+
                 if( !check ) {
+                    llu->mutable_error( )->set_code(vtrc_errors::ERR_PROTOCOL);
+                    llu->mutable_error( )->set_additional("Bad message hash");
+                    llu->mutable_error( )->set_fatal( true );
+                    parent_->push_rpc_message_all( llu );
                     connection_->close( );
                     return;
                 }
 
-                vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
-                                llu( new  vtrc_rpc_lowlevel::lowlevel_unit );
                 parent_->parse_message( mess, *llu );
 
                 switch( llu->info( ).message_type( ) ) {
