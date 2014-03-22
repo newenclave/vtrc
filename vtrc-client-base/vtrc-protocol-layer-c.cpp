@@ -97,10 +97,13 @@ namespace vtrc { namespace client {
         {
             vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
                             llu( new  vtrc_rpc_lowlevel::lowlevel_unit );
-            llu->mutable_error( )->set_code(err.value( ));
-            llu->mutable_error( )->set_category(vtrc_errors::CATEGORY_SYSTEM);
-            llu->mutable_error( )->set_fatal( true );
-            llu->mutable_error( )->set_additional( add );
+
+            vtrc_errors::error_container *err_cont = llu->mutable_error( );
+
+            err_cont->set_code(err.value( ));
+            err_cont->set_category(vtrc_errors::CATEGORY_SYSTEM);
+            err_cont->set_fatal( true );
+            err_cont->set_additional( add );
 
             parent_->push_rpc_message_all( llu );
         }
@@ -118,9 +121,12 @@ namespace vtrc { namespace client {
                                 llu( new  vtrc_rpc_lowlevel::lowlevel_unit );
 
                 if( !check ) {
-                    llu->mutable_error( )->set_code(vtrc_errors::ERR_PROTOCOL);
-                    llu->mutable_error( )->set_additional("Bad message hash");
-                    llu->mutable_error( )->set_fatal( true );
+
+                    vtrc_errors::error_container *err = llu->mutable_error( );
+                    err->set_code(vtrc_errors::ERR_PROTOCOL);
+                    err->set_additional("Bad message hash");
+                    err->set_fatal( true );
+
                     parent_->push_rpc_message_all( llu );
                     connection_->close( );
                     return;
