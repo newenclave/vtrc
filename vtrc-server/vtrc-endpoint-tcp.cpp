@@ -43,7 +43,7 @@ namespace vtrc { namespace server { namespace endpoints {
 
             std::vector<char>                   read_buff_;
 
-            vtrc::shared_ptr<protocol_layer_s>        protocol_;
+            vtrc::shared_ptr<protocol_layer_s>  protocol_;
 
             tcp_connection(endpoint_iface &endpoint, bip::tcp::socket *sock)
                 :common::transport_tcp(sock)
