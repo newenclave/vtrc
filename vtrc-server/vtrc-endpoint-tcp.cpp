@@ -101,11 +101,13 @@ namespace vtrc { namespace server { namespace endpoints {
                         basio::buffer( &read_buff_[0], read_buff_.size( ) ),
                         vtrc::bind( &this_type::read_handler, this,
                              basio::placeholders::error,
-                             basio::placeholders::bytes_transferred)
+                             basio::placeholders::bytes_transferred,
+                             shared_from_this( ))
                     );
             }
 
-            void read_handler( const bsys::error_code &error, size_t bytes )
+            void read_handler( const bsys::error_code &error, size_t bytes, 
+                               common::connection_iface_sptr parent)
             {
                 if( !error ) {
                     try {

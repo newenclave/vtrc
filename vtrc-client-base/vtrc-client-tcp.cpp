@@ -54,7 +54,8 @@ namespace vtrc { namespace client {
         }
 
         void on_connect( const boost::system::error_code &err,
-                         common::closure_type closure )
+                         common::closure_type closure, 
+                         common::connection_iface_sptr parent)
         {
             if( !err ) {
                 init( );
@@ -71,7 +72,8 @@ namespace vtrc { namespace client {
                      boost::lexical_cast<unsigned short>(service) );
             sock( ).async_connect( ep,
                     vtrc::bind( &this_type::on_connect, this,
-                                 basio::placeholders::error, closure) );
+                                 basio::placeholders::error, closure,
+                                 parent_->shared_from_this( )) );
         }
 
         void start_reading( )
