@@ -29,9 +29,10 @@ extend google.protobuf.MethodOptions {
 
 message message_info {
     enum message_type_enum {
-        MESSAGE_CALL    = 0;
-        MESSAGE_EVENT   = 1;
-        MESSAGE_SERVICE = 2;
+        MESSAGE_CALL        = 0;
+        MESSAGE_EVENT       = 1;
+        MESSAGE_CALLBACK    = 2;
+        MESSAGE_SERVICE     = 3;
     }
     optional uint32 message_type                = 1 [default = 0];
                                                         // @message_type_enum
