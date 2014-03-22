@@ -44,8 +44,6 @@ int main( )
         try {
             s.test( NULL, &mi, &mi, NULL );
             std::cout << "response: " << mi.message_type( ) << "\n";
-            cl.reset( );
-            //return 0;
         } catch( const vtrc::common::exception &ex ) {
 
             std::cout << "call error: "
