@@ -31,7 +31,7 @@ namespace vtrc { namespace client {
         vtrc_client( boost::asio::io_service &ios );
         ~vtrc_client( );
 
-        boost::asio::io_service &get_io_service( );
+        boost::asio::io_service       &get_io_service( );
         const boost::asio::io_service &get_io_service( ) const;
 
         vtrc::shared_ptr<google::protobuf::RpcChannel> get_channel( );
@@ -44,7 +44,7 @@ namespace vtrc { namespace client {
         void advise_handler( vtrc::weak_ptr  <google::protobuf::Service> serv);
 
         vtrc::shared_ptr<google::protobuf::Service> get_handler(
-                                                     const std::string &name );
+                                                    const std::string &name );
 
 
     };
