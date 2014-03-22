@@ -262,7 +262,7 @@ namespace vtrc { namespace common {
         }
 
         void push_rpc_message_all(
-                       vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess)
+                        vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess)
         {
             rpc_queue_.write_all( mess );
         }
