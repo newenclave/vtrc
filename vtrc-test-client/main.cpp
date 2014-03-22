@@ -35,7 +35,8 @@ int main( )
 
     vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(2000) );
 
-    vtrc_rpc_lowlevel::test_rpc::Stub s( cl->get_channel( ).get( ) );
+    vtrc::shared_ptr<google::protobuf::RpcChannel> ch(cl->get_channel( ));
+    vtrc_rpc_lowlevel::test_rpc::Stub s( ch.get( ) );
 
     vtrc_rpc_lowlevel::message_info mi;
 
@@ -44,7 +45,7 @@ int main( )
             s.test( NULL, &mi, &mi, NULL );
             std::cout << "response: " << mi.message_type( ) << "\n";
             cl.reset( );
-            return 0;
+            //return 0;
         } catch( const vtrc::common::exception &ex ) {
 
             std::cout << "call error: "

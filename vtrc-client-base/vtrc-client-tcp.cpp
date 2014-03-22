@@ -54,7 +54,7 @@ namespace vtrc { namespace client {
         }
 
         void on_connect( const boost::system::error_code &err,
-                         common::closure_type closure, 
+                         common::closure_type closure,
                          common::connection_iface_sptr parent)
         {
             if( !err ) {
@@ -83,13 +83,16 @@ namespace vtrc { namespace client {
                     vtrc::bind( &this_type::read_handler, this,
                          basio::placeholders::error,
                          basio::placeholders::bytes_transferred,
-                         parent_->shared_from_this( ))
+                         parent_->weak_from_this( ) )
                 );
         }
 
         void read_handler( const bsys::error_code &error, size_t bytes,
-                           common::connection_iface_sptr parent)
+                           common::connection_iface_wptr parent)
         {
+            common::connection_iface_sptr lk(parent);
+            if( !lk ) return;
+
             if( !error ) {
                 try {
                     protocol_->process_data( &read_buff_[0], bytes );

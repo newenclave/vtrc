@@ -102,13 +102,16 @@ namespace vtrc { namespace server { namespace endpoints {
                         vtrc::bind( &this_type::read_handler, this,
                              basio::placeholders::error,
                              basio::placeholders::bytes_transferred,
-                             shared_from_this( ))
+                             weak_from_this( ))
                     );
             }
 
-            void read_handler( const bsys::error_code &error, size_t bytes, 
-                               common::connection_iface_sptr parent)
+            void read_handler( const bsys::error_code &error, size_t bytes,
+                               common::connection_iface_wptr parent)
             {
+                common::connection_iface_sptr lk(parent);
+                if( !lk ) return;
+
                 if( !error ) {
                     try {
                         protocol_->process_data( &read_buff_[0], bytes );

@@ -35,6 +35,15 @@ namespace vtrc { namespace common {
         virtual boost::asio::io_service &get_io_service( ) = 0;
         virtual protocol_layer          &get_protocol( )   = 0;
 
+        vtrc::weak_ptr<connection_iface> weak_from_this( )
+        {
+            return vtrc::weak_ptr<connection_iface>( shared_from_this( ) );
+        }
+
+        vtrc::weak_ptr<connection_iface const> weak_from_this( ) const
+        {
+            return vtrc::weak_ptr<connection_iface const>( shared_from_this( ));
+        }
     };
 
     typedef vtrc::shared_ptr<connection_iface> connection_iface_sptr;
