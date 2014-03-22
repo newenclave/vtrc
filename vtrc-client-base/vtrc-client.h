@@ -30,6 +30,10 @@ namespace vtrc { namespace client {
 
         vtrc_client( boost::asio::io_service &ios );
         ~vtrc_client( );
+
+        boost::asio::io_service &get_io_service( );
+        const boost::asio::io_service &get_io_service( ) const;
+
         vtrc::shared_ptr<google::protobuf::RpcChannel> get_channel( );
         void connect( const std::string &address, const std::string &service );
         void async_connect( const std::string &address,
@@ -41,6 +45,7 @@ namespace vtrc { namespace client {
 
         vtrc::shared_ptr<google::protobuf::Service> get_handler(
                                                      const std::string &name );
+
 
     };
 

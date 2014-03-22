@@ -147,6 +147,16 @@ namespace vtrc { namespace client {
         delete impl_;
     }
 
+    boost::asio::io_service &vtrc_client::get_io_service( )
+    {
+        return impl_->ios_;
+    }
+
+    const boost::asio::io_service &vtrc_client::get_io_service( ) const
+    {
+        return impl_->ios_;
+    }
+
     vtrc::shared_ptr<gpb::RpcChannel> vtrc_client::get_channel( )
     {
         return impl_->get_channel( );

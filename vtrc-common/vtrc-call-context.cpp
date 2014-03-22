@@ -10,7 +10,7 @@ namespace vtrc { namespace common {
         const vtrc_rpc_lowlevel::options *opts_;
         impl( )
             :opts_(NULL)
-        {}
+        { }
     };
 
     call_context::call_context( lowlevel_unit *lowlevel )

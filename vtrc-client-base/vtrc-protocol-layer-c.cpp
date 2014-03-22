@@ -1,5 +1,7 @@
 
 #include <boost/asio.hpp>
+#include <google/protobuf/service.h>
+#include <google/protobuf/descriptor.h>
 
 #include "vtrc-bind.h"
 #include "vtrc-function.h"
@@ -7,6 +9,7 @@
 #include "vtrc-common/vtrc-data-queue.h"
 #include "vtrc-common/vtrc-hash-iface.h"
 #include "vtrc-common/vtrc-transformer-iface.h"
+#include "vtrc-common/vtrc-call-context.h"
 
 #include "vtrc-protocol-layer-c.h"
 #include "vtrc-transport-iface.h"
@@ -24,6 +27,9 @@ namespace vtrc { namespace client {
         typedef vtrc::shared_ptr <
             vtrc_rpc_lowlevel::lowlevel_unit
         > lowlevel_unit_sptr;
+
+        typedef vtrc::shared_ptr<gpb::Service> service_str;
+
     }
 
     struct protocol_layer_c::impl {
@@ -46,7 +52,6 @@ namespace vtrc { namespace client {
 
         void init( )
         {
-
         }
 
         void pop_message( )
@@ -69,7 +74,22 @@ namespace vtrc { namespace client {
 
         void process_event( lowlevel_unit_sptr &llu )
         {
+            const std::string serv_name( llu->call( ).service( ) );
+            service_str serv = client_->get_handler( serv_name );
 
+            if( serv ) {
+                const std::string meth_name( llu->call( ).method( ) );
+                const gpb::MethodDescriptor *meth =
+                        serv->GetDescriptor( )->FindMethodByName( meth_name );
+                if( meth ) {
+                    protocol_layer::context_holder ch( parent_, llu.get( ) );
+
+                    const vtrc_rpc_lowlevel::options &opts(
+                                parent_->get_method_options( meth ) );
+
+                    ch.ctx_->set_call_options( opts );
+                }
+            }
         }
 
         void process_callback( lowlevel_unit_sptr &llu )

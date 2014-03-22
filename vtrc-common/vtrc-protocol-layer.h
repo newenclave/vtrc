@@ -87,6 +87,9 @@ namespace vtrc { namespace common {
 
     protected:
 
+        vtrc::shared_ptr<call_context> copy_call_context( ) const;
+        void restore_call_context( vtrc::shared_ptr<call_context> ctx );
+
         struct context_holder {
             protocol_layer *p_;
             call_context   *ctx_;
@@ -100,10 +103,13 @@ namespace vtrc { namespace common {
             {
                 p_->clear_call_context( );
             }
+
         private:
             context_holder( context_holder const & );
             context_holder &operator = ( context_holder const & );
         };
+
+        friend struct context_holder;
 
         void push_rpc_message( uint64_t slot_id,
                     vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess);

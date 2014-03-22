@@ -229,6 +229,26 @@ namespace vtrc { namespace common {
             return context_.get( );
         }
 
+        vtrc::shared_ptr<call_context> copy_call_context( ) const
+        {
+            vtrc::shared_ptr<call_context> res;
+            if( context_.get( ) )
+                res = vtrc::make_shared<call_context>( *context_ );
+            return res;
+        }
+
+        void restore_call_context( vtrc::shared_ptr<call_context> ctx)
+        {
+            if( ctx ) {
+                if( context_.get( ) )
+                    (*context_) = (*ctx);
+                else
+                    context_.reset( new call_context( *ctx ) );
+            } else {
+                clear_call_context( );
+            }
+        }
+
         void change_sign_checker( hash_iface *new_signer )
         {
             hash_checker_.reset(new_signer);
@@ -394,6 +414,17 @@ namespace vtrc { namespace common {
     const call_context *protocol_layer::get_call_context( ) const
     {
         return impl_->get_call_context( );
+    }
+
+    vtrc::shared_ptr<call_context> protocol_layer::copy_call_context( ) const
+    {
+        return impl_->copy_call_context( );
+    }
+
+    void protocol_layer::restore_call_context(
+                                            vtrc::shared_ptr<call_context> ctx)
+    {
+        impl_->restore_call_context( ctx );
     }
 
     bool protocol_layer::check_message( const std::string &mess )
