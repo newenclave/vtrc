@@ -11,6 +11,8 @@
 #include "vtrc-protocol-layer-c.h"
 #include "vtrc-transport-iface.h"
 
+#include "vtrc-client.h"
+
 #include "protocol/vtrc-auth.pb.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
 
@@ -18,18 +20,26 @@ namespace vtrc { namespace client {
 
     namespace gpb = google::protobuf;
 
+    namespace {
+        typedef vtrc::shared_ptr <
+            vtrc_rpc_lowlevel::lowlevel_unit
+        > lowlevel_unit_sptr;
+    }
+
     struct protocol_layer_c::impl {
 
         typedef impl this_type;
 
         typedef vtrc::function<void (void)> stage_funcion_type;
 
-        common::transport_iface *connection_;
-        protocol_layer_c          *parent_;
-        stage_funcion_type       stage_call_;
+        common::transport_iface     *connection_;
+        protocol_layer_c            *parent_;
+        stage_funcion_type           stage_call_;
+        vtrc_client                 *client_;
 
-        impl( common::transport_iface *c )
+        impl( common::transport_iface *c, vtrc_client *client )
             :connection_(c)
+            ,client_(client)
         {
             stage_call_ = vtrc::bind( &this_type::on_hello_call, this );
         }
@@ -57,6 +67,32 @@ namespace vtrc { namespace client {
             connection_->write(s.c_str( ), s.size( ), closure );
         }
 
+        void process_event( lowlevel_unit_sptr &llu )
+        {
+
+        }
+
+        void process_callback( lowlevel_unit_sptr &llu )
+        {
+
+        }
+
+        void process_service( lowlevel_unit_sptr &llu )
+        {
+
+        }
+
+        void process_call( lowlevel_unit_sptr &llu )
+        {
+            parent_->push_rpc_message( llu->id( ), llu );
+        }
+
+        void process_invalid( lowlevel_unit_sptr &llu )
+        {
+
+        }
+
+
         void on_rpc_process( )
         {
             while( !parent_->message_queue( ).empty( ) ) {
@@ -65,11 +101,35 @@ namespace vtrc { namespace client {
 
                 bool check = parent_->check_message( mess );
 
+                if( !check ) {
+                    connection_->close( );
+                    return;
+                    //parent_->
+                }
+
                 vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
                                 llu( new  vtrc_rpc_lowlevel::lowlevel_unit );
-
                 parent_->parse_message( mess, *llu );
-                parent_->push_rpc_message( llu->id( ), llu );
+
+                switch( llu->info( ).message_type( ) ) {
+
+                case vtrc_rpc_lowlevel::message_info::MESSAGE_EVENT:
+                    process_event( llu );
+                    break;
+
+                case vtrc_rpc_lowlevel::message_info::MESSAGE_CALLBACK:
+                    process_callback( llu );
+                    break;
+                case vtrc_rpc_lowlevel::message_info::MESSAGE_SERVICE:
+                    process_service( llu );
+                    break;
+                case vtrc_rpc_lowlevel::message_info::MESSAGE_CALL:
+                    process_call( llu );
+                    break;
+                default:
+                    process_invalid( llu );
+                }
+
                 pop_message( );
             }
         }
@@ -143,9 +203,10 @@ namespace vtrc { namespace client {
 
     };
 
-    protocol_layer_c::protocol_layer_c( common::transport_iface *connection )
+    protocol_layer_c::protocol_layer_c( common::transport_iface *connection,
+                                        vtrc::client::vtrc_client *client )
         :common::protocol_layer(connection)
-        ,impl_(new impl(connection))
+        ,impl_(new impl(connection, client))
     {
         impl_->parent_ = this;
     }

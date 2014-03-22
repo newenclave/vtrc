@@ -7,6 +7,10 @@
 
 namespace vtrc {
 
+namespace client {
+    class vtrc_client;
+}
+
 namespace common {
     struct transport_iface;
 }
@@ -23,7 +27,8 @@ namespace client {
 
     public:
 
-        protocol_layer_c( common::transport_iface *connection );
+        protocol_layer_c( common::transport_iface *connection,
+                          vtrc::client::vtrc_client *client );
         ~protocol_layer_c( );
 
     public:
