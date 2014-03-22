@@ -41,7 +41,7 @@ namespace vtrc { namespace common {
 
     const vtrc_rpc_lowlevel::options *call_context::get_call_options( ) const
     {
-        impl_->opts_;
+        return impl_->opts_;
     }
 
     void call_context::set_call_options(const vtrc_rpc_lowlevel::options &opts)
