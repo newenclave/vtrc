@@ -8,7 +8,7 @@
 #include "vtrc-client.h"
 #include "vtrc-client-tcp.h"
 
-#include "vtrc-rpc-channel.h"
+#include "vtrc-rpc-channel-c.h"
 #include "vtrc-bind.h"
 
 #include "vtrc-common/vtrc-mutex-typedefs.h"
@@ -36,7 +36,7 @@ namespace vtrc { namespace client {
         basio::io_service              &ios_;
         vtrc_client                    *parent_;
         common::connection_iface_sptr   connection_;
-        vtrc::shared_ptr<rpc_channel>   channel_;
+        vtrc::shared_ptr<rpc_channel_c> channel_;
 
         service_weak_map                weak_services_;
         service_shared_map              hold_services_;
@@ -53,14 +53,14 @@ namespace vtrc { namespace client {
                                new_client(client_tcp::create( ios_, parent_ ));
             new_client->connect( address, service );
             connection_ = new_client;
-            channel_ = vtrc::make_shared<rpc_channel>( connection_ );
+            channel_ = vtrc::make_shared<rpc_channel_c>( connection_ );
         }
 
         void async_connect_success( const bsys::error_code &err,
                                     common::closure_type closure )
         {
             if( !err )
-                channel_ = vtrc::make_shared<rpc_channel>( connection_ );
+                channel_ = vtrc::make_shared<rpc_channel_c>( connection_ );
             closure(err);
         }
 
