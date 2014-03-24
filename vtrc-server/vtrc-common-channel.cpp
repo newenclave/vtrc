@@ -29,7 +29,7 @@ namespace vtrc { namespace server {
     {
         lowlevel_unit_sptr llu( vtrc::make_shared<lowlevel_unit_type>( ) );
         const std::string &serv_name(method->service( )->full_name( ));
-        const std::string &meth_name(method->full_name( ));
+        const std::string &meth_name(method->name( ));
 
         llu->mutable_call( )->set_service( serv_name );
         llu->mutable_call( )->set_method( meth_name );

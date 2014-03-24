@@ -54,8 +54,8 @@ namespace vtrc { namespace client {
             vtrc_rpc_lowlevel::options call_opt
                              ( cl->get_protocol( ).get_method_options(method) );
 
-            std::string service_name(method->service( )->full_name( ));
-            std::string method_name(method->name( ));
+            const std::string &service_name(method->service( )->full_name( ));
+            const std::string &method_name(method->name( ));
 
             lowlevel_unit_sptr llu(
                         vtrc::make_shared<vtrc_rpc_lowlevel::lowlevel_unit>( ));
