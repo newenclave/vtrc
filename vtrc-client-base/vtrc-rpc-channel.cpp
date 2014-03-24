@@ -47,7 +47,7 @@ namespace vtrc { namespace client {
 
             vtrc::shared_ptr<
                     vtrc_rpc_lowlevel::lowlevel_unit
-            > llu(new vtrc_rpc_lowlevel::lowlevel_unit);
+            > llu(vtrc::make_shared<vtrc_rpc_lowlevel::lowlevel_unit>( ));
 
             llu->mutable_call( )->set_service( service_name );
             llu->mutable_call( )->set_method( method_name );
