@@ -36,7 +36,7 @@ namespace vtrc { namespace common {
             bool                      canceled_;
             hold_value_type( )
                 :canceled_(false)
-            {}
+            { }
         };
 
         typedef vtrc::shared_ptr<hold_value_type> hold_value_type_sptr;
@@ -247,7 +247,7 @@ namespace vtrc { namespace common {
             unique_lock lck(lock_);
             std::for_each( store_.begin( ), store_.end( ),
                            vtrc::bind( this_type::write_all_impl,
-                                       _1, vtrc::cref(data)));
+                                                      _1, vtrc::cref(data)));
         }
 
         void write_queue( const key_type &key, const queue_type &data )
