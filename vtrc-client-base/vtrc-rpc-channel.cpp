@@ -15,11 +15,9 @@ namespace vtrc { namespace client {
     namespace gpb = google::protobuf;
 
     namespace {
-
-        typedef vtrc::shared_ptr<
+        typedef vtrc::shared_ptr <
             vtrc_rpc_lowlevel::lowlevel_unit
         > lowlevel_unit_sptr;
-
     }
 
     struct rpc_channel::impl {
@@ -35,8 +33,7 @@ namespace vtrc { namespace client {
         static bool waitable_call( const lowlevel_unit_sptr &llu )
         {
             const bool  has = llu->info( ).has_wait_for_response( );
-            const bool wait = llu->info( ).wait_for_response( );
-            return !has || (has && wait);
+            return !has || (has && llu->info( ).wait_for_response( ));
         }
 
         void CallMethod(const gpb::MethodDescriptor* method,
