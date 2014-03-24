@@ -32,6 +32,7 @@ message message_info {
         MESSAGE_EVENT       = 1;
         MESSAGE_CALLBACK    = 2;
         MESSAGE_SERVICE     = 3;
+        MESSAGE_INTERNAL    = 4;
     }
     optional uint32 message_type                = 1 [default = 0];
                                                         // @message_type_enum

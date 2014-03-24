@@ -124,6 +124,11 @@ namespace vtrc { namespace client {
 
         }
 
+        void process_internal( lowlevel_unit_sptr &llu )
+        {
+
+        }
+
         void process_call( lowlevel_unit_sptr &llu )
         {
             parent_->push_rpc_message( llu->id( ), llu );
@@ -187,6 +192,9 @@ namespace vtrc { namespace client {
                     break;
                 case vtrc_rpc_lowlevel::message_info::MESSAGE_SERVICE:
                     process_service( llu );
+                    break;
+                case vtrc_rpc_lowlevel::message_info::MESSAGE_INTERNAL:
+                    process_internal( llu );
                     break;
                 case vtrc_rpc_lowlevel::message_info::MESSAGE_CALL:
                     process_call( llu );
