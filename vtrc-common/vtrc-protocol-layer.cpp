@@ -221,7 +221,7 @@ namespace vtrc { namespace common {
             return old;
         }
 
-        call_context *set_call_context( call_context *cc )
+        call_context *reset_call_context( call_context *cc )
         {
             context_.reset( cc );
             return cc;
@@ -400,7 +400,7 @@ namespace vtrc { namespace common {
 
     call_context *protocol_layer::reset_call_context(call_context *cc)
     {
-        return impl_->set_call_context( cc );
+        return impl_->reset_call_context( cc );
     }
 
     call_context *protocol_layer::release_call_context( )
