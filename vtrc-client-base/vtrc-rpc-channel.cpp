@@ -30,7 +30,7 @@ namespace vtrc { namespace client {
                         gpb::Message* response,
                         gpb::Closure* done)
         {
-            common::closure_holder hold(done);
+            //common::closure_holder hold(done);
 
             common::connection_iface_sptr cl(connection_.lock( ));
 
