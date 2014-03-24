@@ -262,27 +262,24 @@ namespace vtrc { namespace common {
             queue_->messages( ).pop_front( );
         }
 
-        void push_rpc_message(uint64_t slot_id,
-                        vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess)
+        void push_rpc_message(uint64_t slot_id, ll_unit_sptr mess)
         {
             if( rpc_queue_.queue_exists( slot_id ) )
                 rpc_queue_.write_queue( slot_id, mess );
         }
 
-        void push_rpc_message_all(
-                        vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess)
+        void push_rpc_message_all( ll_unit_sptr mess)
         {
             rpc_queue_.write_all( mess );
         }
 
-        void call_rpc_method( uint64_t slot_id,
-                              const vtrc_rpc_lowlevel::lowlevel_unit &llu )
+        void call_rpc_method( uint64_t slot_id, const ll_unit_type &llu )
         {
             rpc_queue_.add_queue( slot_id );
             send_message( llu );
         }
 
-        void call_rpc_method( const vtrc_rpc_lowlevel::lowlevel_unit &llu )
+        void call_rpc_method( const ll_unit_type &llu )
         {
             send_message( llu );
         }
@@ -294,9 +291,8 @@ namespace vtrc { namespace common {
             raise_wait_error( qwr );
         }
 
-        void wait_call_slot(uint64_t slot_id,
-                      vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> &mess,
-                      uint32_t millisec)
+        void wait_call_slot(uint64_t slot_id, ll_unit_sptr &mess,
+                                                            uint32_t millisec)
         {
             wait_result_codes qwr =
                     rpc_queue_.read(
@@ -306,11 +302,8 @@ namespace vtrc { namespace common {
         }
 
         void wait_call_slot(
-                    uint64_t slot_id,
-                    std::deque<
-                        vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
-                    > &data_list,
-                    uint32_t millisec )
+                    uint64_t slot_id, std::deque<ll_unit_sptr> &data_list,
+                                                       uint32_t millisec )
         {
             wait_result_codes qwr = rpc_queue_.read_queue(
                         slot_id, data_list,
@@ -476,14 +469,13 @@ namespace vtrc { namespace common {
         return impl_->next_index( );
     }
 
-    void protocol_layer::call_rpc_method( const
-                                        vtrc_rpc_lowlevel::lowlevel_unit &llu )
+    void protocol_layer::call_rpc_method( const ll_unit_type &llu )
     {
         impl_->call_rpc_method( llu );
     }
 
     void protocol_layer::call_rpc_method( uint64_t slot_id,
-                          const vtrc_rpc_lowlevel::lowlevel_unit &llu )
+                                          const ll_unit_type &llu )
     {
         impl_->call_rpc_method( slot_id, llu );
     }
@@ -493,17 +485,14 @@ namespace vtrc { namespace common {
         impl_->wait_call_slot( slot_id, millisec);
     }
 
-    void protocol_layer::wait_call_slot(uint64_t slot_id,
-                      vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> &mess,
-                      uint32_t millisec)
+    void protocol_layer::wait_call_slot(uint64_t slot_id, ll_unit_sptr &mess,
+                                                            uint32_t millisec)
     {
         impl_->wait_call_slot( slot_id, mess, millisec);
     }
 
     void protocol_layer::wait_call_slot( uint64_t slot_id,
-                         std::deque<
-                              vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
-                         > &data_list,
+                         std::deque<ll_unit_sptr> &data_list,
                          uint32_t millisec )
     {
         impl_->wait_call_slot( slot_id, data_list, millisec);
@@ -524,14 +513,12 @@ namespace vtrc { namespace common {
         impl_->cancel_all_slots( erase );
     }
 
-    void protocol_layer::push_rpc_message(uint64_t slot_id,
-                        vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess)
+    void protocol_layer::push_rpc_message(uint64_t slot_id, ll_unit_sptr mess)
     {
         impl_->push_rpc_message(slot_id, mess);
     }
 
-    void protocol_layer::push_rpc_message_all(
-                        vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess)
+    void protocol_layer::push_rpc_message_all( ll_unit_sptr mess)
     {
         impl_->push_rpc_message_all( mess );
     }
