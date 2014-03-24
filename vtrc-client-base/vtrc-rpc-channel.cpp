@@ -14,6 +14,14 @@ namespace vtrc { namespace client {
 
     namespace gpb = google::protobuf;
 
+    namespace {
+
+        typedef vtrc::shared_ptr<
+            vtrc_rpc_lowlevel::lowlevel_unit
+        > lowlevel_unit_sptr;
+
+    }
+
     struct rpc_channel::impl {
 
         vtrc::weak_ptr<common::connection_iface> connection_;
@@ -23,6 +31,12 @@ namespace vtrc { namespace client {
         impl(vtrc::shared_ptr<common::connection_iface> c)
             :connection_(c)
         {}
+
+        static bool waitable_call( lowlevel_unit_sptr &llu)
+        {
+            return llu->info( ).has_wait_for_response( ) &&
+                   llu->info( ).wait_for_response( );
+        }
 
         void CallMethod(const gpb::MethodDescriptor* method,
                         gpb::RpcController* controller,
@@ -45,9 +59,8 @@ namespace vtrc { namespace client {
             std::string service_name(method->service( )->full_name( ));
             std::string method_name(method->name( ));
 
-            vtrc::shared_ptr<
-                    vtrc_rpc_lowlevel::lowlevel_unit
-            > llu(vtrc::make_shared<vtrc_rpc_lowlevel::lowlevel_unit>( ));
+            lowlevel_unit_sptr llu(
+                        vtrc::make_shared<vtrc_rpc_lowlevel::lowlevel_unit>( ));
 
             llu->mutable_call( )->set_service( service_name );
             llu->mutable_call( )->set_method( method_name );
@@ -62,7 +75,7 @@ namespace vtrc { namespace client {
 
             llu->set_id( call_id );
 
-            if( call_opt.wait( ) ) { // WAITABLE CALL
+            if( call_opt.wait( ) && waitable_call( llu ) ) { // WAITABLE CALL
 
                 cl->get_protocol( ).call_rpc_method( call_id, *llu );
 
