@@ -51,7 +51,7 @@ namespace vtrc { namespace server {
 
         application             &app_;
         common::transport_iface *connection_;
-        protocol_layer_s          *parent_;
+        protocol_layer_s        *parent_;
         bool                     ready_;
 
         service_map              services_;
