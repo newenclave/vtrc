@@ -8,3 +8,18 @@ package vtrc_service;
 
 option cc_generic_services = true;
 
+service test_rpc {
+
+    option (vtrc_rpc_lowlevel.service_options ) = {
+        opt: { secure_level: 1, call_timeout: 13000, wait: true }
+    };
+
+    rpc test( vtrc_rpc_lowlevel.message_info )
+        returns ( vtrc_rpc_lowlevel.message_info )
+    {
+        option (vtrc_rpc_lowlevel.method_options) = {
+            opt: { secure_level: 2, wait: true }
+        };
+    };
+}
+

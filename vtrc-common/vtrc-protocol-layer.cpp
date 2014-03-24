@@ -294,6 +294,17 @@ namespace vtrc { namespace common {
             raise_wait_error( qwr );
         }
 
+        void wait_call_slot(uint64_t slot_id,
+                      vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> &mess,
+                      uint32_t millisec)
+        {
+            wait_result_codes qwr =
+                    rpc_queue_.read(
+                        slot_id, mess,
+                        vtrc::chrono::milliseconds(millisec) );
+            raise_wait_error( qwr );
+        }
+
         void wait_call_slot(
                     uint64_t slot_id,
                     std::deque<
@@ -475,6 +486,13 @@ namespace vtrc { namespace common {
     void protocol_layer::wait_call_slot( uint64_t slot_id, uint32_t millisec)
     {
         impl_->wait_call_slot( slot_id, millisec);
+    }
+
+    void protocol_layer::wait_call_slot(uint64_t slot_id,
+                      vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> &mess,
+                      uint32_t millisec)
+    {
+        impl_->wait_call_slot( slot_id, mess, millisec);
     }
 
     void protocol_layer::wait_call_slot( uint64_t slot_id,

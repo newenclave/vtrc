@@ -33,6 +33,7 @@
 #include "protocol/vtrc-errors.pb.h"
 #include "protocol/vtrc-auth.pb.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
+#include "protocol/vtrc-service.pb.h"
 
 #include "vtrc-memory.h"
 #include "vtrc-chrono.h"
@@ -41,7 +42,7 @@ namespace ba = boost::asio;
 
 using namespace vtrc;
 
-class teat_impl: public vtrc_rpc_lowlevel::test_rpc {
+class teat_impl: public vtrc_service::test_rpc {
 
     common::connection_iface *connection_;
     unsigned id_;

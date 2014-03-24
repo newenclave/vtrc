@@ -8,6 +8,7 @@
 
 #include "vtrc-client-base/vtrc-client.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
+#include "protocol/vtrc-service.pb.h"
 
 #include <boost/random.hpp>
 #include <boost/random/random_device.hpp>
@@ -36,7 +37,7 @@ int main( )
     vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(2000) );
 
     vtrc::shared_ptr<google::protobuf::RpcChannel> ch(cl->get_channel( ));
-    vtrc_rpc_lowlevel::test_rpc::Stub s( ch.get( ) );
+    vtrc_service::test_rpc::Stub s( ch.get( ) );
 
     vtrc_rpc_lowlevel::message_info mi;
 
