@@ -32,10 +32,11 @@ namespace vtrc { namespace client {
             :connection_(c)
         {}
 
-        static bool waitable_call( lowlevel_unit_sptr &llu)
+        static bool waitable_call( const lowlevel_unit_sptr &llu)
         {
-            return llu->info( ).has_wait_for_response( ) &&
-                   llu->info( ).wait_for_response( );
+            const bool has = llu->info( ).has_wait_for_response( );
+            const bool wait = llu->info( ).wait_for_response( );
+            return !has || (has && wait);
         }
 
         void CallMethod(const gpb::MethodDescriptor* method,
@@ -79,10 +80,7 @@ namespace vtrc { namespace client {
 
                 cl->get_protocol( ).call_rpc_method( call_id, *llu );
 
-                std::deque< vtrc::shared_ptr <
-                            vtrc_rpc_lowlevel::lowlevel_unit
-                          >
-                > data_list;
+                std::deque<lowlevel_unit_sptr> data_list;
 
                 cl->get_protocol( ).wait_call_slot( call_id, data_list,
                                                     call_opt.call_timeout( ) );
