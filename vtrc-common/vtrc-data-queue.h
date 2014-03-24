@@ -20,7 +20,7 @@ namespace vtrc { namespace common { namespace data_queue {
 
     public:
 
-        queue_base( );
+        queue_base( size_t max_valid_length );
         virtual ~queue_base( );
 
         void append( const char *data, size_t length );
@@ -30,6 +30,9 @@ namespace vtrc { namespace common { namespace data_queue {
 
         message_queue_type          &messages( );
         const message_queue_type    &messages( ) const;
+
+        size_t get_maximum_length( ) const;
+        void   set_maximum_length( size_t new_value );
 
         virtual void process( ) = 0;
         virtual std::string *process_one( ) = 0;
