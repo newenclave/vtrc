@@ -23,6 +23,11 @@ service test_rpc {
     };
 }
 
+service test_event {
+    rpc test(vtrc_rpc_lowlevel.message_info)
+                                returns ( vtrc_rpc_lowlevel.message_info );
+}
+
 /// +++++++++++ service internal +++++++++++ ///
 message ping_req { }
 message pong_res { }
