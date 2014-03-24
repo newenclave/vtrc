@@ -1,0 +1,10 @@
+import "google/protobuf/descriptor.proto";
+import "vtrc-errors.proto";
+import "vtrc-rpc-lowlevel.proto";
+
+package vtrc_service;
+
+// index 51400
+
+option cc_generic_services = true;
+
