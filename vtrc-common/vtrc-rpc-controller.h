@@ -18,7 +18,7 @@ namespace vtrc { namespace common {
     public:
 
         rpc_controller( );
-        ~rpc_controller( );
+        virtual ~rpc_controller( );
 
     public:
 

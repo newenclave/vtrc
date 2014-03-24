@@ -16,7 +16,7 @@ namespace vtrc { namespace common {
             :failed_(false)
             ,canceled_(false)
             ,cancel_cl_(NULL)
-        {}
+        { }
 
         void reset( )
         {
