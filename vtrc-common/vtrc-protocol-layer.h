@@ -73,6 +73,7 @@ namespace vtrc { namespace common {
         void call_rpc_method( uint64_t slot_id,
                               const vtrc_rpc_lowlevel::lowlevel_unit &llu );
 
+        // refactor names here!
         void wait_call_slot( uint64_t slot_id, uint32_t millisec );
 
         void wait_call_slot( uint64_t slot_id,
