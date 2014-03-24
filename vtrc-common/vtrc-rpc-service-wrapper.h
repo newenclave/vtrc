@@ -24,6 +24,7 @@ namespace vtrc { namespace common {
         explicit rpc_service_wrapper( google::protobuf::Service *serv );
         virtual ~rpc_service_wrapper( );
 
+        /// names for protocol
         virtual const std::string &name( );
         virtual const google::protobuf::MethodDescriptor *get_method (
                                                 const std::string &name ) const;
