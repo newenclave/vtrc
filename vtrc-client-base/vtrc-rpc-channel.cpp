@@ -32,7 +32,7 @@ namespace vtrc { namespace client {
             :connection_(c)
         {}
 
-        static bool waitable_call( const lowlevel_unit_sptr &llu)
+        static bool waitable_call( const lowlevel_unit_sptr &llu )
         {
             const bool  has = llu->info( ).has_wait_for_response( );
             const bool wait = llu->info( ).wait_for_response( );
