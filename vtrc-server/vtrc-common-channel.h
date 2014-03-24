@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include "vtrc-common/vtrc-rpc-channel.h"
+#include "vtrc-memory.h"
 
 namespace vtrc_rpc_lowlevel {
     class lowlevel_unit;
@@ -31,9 +32,8 @@ namespace vtrc { namespace common {
                         google::protobuf::Closure* done);
         //
 
-        virtual unsigned get_call_type( ) const = 0;
-        virtual uint64_t get_next_index( ) const = 0;
-        virtual void send_message(  ) = 0;
+        virtual void send_message(
+                 vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> llu ) = 0;
 
     };
 
