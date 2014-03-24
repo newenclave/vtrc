@@ -108,7 +108,7 @@ namespace vtrc { namespace client {
 
                     client_->get_io_service( ).post(
                         vtrc::bind( &this_type::process_event_impl, this,
-                                 vtrc_client_wptr(client_->shared_from_this( )),
+                                 client_->weak_from_this( ),
                                  llu, serv, meth));
                 }
             }
