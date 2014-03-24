@@ -23,3 +23,11 @@ service test_rpc {
     };
 }
 
+/// +++++++++++ service internal +++++++++++ ///
+message ping_req { }
+message pong_res { }
+
+service internal {
+    rpc ping(ping_req) returns (pong_res);
+}
+
