@@ -87,6 +87,7 @@ namespace vtrc { namespace common {
                            uint32_t millisec );
 
         void close_slot( uint64_t slot_id );
+        void cancel_slot( uint64_t slot_id );
 
         void cancel_all_slots( bool erase );
 

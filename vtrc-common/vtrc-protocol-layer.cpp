@@ -323,6 +323,11 @@ namespace vtrc { namespace common {
             rpc_queue_.erase_queue( slot_id );
         }
 
+        void cancel_slot( uint64_t slot_id )
+        {
+            rpc_queue_.cancel( slot_id );
+        }
+
         const vtrc_rpc_lowlevel::options &get_method_options(
                               const gpb::MethodDescriptor *method)
         {
@@ -507,6 +512,11 @@ namespace vtrc { namespace common {
     void protocol_layer::close_slot(uint64_t slot_id)
     {
         impl_->close_slot( slot_id );
+    }
+
+    void protocol_layer::cancel_slot(uint64_t slot_id)
+    {
+        impl_->cancel_slot( slot_id );
     }
 
     void protocol_layer::cancel_all_slots( bool erase  )
