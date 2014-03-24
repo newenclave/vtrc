@@ -218,7 +218,6 @@ namespace vtrc { namespace client {
             if( !err ) {
                 parent_->change_hash_maker(
                    common::hash::create_by_index( vtrc_auth::HASH_CRC_64 ));
-                std::cout << "Set option called\n";
             }
         }
 
@@ -226,12 +225,13 @@ namespace vtrc { namespace client {
         {
             std::string &mess = parent_->message_queue( ).front( );
             bool check = parent_->check_message( mess );
-            std::cout << "Message check: " << check << "\n";
+
             vtrc_auth::init_protocol init_proto;
 
             if( check ) {
                 parent_->parse_message( mess, init_proto );
-                std::cout << "Message is: " << init_proto.DebugString( ) << "\n";
+                std::cout << "Message is: "
+                          << init_proto.DebugString( ) << "\n";
             }
 
             pop_message( );
