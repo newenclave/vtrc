@@ -54,17 +54,8 @@ namespace vtrc { namespace client {
             vtrc_rpc_lowlevel::options call_opt
                              ( cl->get_protocol( ).get_method_options(method) );
 
-            const std::string &service_name(method->service( )->full_name( ));
-            const std::string &method_name(method->name( ));
-
             lowlevel_unit_sptr llu(
-                        vtrc::make_shared<vtrc_rpc_lowlevel::lowlevel_unit>( ));
-
-            llu->mutable_call( )->set_service( service_name );
-            llu->mutable_call( )->set_method( method_name );
-
-            llu->set_request( request->SerializeAsString( ) );
-            llu->set_response( response->SerializeAsString( ) );
+                        parent_->create_lowlevel(method, request, response));
 
             llu->mutable_info( )->set_message_type(
                                vtrc_rpc_lowlevel::message_info::MESSAGE_CALL );

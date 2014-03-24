@@ -14,9 +14,6 @@ namespace vtrc { namespace server {
 
     class common_channel: public vtrc::common::rpc_channel {
 
-//        struct impl;
-//        impl  *impl_;
-
     public:
 
         common_channel( );
@@ -29,8 +26,10 @@ namespace vtrc { namespace server {
                         const google::protobuf::Message* request,
                         google::protobuf::Message* response,
                         google::protobuf::Closure* done);
-        //
 
+        ///
+        /// send implementation for children
+        ///
         virtual void send_message(
                     vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> llu,
                     const google::protobuf::MethodDescriptor* method,

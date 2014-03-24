@@ -17,36 +17,22 @@ namespace vtrc { namespace server {
 
     }
 
-//    struct common_channel::impl {
-
-//    };
-
     void common_channel::CallMethod(const gpb::MethodDescriptor* method,
                     gpb::RpcController* controller,
                     const gpb::Message* request,
                     gpb::Message* response,
                     gpb::Closure* done)
     {
-        lowlevel_unit_sptr llu( vtrc::make_shared<lowlevel_unit_type>( ) );
-        const std::string &serv_name(method->service( )->full_name( ));
-        const std::string &meth_name(method->name( ));
-
-        llu->mutable_call( )->set_service( serv_name );
-        llu->mutable_call( )->set_method( meth_name );
-        llu->set_request( request->SerializeAsString( ) );
-        llu->set_response( response->SerializeAsString( ) );
+        lowlevel_unit_sptr llu( create_lowlevel( method, request, response ) );
 
         send_message( llu, method, controller, done );
     }
 
     common_channel::common_channel( )
-        //:impl_(new impl)
     { }
 
     common_channel::~common_channel( )
-    {
-        //delete impl_;
-    }
+    { }
 
 }}
 
