@@ -85,13 +85,14 @@ namespace vtrc { namespace client {
                 cl->get_protocol( ).wait_call_slot( call_id, data_list,
                                                     call_opt.call_timeout( ) );
 
-                vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> top
-                                                        ( data_list.front( ) );
+                lowlevel_unit_sptr top( data_list.front( ) );
 
-                if( top->error( ).code( ) != vtrc_errors::ERR_NO_ERROR )
+                if( top->error( ).code( ) != vtrc_errors::ERR_NO_ERROR ) {
+                    cl->get_protocol( ).close_slot( call_id );
                     throw vtrc::common::exception( top->error( ).code( ),
                                                  top->error( ).category( ),
                                                  top->error( ).additional( ) );
+                }
 
                 response->ParseFromString( top->response( ) );
 
