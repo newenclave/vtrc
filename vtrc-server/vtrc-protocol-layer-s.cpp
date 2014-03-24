@@ -201,7 +201,7 @@ namespace vtrc { namespace server {
 
             vtrc::shared_ptr<gpb::Message> res
                 (service->service( )->GetResponsePrototype( meth ).New( ));
-            res->ParseFromString( llu->response( ) );
+            res->ParseFromString(llu->response( ));
 
             common::rpc_controller_sptr controller
                                 (vtrc::make_shared<common::rpc_controller>( ));
