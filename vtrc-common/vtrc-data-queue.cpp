@@ -216,10 +216,7 @@ namespace vtrc { namespace common { namespace data_queue {
 
             void process( )
             {
-                std::string *r = process_one( );
-                while( r ) {
-                    r = process_one( );
-                }
+                while( process_one( ) );
             }
         };
     }
