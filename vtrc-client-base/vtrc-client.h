@@ -58,7 +58,7 @@ namespace vtrc { namespace client {
                             common::closure_type closure);
 
         void advise_handler( vtrc::shared_ptr<google::protobuf::Service> serv);
-        void advise_handler( vtrc::weak_ptr  <google::protobuf::Service> serv);
+        void advise_weak_handler(vtrc::weak_ptr<google::protobuf::Service> ser);
 
         vtrc::shared_ptr<google::protobuf::Service> get_handler(
                                                     const std::string &name );

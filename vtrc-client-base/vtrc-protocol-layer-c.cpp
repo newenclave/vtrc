@@ -10,6 +10,7 @@
 #include "vtrc-common/vtrc-hash-iface.h"
 #include "vtrc-common/vtrc-transformer-iface.h"
 #include "vtrc-common/vtrc-call-context.h"
+#include "vtrc-common/vtrc-rpc-controller.h"
 
 #include "vtrc-protocol-layer-c.h"
 #include "vtrc-transport-iface.h"
@@ -76,6 +77,8 @@ namespace vtrc { namespace client {
             connection_->write(s.c_str( ), s.size( ), closure );
         }
 
+        void closure( ) { }
+
         void process_event_impl( vtrc_client_wptr client,
                                  lowlevel_unit_sptr llu,
                                  service_str serv,
@@ -90,6 +93,29 @@ namespace vtrc { namespace client {
                         parent_->get_method_options( meth ) );
 
             ch.ctx_->set_call_options( opts );
+            common::rpc_controller_sptr contr(
+                                vtrc::make_shared<common::rpc_controller>( ));
+
+            vtrc::shared_ptr<gpb::Message> req(
+                        serv->GetRequestPrototype( meth ).New( ));
+            vtrc::shared_ptr<gpb::Message> res(
+                        serv->GetResponsePrototype( meth ).New( ));
+
+            req->ParseFromString( llu->request( ) );
+            res->ParseFromString( llu->response( ) );
+
+            vtrc::shared_ptr<gpb::Closure> clos
+                    (gpb::NewPermanentCallback( this, &this_type::closure));
+
+            /// TODO: fix it
+            try {
+                serv->CallMethod(meth, contr.get( ),
+                             req.get( ), res.get( ),
+                             clos.get( ));
+            } catch( ... ) {
+                ;;;
+            }
+
         }
 
         void process_event( lowlevel_unit_sptr &llu )

@@ -103,7 +103,7 @@ namespace vtrc { namespace client {
             }
         }
 
-        void advise_handler( vtrc::weak_ptr<gpb::Service> serv )
+        void advise_weak_handler( vtrc::weak_ptr<gpb::Service> serv )
         {
             service_sptr lock(serv.lock( ));
             if( lock ) {
@@ -187,9 +187,9 @@ namespace vtrc { namespace client {
         impl_->advise_handler( serv );
     }
 
-    void vtrc_client::advise_handler(vtrc::weak_ptr<gpb::Service> serv)
+    void vtrc_client::advise_weak_handler(vtrc::weak_ptr<gpb::Service> serv)
     {
-        impl_->advise_handler( serv );
+        impl_->advise_weak_handler( serv );
     }
 
     service_sptr vtrc_client::get_handler(const std::string &name)

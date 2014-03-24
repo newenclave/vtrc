@@ -23,6 +23,18 @@ void on_connect( const boost::system::error_code &err )
               << err.message( ) << "\n";
 }
 
+class test_ev: public vtrc_service::test_events
+{
+    void test(::google::protobuf::RpcController* controller,
+                         const ::vtrc_rpc_lowlevel::message_info* request,
+                         ::vtrc_rpc_lowlevel::message_info* response,
+                         ::google::protobuf::Closure* done)
+    {
+        std::cout << "test event rcvd\n";
+    }
+
+};
+
 using namespace vtrc;
 
 int main( )
@@ -30,6 +42,8 @@ int main( )
     common::thread_pool tp(4);
     vtrc::shared_ptr<client::vtrc_client> cl(
                           client::vtrc_client::create((tp.get_io_service( ))));
+
+    cl->advise_handler( vtrc::shared_ptr<test_ev>(new test_ev) );
 
     ///cl.connect( "127.0.0.1", "44667" );
     cl->async_connect( "127.0.0.1", "44667", on_connect );
