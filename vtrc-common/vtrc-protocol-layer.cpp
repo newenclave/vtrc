@@ -69,7 +69,7 @@ namespace vtrc { namespace common {
         }
 
         typedef vtrc_rpc_lowlevel::lowlevel_unit ll_unit_type;
-        typedef vtrc::shared_ptr<ll_unit_type>  ll_unit_sptr;
+        typedef vtrc::shared_ptr<ll_unit_type>   ll_unit_sptr;
 
         typedef condition_queues<rpc_unit_index, ll_unit_sptr> rpc_queue_type;
 
@@ -98,8 +98,8 @@ namespace vtrc { namespace common {
 
         call_context_ptr             context_;
 
-        options_map_type           options_map_;
-        mutable vtrc::shared_mutex options_map_lock_;
+        options_map_type             options_map_;
+        mutable vtrc::shared_mutex   options_map_lock_;
 
         impl( transport_iface *c )
             :connection_(c)
