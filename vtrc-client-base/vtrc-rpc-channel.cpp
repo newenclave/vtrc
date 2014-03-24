@@ -34,7 +34,7 @@ namespace vtrc { namespace client {
 
         static bool waitable_call( const lowlevel_unit_sptr &llu)
         {
-            const bool has = llu->info( ).has_wait_for_response( );
+            const bool  has = llu->info( ).has_wait_for_response( );
             const bool wait = llu->info( ).wait_for_response( );
             return !has || (has && wait);
         }
