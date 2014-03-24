@@ -140,7 +140,7 @@ namespace vtrc { namespace common {
             if( length > 0 ) {
                 std::string next_data(data, data + length);
 
-                size_t old_size = queue_->messages( ).size( );
+                const size_t old_size = queue_->messages( ).size( );
 
                 /*
                  * message = revert( message )
