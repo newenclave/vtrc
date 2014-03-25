@@ -33,9 +33,6 @@ namespace client {
                           vtrc::client::vtrc_client *client );
         ~protocol_layer_c( );
 
-        void on_write_error( const boost::system::error_code &err );
-        void on_read_error( const boost::system::error_code &err );
-
     public:
 
         void init( );

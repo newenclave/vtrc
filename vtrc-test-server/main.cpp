@@ -84,7 +84,7 @@ public:
                     vtrc::server
                     ::channels::unicast
                     ::create_event_channel(connection_->shared_from_this( ),
-                                           false));
+                                           true));
 
         try {
 
@@ -190,6 +190,10 @@ int main( ) try {
     tcp_ep->start( );
 
     boost::this_thread::sleep_for( vtrc::chrono::milliseconds(12000) );
+
+    std::cout << "Stoppped. Wait ... \n";
+
+    tcp_ep->stop( );
 
     poll.stop( );
     poll.join_all( );

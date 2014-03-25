@@ -99,7 +99,7 @@ namespace vtrc { namespace client {
         {
             client_->get_io_service( ).post(
                 vtrc::bind( &this_type::process_event_impl, this,
-                         client_->weak_from_this( ), llu));
+                             client_->weak_from_this( ), llu));
         }
 
         void process_service( lowlevel_unit_sptr &llu )
@@ -125,22 +125,6 @@ namespace vtrc { namespace client {
         void process_invalid( lowlevel_unit_sptr &llu )
         {
 
-        }
-
-        void on_system_error(const boost::system::error_code &err,
-                             const std::string &add)
-        {
-            vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
-                            llu( new  vtrc_rpc_lowlevel::lowlevel_unit );
-
-            vtrc_errors::error_container *err_cont = llu->mutable_error( );
-
-            err_cont->set_code(err.value( ));
-            err_cont->set_category(vtrc_errors::CATEGORY_SYSTEM);
-            err_cont->set_fatal( true );
-            err_cont->set_additional( add );
-
-            parent_->push_rpc_message_all( llu );
         }
 
         void on_rpc_process( )
@@ -276,16 +260,6 @@ namespace vtrc { namespace client {
     protocol_layer_c::~protocol_layer_c( )
     {
         delete impl_;
-    }
-
-    void protocol_layer_c::on_read_error(const boost::system::error_code &err)
-    {
-        impl_->on_system_error( err, "Transport read error." );
-    }
-
-    void protocol_layer_c::on_write_error(const boost::system::error_code &err)
-    {
-        impl_->on_system_error( err, "Transport write error." );
     }
 
     void protocol_layer_c::init( )

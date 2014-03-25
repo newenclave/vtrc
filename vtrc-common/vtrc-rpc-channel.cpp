@@ -72,8 +72,6 @@ namespace vtrc { namespace common  {
             // client: call. server: event, callback
             if( top->info( ).message_type( ) != mess_type ) {
                 cl->get_protocol( ).make_call( top );
-                std::cout << "waitable call " << llu->call( ).method( )
-                          << "\n";
             } else {
                 response->ParseFromString( top->response( ) );
                 wait = false;

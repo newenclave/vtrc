@@ -405,11 +405,11 @@ namespace vtrc { namespace common {
             vtrc::shared_ptr<gpb::Message> req
                 (service->service( )->GetRequestPrototype( meth ).New( ));
 
-            req->ParseFromString( llu->request( ) );
-
             vtrc::shared_ptr<gpb::Message> res
                 (service->service( )->GetResponsePrototype( meth ).New( ));
-            res->ParseFromString(llu->response( ));
+
+            req->ParseFromString( llu->request( ) );
+            res->ParseFromString( llu->response( ));
 
             common::rpc_controller_sptr controller
                                 (vtrc::make_shared<common::rpc_controller>( ));
@@ -466,7 +466,25 @@ namespace vtrc { namespace common {
                     llu->clear_response( );
                 }
                 send_message( *llu );
+            } else {
+                //std::cout << "not waitable call " << llu->call( ).method( ) << "\n";
             }
+        }
+
+        void on_system_error(const boost::system::error_code &err,
+                             const std::string &add)
+        {
+            vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
+                            llu( new  vtrc_rpc_lowlevel::lowlevel_unit );
+
+            vtrc_errors::error_container *err_cont = llu->mutable_error( );
+
+            err_cont->set_code(err.value( ));
+            err_cont->set_category(vtrc_errors::CATEGORY_SYSTEM);
+            err_cont->set_fatal( true );
+            err_cont->set_additional( add );
+
+            parent_->push_rpc_message_all( llu );
         }
 
     };
@@ -640,14 +658,14 @@ namespace vtrc { namespace common {
         impl_->push_rpc_message_all( mess );
     }
 
-    void protocol_layer::on_write_error(const boost::system::error_code & /*e*/)
+    void protocol_layer::on_write_error(const boost::system::error_code &err)
     {
-
+        impl_->on_system_error( err, "Transport write error." );
     }
 
-    void protocol_layer::on_read_error(const boost::system::error_code & /*e*/)
+    void protocol_layer::on_read_error(const boost::system::error_code &err)
     {
-
+        impl_->on_system_error( err, "Transport read error." );
     }
 
 }}
