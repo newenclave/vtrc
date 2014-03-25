@@ -15,6 +15,10 @@ namespace vtrc { namespace common {
             :service_(s)
         { }
 
+        impl( vtrc::shared_ptr<gpb::Service> s )
+            :service_(s)
+        { }
+
         ~impl( )
         { }
 
@@ -36,6 +40,12 @@ namespace vtrc { namespace common {
     rpc_service_wrapper::rpc_service_wrapper( gpb::Service *service )
         :impl_(new impl(service))
     {}
+
+    rpc_service_wrapper::rpc_service_wrapper(vtrc::shared_ptr<gpb::Service> s)
+        :impl_(new impl(s))
+    {
+
+    }
 
     rpc_service_wrapper::~rpc_service_wrapper( )
     {

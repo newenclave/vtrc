@@ -41,6 +41,8 @@ namespace vtrc { namespace server {
             common::rpc_service_wrapper_sptr
         > service_map;
 
+        typedef vtrc_rpc_lowlevel::lowlevel_unit     lowlevel_unit_type;
+        typedef vtrc::shared_ptr<lowlevel_unit_type> lowlevel_unit_sptr;
     }
 
     namespace data_queue = common::data_queue;
@@ -168,14 +170,13 @@ namespace vtrc { namespace server {
             ;;;
         }
 
-        bool make_call_impl( vtrc::shared_ptr <
-                              vtrc_rpc_lowlevel::lowlevel_unit> llu )
+        bool make_call_impl( lowlevel_unit_sptr llu )
         {
 
             protocol_layer_s::context_holder ch( parent_, llu.get( ) );
 
             common::rpc_service_wrapper_sptr
-                    service(get_service(llu->call( ).service()));
+                    service(get_service(llu->call( ).service( )));
 
             if( !service ) {
                 throw vtrc::common::exception( vtrc_errors::ERR_BAD_FILE,
@@ -234,18 +235,19 @@ namespace vtrc { namespace server {
             try {
                 opt_wait = make_call_impl( llu );
                 failed = false;
+
             } catch ( const vtrc::common::exception &ex ) {
                 errorcode = ex.code( );
-                llu->mutable_error( )
-                        ->set_additional( ex.additional( ) );
+                llu->mutable_error( )->set_additional( ex.additional( ) );
+
             } catch ( const std::exception &ex ) {
                 errorcode = vtrc_errors::ERR_INTERNAL;
-                llu->mutable_error( )
-                        ->set_additional( ex.what( ) );
+                llu->mutable_error( )->set_additional( ex.what( ) );
+
             } catch ( ... ) {
                 errorcode = vtrc_errors::ERR_UNKNOWN;
-                llu->mutable_error( )
-                        ->set_additional( "..." );
+                llu->mutable_error( )->set_additional( "..." );
+
             }
 
             if( opt_wait && request_wait ) {

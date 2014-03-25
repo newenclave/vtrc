@@ -70,7 +70,7 @@ namespace vtrc { namespace client {
 
                 std::deque<lowlevel_unit_sptr> data_list;
 
-                cl->get_protocol( ).wait_call_slot( call_id, data_list,
+                cl->get_protocol( ).read_slot_for( call_id, data_list,
                                                     call_opt.call_timeout( ) );
 
                 lowlevel_unit_sptr top( data_list.front( ) );

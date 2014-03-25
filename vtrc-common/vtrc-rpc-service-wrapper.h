@@ -22,6 +22,9 @@ namespace vtrc { namespace common {
     public:
 
         explicit rpc_service_wrapper( google::protobuf::Service *serv );
+        explicit rpc_service_wrapper(
+                     vtrc::shared_ptr<google::protobuf::Service> serv );
+
         virtual ~rpc_service_wrapper( );
 
         /// names for protocol

@@ -291,7 +291,7 @@ namespace vtrc { namespace common {
             raise_wait_error( qwr );
         }
 
-        void wait_call_slot(uint64_t slot_id, ll_unit_sptr &mess,
+        void read_slot_for(uint64_t slot_id, ll_unit_sptr &mess,
                                                             uint32_t millisec)
         {
             wait_result_codes qwr =
@@ -301,7 +301,7 @@ namespace vtrc { namespace common {
             raise_wait_error( qwr );
         }
 
-        void wait_call_slot(uint64_t slot_id,
+        void read_slot_for(uint64_t slot_id,
                         std::deque<ll_unit_sptr> &data_list, uint32_t millisec )
         {
             wait_result_codes qwr = rpc_queue_.read_queue(
@@ -479,22 +479,22 @@ namespace vtrc { namespace common {
         impl_->call_rpc_method( slot_id, llu );
     }
 
-    void protocol_layer::wait_call_slot( uint64_t slot_id, uint32_t millisec)
+    void protocol_layer::wait_slot_for( uint64_t slot_id, uint32_t millisec)
     {
         impl_->wait_call_slot( slot_id, millisec);
     }
 
-    void protocol_layer::wait_call_slot(uint64_t slot_id, ll_unit_sptr &mess,
+    void protocol_layer::read_slot_for(uint64_t slot_id, ll_unit_sptr &mess,
                                                             uint32_t millisec)
     {
-        impl_->wait_call_slot( slot_id, mess, millisec);
+        impl_->read_slot_for( slot_id, mess, millisec);
     }
 
-    void protocol_layer::wait_call_slot( uint64_t slot_id,
+    void protocol_layer::read_slot_for( uint64_t slot_id,
                          std::deque<ll_unit_sptr> &data_list,
                          uint32_t millisec )
     {
-        impl_->wait_call_slot( slot_id, data_list, millisec);
+        impl_->read_slot_for( slot_id, data_list, millisec);
     }
 
     void protocol_layer::close_slot(uint64_t slot_id)
