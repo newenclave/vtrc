@@ -80,9 +80,17 @@ public:
                     ::create_callback_channel(connection_->shared_from_this( )));
 
         try {
+
             vtrc_service::test_events_Stub te( ev.get( ) );
             vtrc_rpc_lowlevel::message_info req;
             te.test( NULL, &req, &req, NULL );
+
+            vtrc_service::internal::Stub ping(ev.get( ));
+            vtrc_service::ping_req preq;
+            vtrc_service::pong_res pres;
+
+            ping.ping( NULL, &preq, &pres, NULL );
+
         } catch( const vtrc::common::exception &ex ) {
 //            std::cout << "what: " << ex.what( ) <<
 //                         " add: " << ex.additional( )

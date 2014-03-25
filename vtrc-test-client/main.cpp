@@ -26,6 +26,26 @@ void on_connect( const boost::system::error_code &err )
               << err.message( ) << "\n";
 }
 
+class ping_impl: public vtrc_service::internal {
+
+    vtrc::common::connection_iface *c_;
+
+public:
+
+    ping_impl( vtrc::common::connection_iface *c )
+        :c_( c )
+    {}
+
+    void ping(::google::protobuf::RpcController* controller,
+                         const ::vtrc_service::ping_req* request,
+                         ::vtrc_service::pong_res* response,
+                         ::google::protobuf::Closure* done)
+    {
+        std::cout << "ping\n";
+        if( done ) done->Run( );
+    }
+};
+
 class test_ev: public vtrc_service::test_events
 {
     vtrc::common::connection_iface *c_;
@@ -39,12 +59,10 @@ public:
                          ::vtrc_rpc_lowlevel::message_info* response,
                          ::google::protobuf::Closure* done)
     {
-
-//        std::cout << "test event rcvd "
-//                  << c_->get_protocol( ).get_call_context( )->get_lowlevel_message( )->id( )
-//                  << " " << vtrc::this_thread::get_id( ) << " "
-//                  << "\n";
-        throw std::runtime_error( "Hello! from client =) sfdgsdf" );
+        std::cout << "test event rcvd "
+                  << c_->get_protocol( ).get_call_context( )->get_lowlevel_message( )->id( )
+                  << " " << vtrc::this_thread::get_id( ) << " "
+                  << "\n";
     }
 
 };
@@ -77,18 +95,18 @@ int main( )
 
     for( int i=0; i<200000000; ++i ) {
         try {
-            //vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(500) );
+            vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(100) );
             s.test( NULL, &mi, &mi, NULL );
             last = mi.message_type( );
             //std::cout << "response: " << last << "\n";
             //cl.reset( );
         } catch( const vtrc::common::exception &ex ) {
-//            std::cout << "call error: "
-//                      << " code (" << ex.code( ) << ")"
-//                      << " category (" << ex.category( ) << ")"
-//                      << " what: " << ex.what( )
-//                      << " (" << ex.additional( ) << ")"
-//                      << "\n";
+            std::cout << "call error: "
+                      << " code (" << ex.code( ) << ")"
+                      << " category (" << ex.category( ) << ")"
+                      << " what: " << ex.what( )
+                      << " (" << ex.additional( ) << ")"
+                      << "\n";
             if( i % 100 == 0 )
                 std::cout << i << "\n";
         } catch( const std::exception &ex ) {
