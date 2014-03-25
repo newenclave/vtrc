@@ -83,9 +83,6 @@ namespace vtrc { namespace server {
                 //// WAITABLE CALL
                 if( call_opt.wait( ) && llu->info( ).wait_for_response( ) ) {
 
-                    std::cout << "test event send "
-                              << call_id << "\n";
-
                     clk->get_protocol( ).call_rpc_method( call_id, *llu );
 
                     std::deque<lowlevel_unit_sptr> data_list;

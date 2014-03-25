@@ -172,9 +172,6 @@ namespace vtrc { namespace server {
         void push_event_answer( lowlevel_unit_sptr llu,
                                 common::connection_iface_sptr conn )
         {
-            std::cout << "post " << llu->id( ) << " "
-                      << llu->info( ).message_type( )
-                      << "\n";
             parent_->push_rpc_message( llu->id( ), llu );
         }
 

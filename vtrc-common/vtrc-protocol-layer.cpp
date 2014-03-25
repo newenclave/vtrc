@@ -385,7 +385,7 @@ namespace vtrc { namespace common {
             common::rpc_service_wrapper_sptr
                     service(get_service(llu->call( ).service( )));
 
-            if( !service ) {
+            if( !service->service( ) ) {
                 throw vtrc::common::exception( vtrc_errors::ERR_BAD_FILE,
                                                "Service not found");
             }

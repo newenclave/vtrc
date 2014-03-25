@@ -71,11 +71,12 @@ int main( )
     size_t last = 0;
 
     std::cout << "this thread: "
-              << vtrc::this_thread::get_id( ) << " ";
+              << vtrc::this_thread::get_id( ) << " "
+              << "\n";
 
     for( int i=0; i<200000000; ++i ) {
         try {
-            vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(1000) );
+            vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(500) );
             s.test( NULL, &mi, &mi, NULL );
             last = mi.message_type( );
             //std::cout << "response: " << last << "\n";
