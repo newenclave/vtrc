@@ -41,7 +41,10 @@ public:
                          ::vtrc_service::pong_res* response,
                          ::google::protobuf::Closure* done)
     {
-        std::cout << "ping\n";
+        std::cout << "ping event rcvd "
+                  << c_->get_protocol( ).get_call_context( )->get_lowlevel_message( )->id( )
+                  << " " << vtrc::this_thread::get_id( ) << " "
+                  << "\n";
         if( done ) done->Run( );
     }
 };
@@ -79,6 +82,7 @@ int main( )
     ///cl->async_connect( "127.0.0.1", "44667", on_connect );
 
     cl->advise_handler( vtrc::shared_ptr<test_ev>(new test_ev(cl->connection( ).get( ))) );
+    cl->advise_handler( vtrc::shared_ptr<ping_impl>(new ping_impl(cl->connection( ).get( ))) );
 
     vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(2000) );
 
@@ -93,9 +97,9 @@ int main( )
               << vtrc::this_thread::get_id( ) << " "
               << "\n";
 
-    for( int i=0; i<200000000; ++i ) {
+    for( int i=0; i<29999999999; ++i ) {
         try {
-            vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(100) );
+            //vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(100) );
             s.test( NULL, &mi, &mi, NULL );
             last = mi.message_type( );
             //std::cout << "response: " << last << "\n";

@@ -2,7 +2,7 @@
 #define VTRC_RPC_CHANNEL_H
 
 #include <google/protobuf/service.h>
-#include "vtrc-memory.h"
+#include "vtrc-connection-iface.h"
 
 namespace vtrc_rpc_lowlevel {
     class lowlevel_unit;
@@ -32,6 +32,12 @@ namespace vtrc { namespace common  {
                           const google::protobuf::MethodDescriptor* method,
                           const google::protobuf::Message* request,
                                 google::protobuf::Message* response) const;
+
+        void process_waitable_call( google::protobuf::uint64 call_id,
+                            lowlevel_unit_sptr &llu,
+                            google::protobuf::Message* response,
+                            common::connection_iface_sptr &cl,
+                            const vtrc_rpc_lowlevel::options &call_opt ) const;
 
     };
 }}

@@ -74,18 +74,25 @@ public:
         if( (id_ % 100) == 0 )
             throw std::runtime_error( "oops 10 =)" );
 
+//        vtrc::shared_ptr<google::protobuf::RpcChannel> cb(
+//                    vtrc::server
+//                    ::channels::unicast
+//                    ::create_callback_channel(connection_->shared_from_this( ),
+//                                              true));
+
         vtrc::shared_ptr<google::protobuf::RpcChannel> ev(
                     vtrc::server
                     ::channels::unicast
-                    ::create_callback_channel(connection_->shared_from_this( )));
+                    ::create_event_channel(connection_->shared_from_this( ),
+                                           false));
 
         try {
 
-            vtrc_service::test_events_Stub te( ev.get( ) );
-            vtrc_rpc_lowlevel::message_info req;
-            te.test( NULL, &req, &req, NULL );
+//            vtrc_service::test_events_Stub te( ev.get( ) );
+//            vtrc_rpc_lowlevel::message_info req;
+//            te.test( NULL, &req, &req, NULL );
 
-            vtrc_service::internal::Stub ping(ev.get( ));
+            vtrc_service::internal::Stub ping( ev.get( ));
             vtrc_service::ping_req preq;
             vtrc_service::pong_res pres;
 

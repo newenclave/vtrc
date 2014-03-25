@@ -22,13 +22,15 @@ namespace vtrc { namespace server {
 
             common::connection_iface_wptr client_;
             const unsigned                message_type_;
+            const bool                    disable_wait_;
 
         public:
 
             unicast_channel( common::connection_iface_sptr c,
-                             unsigned mess_type)
+                             unsigned mess_type, bool disable_wait)
                 :client_(c)
                 ,message_type_(mess_type)
+                ,disable_wait_(disable_wait)
             {}
 
             static
@@ -80,29 +82,14 @@ namespace vtrc { namespace server {
 
                 llu->set_id(call_id);
 
+                if( disable_wait_ )
+                    llu->mutable_opt( )->set_wait(false);
+
                 //// WAITABLE CALL
-                if( call_opt.wait( ) && llu->info( ).wait_for_response( ) ) {
+                if( call_opt.wait( ) && llu->opt( ).wait( ) ) {
 
-                    clk->get_protocol( ).call_rpc_method( call_id, *llu );
-
-                    std::deque<lowlevel_unit_sptr> data_list;
-
-                    clk->get_protocol( ).read_slot_for( call_id, data_list,
-                                                   call_opt.call_timeout( ) );
-
-                    lowlevel_unit_sptr top( data_list.front( ) );
-
-                    if( top->error( ).code( ) != vtrc_errors::ERR_NO_ERROR ) {
-
-                        clk->get_protocol( ).erase_slot( call_id );
-                        throw vtrc::common::exception( top->error( ).code( ),
-                                                 top->error( ).category( ),
-                                                 top->error( ).additional( ) );
-                    }
-
-                    response->ParseFromString( top->response( ) );
-
-                    clk->get_protocol( ).erase_slot( call_id );
+                    process_waitable_call( call_id, llu, response,
+                                           clk, call_opt );
 
                 } else { // NOT WAITABLE CALL
                     clk->get_protocol( ).call_rpc_method( *llu );
@@ -115,18 +102,20 @@ namespace vtrc { namespace server {
 
     namespace channels { namespace unicast {
 
-        common_channel *create_event_channel( common::connection_iface_sptr c )
+        common_channel *create_event_channel( common::connection_iface_sptr c,
+                                              bool disable_wait)
         {
             static const unsigned message_type
                 (vtrc_rpc_lowlevel::message_info::MESSAGE_EVENT);
-            return new unicast_channel(c, message_type);
+            return new unicast_channel(c, message_type, disable_wait);
         }
 
-        common_channel *create_callback_channel(common::connection_iface_sptr c)
+        common_channel *create_callback_channel(common::connection_iface_sptr c,
+                                                bool disable_wait)
         {
             static const unsigned message_type
                 (vtrc_rpc_lowlevel::message_info::MESSAGE_CALLBACK);
-            return new unicast_channel(c, message_type);
+            return new unicast_channel(c, message_type, disable_wait);
         }
 
     }}

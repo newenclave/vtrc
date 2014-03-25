@@ -32,46 +32,8 @@ namespace vtrc { namespace client {
 
         static bool waitable_call( const lowlevel_unit_sptr &llu )
         {
-            const bool  has = llu->info( ).has_wait_for_response( );
-            return !has || (has && llu->info( ).wait_for_response( ));
-        }
-
-        void process_waitable_call( uint64_t call_id,
-                                    lowlevel_unit_sptr &llu,
-                                    gpb::Message* response,
-                                    common::connection_iface_sptr &cl,
-                                    const vtrc_rpc_lowlevel::options &call_opt)
-        {
-            cl->get_protocol( ).call_rpc_method( call_id, *llu );
-
-            bool wait = true;
-
-            while( wait ) {
-
-                lowlevel_unit_sptr top(vtrc::make_shared<lowlevel_unit_type>());
-
-                cl->get_protocol( ).read_slot_for( call_id, top,
-                                                   call_opt.call_timeout( ) );
-
-                if( top->error( ).code( ) != vtrc_errors::ERR_NO_ERROR ) {
-                    cl->get_protocol( ).erase_slot( call_id );
-                    throw vtrc::common::exception( top->error( ).code( ),
-                                                 top->error( ).category( ),
-                                                 top->error( ).additional( ) );
-                }
-
-                if( top->info( ).message_type( ) ==
-                        vtrc_rpc_lowlevel::message_info::MESSAGE_CALLBACK )
-                {
-                    cl->get_protocol( ).make_call( top );
-                } else {
-                    response->ParseFromString( top->response( ) );
-                    wait = false;
-                }
-            }
-
-            cl->get_protocol( ).erase_slot( call_id );
-
+            const bool  has = llu->opt( ).has_wait( );
+            return !has || (has && llu->opt( ).wait( ));
         }
 
         void CallMethod(const gpb::MethodDescriptor* method,
@@ -82,15 +44,15 @@ namespace vtrc { namespace client {
         {
             //common::closure_holder hold(done);
 
-            common::connection_iface_sptr cl(connection_.lock( ));
+            common::connection_iface_sptr clk(connection_.lock( ));
 
-            if( cl.get( ) == NULL ) {
+            if( clk.get( ) == NULL ) {
                 throw vtrc::common::exception( vtrc_errors::ERR_CHANNEL,
                                                "Connection lost");
             }
 
             const vtrc_rpc_lowlevel::options &call_opt
-                             ( cl->get_protocol( ).get_method_options(method) );
+                             ( clk->get_protocol( ).get_method_options(method) );
 
             lowlevel_unit_sptr llu(
                         parent_->create_lowlevel(method, request, response));
@@ -98,17 +60,17 @@ namespace vtrc { namespace client {
             llu->mutable_info( )->set_message_type(
                                vtrc_rpc_lowlevel::message_info::MESSAGE_CALL );
 
-            uint64_t call_id = cl->get_protocol( ).next_index( );
+            uint64_t call_id = clk->get_protocol( ).next_index( );
 
             llu->set_id( call_id );
 
-            if( call_opt.wait( ) && waitable_call( llu ) ) { // WAITABLE CALL
+            if( call_opt.wait( ) && llu->opt( ).wait( ) ) { // WAITABLE CALL
 
-                process_waitable_call( call_id, llu, response,
-                                       cl, call_opt );
+                parent_->process_waitable_call( call_id, llu, response,
+                                                clk, call_opt );
 
             } else { // NOT WAITABLE CALL
-                cl->get_protocol( ).call_rpc_method( *llu );
+                clk->get_protocol( ).call_rpc_method( *llu );
             }
         }
     };

@@ -9,8 +9,12 @@ namespace vtrc { namespace server {
 namespace channels {
 
 namespace unicast {
-    common_channel *create_event_channel( common::connection_iface_sptr c );
-    common_channel *create_callback_channel( common::connection_iface_sptr c );
+
+    common_channel *create_event_channel( common::connection_iface_sptr c,
+                                          bool disable_wait = false);
+
+    common_channel *create_callback_channel( common::connection_iface_sptr c,
+                                             bool disable_wait = false);
 }
 
 }

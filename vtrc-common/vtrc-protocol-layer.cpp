@@ -437,7 +437,7 @@ namespace vtrc { namespace common {
         {
             bool failed       = true;
             bool opt_wait     = true;
-            bool request_wait = llu->info( ).wait_for_response( );
+            bool request_wait = llu->opt( ).wait( );
 
             unsigned errorcode = 0;
             try {
