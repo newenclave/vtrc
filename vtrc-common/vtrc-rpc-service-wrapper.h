@@ -32,7 +32,7 @@ namespace vtrc { namespace common {
         virtual const google::protobuf::MethodDescriptor *get_method (
                                                 const std::string &name ) const;
 
-        google::protobuf::Service *service( );
+        google::protobuf::Service       *service( );
         const google::protobuf::Service *service( ) const;
 
     protected:
