@@ -79,17 +79,19 @@ namespace vtrc { namespace common {
         // refactor names here!
         void wait_slot_for( uint64_t slot_id, uint32_t millisec );
 
-        void read_slot_for( uint64_t slot_id, lowlevel_unit_sptr &mess,
+        void read_slot_for( uint64_t slot_id,
+                            lowlevel_unit_sptr &mess,
                             uint32_t millisec );
 
         void read_slot_for( uint64_t slot_id,
-                           std::deque<lowlevel_unit_sptr> &data_list,
-                           uint32_t millisec );
+                            std::deque<lowlevel_unit_sptr> &mess_list,
+                            uint32_t millisec );
 
-        void close_slot ( uint64_t slot_id );
+        void erase_slot ( uint64_t slot_id );
         void cancel_slot( uint64_t slot_id );
 
-        void cancel_all_slots( bool erase );
+        void erase_all_slots( );
+        void cancel_all_slots( );
 
         const vtrc_rpc_lowlevel::options &get_method_options(
                             const google::protobuf::MethodDescriptor* method );
@@ -105,8 +107,7 @@ namespace vtrc { namespace common {
                 :p_(parent)
                 ,old_ctx_(p_->get_call_context( ))
                 ,ctx_(p_->reset_call_context( new call_context( llu ) ))
-            {
-            }
+            { }
 
             ~context_holder( ) try
             {

@@ -484,20 +484,21 @@ namespace vtrc { namespace common {
         impl_->wait_call_slot( slot_id, millisec);
     }
 
-    void protocol_layer::read_slot_for(uint64_t slot_id, ll_unit_sptr &mess,
-                                                            uint32_t millisec)
+    void protocol_layer::read_slot_for( uint64_t slot_id,
+                                        ll_unit_sptr &mess,
+                                        uint32_t millisec)
     {
         impl_->read_slot_for( slot_id, mess, millisec);
     }
 
     void protocol_layer::read_slot_for( uint64_t slot_id,
-                         std::deque<ll_unit_sptr> &data_list,
-                         uint32_t millisec )
+                                        std::deque<ll_unit_sptr> &mess_list,
+                                        uint32_t millisec )
     {
-        impl_->read_slot_for( slot_id, data_list, millisec);
+        impl_->read_slot_for( slot_id, mess_list, millisec);
     }
 
-    void protocol_layer::close_slot(uint64_t slot_id)
+    void protocol_layer::erase_slot(uint64_t slot_id)
     {
         impl_->close_slot( slot_id );
     }
@@ -507,9 +508,14 @@ namespace vtrc { namespace common {
         impl_->cancel_slot( slot_id );
     }
 
-    void protocol_layer::cancel_all_slots( bool erase  )
+    void protocol_layer::cancel_all_slots( )
     {
-        impl_->cancel_all_slots( erase );
+        impl_->cancel_all_slots( false );
+    }
+
+    void protocol_layer::erase_all_slots( )
+    {
+        impl_->cancel_all_slots( true );
     }
 
     void protocol_layer::push_rpc_message(uint64_t slot_id, ll_unit_sptr mess)

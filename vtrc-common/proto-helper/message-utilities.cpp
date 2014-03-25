@@ -84,7 +84,7 @@ namespace vtrc { namespace utilities {
 
     static bool field_is_message( const gpb::FieldDescriptor *fld )
     {
-        return fld->cpp_type( ) == gpb::FieldDescriptor::CPPTYPE_MESSAGE;
+        return fld->type( ) == gpb::FieldDescriptor::TYPE_MESSAGE;
     }
 
     bool message_has_repeated( const gpb::FieldDescriptor *fld )
@@ -140,9 +140,9 @@ namespace vtrc { namespace utilities {
 
         for( int i(0); i<tsize; ++i ) {
             std::string tmess( treflect->GetRepeatedMessage( templ, fld, i )
-                               .SerializeAsString() );
+                               .SerializeAsString( ) );
             std::string smess( sreflect->GetRepeatedMessage( src, fld, i )
-                               .SerializeAsString() );
+                               .SerializeAsString( ) );
             if( tmess.compare(smess) != 0 ) return false;
         }
         sreflect->ClearField( &src, fld );
@@ -188,32 +188,33 @@ namespace vtrc { namespace utilities {
     }
 
     /// merges
-
+    /// crutch for repeated field
     void clear_repeated( gpb::Message &to, gpb::Message const &from )
     {
         gpb::Reflection const *refl( to.GetReflection() );
 
-        typedef std::vector<gpb::FieldDescriptor const * > flds_vector;
+        typedef std::vector<gpb::FieldDescriptor const *> flds_vector;
 
         flds_vector fields;
 
         refl->ListFields( from, &fields );
+        flds_vector::const_iterator b(fields.begin( ));
+        flds_vector::const_iterator e(fields.end( ));
 
-        for(flds_vector::const_iterator b(fields.begin()),
-            e(fields.end()); b!=e; ++b) {
-                const gpb::FieldDescriptor *next(*b);
-                if ( next->is_repeated() ) {
-                    refl->ClearField( &to, next );
-                } else if( field_is_message( next ) ) {
-                    if( message_has_repeated( next ) ) {
+        for(; b!=e; ++b) {
+            const gpb::FieldDescriptor *next(*b);
+            if ( next->is_repeated( ) ) {
+                refl->ClearField( &to, next );
+            } else if( field_is_message( next ) ) {
+                if( message_has_repeated( next ) ) {
 
-                        refl->MutableMessage( &to, next )->Clear( );
+                    refl->MutableMessage( &to, next )->Clear( );
 
-                    } else if( refl->HasField( to, next ) ) {
-                        clear_repeated( *refl->MutableMessage( &to, next ),
-                                         refl->GetMessage( from, next ));
-                    }
+                } else if( refl->HasField( to, next ) ) {
+                    clear_repeated( *refl->MutableMessage( &to, next ),
+                                     refl->GetMessage( from, next ));
                 }
+            }
         }
     }
 

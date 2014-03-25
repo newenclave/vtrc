@@ -76,7 +76,7 @@ namespace vtrc { namespace client {
                 lowlevel_unit_sptr top( data_list.front( ) );
 
                 if( top->error( ).code( ) != vtrc_errors::ERR_NO_ERROR ) {
-                    cl->get_protocol( ).close_slot( call_id );
+                    cl->get_protocol( ).erase_slot( call_id );
                     throw vtrc::common::exception( top->error( ).code( ),
                                                  top->error( ).category( ),
                                                  top->error( ).additional( ) );
@@ -84,7 +84,7 @@ namespace vtrc { namespace client {
 
                 response->ParseFromString( top->response( ) );
 
-                cl->get_protocol( ).close_slot( call_id );
+                cl->get_protocol( ).erase_slot( call_id );
 
             } else { // NOT WAITABLE CALL
                 cl->get_protocol( ).call_rpc_method( *llu );
