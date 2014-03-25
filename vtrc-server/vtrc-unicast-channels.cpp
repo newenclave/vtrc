@@ -73,7 +73,7 @@ namespace vtrc { namespace server {
                                                    "Connection lost");
                 }
 
-                vtrc_rpc_lowlevel::options call_opt
+                const vtrc_rpc_lowlevel::options &call_opt
                             ( clk->get_protocol( ).get_method_options(method) );
 
                 llu->mutable_info( )->set_message_type(message_type_);

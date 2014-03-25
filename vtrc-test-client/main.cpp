@@ -102,7 +102,7 @@ int main( )
             //vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(100) );
             s.test( NULL, &mi, &mi, NULL );
             last = mi.message_type( );
-            //std::cout << "response: " << last << "\n";
+            std::cout << "response: " << last << "\n";
             //cl.reset( );
         } catch( const vtrc::common::exception &ex ) {
             std::cout << "call error: "
@@ -111,7 +111,7 @@ int main( )
                       << " what: " << ex.what( )
                       << " (" << ex.additional( ) << ")"
                       << "\n";
-            if( i % 100 == 0 )
+            //if( i % 100 == 0 )
                 std::cout << i << "\n";
         } catch( const std::exception &ex ) {
             std::cout << "call error: " << ex.what( ) << "\n";
