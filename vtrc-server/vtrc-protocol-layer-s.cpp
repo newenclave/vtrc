@@ -345,5 +345,11 @@ namespace vtrc { namespace server {
         return impl_->ready( );
     }
 
+    common::rpc_service_wrapper_sptr protocol_layer_s::get_service_by_name(
+                                                        const std::string &name)
+    {
+        return impl_->get_service(name);
+    }
+
 }}
 

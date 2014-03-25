@@ -8,6 +8,7 @@
 #include "vtrc-memory.h"
 
 #include "vtrc-call-context.h"
+#include "vtrc-rpc-service-wrapper.h"
 
 namespace google { namespace protobuf {
     class Message;
@@ -129,6 +130,9 @@ namespace vtrc { namespace common {
 
         virtual void init( )            = 0;
         virtual void on_data_ready( )   = 0;
+
+        virtual rpc_service_wrapper_sptr get_service_by_name(
+                                                const std::string &name ) = 0;
 
         bool check_message( const std::string &mess );
         void parse_message( const std::string &mess,

@@ -59,6 +59,14 @@ namespace vtrc { namespace client {
 
         }
 
+        common::rpc_service_wrapper_sptr get_service_by_name(
+                                                      const std::string &name )
+        {
+            return common::rpc_service_wrapper_sptr
+                        (new common::rpc_service_wrapper(
+                                                client_->get_handler( name )));
+        }
+
         void pop_message( )
         {
             parent_->pop_message( );
@@ -341,5 +349,10 @@ namespace vtrc { namespace client {
         return impl_->ready( );
     }
 
+    common::rpc_service_wrapper_sptr protocol_layer_c::get_service_by_name(
+                                                        const std::string &name)
+    {
+        return impl_->get_service_by_name( name );
+    }
 
 }}
