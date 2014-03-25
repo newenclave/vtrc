@@ -49,7 +49,8 @@ namespace vtrc { namespace server {
 
     struct protocol_layer_s::impl {
 
-        typedef impl this_type;
+        typedef impl             this_type;
+        typedef protocol_layer_s parent_type;
 
         application             &app_;
         common::transport_iface *connection_;
@@ -73,7 +74,7 @@ namespace vtrc { namespace server {
 
         common::rpc_service_wrapper_sptr get_service( const std::string &name )
         {
-            upgradable_lock l( services_lock_ );
+            upgradable_lock lk( services_lock_ );
             common::rpc_service_wrapper_sptr result;
             service_map::iterator f( services_.find( name ) );
 
@@ -82,7 +83,7 @@ namespace vtrc { namespace server {
             } else {
                 result = app_.get_service_by_name( connection_, name );
                 if( result ) {
-                    upgrade_to_unique ul( l );
+                    upgrade_to_unique ulk( lk );
                     services_.insert( std::make_pair( name, result ) );
                 }
             }
@@ -162,114 +163,39 @@ namespace vtrc { namespace server {
             pop_message( );
         }
 
-        void closure( common::rpc_controller_sptr controller,
-                           vtrc::shared_ptr <
-                                vtrc_rpc_lowlevel::lowlevel_unit
-                           > llu)
+        void push_call( lowlevel_unit_sptr llu,
+                        common::connection_iface_sptr /*conn*/ )
         {
-            ;;;
+            parent_->make_call( llu );
         }
 
-        bool make_call_impl( lowlevel_unit_sptr llu )
+        void push_event_answer( lowlevel_unit_sptr llu,
+                                common::connection_iface_sptr conn )
         {
-
-            protocol_layer_s::context_holder ch( parent_, llu.get( ) );
-
-            common::rpc_service_wrapper_sptr
-                    service(get_service(llu->call( ).service( )));
-
-            if( !service ) {
-                throw vtrc::common::exception( vtrc_errors::ERR_BAD_FILE,
-                                               "Service not found");
-            }
-
-            gpb::MethodDescriptor const *meth
-                (service->get_method(llu->call( ).method( )));
-
-            if( !meth ) {
-                throw vtrc::common::exception( vtrc_errors::ERR_NO_FUNC );
-            }
-
-            const vtrc_rpc_lowlevel::options &call_opts
-                                        ( parent_->get_method_options( meth ) );
-
-            ch.ctx_->set_call_options( call_opts );
-
-            vtrc::shared_ptr<gpb::Message> req
-                (service->service( )->GetRequestPrototype( meth ).New( ));
-
-            req->ParseFromString( llu->request( ) );
-
-            vtrc::shared_ptr<gpb::Message> res
-                (service->service( )->GetResponsePrototype( meth ).New( ));
-            res->ParseFromString(llu->response( ));
-
-            common::rpc_controller_sptr controller
-                                (vtrc::make_shared<common::rpc_controller>( ));
-
-            vtrc::shared_ptr<gpb::Closure> clos
-                    (gpb::NewPermanentCallback( this, &this_type::closure,
-                                                controller, llu ));
-
-
-            service->service( )
-                    ->CallMethod( meth, controller.get( ),
-                                  req.get( ), res.get( ), clos.get( ) );
-
-            if( controller->Failed( ) ) {
-                throw vtrc::common::exception( vtrc_errors::ERR_INTERNAL,
-                                               controller->ErrorText( ));
-            }
-
-            llu->set_response( res->SerializeAsString( ) );
-            return call_opts.wait( );
-        }
-
-        void make_call( vtrc::shared_ptr <vtrc_rpc_lowlevel::lowlevel_unit> llu)
-        {
-            bool failed       = true;
-            bool opt_wait     = true;
-            bool request_wait = llu->info( ).wait_for_response( );
-
-            unsigned errorcode = 0;
-            try {
-                opt_wait = make_call_impl( llu );
-                failed = false;
-
-            } catch ( const vtrc::common::exception &ex ) {
-                errorcode = ex.code( );
-                llu->mutable_error( )->set_additional( ex.additional( ) );
-
-            } catch ( const std::exception &ex ) {
-                errorcode = vtrc_errors::ERR_INTERNAL;
-                llu->mutable_error( )->set_additional( ex.what( ) );
-
-            } catch ( ... ) {
-                errorcode = vtrc_errors::ERR_UNKNOWN;
-                llu->mutable_error( )->set_additional( "..." );
-
-            }
-
-            if( opt_wait && request_wait ) {
-                llu->clear_request( );
-                llu->clear_call( );
-                if( failed ) {
-                    llu->mutable_error( )->set_code( errorcode );
-                    llu->clear_response( );
-                }
-                send_proto_message( *llu );
-            }
+            std::cout << "post " << llu->id( ) << " "
+                      << llu->info( ).message_type( )
+                      << "\n";
+            parent_->push_rpc_message( llu->id( ), llu );
         }
 
         void on_rcp_call_ready( )
         {
             while( !parent_->message_queue( ).empty( ) ) {
-               vtrc::shared_ptr < vtrc_rpc_lowlevel::lowlevel_unit >
-                                    llu(new vtrc_rpc_lowlevel::lowlevel_unit);
+                lowlevel_unit_sptr llu(new vtrc_rpc_lowlevel::lowlevel_unit);
                 get_pop_message( *llu );
                 switch (llu->info( ).message_type( )) {
                 case vtrc_rpc_lowlevel::message_info::MESSAGE_CALL:
-                    make_call( llu );
+                    app_.get_io_service( ).post(
+                                vtrc::bind( &this_type::push_call, this,
+                                            llu,
+                                            connection_->shared_from_this( )));
+                    break;
+                case vtrc_rpc_lowlevel::message_info::MESSAGE_EVENT:
+                case vtrc_rpc_lowlevel::message_info::MESSAGE_CALLBACK:
+                    app_.get_io_service( ).post(
+                                vtrc::bind( &this_type::push_event_answer, this,
+                                            llu,
+                                            connection_->shared_from_this( )));
                     break;
                 default:
                     break;

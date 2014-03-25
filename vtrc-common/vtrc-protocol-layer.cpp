@@ -21,6 +21,8 @@
 #include "vtrc-exception.h"
 #include "vtrc-call-context.h"
 
+#include "vtrc-rpc-controller.h"
+
 #include "proto-helper/message-utilities.h"
 
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
@@ -83,6 +85,8 @@ namespace vtrc { namespace common {
     }
 
     struct protocol_layer::impl {
+
+        typedef impl this_type;
 
         transport_iface             *connection_;
         protocol_layer              *parent_;
@@ -362,6 +366,109 @@ namespace vtrc { namespace common {
                 rpc_queue_.cancel_all( );
         }
 
+        void closure( common::rpc_controller_sptr controller,
+                      lowlevel_unit_sptr llu )
+        {
+            ;;;
+        }
+
+        common::rpc_service_wrapper_sptr get_service(const std::string &name)
+        {
+            return parent_->get_service_by_name( name );
+        }
+
+        bool make_call_impl( lowlevel_unit_sptr llu )
+        {
+
+            protocol_layer::context_holder ch( parent_, llu.get( ) );
+
+            common::rpc_service_wrapper_sptr
+                    service(get_service(llu->call( ).service( )));
+
+            if( !service ) {
+                throw vtrc::common::exception( vtrc_errors::ERR_BAD_FILE,
+                                               "Service not found");
+            }
+
+            gpb::MethodDescriptor const *meth
+                (service->get_method(llu->call( ).method( )));
+
+            if( !meth ) {
+                throw vtrc::common::exception( vtrc_errors::ERR_NO_FUNC );
+            }
+
+            const vtrc_rpc_lowlevel::options &call_opts
+                                        ( parent_->get_method_options( meth ) );
+
+            ch.ctx_->set_call_options( call_opts );
+
+            vtrc::shared_ptr<gpb::Message> req
+                (service->service( )->GetRequestPrototype( meth ).New( ));
+
+            req->ParseFromString( llu->request( ) );
+
+            vtrc::shared_ptr<gpb::Message> res
+                (service->service( )->GetResponsePrototype( meth ).New( ));
+            res->ParseFromString(llu->response( ));
+
+            common::rpc_controller_sptr controller
+                                (vtrc::make_shared<common::rpc_controller>( ));
+
+            vtrc::shared_ptr<gpb::Closure> clos
+                    (gpb::NewPermanentCallback( this, &this_type::closure,
+                                                controller, llu ));
+
+            service->service( )
+                   ->CallMethod( meth, controller.get( ),
+                                 req.get( ), res.get( ), clos.get( ) );
+
+            if( controller->Failed( ) ) {
+                throw vtrc::common::exception( vtrc_errors::ERR_INTERNAL,
+                                               controller->ErrorText( ));
+            } else if( controller->IsCanceled( ) ) {
+                throw vtrc::common::exception( vtrc_errors::ERR_CANCELED );
+            }
+
+            llu->set_response( res->SerializeAsString( ) );
+            return call_opts.wait( );
+        }
+
+        void make_call(protocol_layer::lowlevel_unit_sptr llu)
+        {
+            bool failed       = true;
+            bool opt_wait     = true;
+            bool request_wait = llu->info( ).wait_for_response( );
+
+            unsigned errorcode = 0;
+            try {
+                opt_wait = make_call_impl( llu );
+                failed = false;
+
+            } catch ( const vtrc::common::exception &ex ) {
+                errorcode = ex.code( );
+                llu->mutable_error( )->set_additional( ex.additional( ) );
+
+            } catch ( const std::exception &ex ) {
+                errorcode = vtrc_errors::ERR_INTERNAL;
+                llu->mutable_error( )->set_additional( ex.what( ) );
+
+            } catch ( ... ) {
+                errorcode = vtrc_errors::ERR_UNKNOWN;
+                llu->mutable_error( )->set_additional( "..." );
+
+            }
+
+            if( opt_wait && request_wait ) {
+                llu->clear_request( );
+                llu->clear_call( );
+                if( failed ) {
+                    llu->mutable_error( )->set_code( errorcode );
+                    llu->clear_response( );
+                }
+                send_message( *llu );
+            }
+        }
+
     };
 
     protocol_layer::protocol_layer( transport_iface *connection )
@@ -412,7 +519,7 @@ namespace vtrc { namespace common {
         return impl_->get_call_context( );
     }
 
-    call_context *protocol_layer::get_call_context( )
+    call_context *protocol_layer::mutable_call_context( )
     {
         return impl_->get_call_context( );
     }
@@ -426,6 +533,11 @@ namespace vtrc { namespace common {
                                         google::protobuf::Message &result )
     {
         impl_->parse_message(mess, result);
+    }
+
+    void protocol_layer::make_call(protocol_layer::lowlevel_unit_sptr llu)
+    {
+        impl_->make_call( llu );
     }
 
     message_queue_type &protocol_layer::message_queue( )

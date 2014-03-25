@@ -56,6 +56,11 @@ namespace vtrc { namespace client {
             channel_ = vtrc::make_shared<rpc_channel_c>( connection_ );
         }
 
+        common::connection_iface_sptr connection( )
+        {
+            return connection_;
+        }
+
         void async_connect_success( const bsys::error_code &err,
                                     common::closure_type closure )
         {
@@ -152,6 +157,11 @@ namespace vtrc { namespace client {
     vtrc_client::~vtrc_client( )
     {
         delete impl_;
+    }
+
+    common::connection_iface_sptr vtrc_client::connection( )
+    {
+        return impl_->connection( );
     }
 
     boost::asio::io_service &vtrc_client::get_io_service( )

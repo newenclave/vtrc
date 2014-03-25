@@ -33,6 +33,10 @@ namespace vtrc { namespace client {
 
     public:
 
+        ~vtrc_client( );
+
+        common::connection_iface_sptr connection( );
+
         static
         vtrc::shared_ptr<vtrc_client> create( boost::asio::io_service &ios );
 
@@ -46,7 +50,6 @@ namespace vtrc { namespace client {
             return vtrc::weak_ptr<vtrc_client const>( shared_from_this( ) );
         }
 
-        ~vtrc_client( );
 
         boost::asio::io_service       &get_io_service( );
         const boost::asio::io_service &get_io_service( ) const;

@@ -33,8 +33,10 @@ namespace vtrc { namespace server {
         virtual void send_message(
                     vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> llu,
                     const google::protobuf::MethodDescriptor* method,
-                    google::protobuf::RpcController* controller,
-                    google::protobuf::Closure* done ) = 0;
+                          google::protobuf::RpcController* controller,
+                    const google::protobuf::Message* request,
+                          google::protobuf::Message* response,
+                          google::protobuf::Closure* done ) = 0;
 
     };
 

@@ -71,6 +71,8 @@ namespace vtrc { namespace common {
 
         void send_message( const google::protobuf::Message &message );
 
+        void make_call( lowlevel_unit_sptr llu );
+
         const call_context *get_call_context( ) const;
 
         void call_rpc_method( const vtrc_rpc_lowlevel::lowlevel_unit &llu );
@@ -106,7 +108,7 @@ namespace vtrc { namespace common {
             context_holder( protocol_layer *parent,
                             lowlevel_unit_type *llu )
                 :p_(parent)
-                ,old_ctx_(p_->get_call_context( ))
+                ,old_ctx_(p_->mutable_call_context( ))
                 ,ctx_(p_->reset_call_context( new call_context( llu ) ))
             { }
 
@@ -115,7 +117,7 @@ namespace vtrc { namespace common {
                 //p_->release_call_context( );
                 p_->reset_call_context( old_ctx_ );
                 //delete ctx_;
-            } catch( ... ) { }
+            } catch( ... ) { ;;; /*Cthulhu*/ }
 
         private:
             context_holder( context_holder const & );
@@ -139,7 +141,7 @@ namespace vtrc { namespace common {
                             google::protobuf::Message &result );
 
         call_context *reset_call_context ( call_context *cc );
-        call_context *get_call_context( );
+        call_context *mutable_call_context( );
         call_context *release_call_context( );
 
         void pop_message( );

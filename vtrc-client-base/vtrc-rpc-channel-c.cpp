@@ -36,6 +36,44 @@ namespace vtrc { namespace client {
             return !has || (has && llu->info( ).wait_for_response( ));
         }
 
+        void process_waitable_call( uint64_t call_id,
+                                    lowlevel_unit_sptr &llu,
+                                    gpb::Message* response,
+                                    common::connection_iface_sptr &cl,
+                                    const vtrc_rpc_lowlevel::options &call_opt)
+        {
+            cl->get_protocol( ).call_rpc_method( call_id, *llu );
+
+            bool wait = true;
+
+            while( wait ) {
+
+                lowlevel_unit_sptr top(vtrc::make_shared<lowlevel_unit_type>());
+
+                cl->get_protocol( ).read_slot_for( call_id, top,
+                                                   call_opt.call_timeout( ) );
+
+                if( top->error( ).code( ) != vtrc_errors::ERR_NO_ERROR ) {
+                    cl->get_protocol( ).erase_slot( call_id );
+                    throw vtrc::common::exception( top->error( ).code( ),
+                                                 top->error( ).category( ),
+                                                 top->error( ).additional( ) );
+                }
+
+                if( top->info( ).message_type( ) ==
+                        vtrc_rpc_lowlevel::message_info::MESSAGE_CALLBACK )
+                {
+                    cl->get_protocol( ).make_call( llu );
+                } else {
+                    response->ParseFromString( top->response( ) );
+                    wait = false;
+                }
+            }
+
+            cl->get_protocol( ).erase_slot( call_id );
+
+        }
+
         void CallMethod(const gpb::MethodDescriptor* method,
                         gpb::RpcController* controller,
                         const gpb::Message* request,
@@ -51,7 +89,7 @@ namespace vtrc { namespace client {
                                                "Connection lost");
             }
 
-            vtrc_rpc_lowlevel::options call_opt
+            const vtrc_rpc_lowlevel::options &call_opt
                              ( cl->get_protocol( ).get_method_options(method) );
 
             lowlevel_unit_sptr llu(
@@ -66,25 +104,8 @@ namespace vtrc { namespace client {
 
             if( call_opt.wait( ) && waitable_call( llu ) ) { // WAITABLE CALL
 
-                cl->get_protocol( ).call_rpc_method( call_id, *llu );
-
-                std::deque<lowlevel_unit_sptr> data_list;
-
-                cl->get_protocol( ).read_slot_for( call_id, data_list,
-                                                    call_opt.call_timeout( ) );
-
-                lowlevel_unit_sptr top( data_list.front( ) );
-
-                if( top->error( ).code( ) != vtrc_errors::ERR_NO_ERROR ) {
-                    cl->get_protocol( ).erase_slot( call_id );
-                    throw vtrc::common::exception( top->error( ).code( ),
-                                                 top->error( ).category( ),
-                                                 top->error( ).additional( ) );
-                }
-
-                response->ParseFromString( top->response( ) );
-
-                cl->get_protocol( ).erase_slot( call_id );
+                process_waitable_call( call_id, llu, response,
+                                       cl, call_opt );
 
             } else { // NOT WAITABLE CALL
                 cl->get_protocol( ).call_rpc_method( *llu );

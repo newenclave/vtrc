@@ -24,6 +24,9 @@ service test_rpc {
 }
 
 service test_events {
+    option (vtrc_rpc_lowlevel.service_options ) = {
+        opt: { secure_level: 1, call_timeout: 1000, wait: true }
+    };
     rpc test(vtrc_rpc_lowlevel.message_info)
                                 returns ( vtrc_rpc_lowlevel.message_info );
 }

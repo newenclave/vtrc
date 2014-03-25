@@ -29,6 +29,7 @@
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"
 #include "vtrc-common/vtrc-protocol-layer.h"
 #include "vtrc-common/vtrc-call-context.h"
+#include "vtrc-common/vtrc-connection-iface.h"
 
 #include "protocol/vtrc-errors.pb.h"
 #include "protocol/vtrc-auth.pb.h"
@@ -37,6 +38,8 @@
 
 #include "vtrc-memory.h"
 #include "vtrc-chrono.h"
+
+#include "vtrc-server/vtrc-unicast-channels.h"
 
 namespace ba = boost::asio;
 
@@ -69,6 +72,20 @@ public:
         response->set_message_type( id_++ );
         if( (id_ % 100) == 0 )
             throw std::runtime_error( "oops 10 =)" );
+
+        vtrc::shared_ptr<google::protobuf::RpcChannel> ev(
+                    vtrc::server
+                    ::channels::unicast
+                    ::create_callback_channel(connection_->shared_from_this( )));
+
+        try {
+            vtrc_service::test_events_Stub te( ev.get( ) );
+            vtrc_rpc_lowlevel::message_info req;
+            te.test( NULL, &req, &req, NULL );
+        } catch( const std::exception &ex ) {
+            std::cout << "event error: " << ex.what( ) << "\n";
+        }
+
         if( done ) done->Run( );
     }
 };
@@ -141,7 +158,6 @@ private:
         return common::rpc_service_wrapper_sptr( );
     }
 
-
 };
 
 int main( ) try {
@@ -154,7 +170,8 @@ int main( ) try {
 
     tcp_ep->start( );
 
-    boost::this_thread::sleep_for( vtrc::chrono::milliseconds(12000) );
+    boost::this_thread::sleep_for( vtrc::chrono::milliseconds(120000000) );
+
     poll.stop( );
     poll.join_all( );
 

@@ -4,7 +4,10 @@
 #include <google/protobuf/service.h>
 
 #include "vtrc-common/vtrc-thread-pool.h"
+#include "vtrc-common/vtrc-connection-iface.h"
+#include "vtrc-common/vtrc-call-context.h"
 #include "vtrc-common/vtrc-exception.h"
+#include "vtrc-common/vtrc-protocol-layer.h"
 
 #include "vtrc-client-base/vtrc-client.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
@@ -25,12 +28,22 @@ void on_connect( const boost::system::error_code &err )
 
 class test_ev: public vtrc_service::test_events
 {
+    vtrc::common::connection_iface *c_;
+public:
+    test_ev( vtrc::common::connection_iface *c )
+        :c_( c )
+    {}
+
     void test(::google::protobuf::RpcController* controller,
                          const ::vtrc_rpc_lowlevel::message_info* request,
                          ::vtrc_rpc_lowlevel::message_info* response,
                          ::google::protobuf::Closure* done)
     {
-        std::cout << "test event rcvd\n";
+
+        std::cout << "test event rcvd "
+                  //<< c_->get_protocol( ).get_call_context( )->get_lowlevel_message( )->id( )
+                  << " " << vtrc::this_thread::get_id( ) << " "
+                  << "\n";
     }
 
 };
@@ -43,10 +56,10 @@ int main( )
     vtrc::shared_ptr<client::vtrc_client> cl(
                           client::vtrc_client::create((tp.get_io_service( ))));
 
-    cl->advise_handler( vtrc::shared_ptr<test_ev>(new test_ev) );
+    cl->connect( "127.0.0.1", "44667" );
+    ///cl->async_connect( "127.0.0.1", "44667", on_connect );
 
-    ///cl.connect( "127.0.0.1", "44667" );
-    cl->async_connect( "127.0.0.1", "44667", on_connect );
+    cl->advise_handler( vtrc::shared_ptr<test_ev>(new test_ev(cl->connection( ).get( ))) );
 
     vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(2000) );
 
@@ -56,8 +69,13 @@ int main( )
     vtrc_rpc_lowlevel::message_info mi;
 
     size_t last = 0;
+
+    std::cout << "this thread: "
+              << vtrc::this_thread::get_id( ) << " ";
+
     for( int i=0; i<200000000; ++i ) {
         try {
+            vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(1000) );
             s.test( NULL, &mi, &mi, NULL );
             last = mi.message_type( );
             //std::cout << "response: " << last << "\n";

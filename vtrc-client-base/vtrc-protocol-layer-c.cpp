@@ -88,69 +88,18 @@ namespace vtrc { namespace client {
         void closure( ) { }
 
         void process_event_impl( vtrc_client_wptr client,
-                                 lowlevel_unit_sptr llu,
-                                 service_str serv,
-                                 const gpb::MethodDescriptor *meth )
+                                 lowlevel_unit_sptr llu)
         {
             vtrc_client_sptr c(client.lock( ));
             if( !c ) return;
-
-            protocol_layer::context_holder ch( parent_, llu.get( ) );
-
-            const vtrc_rpc_lowlevel::options &opts(
-                        parent_->get_method_options( meth ) );
-
-            ch.ctx_->set_call_options( opts );
-            common::rpc_controller_sptr contr(
-                                vtrc::make_shared<common::rpc_controller>( ));
-
-            vtrc::shared_ptr<gpb::Message> req(
-                        serv->GetRequestPrototype( meth ).New( ));
-            vtrc::shared_ptr<gpb::Message> res(
-                        serv->GetResponsePrototype( meth ).New( ));
-
-            req->ParseFromString( llu->request( ) );
-            res->ParseFromString( llu->response( ) );
-
-            vtrc::shared_ptr<gpb::Closure> clos
-                    (gpb::NewPermanentCallback( this, &this_type::closure));
-
-            /// TODO: fix it
-            try {
-                serv->CallMethod(meth, contr.get( ),
-                             req.get( ), res.get( ),
-                             clos.get( ));
-            } catch( ... ) {
-                ;;;
-            }
-
+            parent_->make_call( llu );
         }
 
         void process_event( lowlevel_unit_sptr &llu )
         {
-            const std::string serv_name( llu->call( ).service( ) );
-            service_str serv = client_->get_handler( serv_name );
-
-            if( serv ) {
-                const std::string meth_name( llu->call( ).method( ) );
-                const gpb::MethodDescriptor *meth =
-                        serv->GetDescriptor( )->FindMethodByName( meth_name );
-                if( meth ) {
-
-                    const vtrc_rpc_lowlevel::options &opts(
-                                parent_->get_method_options( meth ) );
-
-                    client_->get_io_service( ).post(
-                        vtrc::bind( &this_type::process_event_impl, this,
-                                 client_->weak_from_this( ),
-                                 llu, serv, meth));
-                }
-            }
-        }
-
-        void process_callback( lowlevel_unit_sptr &llu )
-        {
-
+            client_->get_io_service( ).post(
+                vtrc::bind( &this_type::process_event_impl, this,
+                         client_->weak_from_this( ), llu));
         }
 
         void process_service( lowlevel_unit_sptr &llu )
@@ -164,6 +113,11 @@ namespace vtrc { namespace client {
         }
 
         void process_call( lowlevel_unit_sptr &llu )
+        {
+            parent_->push_rpc_message( llu->id( ), llu );
+        }
+
+        void process_callback( lowlevel_unit_sptr &llu )
         {
             parent_->push_rpc_message( llu->id( ), llu );
         }
