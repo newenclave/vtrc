@@ -97,7 +97,6 @@ public:
             vtrc_service::pong_res pres;
 
             ping.ping( NULL, &preq, &pres, NULL );
-            ping.ping( NULL, &preq, &pres, NULL );
 
         } catch( const vtrc::common::exception &ex ) {
 //            std::cout << "what: " << ex.what( ) <<
