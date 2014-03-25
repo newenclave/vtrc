@@ -63,7 +63,7 @@ namespace vtrc { namespace client {
                 if( top->info( ).message_type( ) ==
                         vtrc_rpc_lowlevel::message_info::MESSAGE_CALLBACK )
                 {
-                    cl->get_protocol( ).make_call( llu );
+                    cl->get_protocol( ).make_call( top );
                 } else {
                     response->ParseFromString( top->response( ) );
                     wait = false;
