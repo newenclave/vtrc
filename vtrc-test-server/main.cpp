@@ -21,6 +21,7 @@
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-thread-pool.h"
 #include "vtrc-common/vtrc-sizepack-policy.h"
+#include "vtrc-common/vtrc-exception.h"
 
 #include "vtrc-common/vtrc-hash-iface.h"
 
@@ -76,14 +77,17 @@ public:
         vtrc::shared_ptr<google::protobuf::RpcChannel> ev(
                     vtrc::server
                     ::channels::unicast
-                    ::create_event_channel(connection_->shared_from_this( )));
+                    ::create_callback_channel(connection_->shared_from_this( )));
 
         try {
             vtrc_service::test_events_Stub te( ev.get( ) );
             vtrc_rpc_lowlevel::message_info req;
             te.test( NULL, &req, &req, NULL );
-        } catch( const std::exception &ex ) {
-            std::cout << "event error: " << ex.what( ) << "\n";
+        } catch( const vtrc::common::exception &ex ) {
+            std::cout << "what: " << ex.what( ) <<
+                         " add: " << ex.additional( )
+                      << "\n";
+            throw;
         }
 
         if( done ) done->Run( );

@@ -44,6 +44,7 @@ public:
                   << c_->get_protocol( ).get_call_context( )->get_lowlevel_message( )->id( )
                   << " " << vtrc::this_thread::get_id( ) << " "
                   << "\n";
+        throw std::runtime_error( "Hello! from client =) sfdgsdf" );
     }
 
 };
@@ -82,13 +83,12 @@ int main( )
             //std::cout << "response: " << last << "\n";
             //cl.reset( );
         } catch( const vtrc::common::exception &ex ) {
-//            std::cout << "call error: "
-//                      << " code (" << ex.code( ) << ")"
-//                      << " category (" << ex.category( ) << ")"
-//                      << " what: " << ex.what( )
-//                      << " (" << ex.additional( ) << ")"
-//                      << "\n";
-            std::cout << " last  " << last << "\n";
+            std::cout << "call error: "
+                      << " code (" << ex.code( ) << ")"
+                      << " category (" << ex.category( ) << ")"
+                      << " what: " << ex.what( )
+                      << " (" << ex.additional( ) << ")"
+                      << "\n";
         } catch( const std::exception &ex ) {
             std::cout << "call error: " << ex.what( ) << "\n";
         }
