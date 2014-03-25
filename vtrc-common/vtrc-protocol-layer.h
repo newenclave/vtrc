@@ -49,6 +49,9 @@ namespace vtrc { namespace common {
 
     public:
 
+        typedef vtrc_rpc_lowlevel::lowlevel_unit     lowlevel_unit_type;
+        typedef vtrc::shared_ptr<lowlevel_unit_type> lowlevel_unit_sptr;
+
         typedef std::deque<std::string> message_queue_type;
 
         protocol_layer( transport_iface *connection );
@@ -76,17 +79,14 @@ namespace vtrc { namespace common {
         // refactor names here!
         void wait_slot_for( uint64_t slot_id, uint32_t millisec );
 
-        void read_slot_for( uint64_t slot_id,
-                       vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> &mess,
-                       uint32_t millisec );
+        void read_slot_for( uint64_t slot_id, lowlevel_unit_sptr &mess,
+                            uint32_t millisec );
 
         void read_slot_for( uint64_t slot_id,
-                           std::deque<
-                              vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
-                           > &data_list,
+                           std::deque<lowlevel_unit_sptr> &data_list,
                            uint32_t millisec );
 
-        void close_slot( uint64_t slot_id );
+        void close_slot ( uint64_t slot_id );
         void cancel_slot( uint64_t slot_id );
 
         void cancel_all_slots( bool erase );
@@ -101,7 +101,7 @@ namespace vtrc { namespace common {
             call_context   *old_ctx_;
             call_context   *ctx_;
             context_holder( protocol_layer *parent,
-                            vtrc_rpc_lowlevel::lowlevel_unit *llu )
+                            lowlevel_unit_type *llu )
                 :p_(parent)
                 ,old_ctx_(p_->get_call_context( ))
                 ,ctx_(p_->reset_call_context( new call_context( llu ) ))
@@ -122,11 +122,9 @@ namespace vtrc { namespace common {
 
         friend struct context_holder;
 
-        void push_rpc_message( uint64_t slot_id,
-                    vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess);
+        void push_rpc_message( uint64_t slot_id, lowlevel_unit_sptr mess);
 
-        void push_rpc_message_all(
-                vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> mess);
+        void push_rpc_message_all( lowlevel_unit_sptr mess );
 
         virtual void init( )            = 0;
         virtual void on_data_ready( )   = 0;

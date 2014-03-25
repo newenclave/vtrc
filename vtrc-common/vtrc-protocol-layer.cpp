@@ -292,7 +292,7 @@ namespace vtrc { namespace common {
         }
 
         void read_slot_for(uint64_t slot_id, ll_unit_sptr &mess,
-                                                            uint32_t millisec)
+                                                              uint32_t millisec)
         {
             wait_result_codes qwr =
                     rpc_queue_.read(
