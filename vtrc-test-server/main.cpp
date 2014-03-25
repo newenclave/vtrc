@@ -84,9 +84,9 @@ public:
             vtrc_rpc_lowlevel::message_info req;
             te.test( NULL, &req, &req, NULL );
         } catch( const vtrc::common::exception &ex ) {
-            std::cout << "what: " << ex.what( ) <<
-                         " add: " << ex.additional( )
-                      << "\n";
+//            std::cout << "what: " << ex.what( ) <<
+//                         " add: " << ex.additional( )
+//                      << "\n";
             throw;
         }
 
@@ -174,7 +174,7 @@ int main( ) try {
 
     tcp_ep->start( );
 
-    boost::this_thread::sleep_for( vtrc::chrono::milliseconds(120000000) );
+    boost::this_thread::sleep_for( vtrc::chrono::milliseconds(12000) );
 
     poll.stop( );
     poll.join_all( );
