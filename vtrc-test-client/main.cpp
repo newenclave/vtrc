@@ -41,7 +41,7 @@ public:
     {
 
         std::cout << "test event rcvd "
-                  //<< c_->get_protocol( ).get_call_context( )->get_lowlevel_message( )->id( )
+                  << c_->get_protocol( ).get_call_context( )->get_lowlevel_message( )->id( )
                   << " " << vtrc::this_thread::get_id( ) << " "
                   << "\n";
     }
