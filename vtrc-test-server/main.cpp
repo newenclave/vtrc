@@ -76,7 +76,7 @@ public:
         vtrc::shared_ptr<google::protobuf::RpcChannel> ev(
                     vtrc::server
                     ::channels::unicast
-                    ::create_callback_channel(connection_->shared_from_this( )));
+                    ::create_event_channel(connection_->shared_from_this( )));
 
         try {
             vtrc_service::test_events_Stub te( ev.get( ) );
