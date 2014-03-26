@@ -66,8 +66,7 @@ void test_send( common::connection_iface *connection )
     vtrc::shared_ptr<google::protobuf::RpcChannel> ev(
                 vtrc::server
                 ::channels::unicast
-                ::create_callback_channel(connection->shared_from_this( ),
-                                       true));
+                ::create_event_channel(s, false));
 
 //    const vtrc_rpc_lowlevel::lowlevel_unit *llu =
 //            connection->get_protocol( ).
@@ -86,7 +85,9 @@ void test_send( common::connection_iface *connection )
             ping.ping( NULL, &preq, &pres, NULL );
             //boost::this_thread::sleep_for( vtrc::chrono::milliseconds(10) );
         }
-    } catch( ... ) { }
+    } catch( std::exception const &ex ) {
+        std::cout << "png error " << ex.what( ) << "\n";
+    }
 
 }
 
@@ -121,7 +122,7 @@ public:
 
 //        connection_->get_io_service( ).dispatch(
 //                    vtrc::bind(test_send, connection_));
-        test_send(connection_);
+        //test_send(connection_);
 
         if( done ) done->Run( );
     }
