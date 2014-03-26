@@ -79,6 +79,17 @@ namespace vtrc { namespace client {
 
         void start_reading( )
         {
+#if 0
+            basio::io_service::strand &disp(parent_->get_dispatcher( ));
+
+            sock( ).async_read_some(
+                    basio::buffer( &read_buff_[0], read_buff_.size( ) ),
+                    disp.wrap(vtrc::bind( &this_type::read_handler, this,
+                         basio::placeholders::error,
+                         basio::placeholders::bytes_transferred,
+                         parent_->weak_from_this( ) ))
+                );
+#else
             sock( ).async_read_some(
                     basio::buffer( &read_buff_[0], read_buff_.size( ) ),
                     vtrc::bind( &this_type::read_handler, this,
@@ -86,6 +97,7 @@ namespace vtrc { namespace client {
                          basio::placeholders::bytes_transferred,
                          parent_->weak_from_this( ) )
                 );
+#endif
         }
 
         void read_handler( const bsys::error_code &error, size_t bytes,

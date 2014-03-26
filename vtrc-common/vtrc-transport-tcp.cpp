@@ -201,6 +201,10 @@ namespace vtrc { namespace common {
             return *sock_;
         }
 
+        boost::asio::io_service::strand &get_dispatcher( )
+        {
+            return write_dispatcher_;
+        }
     };
 
     transport_tcp::transport_tcp( bip::tcp::socket *s )
@@ -253,6 +257,11 @@ namespace vtrc { namespace common {
     void transport_tcp::send_message( const char *data, size_t length )
     {
         return impl_->write( data, length );
+    }
+
+    boost::asio::io_service::strand &transport_tcp::get_dispatcher( )
+    {
+        return impl_->get_dispatcher( );
     }
 
     std::string transport_tcp::prepare_for_write(const char *data, size_t len)

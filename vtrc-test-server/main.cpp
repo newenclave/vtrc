@@ -62,27 +62,30 @@ struct work_time {
 void test_send( common::connection_iface *connection )
 {
 
+
     common::connection_iface_sptr s(connection->shared_from_this());
     vtrc::shared_ptr<google::protobuf::RpcChannel> ev(
                 vtrc::server
                 ::channels::unicast
-                ::create_callback_channel(s, true));
+                ::create_event_channel(s, true));
 
     const vtrc_rpc_lowlevel::lowlevel_unit *pllu =
             s->get_protocol( ).
             get_call_context( )->get_lowlevel_message( );
 
     vtrc_rpc_lowlevel::lowlevel_unit llu;
-    //connection->get_protocol( ).send_message( llu );
 
     vtrc_service::internal::Stub ping( ev.get( ));
     vtrc_service::ping_req preq;
     vtrc_service::pong_res pres;
 
+//    for( int i=0; i<100; ++i )
+//        ping.ping( NULL, &preq, &pres, NULL );
+
     try {
         //for( ;; )
         {
-//            ping.ping( NULL, &preq, &pres, NULL );
+            ping.ping( NULL, &preq, &pres, NULL );
 //            std::cout << llu->id( ) << " sent "
 //                         << vtrc::chrono::high_resolution_clock::now( )
 //                         << "\n";
