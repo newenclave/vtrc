@@ -71,14 +71,20 @@ void test_send( common::connection_iface *connection )
 //            connection->get_protocol( ).
 //            get_call_context( )->get_lowlevel_message( );
 
-    vtrc_rpc_lowlevel::lowlevel_unit llu;
-    connection->get_protocol( ).send_message( llu );
+//    vtrc_rpc_lowlevel::lowlevel_unit llu;
+//    connection->get_protocol( ).send_message( llu );
 
-//    vtrc_service::internal::Stub ping( ev.get( ));
-//    vtrc_service::ping_req preq;
-//    vtrc_service::pong_res pres;
+    vtrc_service::internal::Stub ping( ev.get( ));
+    vtrc_service::ping_req preq;
+    vtrc_service::pong_res pres;
 
-//    ping.ping( NULL, &preq, &pres, NULL );
+    try {
+        for( ;; ) {
+            ping.ping( NULL, &preq, &pres, NULL );
+            //boost::this_thread::sleep_for( vtrc::chrono::milliseconds(10) );
+
+        }
+    } catch( ... ) { }
 
 }
 
@@ -105,11 +111,13 @@ public:
 //                     ->get_lowlevel_message( )
 //                     ->DebugString( );
         //boost::this_thread::sleep_for( vtrc::chrono::milliseconds(900) );
+
         response->set_message_type( id_++ );
         if( (id_ % 100) == 0 )
             throw std::runtime_error( "oops 10 =)" );
 
-        test_send( connection_ );
+        static boost::thread tr(test_send, connection_);
+        if( tr.joinable( ) ) tr.detach( );
 
         if( done ) done->Run( );
     }
