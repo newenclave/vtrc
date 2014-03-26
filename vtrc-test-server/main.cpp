@@ -61,6 +61,8 @@ struct work_time {
 
 void test_send( common::connection_iface *connection )
 {
+
+    common::connection_iface_sptr s(connection->shared_from_this());
     vtrc::shared_ptr<google::protobuf::RpcChannel> ev(
                 vtrc::server
                 ::channels::unicast
