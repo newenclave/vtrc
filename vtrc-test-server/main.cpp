@@ -66,7 +66,7 @@ void test_send( common::connection_iface *connection )
     vtrc::shared_ptr<google::protobuf::RpcChannel> ev(
                 vtrc::server
                 ::channels::unicast
-                ::create_event_channel(connection->shared_from_this( ),
+                ::create_callback_channel(connection->shared_from_this( ),
                                        true));
 
 //    const vtrc_rpc_lowlevel::lowlevel_unit *llu =
@@ -81,11 +81,11 @@ void test_send( common::connection_iface *connection )
     vtrc_service::pong_res pres;
 
     try {
-        //for( ;; ) {
+        //for( ;; )
+        {
             ping.ping( NULL, &preq, &pres, NULL );
             //boost::this_thread::sleep_for( vtrc::chrono::milliseconds(10) );
-
-        //}
+        }
     } catch( ... ) { }
 
 }
@@ -107,20 +107,21 @@ public:
               ::vtrc_rpc_lowlevel::message_info* response,
               ::google::protobuf::Closure* done)
     {
-//        std::cout << "test was called :] context: \n"
-//                  << connection_->get_protocol( )
-//                     .get_call_context( )
-//                     ->get_lowlevel_message( )
-//                     ->DebugString( );
-        //boost::this_thread::sleep_for( vtrc::chrono::milliseconds(900) );
 
         response->set_message_type( id_++ );
         if( (id_ % 100) == 0 )
             throw std::runtime_error( "oops 10 =)" );
 
+        static int i=0;
+        if( i == 0 ) {
+            connection_->get_io_service().post(
+                        vtrc::bind(test_send, connection_));
+            i = 1;
+        }
+
+//        connection_->get_io_service( ).dispatch(
+//                    vtrc::bind(test_send, connection_));
         test_send(connection_);
-        static boost::thread tr(test_send, connection_);
-        if( tr.joinable( ) ) tr.detach( );
 
         if( done ) done->Run( );
     }

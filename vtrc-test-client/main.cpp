@@ -60,6 +60,15 @@ public:
                   //<< vtrc::chrono::high_resolution_clock::now( )
                   << "\n";
 
+        const vtrc::common::call_context *cc =
+                    vtrc::common::call_context::get( c_ );
+
+        while (cc) {
+            std::cout << cc->get_lowlevel_message( )->call( ).method( )
+                      << "->";
+            cc = cc->parent( );
+        }
+
         if( done ) done->Run( );
     }
 };

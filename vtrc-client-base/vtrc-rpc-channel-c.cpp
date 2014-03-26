@@ -53,11 +53,16 @@ namespace vtrc { namespace client {
                                                "Connection lost");
             }
 
-            const vtrc_rpc_lowlevel::options &call_opt
-                             ( clk->get_protocol( ).get_method_options(method) );
-
             lowlevel_unit_sptr llu(
                         parent_->create_lowlevel(method, request, response));
+
+            common::protocol_layer::context_holder ch
+                                            (&clk->get_protocol( ), llu.get( ));
+
+            const vtrc_rpc_lowlevel::options &call_opt
+                            ( clk->get_protocol( ).get_method_options(method) );
+
+            ch.ctx_->set_call_options( call_opt );
 
             llu->mutable_info( )->set_message_type(
                                vtrc_rpc_lowlevel::message_info::MESSAGE_CALL );

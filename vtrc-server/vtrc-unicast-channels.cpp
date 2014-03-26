@@ -38,7 +38,7 @@ namespace vtrc { namespace server {
             gpb::uint64 get_callback_index( common::connection_iface_sptr cl )
             {
                 const common::call_context
-                                  *c(cl->get_protocol( ).get_call_context( ));
+                                      *c(common::call_context::get(cl.get( )));
 
                 if( c ) {
                     return c->get_lowlevel_message( )->id( );

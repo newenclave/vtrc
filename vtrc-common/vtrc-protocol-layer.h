@@ -99,7 +99,6 @@ namespace vtrc { namespace common {
         const vtrc_rpc_lowlevel::options &get_method_options(
                             const google::protobuf::MethodDescriptor* method );
 
-    protected:
 
         struct context_holder {
             protocol_layer *p_;
@@ -125,6 +124,8 @@ namespace vtrc { namespace common {
         };
 
         friend struct context_holder;
+
+    protected:
 
         void push_rpc_message( uint64_t slot_id, lowlevel_unit_sptr mess);
 
