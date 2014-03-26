@@ -106,8 +106,7 @@ namespace vtrc { namespace common {
                                 parent_->shared_from_this( )));
         }
 
-        void write(const char *data, size_t length,
-                                  closure_type &success)
+        void write(const char *data, size_t length, closure_type &success)
         {
             vtrc::shared_ptr<closure_type>
                     closure(vtrc::make_shared<closure_type>(success));
@@ -159,16 +158,18 @@ namespace vtrc { namespace common {
                             size_t messages,
                             common::connection_iface_sptr /*inst*/)
         {
+
+            typedef vtrc::chrono::high_resolution_clock::time_point time_point;
+            static time_point stp(vtrc::chrono::high_resolution_clock::now( ));
+
+            time_point tp(vtrc::chrono::high_resolution_clock::now( ));
+
+
             if( !error ) {
                 while( messages-- ) {
                     if( write_queue_.front( )->closure_ ) {
                         (*write_queue_.front( )->closure_)( error );
                     }
-
-//                    time_point stop(high_resolution_clock::now( ));
-//                    std::cout << " message queued for "
-//                              << stop - write_queue_.front( )->stored_
-//                              << "\n";
 
                     write_queue_.pop_front( );
                 }

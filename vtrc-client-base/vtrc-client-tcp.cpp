@@ -6,6 +6,7 @@
 
 #include "vtrc-client.h"
 #include "vtrc-bind.h"
+#include "vtrc-chrono.h"
 
 namespace vtrc { namespace client {
 
@@ -26,7 +27,7 @@ namespace vtrc { namespace client {
 
         impl( boost::asio::io_service &ios, vtrc_client *client )
             :ios_(ios)
-            ,read_buff_(4096 << 1)
+            ,read_buff_(4096)
             ,client_(client)
         {
 

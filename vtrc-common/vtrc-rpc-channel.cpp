@@ -12,7 +12,6 @@ namespace vtrc { namespace common  {
 
     namespace gpb = google::protobuf;
 
-
     struct rpc_channel::impl {
     };
 
