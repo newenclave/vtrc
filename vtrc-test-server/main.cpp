@@ -67,12 +67,11 @@ void test_send( common::connection_iface *connection )
                 ::create_event_channel(connection->shared_from_this( ),
                                        true));
 
-
 //    const vtrc_rpc_lowlevel::lowlevel_unit *llu =
 //            connection->get_protocol( ).
 //            get_call_context( )->get_lowlevel_message( );
 
-    const vtrc_rpc_lowlevel::lowlevel_unit llu;
+    vtrc_rpc_lowlevel::lowlevel_unit llu;
     connection->get_protocol( ).send_message( llu );
 
 //    vtrc_service::internal::Stub ping( ev.get( ));

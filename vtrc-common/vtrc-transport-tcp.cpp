@@ -171,6 +171,11 @@ namespace vtrc { namespace common {
                         (*write_queue_.front( )->closure_)( error );
                     }
 
+//                    std::cout << "mesage was queued "
+//                              << vtrc::chrono::high_resolution_clock::now( ) -
+//                                 write_queue_.front( )->stored_
+//                              << "\n";
+
                     write_queue_.pop_front( );
                 }
                 if( !write_queue_.empty( ) )
