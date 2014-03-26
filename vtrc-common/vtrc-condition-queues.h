@@ -120,7 +120,7 @@ namespace vtrc { namespace common {
         }
 
         template <typename WaitFunc>
-        wait_result read_impl( const key_type &key,  queue_value_type &result,
+        wait_result read_impl( const key_type &key, queue_value_type &result,
                                WaitFunc call_wait )
         {
             unique_lock lck(lock_);
@@ -129,6 +129,10 @@ namespace vtrc { namespace common {
             hold_value_type_sptr value( f->second );
 
             value->canceled_ = false;
+
+//            if( !value->data_.empty( ) ) {
+//                return WAIT_RESULT_SUCCESS;
+//            }
 
             bool res = call_wait( lck, value );
 
@@ -179,8 +183,7 @@ namespace vtrc { namespace common {
             unique_lock lck(lock_);
             typename map_type::iterator f(store_.find( key ));
             if( f == store_.end( ) ) {
-                store_.insert(
-                    std::make_pair( key,
+                store_.insert( std::make_pair( key,
                                     vtrc::make_shared<hold_value_type>( ) ));
             }
         }
@@ -247,7 +250,7 @@ namespace vtrc { namespace common {
             unique_lock lck(lock_);
             std::for_each( store_.begin( ), store_.end( ),
                            vtrc::bind( this_type::write_all_impl,
-                                                      _1, vtrc::cref(data)));
+                                       _1, vtrc::cref(data)));
         }
 
         void write_queue( const key_type &key, const queue_type &data )

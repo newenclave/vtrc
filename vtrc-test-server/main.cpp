@@ -93,6 +93,10 @@ public:
 //            vtrc_rpc_lowlevel::message_info req;
 //            te.test( NULL, &req, &req, NULL );
 
+//            vtrc_rpc_lowlevel::lowlevel_unit llu;
+//            llu.mutable_info( )->set_message_type( 1000 );
+//            connection_->get_protocol( ).send_message( llu );
+
             vtrc_service::internal::Stub ping( ev.get( ));
             vtrc_service::ping_req preq;
             vtrc_service::pong_res pres;
