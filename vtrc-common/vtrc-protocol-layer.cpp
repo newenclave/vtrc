@@ -442,7 +442,7 @@ namespace vtrc { namespace common {
             unsigned errorcode = 0;
             try {
                 opt_wait = make_call_impl( llu );
-                failed = false;
+                failed   = false;
 
             } catch ( const vtrc::common::exception &ex ) {
                 errorcode = ex.code( );
