@@ -67,11 +67,18 @@ void test_send( common::connection_iface *connection )
                 ::create_event_channel(connection->shared_from_this( ),
                                        true));
 
-    vtrc_service::internal::Stub ping( ev.get( ));
-    vtrc_service::ping_req preq;
-    vtrc_service::pong_res pres;
+//    const vtrc_rpc_lowlevel::lowlevel_unit *llu =
+//            connection->get_protocol( ).
+//            get_call_context( )->get_lowlevel_message( );
 
-    ping.ping( NULL, &preq, &pres, NULL );
+    const vtrc_rpc_lowlevel::lowlevel_unit llu;
+    connection->get_protocol( ).send_message( llu );
+
+//    vtrc_service::internal::Stub ping( ev.get( ));
+//    vtrc_service::ping_req preq;
+//    vtrc_service::pong_res pres;
+
+//    ping.ping( NULL, &preq, &pres, NULL );
 
 }
 
