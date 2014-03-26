@@ -54,11 +54,11 @@ public:
                          ::vtrc_service::pong_res* response,
                          ::google::protobuf::Closure* done)
     {
-//        std::cout << "ping event rcvd "
-//                  << c_->get_protocol( ).get_call_context( )->get_lowlevel_message( )->id( )
-//                  << " " << vtrc::this_thread::get_id( ) << " "
-//                  << vtrc::chrono::high_resolution_clock::now( )
-//                  << "\n";
+        std::cout << "ping event rcvd "
+                  << c_->get_protocol( ).get_call_context( )->get_lowlevel_message( )->id( )
+                  << " " << vtrc::this_thread::get_id( ) << " "
+                  << vtrc::chrono::high_resolution_clock::now( )
+                  << "\n";
 
         const vtrc::common::call_context *cc =
                     vtrc::common::call_context::get( c_ );

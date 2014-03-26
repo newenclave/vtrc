@@ -67,13 +67,14 @@ void test_send( common::connection_iface *connection )
     vtrc::shared_ptr<google::protobuf::RpcChannel> ev(
                 vtrc::server
                 ::channels::unicast
-                ::create_event_channel(s, false));
+                ::create_event_channel(s, true));
 
     const vtrc_rpc_lowlevel::lowlevel_unit *pllu =
             s->get_protocol( ).
             get_call_context( )->get_lowlevel_message( );
 
-    vtrc_rpc_lowlevel::lowlevel_unit llu;
+    vtrc_rpc_lowlevel::lowlevel_unit llu(*pllu);
+    //s->get_protocol( ).send_message( llu );
 
     vtrc_service::internal::Stub ping( ev.get( ));
     vtrc_service::ping_req preq;
