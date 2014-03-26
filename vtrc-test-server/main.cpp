@@ -46,6 +46,35 @@ namespace ba = boost::asio;
 
 using namespace vtrc;
 
+struct work_time {
+    typedef boost::chrono::high_resolution_clock::time_point time_point;
+    time_point start_;
+    work_time( )
+        :start_(boost::chrono::high_resolution_clock::now( ))
+    {}
+    ~work_time( )
+    {
+        time_point stop(boost::chrono::high_resolution_clock::now( ));
+        std::cout << "call time: " << stop - start_ << "\n";
+    }
+};
+
+void test_send( common::connection_iface *connection )
+{
+    vtrc::shared_ptr<google::protobuf::RpcChannel> ev(
+                vtrc::server
+                ::channels::unicast
+                ::create_event_channel(connection->shared_from_this( ),
+                                       true));
+
+    vtrc_service::internal::Stub ping( ev.get( ));
+    vtrc_service::ping_req preq;
+    vtrc_service::pong_res pres;
+
+    ping.ping( NULL, &preq, &pres, NULL );
+
+}
+
 class teat_impl: public vtrc_service::test_rpc {
 
     common::connection_iface *connection_;
@@ -68,49 +97,12 @@ public:
 //                     .get_call_context( )
 //                     ->get_lowlevel_message( )
 //                     ->DebugString( );
-
         //boost::this_thread::sleep_for( vtrc::chrono::milliseconds(900) );
         response->set_message_type( id_++ );
         if( (id_ % 100) == 0 )
             throw std::runtime_error( "oops 10 =)" );
 
-        vtrc::shared_ptr<google::protobuf::RpcChannel> cb(
-                    vtrc::server
-                    ::channels::unicast
-                    ::create_callback_channel(connection_->shared_from_this( ),
-                                              false));
-
-        // вот хрень :(
-        vtrc::shared_ptr<google::protobuf::RpcChannel> ev(
-                    vtrc::server
-                    ::channels::unicast
-                    ::create_event_channel(connection_->shared_from_this( ),
-                                           true));
-
-        try {
-
-//            vtrc_service::test_events_Stub te( ev.get( ) );
-//            vtrc_rpc_lowlevel::message_info req;
-//            te.test( NULL, &req, &req, NULL );
-
-//            vtrc_rpc_lowlevel::lowlevel_unit llu;
-//            llu.mutable_info( )->set_message_type( 1000 );
-//            connection_->get_protocol( ).send_message( llu );
-
-            vtrc_service::internal::Stub ping( ev.get( ));
-            vtrc_service::ping_req preq;
-            vtrc_service::pong_res pres;
-
-            ping.ping( NULL, &preq, &pres, NULL );
-            ping.ping( NULL, &preq, &pres, NULL );
-            ping.ping( NULL, &preq, &pres, NULL );
-
-        } catch( const vtrc::common::exception &ex ) {
-//            std::cout << "what: " << ex.what( ) <<
-//                         " add: " << ex.additional( )
-//                      << "\n";
-            throw;
-        }
+        test_send( connection_ );
 
         if( done ) done->Run( );
     }

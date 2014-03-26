@@ -10,6 +10,8 @@
 #include "vtrc-common/vtrc-exception.h"
 #include "vtrc-common/vtrc-closure-holder.h"
 
+#include "vtrc-chrono.h"
+
 namespace vtrc { namespace client {
 
     namespace gpb = google::protobuf;

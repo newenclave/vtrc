@@ -8,6 +8,7 @@
 #include "protocol/vtrc-errors.pb.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
 
+#include "vtrc-chrono.h"
 
 namespace vtrc { namespace server {
 
@@ -92,6 +93,9 @@ namespace vtrc { namespace server {
                                            clk, call_opt );
 
                 } else { // NOT WAITABLE CALL
+//                    std::cout << "Mess " << llu->id( ) << " "
+//                              << vtrc::chrono::high_resolution_clock::now( )
+//                              << "\n";
                     clk->get_protocol( ).call_rpc_method( *llu );
                 }
 

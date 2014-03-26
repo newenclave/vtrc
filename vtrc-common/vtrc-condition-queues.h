@@ -112,7 +112,14 @@ namespace vtrc { namespace common {
 
             value->canceled_ = false;
 
+#if 0
+            bool res = true;
+            if( value->data_.empty( ) ) {
+                res = call_wait( lck, value );
+            }
+#else
             bool res = call_wait( lck, value );
+#endif
 
             if( res ) pop_all( value, result );
 
@@ -130,12 +137,14 @@ namespace vtrc { namespace common {
 
             value->canceled_ = false;
 
-//            if( !value->data_.empty( ) ) {
-//                return WAIT_RESULT_SUCCESS;
-//            }
-
+#if 0
+            bool res = true;
+            if( value->data_.empty( ) ) {
+                res = call_wait( lck, value );
+            }
+#else
             bool res = call_wait( lck, value );
-
+#endif
             if( !value->canceled_ && !value->data_.empty( ) ) {
                 std::swap( result, value->data_.front( ) );
                 value->data_.pop_front( );

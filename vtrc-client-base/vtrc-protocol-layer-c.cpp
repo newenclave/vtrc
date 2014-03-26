@@ -16,6 +16,7 @@
 #include "vtrc-transport-iface.h"
 
 #include "vtrc-client.h"
+#include "vtrc-chrono.h"
 
 #include "protocol/vtrc-auth.pb.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
@@ -129,7 +130,6 @@ namespace vtrc { namespace client {
 
         void on_rpc_process( )
         {
-
             while( !parent_->message_queue( ).empty( ) ) {
                 std::string &mess
                         (parent_->message_queue( ).front( ));

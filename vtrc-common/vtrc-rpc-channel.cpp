@@ -6,6 +6,7 @@
 #include "vtrc-rpc-channel.h"
 #include "vtrc-protocol-layer.h"
 #include "vtrc-exception.h"
+#include "vtrc-chrono.h"
 
 namespace vtrc { namespace common  {
 
@@ -60,7 +61,7 @@ namespace vtrc { namespace common  {
                     (vtrc::make_shared<lowlevel_unit_type>( ));
 
             cl->get_protocol( ).read_slot_for( call_id, top,
-                                           call_opt.call_timeout( ) );
+                                               call_opt.call_timeout( ) );
 
             if( top->error( ).code( ) != vtrc_errors::ERR_NO_ERROR ) {
                 cl->get_protocol( ).erase_slot( call_id );

@@ -170,7 +170,7 @@ namespace vtrc { namespace server {
         }
 
         void push_event_answer( lowlevel_unit_sptr llu,
-                                common::connection_iface_sptr conn )
+                                common::connection_iface_sptr /*conn*/ )
         {
             parent_->push_rpc_message( llu->id( ), llu );
         }
@@ -178,7 +178,7 @@ namespace vtrc { namespace server {
         void on_rcp_call_ready( )
         {
             while( !parent_->message_queue( ).empty( ) ) {
-                lowlevel_unit_sptr llu(new vtrc_rpc_lowlevel::lowlevel_unit);
+                lowlevel_unit_sptr llu(vtrc::make_shared<lowlevel_unit_type>());
                 get_pop_message( *llu );
                 switch (llu->info( ).message_type( )) {
                 case vtrc_rpc_lowlevel::message_info::MESSAGE_CALL:
@@ -198,6 +198,7 @@ namespace vtrc { namespace server {
                     break;
                 }
             }
+
             //connection_->close( );
         }
 

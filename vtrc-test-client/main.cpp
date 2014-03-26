@@ -26,6 +26,19 @@ void on_connect( const boost::system::error_code &err )
               << err.message( ) << "\n";
 }
 
+struct work_time {
+    typedef boost::chrono::high_resolution_clock::time_point time_point;
+    time_point start_;
+    work_time( )
+        :start_(boost::chrono::high_resolution_clock::now( ))
+    {}
+    ~work_time( )
+    {
+        time_point stop(boost::chrono::high_resolution_clock::now( ));
+        std::cout << "call time: " << stop - start_ << "\n";
+    }
+};
+
 class ping_impl: public vtrc_service::internal {
 
     vtrc::common::connection_iface *c_;
@@ -44,7 +57,9 @@ public:
         std::cout << "ping event rcvd "
                   << c_->get_protocol( ).get_call_context( )->get_lowlevel_message( )->id( )
                   << " " << vtrc::this_thread::get_id( ) << " "
+                  //<< vtrc::chrono::high_resolution_clock::now( )
                   << "\n";
+
         if( done ) done->Run( );
     }
 };
@@ -100,9 +115,10 @@ int main( )
     for( int i=0; i<29999999999; ++i ) {
         try {
             //vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(100) );
+            work_time wt;
             s.test( NULL, &mi, &mi, NULL );
             last = mi.message_type( );
-            std::cout << "response: " << last << "\n";
+            //std::cout << "response: " << last << "\n";
             //cl.reset( );
         } catch( const vtrc::common::exception &ex ) {
             std::cout << "call error: "

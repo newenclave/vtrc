@@ -9,6 +9,9 @@
 #include "vtrc-memory.h"
 #include "vtrc-bind.h"
 #include "vtrc-atomic.h"
+#include "vtrc-mutex.h"
+
+#include "vtrc-chrono.h"
 
 namespace vtrc { namespace common {
 
@@ -20,17 +23,26 @@ namespace vtrc { namespace common {
 
         typedef impl this_type;
 
+        typedef vtrc::chrono::high_resolution_clock high_resolution_clock;
+        typedef high_resolution_clock::time_point time_point;
+
         struct message_holder {
             std::string message_;
             vtrc::shared_ptr<closure_type> closure_;
+            time_point  stored_;
+            message_holder( )
+                :stored_(high_resolution_clock::now( ))
+            { }
         };
+
+        typedef vtrc::shared_ptr<message_holder> message_holder_sptr;
 
         vtrc::shared_ptr<bip::tcp::socket>  sock_;
         basio::io_service                  &ios_;
         enviroment                          env_;
 
         basio::io_service::strand           write_dispatcher_;
-        std::deque<message_holder>          write_queue_;
+        std::deque<message_holder_sptr>     write_queue_;
 
         transport_tcp                       *parent_;
         vtrc::atomic<bool>                   closed_;
@@ -40,12 +52,10 @@ namespace vtrc { namespace common {
             ,ios_(sock_->get_io_service( ))
             ,write_dispatcher_(ios_)
             ,closed_(false)
-        {
-        }
+        { }
 
         ~impl( )
-        {
-        }
+        { }
 
         const char *name( ) const
         {
@@ -73,12 +83,26 @@ namespace vtrc { namespace common {
             return ios_;
         }
 
+        message_holder_sptr make_holder( const char *data, size_t length,
+                                     vtrc::shared_ptr<closure_type> closure)
+        {
+            message_holder_sptr mh(vtrc::make_shared<message_holder>());
+            mh->message_ = parent_->prepare_for_write( data, length );
+            mh->closure_ = closure;
+            return mh;
+        }
+
+        message_holder_sptr make_holder( const char *data, size_t length)
+        {
+            return make_holder(data, length, vtrc::shared_ptr<closure_type>( ));
+        }
+
         void write( const char *data, size_t length )
         {
+            message_holder_sptr mh(make_holder(data, length));
             write_dispatcher_.post(
-                   vtrc::bind( &this_type::write_impl, this,
-                                std::string( data, data + length ),
-                                vtrc::shared_ptr<closure_type>(),
+                   vtrc::bind( &this_type::write_impl, this, mh,
+                                vtrc::shared_ptr<closure_type>( ),
                                 parent_->shared_from_this( )));
         }
 
@@ -88,9 +112,10 @@ namespace vtrc { namespace common {
             vtrc::shared_ptr<closure_type>
                     closure(vtrc::make_shared<closure_type>(success));
 
+            message_holder_sptr mh(make_holder(data, length, closure));
+
             write_dispatcher_.post(
-                   vtrc::bind( &this_type::write_impl, this,
-                                std::string( data, data + length ),
+                   vtrc::bind( &this_type::write_impl, this, mh,
                                 closure, parent_->shared_from_this( )));
         }
 
@@ -103,7 +128,7 @@ namespace vtrc { namespace common {
         {
             try {
                 sock_->async_send(
-                        basio::buffer( write_queue_.front( ).message_ ),
+                        basio::buffer( write_queue_.front( )->message_ ),
                         write_dispatcher_.wrap(
                                 vtrc::bind( &this_type::write_handler, this,
                                      basio::placeholders::error,
@@ -116,19 +141,13 @@ namespace vtrc { namespace common {
 
         }
 
-        void write_impl( const std::string data,
+        void write_impl( message_holder_sptr data,
                          vtrc::shared_ptr<closure_type> closure,
                          common::connection_iface_sptr inst)
         {
             bool empty = write_queue_.empty( );
 
-            message_holder mh;
-
-            mh.message_ = parent_->prepare_for_write( data.c_str( ),
-                                                      data.size( ));
-            mh.closure_ = closure;
-
-            write_queue_.push_back( mh );
+            write_queue_.push_back( data );
 
             if( empty ) {
                 async_write( );
@@ -138,13 +157,19 @@ namespace vtrc { namespace common {
         void write_handler( const bsys::error_code &error,
                             size_t /*bytes*/,
                             size_t messages,
-                            common::connection_iface_sptr inst)
+                            common::connection_iface_sptr /*inst*/)
         {
             if( !error ) {
                 while( messages-- ) {
-                    if( write_queue_.front( ).closure_ ) {
-                        (*write_queue_.front( ).closure_)( error );
+                    if( write_queue_.front( )->closure_ ) {
+                        (*write_queue_.front( )->closure_)( error );
                     }
+
+//                    time_point stop(high_resolution_clock::now( ));
+//                    std::cout << " message queued for "
+//                              << stop - write_queue_.front( )->stored_
+//                              << "\n";
+
                     write_queue_.pop_front( );
                 }
                 if( !write_queue_.empty( ) )
@@ -152,8 +177,8 @@ namespace vtrc { namespace common {
 
             } else {
                 while( messages-- ) {
-                    if( write_queue_.front( ).closure_ ) {
-                        (*write_queue_.front( ).closure_)( error );
+                    if( write_queue_.front( )->closure_ ) {
+                        (*write_queue_.front( )->closure_)( error );
                     }
                 }
                 parent_->on_write_error( error );

@@ -133,6 +133,9 @@ namespace vtrc { namespace common {
              * message = transform( message )
             */
 
+            lowlevel_unit_type llu;
+            llu.ParseFromArray(data, length);
+
             transformer_->transform(
                             result.empty( ) ? NULL : &result[0],
                                             result.size( ) );
@@ -467,7 +470,7 @@ namespace vtrc { namespace common {
                 }
                 send_message( *llu );
             } else {
-                //std::cout << "not waitable call " << llu->call( ).method( ) << "\n";
+                ;;;
             }
         }
 
