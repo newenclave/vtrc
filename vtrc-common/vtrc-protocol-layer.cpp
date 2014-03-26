@@ -271,8 +271,16 @@ namespace vtrc { namespace common {
 
         void push_rpc_message(uint64_t slot_id, ll_unit_sptr mess)
         {
-            if( rpc_queue_.queue_exists( slot_id ) )
-                rpc_queue_.write_queue( slot_id, mess );
+            std::cout << slot_id << " got at "
+                      << vtrc::chrono::high_resolution_clock::now( )
+                      << "\n";
+
+            rpc_queue_.write_queue_if_exists( slot_id, mess );
+
+            std::cout << slot_id << " got2at "
+                      << vtrc::chrono::high_resolution_clock::now( )
+                      << "\n";
+
         }
 
         void push_rpc_message_all( ll_unit_sptr mess)
@@ -305,6 +313,11 @@ namespace vtrc { namespace common {
                     rpc_queue_.read(
                         slot_id, mess,
                         vtrc::chrono::milliseconds(millisec) );
+
+            std::cout << slot_id << " pop at "
+                      << vtrc::chrono::high_resolution_clock::now( )
+                      << "\n";
+
             raise_wait_error( qwr );
         }
 

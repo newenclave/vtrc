@@ -164,6 +164,18 @@ namespace vtrc { namespace common {
         condition_queues( const condition_queues &other );
         condition_queues& operator = (const condition_queues &other);
 
+        hold_value_type_sptr value_by_key( const key_type &key )
+        {
+            typename map_type::iterator f(store_.find( key ));
+            return f == store_.end() ? hold_value_type_sptr( )
+                                     : f->second;
+        }
+
+        hold_value_type_sptr value_at_key( const key_type &key )
+        {
+            return at( key )->second;
+        }
+
     public:
 
         condition_queues( )
@@ -260,6 +272,22 @@ namespace vtrc { namespace common {
             std::for_each( store_.begin( ), store_.end( ),
                            vtrc::bind( this_type::write_all_impl,
                                        _1, vtrc::cref(data)));
+        }
+
+        void write_queue_if_exists( const key_type &key,
+                                    const queue_value_type &data)
+        {
+
+            hold_value_type_sptr res;
+            {
+                unique_lock lck(lock_);
+                res = value_by_key( key );
+            }
+
+            if( res )  {
+                res->data_.push_back( data );
+                res->cond_.notify_one( );
+            }
         }
 
         void write_queue( const key_type &key, const queue_type &data )
