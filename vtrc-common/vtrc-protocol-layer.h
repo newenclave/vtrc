@@ -99,7 +99,6 @@ namespace vtrc { namespace common {
         const vtrc_rpc_lowlevel::options &get_method_options(
                             const google::protobuf::MethodDescriptor* method );
 
-
         struct context_holder {
             protocol_layer *p_;
             call_context   *old_ctx_;
@@ -110,8 +109,9 @@ namespace vtrc { namespace common {
                 ,old_ctx_(p_->mutable_call_context( ))
 
             {
+                call_context *ncc = new call_context(llu, old_ctx_);
                 p_->release_call_context( );
-                ctx_ = p_->reset_call_context(new call_context(llu, old_ctx_));
+                ctx_ = p_->reset_call_context(ncc);
             }
 
             ~context_holder( ) try
