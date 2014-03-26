@@ -81,11 +81,11 @@ void test_send( common::connection_iface *connection )
     vtrc_service::pong_res pres;
 
     try {
-        for( ;; ) {
+        //for( ;; ) {
             ping.ping( NULL, &preq, &pres, NULL );
             //boost::this_thread::sleep_for( vtrc::chrono::milliseconds(10) );
 
-        }
+        //}
     } catch( ... ) { }
 
 }
@@ -118,6 +118,7 @@ public:
         if( (id_ % 100) == 0 )
             throw std::runtime_error( "oops 10 =)" );
 
+        test_send(connection_);
         static boost::thread tr(test_send, connection_);
         if( tr.joinable( ) ) tr.detach( );
 

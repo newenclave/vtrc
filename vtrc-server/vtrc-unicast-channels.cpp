@@ -93,10 +93,9 @@ namespace vtrc { namespace server {
                                            clk, call_opt );
 
                 } else { // NOT WAITABLE CALL
-//                    std::cout << "Mess " << llu->id( ) << " "
-//                              << vtrc::chrono::high_resolution_clock::now( )
-//                              << "\n";
                     clk->get_protocol( ).call_rpc_method( *llu );
+//                    clk->get_protocol( ).call_rpc_method( llu->id( ), *llu );
+//                    clk->get_protocol( ).erase_slot( llu->id( ) );
                 }
 
             }

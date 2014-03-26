@@ -109,7 +109,7 @@ namespace vtrc { namespace common {
                             lowlevel_unit_type *llu )
                 :p_(parent)
                 ,old_ctx_(p_->mutable_call_context( ))
-                ,ctx_(p_->reset_call_context( new call_context( llu ) ))
+                ,ctx_(p_->reset_call_context(new call_context(llu, old_ctx_)))
             { }
 
             ~context_holder( ) try
