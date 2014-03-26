@@ -242,7 +242,7 @@ namespace vtrc { namespace server {
     };
 
     protocol_layer_s::protocol_layer_s( application &a,
-                                    common::transport_iface *connection )
+                                        common::transport_iface *connection )
         :common::protocol_layer(connection)
         ,impl_(new impl(a, connection))
     {

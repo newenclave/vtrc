@@ -195,11 +195,11 @@ namespace vtrc { namespace common {
             return *sock_;
         }
 
-        boost::asio::io_service::strand &get_write_dispatcher( )
-        {
+//        boost::asio::io_service::strand &get_write_dispatcher( )
+//        {
 
-            return write_dispatcher_;
-        }
+//            return write_dispatcher_;
+//        }
 
     };
 
