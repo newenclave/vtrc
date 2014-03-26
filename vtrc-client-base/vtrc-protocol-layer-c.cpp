@@ -136,8 +136,7 @@ namespace vtrc { namespace client {
 
                 bool check = parent_->check_message( mess );
 
-                vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
-                                llu( new  vtrc_rpc_lowlevel::lowlevel_unit );
+                lowlevel_unit_sptr llu(vtrc::make_shared<lowlevel_unit_type>());
 
                 if( !check ) {
 
