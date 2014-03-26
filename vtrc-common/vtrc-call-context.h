@@ -19,6 +19,9 @@ namespace vtrc { namespace common {
         call_context( const call_context &other );
         call_context &operator = ( const call_context &other );
 
+        call_context *parent( );
+        const call_context *parent( ) const;
+
         call_context( vtrc_rpc_lowlevel::lowlevel_unit *lowlevel );
 
         const vtrc_rpc_lowlevel::lowlevel_unit *get_lowlevel_message( ) const;

@@ -29,6 +29,16 @@ namespace vtrc { namespace common {
         return *this;
     }
 
+    call_context *call_context::parent( )
+    {
+        return NULL;
+    }
+
+    const call_context *call_context::parent( ) const
+    {
+        return NULL;
+    }
+
     const lowlevel_unit *call_context::get_lowlevel_message( ) const
     {
         return impl_->llu_;

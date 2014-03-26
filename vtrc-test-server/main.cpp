@@ -80,6 +80,7 @@ public:
                     ::create_callback_channel(connection_->shared_from_this( ),
                                               false));
 
+        // вот хрень :(
         vtrc::shared_ptr<google::protobuf::RpcChannel> ev(
                     vtrc::server
                     ::channels::unicast
