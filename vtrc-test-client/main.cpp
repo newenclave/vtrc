@@ -57,7 +57,7 @@ public:
         std::cout << "ping event rcvd "
                   << c_->get_protocol( ).get_call_context( )->get_lowlevel_message( )->id( )
                   << " " << vtrc::this_thread::get_id( ) << " "
-                  //<< vtrc::chrono::high_resolution_clock::now( )
+                  << vtrc::chrono::high_resolution_clock::now( )
                   << "\n";
 
         const vtrc::common::call_context *cc =

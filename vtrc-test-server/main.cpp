@@ -66,11 +66,11 @@ void test_send( common::connection_iface *connection )
     vtrc::shared_ptr<google::protobuf::RpcChannel> ev(
                 vtrc::server
                 ::channels::unicast
-                ::create_event_channel(s, false));
+                ::create_event_channel(s, true));
 
-//    const vtrc_rpc_lowlevel::lowlevel_unit *llu =
-//            connection->get_protocol( ).
-//            get_call_context( )->get_lowlevel_message( );
+    const vtrc_rpc_lowlevel::lowlevel_unit *llu =
+            s->get_protocol( ).
+            get_call_context( )->get_lowlevel_message( );
 
 //    vtrc_rpc_lowlevel::lowlevel_unit llu;
 //    connection->get_protocol( ).send_message( llu );
@@ -83,6 +83,9 @@ void test_send( common::connection_iface *connection )
         //for( ;; )
         {
             ping.ping( NULL, &preq, &pres, NULL );
+            std::cout << llu->id( ) << " sent "
+                         << vtrc::chrono::high_resolution_clock::now( )
+                         << "\n";
             //boost::this_thread::sleep_for( vtrc::chrono::milliseconds(10) );
         }
     } catch( std::exception const &ex ) {
@@ -122,7 +125,8 @@ public:
 
 //        connection_->get_io_service( ).dispatch(
 //                    vtrc::bind(test_send, connection_));
-        //test_send(connection_);
+//        boost::thread(test_send, connection_).detach( );
+        test_send(connection_);
 
         if( done ) done->Run( );
     }
