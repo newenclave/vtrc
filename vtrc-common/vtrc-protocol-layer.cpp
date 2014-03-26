@@ -344,7 +344,7 @@ namespace vtrc { namespace common {
 
                 const vtrc_rpc_lowlevel::rpc_options_type &meth (
                     method->options( )
-                        .GetExtension( vtrc_rpc_lowlevel::method_options));
+                        .GetExtension( vtrc_rpc_lowlevel::method_options ));
 
                 result = vtrc::make_shared<vtrc_rpc_lowlevel::options>
                                                                 (serv.opt( ));

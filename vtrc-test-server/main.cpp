@@ -67,6 +67,7 @@ void test_send( common::connection_iface *connection )
                 ::create_event_channel(connection->shared_from_this( ),
                                        true));
 
+
 //    const vtrc_rpc_lowlevel::lowlevel_unit *llu =
 //            connection->get_protocol( ).
 //            get_call_context( )->get_lowlevel_message( );
