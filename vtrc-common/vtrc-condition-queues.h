@@ -10,6 +10,7 @@
 #include "vtrc-chrono.h"
 
 #include "vtrc-result-codes.h"
+#include "vtrc-mutex-typedefs.h"
 
 namespace vtrc { namespace common {
 
@@ -17,8 +18,9 @@ namespace vtrc { namespace common {
     class condition_queues {
 
         typedef condition_queues                this_type;
-        typedef vtrc::mutex                     mutex_type;
-        typedef vtrc::unique_lock<mutex_type>   unique_lock;
+        typedef vtrc::shared_mutex              mutex_type;
+
+        typedef vtrc::unique_lock<vtrc::mutex>  unique_lock;
 
     public:
 
@@ -31,9 +33,10 @@ namespace vtrc { namespace common {
         typedef wait_result_codes wait_result;
 
         struct hold_value_type {
+            vtrc::mutex               lock_;
             vtrc::condition_variable  cond_;
-            queue_type                data_;
             bool                      canceled_;
+            queue_type                data_;
             hold_value_type( )
                 :canceled_(false)
             { }
@@ -58,13 +61,16 @@ namespace vtrc { namespace common {
             return f;
         }
 
-        typename map_type::const_iterator at( const key_type &key ) const
+        hold_value_type_sptr value_by_key( const key_type &key )
         {
-            typename map_type::const_iterator f(store_.find( key ));
-            if( f == store_.end( ) ) {
-                throw std::out_of_range( "Bad queue index" );
-            }
-            return f;
+            typename map_type::iterator f(store_.find( key ));
+            return f == store_.end() ? hold_value_type_sptr( )
+                                     : f->second;
+        }
+
+        hold_value_type_sptr value_at_key( const key_type &key )
+        {
+            return at( key )->second;
         }
 
         static bool queue_empty_predic( hold_value_type_sptr value )
@@ -89,13 +95,16 @@ namespace vtrc { namespace common {
         template <typename WaitFunc>
         wait_result wait_queue_impl( const key_type &key, WaitFunc call_wait )
         {
-            unique_lock lck(lock_);
-            typename map_type::iterator f(at(key));
 
-            hold_value_type_sptr value( f->second );
+            hold_value_type_sptr value;
+            {
+                vtrc::shared_lock lck(lock_);
+                value = value_at_key( key );
+            }
+
+            unique_lock lck(value->lock_);
 
             value->canceled_ = false;
-
             bool res = call_wait( lck, value );
 
             return cancel_res2wait_res( value->canceled_, res );
@@ -105,13 +114,15 @@ namespace vtrc { namespace common {
         wait_result read_queue_impl( const key_type &key,  queue_type &result,
                                      WaitFunc call_wait )
         {
-            unique_lock lck(lock_);
-            typename map_type::iterator f(at(key));
 
-            hold_value_type_sptr value( f->second );
+            hold_value_type_sptr value;
+            {
+                vtrc::shared_lock lck(lock_);
+                value = value_at_key( key );
+            }
 
+            unique_lock lck(value->lock_);
             value->canceled_ = false;
-
 #if 0
             bool res = true;
             if( value->data_.empty( ) ) {
@@ -130,13 +141,15 @@ namespace vtrc { namespace common {
         wait_result read_impl( const key_type &key, queue_value_type &result,
                                WaitFunc call_wait )
         {
-            unique_lock lck(lock_);
-            typename map_type::iterator f(at(key));
 
-            hold_value_type_sptr value( f->second );
+            hold_value_type_sptr value;
+            {
+                vtrc::shared_lock lck(lock_);
+                value = value_at_key( key );
+            }
 
+            unique_lock lck(value->lock_);
             value->canceled_ = false;
-
 #if 0
             bool res = true;
             if( value->data_.empty( ) ) {
@@ -164,18 +177,6 @@ namespace vtrc { namespace common {
         condition_queues( const condition_queues &other );
         condition_queues& operator = (const condition_queues &other);
 
-        hold_value_type_sptr value_by_key( const key_type &key )
-        {
-            typename map_type::iterator f(store_.find( key ));
-            return f == store_.end() ? hold_value_type_sptr( )
-                                     : f->second;
-        }
-
-        hold_value_type_sptr value_at_key( const key_type &key )
-        {
-            return at( key )->second;
-        }
-
     public:
 
         condition_queues( )
@@ -188,22 +189,22 @@ namespace vtrc { namespace common {
 
         size_t size( ) const
         {
-            unique_lock lck(lock_);
+            vtrc::shared_lock lck(lock_);
             return store_.size( );
         }
 
         size_t queue_size( const key_type &key ) const
         {
-            unique_lock lck(lock_);
-            typename map_type::const_iterator f(at(key));
-            return f->second->data_.size( );
+            vtrc::shared_lock lck(lock_);
+            return at(key)->second->data_.size( );
         }
 
         void add_queue( const key_type &key )
         {
-            unique_lock lck(lock_);
+            vtrc::upgradable_lock lck(lock_);
             typename map_type::iterator f(store_.find( key ));
             if( f == store_.end( ) ) {
+                vtrc::upgrade_to_unique ulck(lck);
                 store_.insert( std::make_pair( key,
                                     vtrc::make_shared<hold_value_type>( ) ));
             }
@@ -211,9 +212,10 @@ namespace vtrc { namespace common {
 
         void erase_queue( const key_type &key )
         {
-            unique_lock lck(lock_);
+            vtrc::upgradable_lock lck(lock_);
             typename map_type::iterator f(store_.find( key ));
             if( f != store_.end( ) ) {
+                vtrc::upgrade_to_unique ulck(lck);
                 f->second->canceled_ = true;
                 f->second->cond_.notify_all( );
                 store_.erase( f );
@@ -222,7 +224,7 @@ namespace vtrc { namespace common {
 
         void erase_all(  )
         {
-            unique_lock lck(lock_);
+            vtrc::unique_shared_lock lck(lock_);
             for(typename map_type::iterator b(store_.begin()), e(store_.end());
                                             b!=e; ++b)
             {
@@ -234,7 +236,7 @@ namespace vtrc { namespace common {
 
         void cancel_all( )
         {
-            unique_lock lck(lock_);
+            vtrc::shared_lock lck(lock_);
             typedef typename map_type::iterator iterator_type;
             for( iterator_type b(store_.begin()), e(store_.end( )); b!=e; ++b) {
                 b->second->canceled_ = true;
@@ -244,7 +246,7 @@ namespace vtrc { namespace common {
 
         void cancel( const key_type &key )
         {
-            unique_lock lck(lock_);
+            vtrc::shared_lock lck(lock_);
             typename map_type::iterator f(at( key ));
             f->second->canceled_ = true;
             f->second->cond_.notify_all( );
@@ -252,7 +254,7 @@ namespace vtrc { namespace common {
 
         void write_queue( const key_type &key, const queue_value_type &data )
         {
-            unique_lock lck(lock_);
+            vtrc::shared_lock lck(lock_);
             typename map_type::iterator f(at( key ));
 
             f->second->data_.push_back( data );
@@ -268,7 +270,7 @@ namespace vtrc { namespace common {
 
         void write_all( const queue_value_type &data )
         {
-            unique_lock lck(lock_);
+            vtrc::shared_lock lck(lock_);
             std::for_each( store_.begin( ), store_.end( ),
                            vtrc::bind( this_type::write_all_impl,
                                        _1, vtrc::cref(data)));
@@ -278,21 +280,21 @@ namespace vtrc { namespace common {
                                     const queue_value_type &data)
         {
 
-            hold_value_type_sptr res;
+            hold_value_type_sptr value;
             {
-                unique_lock lck(lock_);
-                res = value_by_key( key );
+                vtrc::shared_lock lck(lock_);
+                value = value_by_key( key );
             }
 
-            if( res )  {
-                res->data_.push_back( data );
-                res->cond_.notify_one( );
+            if( value )  {
+                value->data_.push_back( data );
+                value->cond_.notify_one( );
             }
         }
 
         void write_queue( const key_type &key, const queue_type &data )
         {
-            unique_lock lck(lock_);
+            vtrc::shared_lock lck(lock_);
             typename map_type::iterator f(at( key ));
 
             f->second->data_.insert( f->second->data_.end( ),
