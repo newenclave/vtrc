@@ -22,6 +22,7 @@
 #include "vtrc-call-context.h"
 
 #include "vtrc-rpc-controller.h"
+#include "vtrc-random-device.h"
 
 #include "proto-helper/message-utilities.h"
 
@@ -440,6 +441,22 @@ namespace vtrc { namespace common {
             return call_opts.wait( );
         }
 
+
+        protocol_layer::lowlevel_unit_type make_fake_mess( )
+        {
+            random_device rd(true);
+            std::string s1( 4, 4 );
+            std::string s2( 4, 4 );
+            protocol_layer::lowlevel_unit_type res;
+            rd.generate( &s1[0], &s1[0] + 4 );
+            rd.generate( &s2[0], &s2[0] + 4 );
+
+            res.set_request( s1 );
+            res.set_response( s1 );
+
+            return res;
+        }
+
         void make_call(protocol_layer::lowlevel_unit_sptr llu)
         {
             bool failed       = true;
@@ -474,9 +491,8 @@ namespace vtrc { namespace common {
                 }
                 send_message( *llu );
             } else {
-//                connection_->write_raw( "", 0 );
-                //llu->Clear( );
-                static const protocol_layer::lowlevel_unit_type fake;
+                static const protocol_layer::lowlevel_unit_type
+                                                    fake(make_fake_mess( ));
                 send_message( fake );
                 //;;;
             }
