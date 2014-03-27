@@ -138,8 +138,8 @@ namespace vtrc { namespace client {
         void on_rpc_process( )
         {
             while( !parent_->message_queue( ).empty( ) ) {
-                std::string &mess
-                        (parent_->message_queue( ).front( ));
+
+                std::string &mess (parent_->message_queue( ).front( ));
 
                 bool check = parent_->check_message( mess );
 

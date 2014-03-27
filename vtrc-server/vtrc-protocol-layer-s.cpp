@@ -197,28 +197,40 @@ namespace vtrc { namespace server {
                         vtrc::bind(&this_type::on_rcp_call_ready, this));
         }
 
+
+        void process_call( lowlevel_unit_sptr &llu )
+        {
+            app_.get_io_service( ).post(
+                        vtrc::bind( &this_type::push_call, this,
+                                    llu, connection_->shared_from_this( )));
+        }
+
+        void process_event_cb( lowlevel_unit_sptr &llu )
+        {
+            app_.get_io_service( ).post(
+                        vtrc::bind( &this_type::push_event_answer, this,
+                                llu, connection_->shared_from_this( )));
+        }
+
         void on_rcp_call_ready( )
         {
             //std::cout << "call from client\n";
             while( !parent_->message_queue( ).empty( ) ) {
                 lowlevel_unit_sptr llu(vtrc::make_shared<lowlevel_unit_type>());
                 get_pop_message( *llu );
-                switch (llu->info( ).message_type( )) {
-                case vtrc_rpc_lowlevel::message_info::MESSAGE_CALL:
-                    app_.get_io_service( ).post(
-                                vtrc::bind( &this_type::push_call, this,
-                                            llu,
-                                            connection_->shared_from_this( )));
-                    break;
-                case vtrc_rpc_lowlevel::message_info::MESSAGE_EVENT:
-                case vtrc_rpc_lowlevel::message_info::MESSAGE_CALLBACK:
-                    app_.get_io_service( ).post(
-                                vtrc::bind( &this_type::push_event_answer, this,
-                                            llu,
-                                            connection_->shared_from_this( )));
-                    break;
-                default:
-                    break;
+
+                if( llu->has_info( ) ) {
+                    switch (llu->info( ).message_type( )) {
+                    case vtrc_rpc_lowlevel::message_info::MESSAGE_CALL:
+                        process_call( llu );
+                        break;
+                    case vtrc_rpc_lowlevel::message_info::MESSAGE_EVENT:
+                    case vtrc_rpc_lowlevel::message_info::MESSAGE_CALLBACK:
+                        process_event_cb( llu );
+                        break;
+                    default:
+                        break;
+                    }
                 }
             }
 
