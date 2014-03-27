@@ -125,10 +125,10 @@ int main( )
     for( int i=0; i<29999999999; ++i ) {
         try {
             //vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(10) );
-            //work_time wt;
+            work_time wt;
             s.test( NULL, &mi, &mi, NULL );
             last = mi.message_type( );
-            std::cout << "response: " << last << "\n";
+            //std::cout << "response: " << last << "\n";
             //cl.reset( );
         } catch( const vtrc::common::exception &ex ) {
             std::cout << "call error: "

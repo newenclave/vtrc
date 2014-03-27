@@ -121,7 +121,7 @@ public:
 //        connection_->get_io_service( ).dispatch(
 //                    vtrc::bind(test_send, connection_));
 //        boost::thread(test_send, connection_).detach( );
-        test_send(connection_, app_);
+        //test_send(connection_, app_);
 
         if( done ) done->Run( );
     }
@@ -213,7 +213,10 @@ int main( ) try {
 
     tcp_ep->stop( );
 
+
     poll.stop( );
+
+    std::cout << "Stoppped. Wait ... \n";
     poll.join_all( );
 
     return 0;
