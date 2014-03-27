@@ -85,9 +85,7 @@ void test_send( common::connection_iface *connection,
     try {
         //for( ;; )
         {
-            std::cout << "1";
             ping.ping( NULL, &preq, &pres, NULL );
-            std::cout << "2" << std::endl;
         }
     } catch( std::exception const &ex ) {
         std::cout << "png error " << ex.what( ) << "\n";
