@@ -169,7 +169,7 @@ namespace vtrc { namespace server {
                 llu->mutable_opt( )->set_wait( false );
 
 //                const vtrc_rpc_lowlevel::options &call_opt
-//                            ( clk->get_protocol( ).get_method_options(method));
+//                          ( clk->get_protocol( ).get_method_options(method));
 
                 if( clk ) {
                     lck_list->foreach_while(
