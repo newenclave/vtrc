@@ -15,18 +15,18 @@ namespace vtrc { namespace server {
         boost::asio::io_service            *ios_;
         const bool                          own_ios_;
 
-        vtrc::shared_ptr<connection_list>         clients_;
+        vtrc::shared_ptr<connection_list>   clients_;
 
         impl( )
             :ios_(new boost::asio::io_service)
             ,own_ios_(true)
-            ,clients_(vtrc::make_shared<connection_list>( ))
+            ,clients_(connection_list::create( ))
         { }
 
         impl( boost::asio::io_service *ios )
             :ios_(ios)
             ,own_ios_(false)
-            ,clients_(vtrc::make_shared<connection_list>( ))
+            ,clients_(connection_list::create( ))
         { }
 
         ~impl( ) try

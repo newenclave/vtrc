@@ -2,6 +2,7 @@
 #define VTRC_CONNECTION_LIST_H
 
 #include "vtrc-common/vtrc-connection-iface.h"
+#include "vtrc-memory.h"
 
 namespace vtrc {
 
@@ -11,7 +12,7 @@ namespace vtrc {
 
 namespace server {
 
-    class connection_list {
+    class connection_list: public enable_shared_from_this<connection_list> {
 
         struct impl;
         impl  *impl_;
@@ -19,13 +20,26 @@ namespace server {
         connection_list( const connection_list & );
         connection_list& operator = ( const connection_list & );
 
+        connection_list( );
+
     public:
 
         typedef vtrc::function <
                 bool (common::connection_iface_sptr)
         > client_predic;
 
-        connection_list( );
+        static vtrc::shared_ptr<connection_list> create( );
+
+        vtrc::weak_ptr<connection_list> weak_from_this( )
+        {
+            return vtrc::weak_ptr<connection_list>( shared_from_this( ) );
+        }
+
+        vtrc::weak_ptr<connection_list const> weak_from_this( ) const
+        {
+            return vtrc::weak_ptr<connection_list const>( shared_from_this( ) );
+        }
+
         ~connection_list( );
 
         void clear( );

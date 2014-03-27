@@ -40,7 +40,7 @@
 #include "vtrc-memory.h"
 #include "vtrc-chrono.h"
 
-#include "vtrc-server/vtrc-unicast-channels.h"
+#include "vtrc-server/vtrc-channels.h"
 
 namespace ba = boost::asio;
 
@@ -59,20 +59,21 @@ struct work_time {
     }
 };
 
-void test_send( common::connection_iface *connection )
+void test_send( common::connection_iface *connection,
+                vtrc::server::application &app )
 {
     common::connection_iface_sptr s(connection->shared_from_this());
     vtrc::shared_ptr<google::protobuf::RpcChannel> ev(
                 vtrc::server
-                ::channels::unicast
-                ::create_event_channel(s, true));
+                ::channels::broadcast
+                ::create_event_channel(app.get_clients( ), s));
 
     const vtrc_rpc_lowlevel::lowlevel_unit *pllu =
             s->get_protocol( ).
             get_call_context( )->get_lowlevel_message( );
 
-    vtrc_rpc_lowlevel::lowlevel_unit llu;
-    s->get_protocol( ).send_message( llu );
+//    vtrc_rpc_lowlevel::lowlevel_unit llu;
+//    s->get_protocol( ).send_message( llu );
 
     vtrc_service::internal::Stub ping( ev.get( ));
     vtrc_service::ping_req preq;
@@ -84,7 +85,7 @@ void test_send( common::connection_iface *connection )
     try {
         //for( ;; )
         {
-//            ping.ping( NULL, &preq, &pres, NULL );
+            ping.ping( NULL, &preq, &pres, NULL );
 //            std::cout << llu->id( ) << " sent "
 //                         << vtrc::chrono::high_resolution_clock::now( )
 //                         << "\n";
@@ -99,12 +100,14 @@ void test_send( common::connection_iface *connection )
 class teat_impl: public vtrc_service::test_rpc {
 
     common::connection_iface *connection_;
+    vtrc::server::application &app_;
     unsigned id_;
 
 public:
 
-    teat_impl(common::connection_iface *c )
+    teat_impl( common::connection_iface *c, vtrc::server::application &app )
         :connection_(c)
+        ,app_(app)
         ,id_(0)
     { }
 
@@ -121,7 +124,7 @@ public:
 //        connection_->get_io_service( ).dispatch(
 //                    vtrc::bind(test_send, connection_));
 //        boost::thread(test_send, connection_).detach( );
-        test_send(connection_);
+        test_send(connection_, app_);
 
         if( done ) done->Run( );
     }
@@ -189,7 +192,7 @@ private:
         if( service_name == teat_impl::descriptor( )->full_name( ) ) {
             return common::rpc_service_wrapper_sptr(
                         new common::rpc_service_wrapper(
-                                new teat_impl(connection) ) );
+                                new teat_impl(connection, *this) ) );
         }
 
         return common::rpc_service_wrapper_sptr( );
@@ -207,7 +210,7 @@ int main( ) try {
 
     tcp_ep->start( );
 
-    boost::this_thread::sleep_for( vtrc::chrono::milliseconds(12000) );
+    boost::this_thread::sleep_for( vtrc::chrono::milliseconds(120000000) );
 
     std::cout << "Stoppped. Wait ... \n";
 

@@ -54,11 +54,11 @@ public:
                          ::vtrc_service::pong_res* response,
                          ::google::protobuf::Closure* done)
     {
-//        std::cout << "ping event rcvd "
-//                  << c_->get_protocol( ).get_call_context( )->get_lowlevel_message( )->id( )
-//                  << " " << vtrc::this_thread::get_id( ) << " "
-//                  << vtrc::chrono::high_resolution_clock::now( )
-//                  << "\n";
+        std::cout << "ping event rcvd "
+                  << c_->get_protocol( ).get_call_context( )->get_lowlevel_message( )->id( )
+                  << " " << vtrc::this_thread::get_id( ) << " "
+                  << vtrc::chrono::high_resolution_clock::now( )
+                  << "\n";
 
         const vtrc::common::call_context *cc =
                     vtrc::common::call_context::get( c_ );
@@ -124,19 +124,19 @@ int main( )
 
     for( int i=0; i<29999999999; ++i ) {
         try {
-            //vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(100) );
+            //vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(10) );
             //work_time wt;
             s.test( NULL, &mi, &mi, NULL );
             last = mi.message_type( );
             std::cout << "response: " << last << "\n";
             //cl.reset( );
         } catch( const vtrc::common::exception &ex ) {
-//            std::cout << "call error: "
-//                      << " code (" << ex.code( ) << ")"
-//                      << " category (" << ex.category( ) << ")"
-//                      << " what: " << ex.what( )
-//                      << " (" << ex.additional( ) << ")"
-//                      << "\n";
+            std::cout << "call error: "
+                      << " code (" << ex.code( ) << ")"
+                      << " category (" << ex.category( ) << ")"
+                      << " what: " << ex.what( )
+                      << " (" << ex.additional( ) << ")"
+                      << "\n";
             //if( i % 100 == 0 )
                 std::cout << i << "\n";
         } catch( const std::exception &ex ) {

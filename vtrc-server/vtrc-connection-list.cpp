@@ -84,6 +84,13 @@ namespace vtrc { namespace server {
         :impl_(new impl)
     { }
 
+    vtrc::shared_ptr<connection_list> connection_list::create( )
+    {
+        vtrc::shared_ptr<connection_list> new_inst(new connection_list);
+
+        return new_inst;
+    }
+
     connection_list::~connection_list( )
     {
         delete impl_;
