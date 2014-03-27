@@ -538,10 +538,10 @@ namespace vtrc { namespace common {
         return impl_->prepare_data( data, length );
     }
 
-    void protocol_layer::send_message(const google::protobuf::Message &message)
-    {
-        impl_->send_message( message );
-    }
+//    void protocol_layer::send_message(const google::protobuf::Message &message)
+//    {
+//        impl_->send_message( message );
+//    }
 
     call_context *protocol_layer::reset_call_context(call_context *cc)
     {

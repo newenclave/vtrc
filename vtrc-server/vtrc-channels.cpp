@@ -84,9 +84,11 @@ namespace vtrc { namespace server {
 
                 if( disable_wait_ )
                     llu->mutable_opt( )->set_wait(false);
+                else
+                    llu->mutable_opt( )->set_wait(call_opt.wait( ));
 
                 //// WAITABLE CALL
-                if( call_opt.wait( ) && llu->opt( ).wait( ) ) {
+                if( llu->opt( ).wait( ) ) {
 
                     process_waitable_call( call_id, llu, response,
                                            clk, call_opt );
