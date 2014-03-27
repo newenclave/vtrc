@@ -106,7 +106,7 @@ namespace vtrc { namespace common {
         options_map_type             options_map_;
         mutable vtrc::shared_mutex   options_map_lock_;
 
-        impl( transport_iface *c )
+        impl( transport_iface *c, bool oddside )
             :connection_(c)
             ,hash_maker_(common::hash::create_default( ))
             ,hash_checker_(common::hash::create_default( ))
@@ -115,7 +115,7 @@ namespace vtrc { namespace common {
             ,transformer_(common::transformers::none::create( ))
             ,reverter_(common::transformers::none::create( ))
             ,queue_(data_queue::varint::create_parser(maximum_message_length))
-            ,rpc_index_(100)
+            ,rpc_index_(oddside ? 101 : 100)
         {}
 
         std::string prepare_data( const char *data, size_t length)
@@ -183,7 +183,7 @@ namespace vtrc { namespace common {
 
         uint64_t next_index( )
         {
-            return ++rpc_index_;
+            return (rpc_index_ += 2);
         }
 
         // --------------- sett ----------------- //
@@ -517,8 +517,8 @@ namespace vtrc { namespace common {
 
     };
 
-    protocol_layer::protocol_layer( transport_iface *connection )
-        :impl_(new impl(connection))
+    protocol_layer::protocol_layer( transport_iface *connection, bool oddside )
+        :impl_(new impl(connection, oddside))
     {
         impl_->parent_ = this;
     }
