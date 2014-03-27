@@ -131,16 +131,16 @@ int main( )
             std::cout << "response: " << last << "\n";
             //cl.reset( );
         } catch( const vtrc::common::exception &ex ) {
-            std::cout << "call error: "
-                      << " code (" << ex.code( ) << ")"
-                      << " category (" << ex.category( ) << ")"
-                      << " what: " << ex.what( )
-                      << " (" << ex.additional( ) << ")"
-                      << "\n";
+//            std::cout << "call error: "
+//                      << " code (" << ex.code( ) << ")"
+//                      << " category (" << ex.category( ) << ")"
+//                      << " what: " << ex.what( )
+//                      << " (" << ex.additional( ) << ")"
+//                      << "\n";
             //if( i % 100 == 0 )
                 std::cout << i << "\n";
         } catch( const std::exception &ex ) {
-            std::cout << "call error: " << ex.what( ) << "\n";
+            //std::cout << "call error: " << ex.what( ) << "\n";
         }
     }
 

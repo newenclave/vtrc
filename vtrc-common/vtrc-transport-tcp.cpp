@@ -101,31 +101,35 @@ namespace vtrc { namespace common {
 
         void write( const char *data, size_t length )
         {
-            vtrc::unique_lock<vtrc::mutex> l(write_lock_);
-            sock_->send( basio::buffer( data, length ) );
-            return;
             message_holder_sptr mh(make_holder(data, length));
+#if 0
+            vtrc::unique_lock<vtrc::mutex> l(write_lock_);
+            sock_->send( basio::buffer( mh->message_ ) );
+#else
             write_dispatcher_.post(
                    vtrc::bind( &this_type::write_impl, this, mh,
                                 vtrc::shared_ptr<closure_type>( ),
                                 parent_->shared_from_this( )));
+#endif
         }
 
         void write(const char *data, size_t length, closure_type &success)
         {
-            vtrc::shared_ptr<closure_type>
-                    closure(vtrc::make_shared<closure_type>(success));
+#if 0
+            message_holder_sptr mh(make_holder(data, length));
 
             vtrc::unique_lock<vtrc::mutex> l(write_lock_);
-            sock_->send( basio::buffer( data, length ) );
+            sock_->send( basio::buffer( mh->message_ ) );
             success( bsys::error_code(0, bsys::get_system_category()) );
-            return;
-
+#else
+            vtrc::shared_ptr<closure_type>
+                    closure(vtrc::make_shared<closure_type>(success));
             message_holder_sptr mh(make_holder(data, length, closure));
 
             write_dispatcher_.post(
                    vtrc::bind( &this_type::write_impl, this, mh,
                                 closure, parent_->shared_from_this( )));
+#endif
         }
 
         std::string prepare_for_write( const char *data, size_t length)
