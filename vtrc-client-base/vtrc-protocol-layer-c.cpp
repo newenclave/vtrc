@@ -125,7 +125,8 @@ namespace vtrc { namespace client {
 
         void process_invalid( lowlevel_unit_sptr &llu )
         {
-
+            llu->Clear( );
+            parent_->send_message( *llu );
         }
 
         void on_rpc_process( )

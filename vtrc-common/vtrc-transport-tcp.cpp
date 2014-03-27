@@ -106,10 +106,19 @@ namespace vtrc { namespace common {
 
         static void wake_up( ) { }
 
-        void write( )
+        void write_raw( const char *data, size_t length )
         {
 #ifdef TRANSPORT_USE_ASYNC_WRITE
-            write_dispatcher_.post( &this_type::wake_up );
+            //write_dispatcher_.post( &this_type::wake_up );
+
+            message_holder_sptr mh(vtrc::make_shared<message_holder>( ));
+            mh->message_.assign( data, data + length );
+
+            write_dispatcher_.post(
+                   vtrc::bind( &this_type::write_impl, this, mh,
+                                vtrc::shared_ptr<closure_type>( ),
+                                parent_->shared_from_this( )));
+
 #endif
         }
 
@@ -289,10 +298,10 @@ namespace vtrc { namespace common {
         impl_->write( data, length, success );
     }
 
-    void transport_tcp::write( )
-    {
-        impl_->write(  );
-    }
+//    void transport_tcp::write_raw( const char *data, size_t length )
+//    {
+//        impl_->write( data, length );
+//    }
 
     void transport_tcp::send_message( const char *data, size_t length )
     {

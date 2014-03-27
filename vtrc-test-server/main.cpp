@@ -65,33 +65,14 @@ void test_send( common::connection_iface *connection )
     vtrc::shared_ptr<google::protobuf::RpcChannel> ev(
                 vtrc::server
                 ::channels::unicast
-                ::create_event_channel(s, false));
+                ::create_event_channel(s, true));
 
     const vtrc_rpc_lowlevel::lowlevel_unit *pllu =
             s->get_protocol( ).
             get_call_context( )->get_lowlevel_message( );
 
-//    vtrc_rpc_lowlevel::lowlevel_unit llu;
-//    llu.mutable_opt( )->set_wait( false );
-//    llu.mutable_info( )->set_message_type( vtrc_rpc_lowlevel::message_info::MESSAGE_EVENT );
-//    llu.mutable_call( )->set_service( vtrc_service::internal::descriptor( )->full_name( ) );
-//    llu.mutable_call( )->set_method( "ping" );
-//    llu.set_id( s->get_protocol( ).next_index( ) * 10 );
-
-//    vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> res;
-
-//    try {
-//        s->get_protocol( ).call_rpc_method( llu.id( ), llu );
-//        //s->get_protocol( ).read_slot_for( llu.id( ), res, 1000 );
-
-//        s->get_protocol( ).erase_slot( llu.id( ) );
-//    } catch ( const std::exception &ex ) {
-//        std::cout << "rw call error " << ex.what( ) << "\n";
-//    }
-
-//    std::cout << "got result\n";
-
-    //s->get_protocol( ).send_message( llu );
+    vtrc_rpc_lowlevel::lowlevel_unit llu;
+    s->get_protocol( ).send_message( llu );
 
     vtrc_service::internal::Stub ping( ev.get( ));
     vtrc_service::ping_req preq;
@@ -103,7 +84,7 @@ void test_send( common::connection_iface *connection )
     try {
         //for( ;; )
         {
-            ping.ping( NULL, &preq, &pres, NULL );
+//            ping.ping( NULL, &preq, &pres, NULL );
 //            std::cout << llu->id( ) << " sent "
 //                         << vtrc::chrono::high_resolution_clock::now( )
 //                         << "\n";
