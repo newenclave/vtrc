@@ -98,6 +98,7 @@ using namespace vtrc;
 
 int main( )
 {
+
     common::thread_pool tp(4);
     vtrc::shared_ptr<client::vtrc_client> cl(
                           client::vtrc_client::create((tp.get_io_service( ))));

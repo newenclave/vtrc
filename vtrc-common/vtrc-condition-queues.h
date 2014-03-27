@@ -33,10 +33,12 @@ namespace vtrc { namespace common {
         typedef wait_result_codes wait_result;
 
         struct hold_value_type {
-            vtrc::mutex               lock_;
+
+            mutable vtrc::mutex       lock_;
             vtrc::condition_variable  cond_;
-            bool                      canceled_;
+            mutable bool              canceled_;
             queue_type                data_;
+
             hold_value_type( )
                 :canceled_(false)
             { }
@@ -61,16 +63,16 @@ namespace vtrc { namespace common {
             return f;
         }
 
-        hold_value_type_sptr value_by_key( const key_type &key )
-        {
-            typename map_type::iterator f(store_.find( key ));
-            return f == store_.end() ? hold_value_type_sptr( )
-                                     : f->second;
-        }
-
         hold_value_type_sptr value_at_key( const key_type &key )
         {
             return at( key )->second;
+        }
+
+        hold_value_type_sptr value_by_key( const key_type &key )
+        {
+            typename map_type::iterator f(store_.find( key ));
+            return (f == store_.end( )) ? hold_value_type_sptr( )
+                                        : f->second;
         }
 
         static bool queue_empty_predic( hold_value_type_sptr value )
@@ -182,10 +184,10 @@ namespace vtrc { namespace common {
         condition_queues( )
         { }
 
-        ~condition_queues( )
+        ~condition_queues( ) try
         {
             cancel_all( );
-        }
+        } catch ( ... ) { ;;; }
 
         size_t size( ) const
         {
@@ -238,7 +240,7 @@ namespace vtrc { namespace common {
         {
             vtrc::shared_lock lck(lock_);
             typedef typename map_type::iterator iterator_type;
-            for( iterator_type b(store_.begin()), e(store_.end( )); b!=e; ++b) {
+            for( iterator_type b(store_.begin( )), e(store_.end( )); b!=e; ++b){
                 b->second->canceled_ = true;
                 b->second->cond_.notify_all( );
             }

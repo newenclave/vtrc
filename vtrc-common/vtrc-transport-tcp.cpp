@@ -259,10 +259,10 @@ namespace vtrc { namespace common {
         return impl_->write( data, length );
     }
 
-    boost::asio::io_service::strand &transport_tcp::get_dispatcher( )
-    {
-        return impl_->get_dispatcher( );
-    }
+//    boost::asio::io_service::strand &transport_tcp::get_dispatcher( )
+//    {
+//        return impl_->get_dispatcher( );
+//    }
 
     std::string transport_tcp::prepare_for_write(const char *data, size_t len)
     {

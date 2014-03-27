@@ -7,7 +7,6 @@ namespace boost {
 
 namespace asio {
     class    io_service;
-    typename io_service::strand;
 }
 
 namespace system {
@@ -46,7 +45,7 @@ namespace vtrc { namespace common {
 
         void send_message( const char *data, size_t length );
 
-        boost::asio::io_service::strand &get_dispatcher( );
+        //boost::asio::io_service::strand &get_dispatcher( );
 
     private:
 
