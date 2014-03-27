@@ -31,20 +31,6 @@ namespace vtrc { namespace server {
 
     namespace gpb = google::protobuf;
 
-    struct work_time {
-        typedef boost::chrono::high_resolution_clock::time_point time_point;
-        time_point start_;
-        work_time( )
-            :start_(boost::chrono::high_resolution_clock::now( ))
-        {}
-        ~work_time( )
-        {
-            time_point stop(boost::chrono::high_resolution_clock::now( ));
-            std::cout << "call time: " << stop - start_ << std::endl;
-        }
-    };
-
-
     namespace {
         enum init_stage_enum {
              stage_begin             = 1
@@ -167,16 +153,17 @@ namespace vtrc { namespace server {
 
         }
 
-        void get_pop_message( gpb::Message &capsule )
+        bool get_pop_message( gpb::Message &capsule )
         {
             std::string &mess(parent_->message_queue( ).front( ));
             bool check = check_message_hash(mess);
             if( !check ) {
                 connection_->close( );
-                return;
+                return false;
             }
             parse_message( mess, capsule );
             pop_message( );
+            return true;
         }
 
         void push_call( lowlevel_unit_sptr llu,
@@ -216,8 +203,10 @@ namespace vtrc { namespace server {
         {
             //std::cout << "call from client\n";
             while( !parent_->message_queue( ).empty( ) ) {
+
                 lowlevel_unit_sptr llu(vtrc::make_shared<lowlevel_unit_type>());
-                get_pop_message( *llu );
+
+                if(!get_pop_message( *llu )) return;
 
                 if( llu->has_info( ) ) {
                     switch (llu->info( ).message_type( )) {

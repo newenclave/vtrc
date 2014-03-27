@@ -28,19 +28,6 @@
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
 #include "protocol/vtrc-errors.pb.h"
 
-struct work_time {
-    typedef boost::chrono::high_resolution_clock::time_point time_point;
-    time_point start_;
-    work_time( )
-        :start_(boost::chrono::high_resolution_clock::now( ))
-    {}
-    ~work_time( )
-    {
-        time_point stop(boost::chrono::high_resolution_clock::now( ));
-        std::cout << "make call time: " << stop - start_ << "\n";
-    }
-};
-
 namespace vtrc { namespace common {
 
     namespace gpb = google::protobuf;
