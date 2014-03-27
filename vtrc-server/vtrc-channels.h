@@ -27,7 +27,6 @@ namespace broadcast {
     common_channel *create_event_channel(
                             vtrc::shared_ptr<common::connection_list> cl );
 
-//    common_channel *create_callback_channel( common::connection_iface_sptr c );
 }
 
 }
