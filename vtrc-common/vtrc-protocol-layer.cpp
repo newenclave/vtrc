@@ -305,9 +305,9 @@ namespace vtrc { namespace common {
                         slot_id, mess,
                         vtrc::chrono::milliseconds(millisec) );
 
-            std::cout << slot_id << " pop at "
-                      << vtrc::chrono::high_resolution_clock::now( )
-                      << "\n";
+//            std::cout << slot_id << " pop at "
+//                      << vtrc::chrono::high_resolution_clock::now( )
+//                      << "\n";
 
             raise_wait_error( qwr );
         }
@@ -392,7 +392,7 @@ namespace vtrc { namespace common {
             common::rpc_service_wrapper_sptr
                     service(get_service(llu->call( ).service( )));
 
-            if( !service->service( ) ) {
+            if( !service || !service->service( ) ) {
                 throw vtrc::common::exception( vtrc_errors::ERR_BAD_FILE,
                                                "Service not found");
             }
@@ -474,14 +474,9 @@ namespace vtrc { namespace common {
                 }
                 send_message( *llu );
             } else {
-                llu->clear_request( );
-                llu->clear_response( );
-                llu->clear_opt( );
-                llu->clear_error( );
-                llu->clear_call( );
-                llu->clear_info( );
-                llu->clear_id( );
-                send_message( *llu );
+                connection_->write( );
+//                llu->Clear( );
+//                send_message( *llu );
                 //;;;
             }
         }

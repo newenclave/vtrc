@@ -104,6 +104,15 @@ namespace vtrc { namespace common {
             return make_holder(data, length, vtrc::shared_ptr<closure_type>( ));
         }
 
+        static void wake_up( ) { }
+
+        void write( )
+        {
+#ifdef TRANSPORT_USE_ASYNC_WRITE
+            write_dispatcher_.post( &this_type::wake_up );
+#endif
+        }
+
         void write( const char *data, size_t length )
         {
             message_holder_sptr mh(make_holder(data, length));
@@ -196,10 +205,10 @@ namespace vtrc { namespace common {
                         (*write_queue_.front( )->closure_)( error );
                     }
 
-                    std::cout << "mesage was queued "
-                              << vtrc::chrono::high_resolution_clock::now( ) -
-                                 write_queue_.front( )->stored_
-                              << "\n";
+//                    std::cout << "mesage was queued "
+//                              << vtrc::chrono::high_resolution_clock::now( ) -
+//                                 write_queue_.front( )->stored_
+//                              << "\n";
 
                     write_queue_.pop_front( );
                 }
@@ -277,7 +286,12 @@ namespace vtrc { namespace common {
     void transport_tcp::write(const char *data, size_t length,
                               closure_type &success)
     {
-        return impl_->write( data, length, success );
+        impl_->write( data, length, success );
+    }
+
+    void transport_tcp::write( )
+    {
+        impl_->write(  );
     }
 
     void transport_tcp::send_message( const char *data, size_t length )
