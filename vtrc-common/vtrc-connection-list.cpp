@@ -2,9 +2,9 @@
 #include <map>
 
 #include "vtrc-connection-list.h"
-#include "vtrc-common/vtrc-mutex-typedefs.h"
+#include "vtrc-mutex-typedefs.h"
 
-namespace vtrc { namespace server {
+namespace vtrc { namespace common {
 
     namespace {
 

@@ -15,18 +15,18 @@ namespace vtrc { namespace server {
         boost::asio::io_service            *ios_;
         const bool                          own_ios_;
 
-        vtrc::shared_ptr<connection_list>   clients_;
+        vtrc::shared_ptr<common::connection_list>   clients_;
 
         impl( )
             :ios_(new boost::asio::io_service)
             ,own_ios_(true)
-            ,clients_(connection_list::create( ))
+            ,clients_(common::connection_list::create( ))
         { }
 
         impl( boost::asio::io_service *ios )
             :ios_(ios)
             ,own_ios_(false)
-            ,clients_(connection_list::create( ))
+            ,clients_(common::connection_list::create( ))
         { }
 
         ~impl( ) try
@@ -48,7 +48,7 @@ namespace vtrc { namespace server {
             return *ios_;
         }
 
-        vtrc::shared_ptr<connection_list> get_clients( )
+        vtrc::shared_ptr<common::connection_list> get_clients( )
         {
             return clients_;
         }
@@ -78,7 +78,7 @@ namespace vtrc { namespace server {
         return impl_->get_io_service( );
     }
 
-    vtrc::shared_ptr<connection_list> application::get_clients()
+    vtrc::shared_ptr<common::connection_list> application::get_clients()
     {
         return impl_->get_clients( );
     }

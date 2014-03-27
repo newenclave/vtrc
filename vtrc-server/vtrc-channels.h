@@ -3,7 +3,7 @@
 
 #include "vtrc-common-channel.h"
 #include "vtrc-common/vtrc-connection-iface.h"
-#include "vtrc-connection-list.h"
+#include "vtrc-common/vtrc-connection-list.h"
 
 namespace vtrc { namespace server {
 
@@ -20,16 +20,12 @@ namespace unicast {
 
 namespace broadcast {
 
-    common_channel *create_event_channel(vtrc::shared_ptr<connection_list> cl,
-                                         common::connection_iface_sptr c );
-    common_channel *create_event_channel(vtrc::shared_ptr<connection_list> cl );
+    common_channel *create_event_channel(
+                            vtrc::shared_ptr<common::connection_list> cl,
+                            common::connection_iface_sptr c );
 
-    common_channel *create_callback_channel(
-                                        vtrc::shared_ptr<connection_list> cl,
-                                        common::connection_iface_sptr c );
-
-    common_channel *create_callback_channel(
-                                        vtrc::shared_ptr<connection_list> cl);
+    common_channel *create_event_channel(
+                            vtrc::shared_ptr<common::connection_list> cl );
 
 //    common_channel *create_callback_channel( common::connection_iface_sptr c );
 }

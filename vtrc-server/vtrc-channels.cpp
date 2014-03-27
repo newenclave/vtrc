@@ -102,20 +102,20 @@ namespace vtrc { namespace server {
 
         class broadcast_channel: public common_channel {
 
-            typedef broadcast_channel this_type;
-            vtrc::weak_ptr<connection_list> clients_;
-            common::connection_iface_wptr   sender_;
-            const unsigned                  message_type_;
+            typedef broadcast_channel               this_type;
+            vtrc::weak_ptr<common::connection_list> clients_;
+            common::connection_iface_wptr           sender_;
+            const unsigned                          message_type_;
 
         public:
 
-            broadcast_channel( vtrc::weak_ptr<connection_list> clients,
+            broadcast_channel( vtrc::weak_ptr<common::connection_list> clients,
                                unsigned mess_type)
                 :clients_(clients)
                 ,message_type_(mess_type)
             { }
 
-            broadcast_channel( vtrc::weak_ptr<connection_list> clients,
+            broadcast_channel( vtrc::weak_ptr<common::connection_list> clients,
                                unsigned mess_type,
                                common::connection_iface_wptr   sender)
                 :clients_(clients)
@@ -145,7 +145,8 @@ namespace vtrc { namespace server {
             {
                 common::closure_holder clhl(done);
                 common::connection_iface_sptr clk(sender_.lock( ));
-                vtrc::shared_ptr<connection_list> lck_list(clients_.lock( ));
+                vtrc::shared_ptr<common::connection_list>
+                                                    lck_list(clients_.lock( ));
                 if( !lck_list ) {
                     throw vtrc::common::exception( vtrc_errors::ERR_CHANNEL,
                                                    "Clients lost");
@@ -191,8 +192,8 @@ namespace vtrc { namespace server {
     namespace broadcast {
 
         common_channel *create_event_channel(
-                                    vtrc::shared_ptr<connection_list> cl,
-                                    common::connection_iface_sptr c )
+                                vtrc::shared_ptr<common::connection_list> cl,
+                                common::connection_iface_sptr c )
         {
             static const unsigned message_type
                 (vtrc_rpc_lowlevel::message_info::MESSAGE_EVENT);
@@ -203,7 +204,7 @@ namespace vtrc { namespace server {
         }
 
         common_channel *create_event_channel(
-                                    vtrc::shared_ptr<connection_list> cl )
+                                vtrc::shared_ptr<common::connection_list> cl )
         {
             static const unsigned message_type
                 (vtrc_rpc_lowlevel::message_info::MESSAGE_EVENT);
@@ -211,8 +212,8 @@ namespace vtrc { namespace server {
         }
 
         common_channel *create_callback_channel(
-                                           vtrc::shared_ptr<connection_list> cl,
-                                           common::connection_iface_sptr c )
+                               vtrc::shared_ptr<common::connection_list> cl,
+                               common::connection_iface_sptr c )
         {
             static const unsigned message_type
                 (vtrc_rpc_lowlevel::message_info::MESSAGE_CALLBACK);
@@ -221,7 +222,7 @@ namespace vtrc { namespace server {
         }
 
         common_channel *create_callback_channel(
-                                         vtrc::shared_ptr<connection_list> cl)
+                                 vtrc::shared_ptr<common::connection_list> cl)
         {
             static const unsigned message_type
                 (vtrc_rpc_lowlevel::message_info::MESSAGE_CALLBACK);

@@ -1,16 +1,10 @@
 #ifndef VTRC_CONNECTION_LIST_H
 #define VTRC_CONNECTION_LIST_H
 
-#include "vtrc-common/vtrc-connection-iface.h"
+#include "vtrc-connection-iface.h"
 #include "vtrc-memory.h"
 
-namespace vtrc {
-
-    namespace common {
-        struct connection_iface;
-    }
-
-namespace server {
+namespace vtrc { namespace common {
 
     class connection_list: public enable_shared_from_this<connection_list> {
 
