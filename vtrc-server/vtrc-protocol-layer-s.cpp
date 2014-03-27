@@ -191,6 +191,12 @@ namespace vtrc { namespace server {
             parent_->push_rpc_message( llu->id( ), llu );
         }
 
+        void on_rcp_call_ready_( )
+        {
+            connection_->get_io_service( ).post(
+                        vtrc::bind(&this_type::on_rcp_call_ready, this));
+        }
+
         void on_rcp_call_ready( )
         {
             //std::cout << "call from client\n";

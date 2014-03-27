@@ -41,7 +41,7 @@ namespace vtrc { namespace common {
 
         void write( const char *data, size_t length ) ;
         void write( const char *data, size_t length, closure_type &success ) ;
-//        void write_raw( const char *data, size_t length );
+        void write_raw( const char *data, size_t length );
 
         virtual void on_write_error( const boost::system::error_code &err ) = 0;
 

@@ -65,8 +65,8 @@ void test_send( common::connection_iface *connection,
     common::connection_iface_sptr s(connection->shared_from_this());
     vtrc::shared_ptr<google::protobuf::RpcChannel> ev(
                 vtrc::server
-                ::channels::broadcast
-                ::create_event_channel(app.get_clients( ), s));
+                ::channels::unicast
+                ::create_event_channel( s, true));
 
     const vtrc_rpc_lowlevel::lowlevel_unit *pllu =
             s->get_protocol( ).

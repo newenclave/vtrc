@@ -298,10 +298,10 @@ namespace vtrc { namespace common {
         impl_->write( data, length, success );
     }
 
-//    void transport_tcp::write_raw( const char *data, size_t length )
-//    {
-//        impl_->write( data, length );
-//    }
+    void transport_tcp::write_raw( const char *data, size_t length )
+    {
+        impl_->write_raw( data, length );
+    }
 
     void transport_tcp::send_message( const char *data, size_t length )
     {
