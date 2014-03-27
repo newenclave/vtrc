@@ -20,8 +20,8 @@ namespace vtrc { namespace server {
         typedef vtrc_rpc_lowlevel::lowlevel_unit     lowlevel_unit_type;
         typedef vtrc::shared_ptr<lowlevel_unit_type> lowlevel_unit_sptr;
 
-        void config_message( common::connection_iface_sptr cl,
-                             lowlevel_unit_sptr llu, unsigned mess_type )
+        void configure_message( common::connection_iface_sptr cl,
+                                lowlevel_unit_sptr llu, unsigned mess_type )
         {
             const common::call_context
                                   *c(common::call_context::get(cl.get( )));
@@ -77,7 +77,7 @@ namespace vtrc { namespace server {
                 const vtrc_rpc_lowlevel::options &call_opt
                             ( clk->get_protocol( ).get_method_options(method) );
 
-                config_message( clk, llu, message_type_ );
+                configure_message( clk, llu, message_type_ );
 
                 const gpb::uint64 call_id = llu->id( );
 
@@ -124,16 +124,28 @@ namespace vtrc { namespace server {
                 ,sender_(sender)
             { }
 
+
             static
             bool send_to_client( common::connection_iface_sptr next,
                                  common::connection_iface_sptr sender,
                                  lowlevel_unit_sptr mess,
                                  unsigned mess_type)
             {
-                if( !sender || (sender != next) ) {
-                    config_message( next, mess, mess_type );
+                if( (sender != next) ) {
+                    configure_message( next, mess, mess_type );
                     next->get_protocol( ).call_rpc_method( *mess );
                 }
+                return true;
+            }
+
+            static
+            bool send_to_client2( common::connection_iface_sptr next,
+                                  common::connection_iface_sptr sender,
+                                  lowlevel_unit_sptr mess,
+                                  unsigned mess_type)
+            {
+                configure_message( next, mess, mess_type );
+                next->get_protocol( ).call_rpc_method( *mess );
                 return true;
             }
 
@@ -159,10 +171,15 @@ namespace vtrc { namespace server {
 //                const vtrc_rpc_lowlevel::options &call_opt
 //                            ( clk->get_protocol( ).get_method_options(method));
 
-                lck_list->foreach_while(
+                if( clk ) {
+                    lck_list->foreach_while(
                             vtrc::bind( &this_type::send_to_client, _1,
                                         clk, llu, message_type_) );
-
+                } else {
+                    lck_list->foreach_while(
+                            vtrc::bind( &this_type::send_to_client2, _1,
+                                        clk, llu, message_type_) );
+                }
             }
         };
     }
