@@ -66,7 +66,7 @@ void test_send( common::connection_iface *connection,
     vtrc::shared_ptr<google::protobuf::RpcChannel> ev(
                 vtrc::server
                 ::channels::unicast
-                ::create_event_channel( s, false));
+                ::create_callback_channel( s, false));
 
     const vtrc_rpc_lowlevel::lowlevel_unit *pllu =
             s->get_protocol( ).
@@ -86,10 +86,7 @@ void test_send( common::connection_iface *connection,
         //for( ;; )
         {
             ping.ping( NULL, &preq, &pres, NULL );
-//            std::cout << llu->id( ) << " sent "
-//                         << vtrc::chrono::high_resolution_clock::now( )
-//                         << "\n";
-            //boost::this_thread::sleep_for( vtrc::chrono::milliseconds(10) );
+
         }
     } catch( std::exception const &ex ) {
         std::cout << "png error " << ex.what( ) << "\n";
