@@ -73,8 +73,6 @@ namespace vtrc { namespace common {
 
         void make_call( lowlevel_unit_sptr llu );
 
-        const call_context *get_call_context( ) const;
-
         void call_rpc_method( const vtrc_rpc_lowlevel::lowlevel_unit &llu );
         void call_rpc_method( uint64_t slot_id,
                               const vtrc_rpc_lowlevel::lowlevel_unit &llu );
@@ -128,12 +126,21 @@ namespace vtrc { namespace common {
 
     protected:
 
+        virtual void init( )            = 0;
+        virtual void on_data_ready( )   = 0;
+
+        call_context *reset_call_context ( call_context *cc );
+        call_context *mutable_call_context( );
+        call_context *release_call_context( );
+
+    public:
+        const call_context *get_call_context( ) const;
+
+    protected:
+
         void push_rpc_message( uint64_t slot_id, lowlevel_unit_sptr mess);
 
         void push_rpc_message_all( lowlevel_unit_sptr mess );
-
-        virtual void init( )            = 0;
-        virtual void on_data_ready( )   = 0;
 
         virtual rpc_service_wrapper_sptr get_service_by_name(
                                                 const std::string &name ) = 0;
@@ -141,10 +148,6 @@ namespace vtrc { namespace common {
         bool check_message( const std::string &mess );
         void parse_message( const std::string &mess,
                             google::protobuf::Message &result );
-
-        call_context *reset_call_context ( call_context *cc );
-        call_context *mutable_call_context( );
-        call_context *release_call_context( );
 
         void pop_message( );
 
