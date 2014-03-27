@@ -488,8 +488,9 @@ namespace vtrc { namespace common {
                 send_message( *llu );
             } else {
 //                connection_->write_raw( "", 0 );
-                llu->Clear( );
-                send_message( *llu );
+                //llu->Clear( );
+                static const protocol_layer::lowlevel_unit_type fake;
+                send_message( fake );
                 //;;;
             }
         }

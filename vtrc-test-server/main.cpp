@@ -66,7 +66,7 @@ void test_send( common::connection_iface *connection,
     vtrc::shared_ptr<google::protobuf::RpcChannel> ev(
                 vtrc::server
                 ::channels::unicast
-                ::create_event_channel( s, true));
+                ::create_event_channel( s, false));
 
     const vtrc_rpc_lowlevel::lowlevel_unit *pllu =
             s->get_protocol( ).
@@ -210,7 +210,7 @@ int main( ) try {
 
     tcp_ep->start( );
 
-    boost::this_thread::sleep_for( vtrc::chrono::milliseconds(120000000) );
+    boost::this_thread::sleep_for( vtrc::chrono::milliseconds(12000) );
 
     std::cout << "Stoppped. Wait ... \n";
 
