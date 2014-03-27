@@ -65,7 +65,7 @@ void test_send( common::connection_iface *connection )
     vtrc::shared_ptr<google::protobuf::RpcChannel> ev(
                 vtrc::server
                 ::channels::unicast
-                ::create_event_channel(s, true));
+                ::create_event_channel(s, false));
 
     const vtrc_rpc_lowlevel::lowlevel_unit *pllu =
             s->get_protocol( ).
@@ -84,7 +84,7 @@ void test_send( common::connection_iface *connection )
     try {
         //for( ;; )
         {
-            ping.ping( NULL, &preq, &pres, NULL );
+            //ping.ping( NULL, &preq, &pres, NULL );
 //            std::cout << llu->id( ) << " sent "
 //                         << vtrc::chrono::high_resolution_clock::now( )
 //                         << "\n";

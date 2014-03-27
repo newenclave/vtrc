@@ -47,6 +47,8 @@ namespace vtrc { namespace common {
         transport_tcp                       *parent_;
         vtrc::atomic<bool>                   closed_;
 
+        vtrc::mutex                          write_lock_;
+
         impl( bip::tcp::socket *s )
             :sock_(s)
             ,ios_(sock_->get_io_service( ))
@@ -99,6 +101,9 @@ namespace vtrc { namespace common {
 
         void write( const char *data, size_t length )
         {
+            vtrc::unique_lock<vtrc::mutex> l(write_lock_);
+            sock_->send( basio::buffer( data, length ) );
+            return;
             message_holder_sptr mh(make_holder(data, length));
             write_dispatcher_.post(
                    vtrc::bind( &this_type::write_impl, this, mh,
@@ -110,6 +115,11 @@ namespace vtrc { namespace common {
         {
             vtrc::shared_ptr<closure_type>
                     closure(vtrc::make_shared<closure_type>(success));
+
+            vtrc::unique_lock<vtrc::mutex> l(write_lock_);
+            sock_->send( basio::buffer( data, length ) );
+            success( bsys::error_code(0, bsys::get_system_category()) );
+            return;
 
             message_holder_sptr mh(make_holder(data, length, closure));
 
@@ -171,10 +181,10 @@ namespace vtrc { namespace common {
                         (*write_queue_.front( )->closure_)( error );
                     }
 
-//                    std::cout << "mesage was queued "
-//                              << vtrc::chrono::high_resolution_clock::now( ) -
-//                                 write_queue_.front( )->stored_
-//                              << "\n";
+                    std::cout << "mesage was queued "
+                              << vtrc::chrono::high_resolution_clock::now( ) -
+                                 write_queue_.front( )->stored_
+                              << "\n";
 
                     write_queue_.pop_front( );
                 }
