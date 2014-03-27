@@ -71,7 +71,26 @@ void test_send( common::connection_iface *connection )
             s->get_protocol( ).
             get_call_context( )->get_lowlevel_message( );
 
-    vtrc_rpc_lowlevel::lowlevel_unit llu(*pllu);
+//    vtrc_rpc_lowlevel::lowlevel_unit llu;
+//    llu.mutable_opt( )->set_wait( false );
+//    llu.mutable_info( )->set_message_type( vtrc_rpc_lowlevel::message_info::MESSAGE_EVENT );
+//    llu.mutable_call( )->set_service( vtrc_service::internal::descriptor( )->full_name( ) );
+//    llu.mutable_call( )->set_method( "ping" );
+//    llu.set_id( s->get_protocol( ).next_index( ) * 10 );
+
+//    vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> res;
+
+//    try {
+//        s->get_protocol( ).call_rpc_method( llu.id( ), llu );
+//        //s->get_protocol( ).read_slot_for( llu.id( ), res, 1000 );
+
+//        s->get_protocol( ).erase_slot( llu.id( ) );
+//    } catch ( const std::exception &ex ) {
+//        std::cout << "rw call error " << ex.what( ) << "\n";
+//    }
+
+//    std::cout << "got result\n";
+
     //s->get_protocol( ).send_message( llu );
 
     vtrc_service::internal::Stub ping( ev.get( ));
@@ -200,7 +219,7 @@ private:
 int main( ) try {
 
     main_app app;
-    vtrc::common::thread_pool poll(app.get_io_service( ), 4);
+    vtrc::common::thread_pool poll(app.get_io_service( ), 8);
 
     vtrc::shared_ptr<vtrc::server::endpoint_iface> tcp_ep
             (vtrc::server::endpoints::tcp::create(app, "0.0.0.0", 44667));

@@ -36,6 +36,7 @@ namespace vtrc { namespace common  {
 
         llu->mutable_call( )->set_service( serv_name );
         llu->mutable_call( )->set_method( meth_name );
+
         llu->set_request( request->SerializeAsString( ) );
         llu->set_response( response->SerializeAsString( ) );
 

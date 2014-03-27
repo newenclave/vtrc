@@ -474,7 +474,15 @@ namespace vtrc { namespace common {
                 }
                 send_message( *llu );
             } else {
-                ;;;
+                llu->clear_request( );
+                llu->clear_response( );
+                llu->clear_opt( );
+                llu->clear_error( );
+                llu->clear_call( );
+                llu->clear_info( );
+                llu->clear_id( );
+                send_message( *llu );
+                //;;;
             }
         }
 

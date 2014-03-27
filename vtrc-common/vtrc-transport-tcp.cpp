@@ -43,14 +43,15 @@ namespace vtrc { namespace common {
         basio::io_service                  &ios_;
         enviroment                          env_;
 
-        basio::io_service::strand           write_dispatcher_;
-        std::deque<message_holder_sptr>     write_queue_;
-
         transport_tcp                       *parent_;
         vtrc::atomic<bool>                   closed_;
 
 #ifndef TRANSPORT_USE_ASYNC_WRITE
         vtrc::mutex                          write_lock_;
+#else
+        basio::io_service::strand           write_dispatcher_;
+        std::deque<message_holder_sptr>     write_queue_;
+
 #endif
 
         impl( bip::tcp::socket *s )
@@ -110,7 +111,7 @@ namespace vtrc { namespace common {
 #ifndef TRANSPORT_USE_ASYNC_WRITE
 
             vtrc::unique_lock<vtrc::mutex> l(write_lock_);
-            sock_->send( basio::buffer( mh->message_ ) );
+            basio::write( *sock_, basio::buffer( mh->message_ ) );
 #else
             write_dispatcher_.post(
                    vtrc::bind( &this_type::write_impl, this, mh,
@@ -127,7 +128,7 @@ namespace vtrc { namespace common {
 
             vtrc::unique_lock<vtrc::mutex> l(write_lock_);
             bsys::error_code ec;
-            sock_->send( basio::buffer( mh->message_ ), 0, ec );
+            basio::write( *sock_, basio::buffer( mh->message_ ), ec );
             success( ec );
 #else
             vtrc::shared_ptr<closure_type>
@@ -145,6 +146,9 @@ namespace vtrc { namespace common {
             return std::string( data, data + length );
         }
 
+
+#ifdef TRANSPORT_USE_ASYNC_WRITE
+
         void async_write( )
         {
             try {
@@ -161,7 +165,6 @@ namespace vtrc { namespace common {
             }
 
         }
-
         void write_impl( message_holder_sptr data,
                          vtrc::shared_ptr<closure_type> closure,
                          common::connection_iface_sptr inst)
@@ -212,6 +215,7 @@ namespace vtrc { namespace common {
                 parent_->on_write_error( error );
             }
         }
+#endif
 
         boost::asio::ip::tcp::socket &get_socket( )
         {
