@@ -13,6 +13,8 @@
 
 #include "vtrc-chrono.h"
 
+#define TRANSPORT_USE_ASYNC_WRITE 1
+
 namespace vtrc { namespace common {
 
     namespace basio = boost::asio;
@@ -47,7 +49,9 @@ namespace vtrc { namespace common {
         transport_tcp                       *parent_;
         vtrc::atomic<bool>                   closed_;
 
+#ifndef TRANSPORT_USE_ASYNC_WRITE
         vtrc::mutex                          write_lock_;
+#endif
 
         impl( bip::tcp::socket *s )
             :sock_(s)
@@ -102,7 +106,9 @@ namespace vtrc { namespace common {
         void write( const char *data, size_t length )
         {
             message_holder_sptr mh(make_holder(data, length));
-#if 0
+
+#ifndef TRANSPORT_USE_ASYNC_WRITE
+
             vtrc::unique_lock<vtrc::mutex> l(write_lock_);
             sock_->send( basio::buffer( mh->message_ ) );
 #else
@@ -115,12 +121,14 @@ namespace vtrc { namespace common {
 
         void write(const char *data, size_t length, closure_type &success)
         {
-#if 0
+
+#ifndef TRANSPORT_USE_ASYNC_WRITE
             message_holder_sptr mh(make_holder(data, length));
 
             vtrc::unique_lock<vtrc::mutex> l(write_lock_);
-            sock_->send( basio::buffer( mh->message_ ) );
-            success( bsys::error_code(0, bsys::get_system_category()) );
+            bsys::error_code ec;
+            sock_->send( basio::buffer( mh->message_ ), 0, ec );
+            success( ec );
 #else
             vtrc::shared_ptr<closure_type>
                     closure(vtrc::make_shared<closure_type>(success));
