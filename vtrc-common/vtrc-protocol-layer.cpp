@@ -288,7 +288,10 @@ namespace vtrc { namespace common {
 
         void call_rpc_method( const ll_unit_type &llu )
         {
-            send_message( llu );
+            //if( llu.has_id( ) && llu.info( ).has_message_type( ) )
+                send_message( llu );
+//            else
+//                throw vtrc::common::exception( vtrc_errors::ERR_INVALID_VALUE );
         }
 
         void wait_call_slot( uint64_t slot_id, uint32_t millisec)
