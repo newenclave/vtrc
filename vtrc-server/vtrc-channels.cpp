@@ -28,7 +28,7 @@ namespace vtrc { namespace server {
 
             switch( mess_type ) {
             case vtrc_rpc_lowlevel::message_info::MESSAGE_CALLBACK:
-                if( c ) {
+                if( c && c->get_lowlevel_message( )->opt( ).wait( ) ) {
                     llu->mutable_info( )->set_message_type( mess_type );
                     llu->set_id( c->get_lowlevel_message( )->id( ) );
                     break;

@@ -31,9 +31,9 @@ message message_info {
         MESSAGE_NONE            = 0; // invalid value for internal usage
 
         MESSAGE_CALL            = 1; // from client
-        MESSAGE_INSERTION_CALL  = 2; // from client
+        MESSAGE_EVENT           = 2; // from server
 
-        MESSAGE_EVENT           = 3; // from server
+        MESSAGE_INSERTION_CALL  = 3; // from client
         MESSAGE_CALLBACK        = 4; // from server
 
         MESSAGE_SERVICE         = 5; // intervals
