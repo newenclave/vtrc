@@ -22,9 +22,8 @@ namespace vtrc { namespace common {
 
         void get_data( data_type &out ) const
         {
-            data_type tmp;
             shared_lock l(data_lock_);
-            tmp.insert(data_.begin( ), data_.end( ));
+            data_type tmp(data_);
             out.swap( tmp );
         }
 
@@ -52,12 +51,12 @@ namespace vtrc { namespace common {
 
         const std::string get( const std::string &name ) const
         {
-            const static std::string empty_;
+            static const std::string empty_;
             return get(name, empty_);
         }
 
         const std::string get( const std::string &name,
-                                const std::string &default_value ) const
+                               const std::string &default_value ) const
         {
             shared_lock l(data_lock_);
             data_type::const_iterator f(data_.find(name));

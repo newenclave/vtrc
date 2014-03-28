@@ -70,7 +70,7 @@ void test_send( common::connection_iface *connection,
 
 
     const vtrc_rpc_lowlevel::lowlevel_unit *pllu =
-            common::call_context::get( s.get( ) )->get_lowlevel_message( );
+            common::call_context::get( s )->get_lowlevel_message( );
 
 //    vtrc_rpc_lowlevel::lowlevel_unit llu;
 //    s->get_protocol( ).send_message( llu );
