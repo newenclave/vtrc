@@ -104,7 +104,7 @@ namespace vtrc { namespace common {
                 value = value_at_key( key );
             }
 
-            unique_lock lck(value->lock_);
+            unique_lock vlck(value->lock_);
 
             value->canceled_ = false;
             bool res = call_wait( lck, value );
@@ -123,7 +123,7 @@ namespace vtrc { namespace common {
                 value = value_at_key( key );
             }
 
-            unique_lock lck(value->lock_);
+            unique_lock vlck(value->lock_);
             value->canceled_ = false;
 #if 0
             bool res = true;
