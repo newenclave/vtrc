@@ -55,7 +55,7 @@ namespace vtrc { namespace common {
 
         typedef std::deque<std::string> message_queue_type;
 
-        protocol_layer( transport_iface *connection );
+        protocol_layer( transport_iface *connection, bool oddside );
         virtual ~protocol_layer( );
 
     public:
@@ -69,7 +69,7 @@ namespace vtrc { namespace common {
         virtual void on_write_error( const boost::system::error_code &err );
         virtual void on_read_error( const boost::system::error_code &err );
 
-        void send_message( const google::protobuf::Message &message );
+        //void send_message( const google::protobuf::Message &message );
 
         void make_call( lowlevel_unit_sptr llu );
 

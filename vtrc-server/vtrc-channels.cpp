@@ -20,27 +20,28 @@ namespace vtrc { namespace server {
         typedef vtrc_rpc_lowlevel::lowlevel_unit     lowlevel_unit_type;
         typedef vtrc::shared_ptr<lowlevel_unit_type> lowlevel_unit_sptr;
 
-        gpb::uint64 get_callback_index( common::connection_iface_sptr cl )
+        void configure_message( common::connection_iface_sptr cl,
+                                lowlevel_unit_sptr llu, unsigned mess_type )
         {
             const common::call_context
                                   *c(common::call_context::get(cl.get( )));
 
-            if( c ) {
-                return c->get_lowlevel_message( )->id( );
-            } else {
-                return cl->get_protocol( ).next_index( );
-            }
-        }
-
-        gpb::uint64 get_mess_index( common::connection_iface_sptr c,
-                                    unsigned mess_type)
-        {
             switch( mess_type ) {
             case vtrc_rpc_lowlevel::message_info::MESSAGE_CALLBACK:
-                return get_callback_index( c );
+                if( c ) {
+                    llu->mutable_info( )->set_message_type( mess_type );
+                    llu->set_id( c->get_lowlevel_message( )->id( ) );
+                    break;
+                } else {
+                    mess_type = vtrc_rpc_lowlevel::message_info::MESSAGE_EVENT;
+                }
             case vtrc_rpc_lowlevel::message_info::MESSAGE_EVENT:
-                return c->get_protocol( ).next_index( );
+            default:
+                llu->mutable_info( )->set_message_type( mess_type );
+                llu->set_id( cl->get_protocol( ).next_index( ) );
+                break;
             };
+
         }
 
         class unicast_channel: public common_channel {
@@ -76,25 +77,25 @@ namespace vtrc { namespace server {
                 const vtrc_rpc_lowlevel::options &call_opt
                             ( clk->get_protocol( ).get_method_options(method) );
 
-                llu->mutable_info( )->set_message_type(message_type_);
+                configure_message( clk, llu, message_type_ );
 
-                gpb::uint64 call_id = get_mess_index(clk, message_type_);
+                const gpb::uint64 call_id = llu->id( );
 
                 llu->set_id(call_id);
 
                 if( disable_wait_ )
                     llu->mutable_opt( )->set_wait(false);
+                else
+                    llu->mutable_opt( )->set_wait(call_opt.wait( ));
 
                 //// WAITABLE CALL
-                if( call_opt.wait( ) && llu->opt( ).wait( ) ) {
+                if( llu->opt( ).wait( ) ) {
 
                     process_waitable_call( call_id, llu, response,
                                            clk, call_opt );
 
                 } else { // NOT WAITABLE CALL
                     clk->get_protocol( ).call_rpc_method( *llu );
-//                    clk->get_protocol( ).call_rpc_method( llu->id( ), *llu );
-//                    clk->get_protocol( ).erase_slot( llu->id( ) );
                 }
 
             }
@@ -123,16 +124,28 @@ namespace vtrc { namespace server {
                 ,sender_(sender)
             { }
 
+
             static
             bool send_to_client( common::connection_iface_sptr next,
                                  common::connection_iface_sptr sender,
-                                 lowlevel_unit_sptr mess)
+                                 lowlevel_unit_sptr mess,
+                                 unsigned mess_type)
             {
-                if( !sender || (sender != next) ) {
-                    mess->set_id( get_mess_index( next,
-                                               mess->info( ).message_type( )));
+                if( (sender != next) ) {
+                    configure_message( next, mess, mess_type );
                     next->get_protocol( ).call_rpc_method( *mess );
                 }
+                return true;
+            }
+
+            static
+            bool send_to_client2( common::connection_iface_sptr next,
+                                  common::connection_iface_sptr sender,
+                                  lowlevel_unit_sptr mess,
+                                  unsigned mess_type)
+            {
+                configure_message( next, mess, mess_type );
+                next->get_protocol( ).call_rpc_method( *mess );
                 return true;
             }
 
@@ -156,12 +169,17 @@ namespace vtrc { namespace server {
                 llu->mutable_opt( )->set_wait( false );
 
 //                const vtrc_rpc_lowlevel::options &call_opt
-//                            ( clk->get_protocol( ).get_method_options(method));
+//                          ( clk->get_protocol( ).get_method_options(method));
 
-                lck_list->foreach_while(
+                if( clk ) {
+                    lck_list->foreach_while(
                             vtrc::bind( &this_type::send_to_client, _1,
-                                        clk, llu) );
-
+                                        clk, llu, message_type_) );
+                } else {
+                    lck_list->foreach_while(
+                            vtrc::bind( &this_type::send_to_client2, _1,
+                                        clk, llu, message_type_) );
+                }
             }
         };
     }

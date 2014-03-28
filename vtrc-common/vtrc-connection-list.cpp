@@ -68,9 +68,10 @@ namespace vtrc { namespace common {
             shared_lock l(clients_lock_);
             size_t result = 0;
 
-            for(client_map_type::iterator b(clients_.begin()),
-                                          e(clients_.end()); b!=e; ++b )
-            {
+            client_map_type::iterator b(clients_.begin( ));
+            const client_map_type::iterator e(clients_.end( ));
+
+            for( ; b!=e; ++b ) {
                 bool ot = func( b->second );
                 result += ot;
                 if( !ot ) break;
