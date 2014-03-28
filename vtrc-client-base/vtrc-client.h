@@ -23,6 +23,7 @@ namespace vtrc {
 
     namespace common {
         class pool_pair;
+        class rpc_channel;
     }
 
 namespace client {
@@ -72,7 +73,10 @@ namespace client {
         boost::asio::io_service       &get_rpc_service( );
         const boost::asio::io_service &get_rpc_service( ) const;
 
-        vtrc::shared_ptr<google::protobuf::RpcChannel> get_channel( );
+        vtrc::shared_ptr<google::protobuf::RpcChannel> create_channel( );
+        vtrc::shared_ptr<google::protobuf::RpcChannel>
+                            create_channel( bool disable_wait, bool insertion );
+
         void connect( const std::string &address, const std::string &service );
         void async_connect( const std::string &address,
                             const std::string &service,

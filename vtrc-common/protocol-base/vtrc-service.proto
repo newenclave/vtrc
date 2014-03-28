@@ -21,6 +21,14 @@ service test_rpc {
             opt: { secure_level: 2, wait: true }
         };
     };
+
+    rpc test2( vtrc_rpc_lowlevel.message_info )
+        returns ( vtrc_rpc_lowlevel.message_info )
+    {
+        option (vtrc_rpc_lowlevel.method_options) = {
+            opt: { secure_level: 2, wait: true }
+        };
+    };
 }
 
 service test_events {

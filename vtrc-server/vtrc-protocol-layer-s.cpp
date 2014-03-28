@@ -200,6 +200,7 @@ namespace vtrc { namespace server {
 
         void on_rcp_call_ready( )
         {
+            typedef vtrc_rpc_lowlevel::message_info message_info;
             //std::cout << "call from client\n";
             while( !parent_->message_queue( ).empty( ) ) {
 
@@ -209,11 +210,12 @@ namespace vtrc { namespace server {
 
                 if( llu->has_info( ) ) {
                     switch (llu->info( ).message_type( )) {
-                    case vtrc_rpc_lowlevel::message_info::MESSAGE_CALL:
+                    case message_info::MESSAGE_CALL:
                         process_call( llu );
                         break;
-                    case vtrc_rpc_lowlevel::message_info::MESSAGE_EVENT:
-                    case vtrc_rpc_lowlevel::message_info::MESSAGE_CALLBACK:
+                    case message_info::MESSAGE_EVENT:
+                    case message_info::MESSAGE_CALLBACK:
+                    case message_info::MESSAGE_INSERTION_CALL:
                         process_event_cb( llu );
                         break;
                     default:

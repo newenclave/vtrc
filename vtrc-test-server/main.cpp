@@ -39,6 +39,7 @@
 
 #include "vtrc-memory.h"
 #include "vtrc-chrono.h"
+#include "vtrc-thread.h"
 
 #include "vtrc-server/vtrc-channels.h"
 
@@ -85,6 +86,7 @@ void test_send( common::connection_iface *connection,
     try {
         //for( ;; )
         {
+            std::cout << "ping " << vtrc::this_thread::get_id( ) << "\n";
             ping.ping( NULL, &preq, &pres, NULL );
         }
     } catch( std::exception const &ex ) {
@@ -122,6 +124,15 @@ public:
 //        boost::thread(test_send, connection_).detach( );
         test_send(connection_, app_);
 
+        if( done ) done->Run( );
+    }
+
+    virtual void test2(::google::protobuf::RpcController* controller,
+                         const ::vtrc_rpc_lowlevel::message_info* request,
+                         ::vtrc_rpc_lowlevel::message_info* response,
+                         ::google::protobuf::Closure* done)
+    {
+        std::cout << "test 2 " << vtrc::this_thread::get_id( ) << "\n";
         if( done ) done->Run( );
     }
 };

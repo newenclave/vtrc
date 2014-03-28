@@ -20,6 +20,9 @@
 #include "vtrc-thread.h"
 #include "vtrc-chrono.h"
 
+
+using namespace vtrc;
+
 void on_connect( const boost::system::error_code &err )
 {
     std::cout << "connected "
@@ -42,11 +45,11 @@ struct work_time {
 
 class ping_impl: public vtrc_service::internal {
 
-    vtrc::common::connection_iface *c_;
+    client::vtrc_client *c_;
 
 public:
 
-    ping_impl( vtrc::common::connection_iface *c )
+    ping_impl( client::vtrc_client *c )
         :c_( c )
     {}
 
@@ -56,13 +59,23 @@ public:
                          ::google::protobuf::Closure* done)
     {
         std::cout << "ping event rcvd "
-                  << c_->get_protocol( ).get_call_context( )->get_lowlevel_message( )->id( )
+                  << c_->connection( )
+                     ->get_protocol( ).get_call_context( )
+                     ->get_lowlevel_message( )->id( )
                   << " " << vtrc::this_thread::get_id( ) << " "
                   //<< vtrc::chrono::high_resolution_clock::now( )
                   << "\n";
 
         const vtrc::common::call_context *cc =
-                    vtrc::common::call_context::get( c_ );
+                    vtrc::common::call_context::get( c_->connection( ) );
+
+        vtrc::shared_ptr<google::protobuf::RpcChannel>
+                ch(c_->create_channel( false, true ));
+
+        vtrc_rpc_lowlevel::message_info mi;
+        vtrc_service::test_rpc::Stub s( ch.get( ) );
+
+        s.test2( NULL, &mi, &mi, NULL );
 
 //        while (cc) {
 //            std::cout << cc->get_lowlevel_message( )->call( ).method( )
@@ -95,8 +108,6 @@ public:
 
 };
 
-using namespace vtrc;
-
 int main( )
 {
 
@@ -107,11 +118,11 @@ int main( )
     ///cl->async_connect( "127.0.0.1", "44667", on_connect );
 
     cl->advise_handler( vtrc::shared_ptr<test_ev>(new test_ev(cl->connection( ).get( ))) );
-    cl->advise_handler( vtrc::shared_ptr<ping_impl>(new ping_impl(cl->connection( ).get( ))) );
+    cl->advise_handler( vtrc::shared_ptr<ping_impl>(new ping_impl(cl.get( ))) );
 
     vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(2000) );
 
-    vtrc::shared_ptr<google::protobuf::RpcChannel> ch(cl->get_channel( ));
+    vtrc::shared_ptr<google::protobuf::RpcChannel> ch(cl->create_channel( ));
     vtrc_service::test_rpc::Stub s( ch.get( ) );
 
     vtrc_rpc_lowlevel::message_info mi;

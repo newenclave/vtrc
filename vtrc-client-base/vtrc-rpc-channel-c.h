@@ -31,6 +31,14 @@ namespace client {
     public:
 
         explicit rpc_channel_c(vtrc::shared_ptr<common::connection_iface> conn);
+
+        rpc_channel_c(vtrc::shared_ptr<common::connection_iface> conn,
+                      bool disable_wait);
+
+        rpc_channel_c(vtrc::shared_ptr<common::connection_iface> conn,
+                      bool disable_wait,
+                      bool make_insertion_call);
+
         ~rpc_channel_c( );
 
     private:
