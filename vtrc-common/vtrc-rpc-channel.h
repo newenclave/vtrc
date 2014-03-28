@@ -3,6 +3,7 @@
 
 #include <google/protobuf/service.h>
 #include "vtrc-connection-iface.h"
+#include "vtrc-protocol-layer.h"
 
 namespace vtrc_rpc_lowlevel {
     class lowlevel_unit;
@@ -38,6 +39,8 @@ namespace vtrc { namespace common  {
                             google::protobuf::Message* response,
                             common::connection_iface_sptr &cl,
                             const vtrc_rpc_lowlevel::options &call_opt ) const;
+    protected:
+        typedef protocol_layer::context_holder context_holder;
 
     };
 }}

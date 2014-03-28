@@ -97,6 +97,10 @@ namespace vtrc { namespace common {
         const vtrc_rpc_lowlevel::options &get_method_options(
                             const google::protobuf::MethodDescriptor* method );
 
+    protected:
+
+        friend class rpc_channel;
+
         struct context_holder {
             protocol_layer *p_;
             call_context   *old_ctx_;
