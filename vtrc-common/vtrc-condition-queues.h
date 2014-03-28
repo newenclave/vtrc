@@ -125,7 +125,7 @@ namespace vtrc { namespace common {
 
             unique_lock lck(value->lock_);
             value->canceled_ = false;
-#if 1
+#if 0
             bool res = true;
             if( value->data_.empty( ) ) {
                 res = call_wait( lck, value );
@@ -152,7 +152,7 @@ namespace vtrc { namespace common {
 
             unique_lock lck(value->lock_);
             value->canceled_ = false;
-#if 1
+#if 0
             bool res = true;
             if( value->data_.empty( ) ) {
                 res = call_wait( lck, value );
