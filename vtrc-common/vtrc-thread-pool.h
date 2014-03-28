@@ -34,7 +34,7 @@ namespace vtrc { namespace common {
 
         void join_all( );
 
-        boost::asio::io_service &get_io_service( );
+        boost::asio::io_service       &get_io_service( );
         const boost::asio::io_service &get_io_service( ) const;
     };
 
