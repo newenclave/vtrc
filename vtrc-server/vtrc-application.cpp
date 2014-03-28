@@ -15,24 +15,40 @@ namespace vtrc { namespace server {
         boost::asio::io_service            *ios_;
         const bool                          own_ios_;
 
+        boost::asio::io_service            *rpc_ios_;
+        const bool                          own_rpc_ios_;
+
         vtrc::shared_ptr<common::connection_list>   clients_;
 
         impl( )
             :ios_(new boost::asio::io_service)
             ,own_ios_(true)
+            ,rpc_ios_(new boost::asio::io_service)
+            ,own_rpc_ios_(true)
             ,clients_(common::connection_list::create( ))
         { }
 
         impl( boost::asio::io_service *ios )
             :ios_(ios)
             ,own_ios_(false)
+            ,rpc_ios_(ios)
+            ,own_rpc_ios_(false)
+            ,clients_(common::connection_list::create( ))
+        { }
+
+        impl( boost::asio::io_service *ios, boost::asio::io_service *rpc_ios )
+            :ios_(ios)
+            ,own_ios_(false)
+            ,rpc_ios_(rpc_ios)
+            ,own_rpc_ios_(false)
             ,clients_(common::connection_list::create( ))
         { }
 
         ~impl( ) try
         {
             clients_->clear( );
-            if( own_ios_ ) delete ios_;
+            if( own_ios_ )      delete ios_;
+            if( own_rpc_ios_ )  delete rpc_ios_;
 
         } catch ( ... ) {
 
@@ -48,6 +64,11 @@ namespace vtrc { namespace server {
             return *ios_;
         }
 
+        boost::asio::io_service &get_rpc_service( )
+        {
+            return *rpc_ios_;
+        }
+
         vtrc::shared_ptr<common::connection_list> get_clients( )
         {
             return clients_;
@@ -55,13 +76,18 @@ namespace vtrc { namespace server {
 
     };
 
-    application::application( )
+    application::application(  )
         :impl_(new impl)
     {}
 
     application::application( boost::asio::io_service &ios )
         :impl_(new impl(&ios))
     {}
+
+     application::application( boost::asio::io_service &ios,
+                               boost::asio::io_service &rpc_ios)
+         :impl_(new impl(&ios, &rpc_ios))
+     {}
 
     application::~application( )
     {
@@ -77,6 +103,11 @@ namespace vtrc { namespace server {
     {
         return impl_->get_io_service( );
     }
+
+     boost::asio::io_service &application::get_rpc_service( )
+     {
+         return impl_->get_rpc_service( );
+     }
 
     vtrc::shared_ptr<common::connection_list> application::get_clients()
     {

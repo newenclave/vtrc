@@ -34,6 +34,7 @@ namespace vtrc { namespace client {
         typedef impl this_type;
 
         basio::io_service              &ios_;
+        basio::io_service              &rpc_ios_;
         vtrc_client                    *parent_;
         common::connection_iface_sptr   connection_;
         vtrc::shared_ptr<rpc_channel_c> channel_;
@@ -42,8 +43,9 @@ namespace vtrc { namespace client {
         service_shared_map              hold_services_;
         vtrc::shared_mutex              services_lock_;
 
-        impl( basio::io_service &ios )
+        impl( basio::io_service &ios, basio::io_service &rpc_ios )
             :ios_(ios)
+            ,rpc_ios_(rpc_ios)
         {}
 
         void connect( const std::string &address,
@@ -141,15 +143,24 @@ namespace vtrc { namespace client {
 
     };
 
-    vtrc_client::vtrc_client( boost::asio::io_service &ios )
-        :impl_(new impl(ios))
+    vtrc_client::vtrc_client( boost::asio::io_service &ios,
+                              boost::asio::io_service &rpc_ios )
+        :impl_(new impl(ios, rpc_ios))
     {
         impl_->parent_ = this;
     }
 
     vtrc::shared_ptr<vtrc_client> vtrc_client::create(basio::io_service &ios)
     {
-        vtrc::shared_ptr<vtrc_client> new_inst( new vtrc_client( ios ) );
+        vtrc::shared_ptr<vtrc_client> new_inst( new vtrc_client( ios, ios ) );
+
+        return new_inst;
+    }
+
+    vtrc::shared_ptr<vtrc_client> vtrc_client::create(basio::io_service &ios,
+                                                  basio::io_service &rpc_ios)
+    {
+        vtrc::shared_ptr<vtrc_client> new_inst( new vtrc_client( ios, rpc_ios));
 
         return new_inst;
     }
@@ -172,6 +183,16 @@ namespace vtrc { namespace client {
     const boost::asio::io_service &vtrc_client::get_io_service( ) const
     {
         return impl_->ios_;
+    }
+
+    boost::asio::io_service &vtrc_client::get_rpc_service( )
+    {
+        return impl_->rpc_ios_;
+    }
+
+    const boost::asio::io_service &vtrc_client::get_rpc_service( ) const
+    {
+        return impl_->rpc_ios_;
     }
 
     vtrc::shared_ptr<gpb::RpcChannel> vtrc_client::get_channel( )

@@ -29,7 +29,8 @@ namespace vtrc { namespace client {
         vtrc_client( const vtrc_client &other );
         vtrc_client & operator = ( const vtrc_client &other );
 
-        vtrc_client( boost::asio::io_service &ios );
+        vtrc_client( boost::asio::io_service &ios,
+                     boost::asio::io_service &rpc_ios );
 
     public:
 
@@ -39,6 +40,10 @@ namespace vtrc { namespace client {
 
         static
         vtrc::shared_ptr<vtrc_client> create( boost::asio::io_service &ios );
+
+        static
+        vtrc::shared_ptr<vtrc_client> create(boost::asio::io_service &ios,
+                                             boost::asio::io_service &rpc_ios );
 
         vtrc::weak_ptr<vtrc_client> weak_from_this( )
         {
@@ -53,6 +58,9 @@ namespace vtrc { namespace client {
 
         boost::asio::io_service       &get_io_service( );
         const boost::asio::io_service &get_io_service( ) const;
+
+        boost::asio::io_service       &get_rpc_service( );
+        const boost::asio::io_service &get_rpc_service( ) const;
 
         vtrc::shared_ptr<google::protobuf::RpcChannel> get_channel( );
         void connect( const std::string &address, const std::string &service );

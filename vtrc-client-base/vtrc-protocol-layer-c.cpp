@@ -98,7 +98,7 @@ namespace vtrc { namespace client {
 
         void process_event( lowlevel_unit_sptr &llu )
         {
-            client_->get_io_service( ).post(
+            client_->get_rpc_service( ).post(
                 vtrc::bind( &this_type::process_event_impl, this,
                              client_->weak_from_this( ), llu));
         }
@@ -131,7 +131,7 @@ namespace vtrc { namespace client {
 
         void on_rpc_process_( )
         {
-            connection_->get_io_service( ).post(
+            client_->get_io_service( ).post(
                         vtrc::bind(&this_type::on_rpc_process, this));
         }
 

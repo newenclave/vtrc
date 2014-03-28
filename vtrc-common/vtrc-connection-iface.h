@@ -32,8 +32,9 @@ namespace vtrc { namespace common {
         virtual void close( )                              = 0;
         virtual bool active( ) const                       = 0;
         virtual common::enviroment      &get_enviroment( ) = 0;
-        virtual boost::asio::io_service &get_io_service( ) = 0;
         virtual protocol_layer          &get_protocol( )   = 0;
+
+        //virtual boost::asio::io_service &get_io_service( ) = 0;
 
         virtual bool impersonate( )         { return false; }
         virtual bool impersonated( ) const  { return false; }

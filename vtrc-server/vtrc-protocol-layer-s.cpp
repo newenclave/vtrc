@@ -178,16 +178,9 @@ namespace vtrc { namespace server {
             parent_->push_rpc_message( llu->id( ), llu );
         }
 
-        void on_rcp_call_ready_( )
-        {
-            connection_->get_io_service( ).post(
-                        vtrc::bind(&this_type::on_rcp_call_ready, this));
-        }
-
-
         void process_call( lowlevel_unit_sptr &llu )
         {
-            app_.get_io_service( ).post(
+            app_.get_rpc_service( ).post(
                         vtrc::bind( &this_type::push_call, this,
                                     llu, connection_->shared_from_this( )));
         }
@@ -197,6 +190,12 @@ namespace vtrc { namespace server {
             app_.get_io_service( ).post(
                         vtrc::bind( &this_type::push_event_answer, this,
                                 llu, connection_->shared_from_this( )));
+        }
+
+        void on_rcp_call_ready_( )
+        {
+            app_.get_io_service( ).post(
+                        vtrc::bind(&this_type::on_rcp_call_ready, this));
         }
 
         void on_rcp_call_ready( )

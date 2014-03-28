@@ -199,7 +199,8 @@ private:
 int main( ) try {
 
     main_app app;
-    vtrc::common::thread_pool poll(app.get_io_service( ), 8);
+    vtrc::common::thread_pool poll(app.get_io_service( ), 1);
+    vtrc::common::thread_pool rpc_poll(app.get_rpc_service( ), 1);
 
     vtrc::shared_ptr<vtrc::server::endpoint_iface> tcp_ep
             (vtrc::server::endpoints::tcp::create(app, "0.0.0.0", 44667));
@@ -214,9 +215,11 @@ int main( ) try {
 
 
     poll.stop( );
+    rpc_poll.stop( );
 
     std::cout << "Stoppped. Wait ... \n";
     poll.join_all( );
+    rpc_poll.join_all( );
 
     return 0;
 

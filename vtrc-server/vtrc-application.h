@@ -38,10 +38,13 @@ namespace server {
 
         application( );
         application( boost::asio::io_service &ios );
+        application( boost::asio::io_service &ios,
+                     boost::asio::io_service &rpc_ios);
         virtual ~application( );
 
         common::enviroment      &get_enviroment( );
         boost::asio::io_service &get_io_service( );
+        boost::asio::io_service &get_rpc_service( );
 
         vtrc::shared_ptr<common::connection_list>      get_clients( );
 
