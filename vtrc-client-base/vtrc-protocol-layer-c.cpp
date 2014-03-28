@@ -129,12 +129,6 @@ namespace vtrc { namespace client {
 //            parent_->send_message( *llu );
         }
 
-        void on_rpc_process_( )
-        {
-            client_->get_io_service( ).post(
-                        vtrc::bind(&this_type::on_rpc_process, this));
-        }
-
         void on_rpc_process( )
         {
             while( !parent_->message_queue( ).empty( ) ) {
