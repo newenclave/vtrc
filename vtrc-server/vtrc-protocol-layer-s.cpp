@@ -187,6 +187,7 @@ namespace vtrc { namespace server {
 
         void process_event_cb( lowlevel_unit_sptr &llu )
         {
+//            parent_->push_rpc_message( llu->id( ), llu );
             app_.get_io_service( ).post(
                         vtrc::bind( &this_type::push_event_answer, this,
                                 llu, connection_->shared_from_this( )));

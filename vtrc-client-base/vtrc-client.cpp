@@ -83,7 +83,10 @@ namespace vtrc { namespace client {
 
         vtrc::shared_ptr<gpb::RpcChannel> create_channel( )
         {
+            vtrc::shared_ptr<rpc_channel_c>
+               new_ch(vtrc::make_shared<rpc_channel_c>( connection_ ));
 
+            return new_ch;
         }
 
         vtrc::shared_ptr<gpb::RpcChannel> create_channel( bool dw, bool ins )

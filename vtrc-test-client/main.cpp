@@ -111,7 +111,7 @@ public:
 int main( )
 {
 
-    common::pool_pair pp(1, 1);
+    common::pool_pair pp(4, 4);
     vtrc::shared_ptr<client::vtrc_client> cl(client::vtrc_client::create(pp));
 
     cl->connect( "127.0.0.1", "44667" );

@@ -485,7 +485,7 @@ namespace vtrc { namespace common {
 
             }
 
-            if( opt_wait && request_wait ) {
+            if( request_wait ) {
                 llu->clear_request( );
                 llu->clear_call( );
                 if( failed ) {

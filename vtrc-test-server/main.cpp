@@ -67,7 +67,7 @@ void test_send( common::connection_iface *connection,
     vtrc::shared_ptr<google::protobuf::RpcChannel> ev(
                 vtrc::server
                 ::channels::unicast
-                ::create_event_channel( s, true ));
+                ::create_event_channel( s, false ));
 
 
     const vtrc_rpc_lowlevel::lowlevel_unit *pllu =
@@ -86,7 +86,7 @@ void test_send( common::connection_iface *connection,
     try {
         //for( ;; )
         {
-            std::cout << "ping " << vtrc::this_thread::get_id( ) << "\n";
+            std::cout << "ping 2 " << vtrc::this_thread::get_id( ) << "\n";
             ping.ping( NULL, &preq, &pres, NULL );
         }
     } catch( std::exception const &ex ) {
@@ -132,7 +132,7 @@ public:
                          ::vtrc_rpc_lowlevel::message_info* response,
                          ::google::protobuf::Closure* done)
     {
-        std::cout << "test 2 " << vtrc::this_thread::get_id( ) << "\n";
+        std::cout << "test 2 " << vtrc::this_thread::get_id( ) << "\n\n";
         if( done ) done->Run( );
     }
 };
@@ -210,7 +210,7 @@ private:
 
 int main( ) try {
 
-    common::pool_pair pp(1, 1);
+    common::pool_pair pp(4, 4);
     main_app app(pp);
 
     vtrc::shared_ptr<vtrc::server::endpoint_iface> tcp_ep

@@ -32,10 +32,10 @@ namespace vtrc { namespace client {
         const unsigned mess_type_;
         const bool     disable_wait_;
 
-        impl(vtrc::shared_ptr<common::connection_iface> c, bool insert, bool dw)
+        impl(vtrc::shared_ptr<common::connection_iface> c, bool dw, bool insert)
             :connection_(c)
-            ,mess_type_(insert ? message_info::MESSAGE_CALL
-                               : message_info::MESSAGE_INSERTION_CALL)
+            ,mess_type_(insert ? message_info::MESSAGE_INSERTION_CALL
+                               : message_info::MESSAGE_CALL)
             ,disable_wait_(dw)
         {}
 

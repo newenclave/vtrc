@@ -70,9 +70,11 @@ namespace vtrc { namespace common  {
                                          top->error( ).additional( ) );
             }
 
-            // client: call. server: event, callback
+            // client: call, insert_call; server: event, callback
             if( top->info( ).message_type( ) != mess_type ) {
+                std::cout << "1 call " << mess_type << llu->call( ).method( ) << "\n";
                 cl->get_protocol( ).make_call( top );
+                std::cout << "2 call " << mess_type << llu->call( ).method( ) << "\n";
             } else {
                 response->ParseFromString( top->response( ) );
                 wait = false;
