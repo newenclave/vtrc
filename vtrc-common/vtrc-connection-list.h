@@ -11,10 +11,9 @@ namespace vtrc { namespace common {
         struct impl;
         impl  *impl_;
 
+        connection_list( );
         connection_list( const connection_list & );
         connection_list& operator = ( const connection_list & );
-
-        connection_list( );
 
     public:
 

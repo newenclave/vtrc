@@ -29,8 +29,7 @@ namespace vtrc { namespace common {
 
         void store( common::connection_iface *c )
         {
-            common::connection_iface_sptr connection( c );
-            store( connection );
+            store( c->shared_from_this( ) );
         }
 
         void store( common::connection_iface_sptr c )
