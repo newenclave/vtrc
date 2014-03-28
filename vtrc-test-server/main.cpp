@@ -210,7 +210,7 @@ private:
 
 int main( ) try {
 
-    common::pool_pair pp(4, 4);
+    common::pool_pair pp(1, 2);
     main_app app(pp);
 
     vtrc::shared_ptr<vtrc::server::endpoint_iface> tcp_ep
