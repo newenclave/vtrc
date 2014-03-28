@@ -125,7 +125,7 @@ namespace vtrc { namespace common {
 
             unique_lock lck(value->lock_);
             value->canceled_ = false;
-#if 0
+#if 1
             bool res = true;
             if( value->data_.empty( ) ) {
                 res = call_wait( lck, value );
@@ -133,7 +133,7 @@ namespace vtrc { namespace common {
 #else
             bool res = call_wait( lck, value );
 #endif
-
+            
             if( res ) pop_all( value, result );
 
             return cancel_res2wait_res( value->canceled_, res );
@@ -152,7 +152,7 @@ namespace vtrc { namespace common {
 
             unique_lock lck(value->lock_);
             value->canceled_ = false;
-#if 0
+#if 1
             bool res = true;
             if( value->data_.empty( ) ) {
                 res = call_wait( lck, value );
@@ -266,6 +266,7 @@ namespace vtrc { namespace common {
         static void write_all_impl( typename map_type::value_type &f,
                                     const queue_value_type &data )
         {
+
             f.second->data_.push_back( data );
             f.second->cond_.notify_one( );
         }
@@ -289,6 +290,7 @@ namespace vtrc { namespace common {
             }
 
             if( value )  {
+                vtrc::unique_lock lck(value->lock_);
                 value->data_.push_back( data );
                 value->cond_.notify_one( );
             }
@@ -298,6 +300,8 @@ namespace vtrc { namespace common {
         {
             vtrc::shared_lock lck(lock_);
             typename map_type::iterator f(at( key ));
+
+            vtrc::unique_lock lck(f->second->lock_);
 
             f->second->data_.insert( f->second->data_.end( ),
                                      data.begin( ), data.end( ));
