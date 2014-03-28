@@ -68,9 +68,9 @@ void test_send( common::connection_iface *connection,
                 ::channels::unicast
                 ::create_callback_channel( s, false ));
 
+
     const vtrc_rpc_lowlevel::lowlevel_unit *pllu =
-            s->get_protocol( ).
-            get_call_context( )->get_lowlevel_message( );
+            common::call_context::get( s.get( ) )->get_lowlevel_message( );
 
 //    vtrc_rpc_lowlevel::lowlevel_unit llu;
 //    s->get_protocol( ).send_message( llu );

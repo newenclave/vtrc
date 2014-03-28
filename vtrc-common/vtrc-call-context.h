@@ -1,15 +1,14 @@
 #ifndef VTRC_CALL_CONTEXT_H
 #define VTRC_CALL_CONTEXT_H
 
+#include "vtrc-connection-iface.h"
+
 namespace vtrc_rpc_lowlevel {
     class lowlevel_unit;
     class options;
 }
 
-
 namespace vtrc { namespace common {
-
-    struct connection_iface;
 
     class call_context {
 
@@ -20,6 +19,7 @@ namespace vtrc { namespace common {
     public:
 
         static const call_context *get( connection_iface *iface );
+        static const call_context *get( connection_iface_sptr iface );
 
         call_context( const call_context &other );
         call_context &operator = ( const call_context &other );
