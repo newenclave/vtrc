@@ -107,7 +107,7 @@ namespace vtrc { namespace common {
             unique_lock vlck(value->lock_);
 
             value->canceled_ = false;
-            bool res = call_wait( lck, value );
+            bool res = call_wait( vlck, value );
 
             return cancel_res2wait_res( value->canceled_, res );
         }
@@ -128,10 +128,10 @@ namespace vtrc { namespace common {
 #if 0
             bool res = true;
             if( value->data_.empty( ) ) {
-                res = call_wait( lck, value );
+                res = call_wait( vlck, value );
             }
 #else
-            bool res = call_wait( lck, value );
+            bool res = call_wait( vlck, value );
 #endif
 
             if( res ) pop_all( value, result );
@@ -150,15 +150,15 @@ namespace vtrc { namespace common {
                 value = value_at_key( key );
             }
 
-            unique_lock lck(value->lock_);
+            unique_lock vlck(value->lock_);
             value->canceled_ = false;
 #if 0
             bool res = true;
             if( value->data_.empty( ) ) {
-                res = call_wait( lck, value );
+                res = call_wait( vlck, value );
             }
 #else
-            bool res = call_wait( lck, value );
+            bool res = call_wait( vlck, value );
 #endif
             if( !value->canceled_ && !value->data_.empty( ) ) {
                 std::swap( result, value->data_.front( ) );
