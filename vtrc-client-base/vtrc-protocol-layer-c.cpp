@@ -169,6 +169,7 @@ namespace vtrc { namespace client {
                     process_internal( llu );
                     break;
                 case vtrc_rpc_lowlevel::message_info::MESSAGE_CALL:
+                case vtrc_rpc_lowlevel::message_info::MESSAGE_INSERTION_CALL:
                     process_call( llu );
                     break;
                 default:
