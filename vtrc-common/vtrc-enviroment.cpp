@@ -99,7 +99,7 @@ namespace vtrc { namespace common {
     }
 
     const std::string enviroment::get( const std::string &name,
-                                        const std::string &default_value ) const
+                                       const std::string &default_value ) const
     {
         return impl_->get( name, default_value );
     }
