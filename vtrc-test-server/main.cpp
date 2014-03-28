@@ -19,7 +19,7 @@
 #include "vtrc-server/vtrc-endpoint-tcp.h"
 
 #include "vtrc-common/vtrc-connection-iface.h"
-#include "vtrc-common/vtrc-thread-pool.h"
+#include "vtrc-common/vtrc-pool-pair.h"
 #include "vtrc-common/vtrc-sizepack-policy.h"
 #include "vtrc-common/vtrc-exception.h"
 
@@ -131,7 +131,8 @@ class main_app: public vtrc::server::application
 
 public:
 
-    main_app( )
+    main_app( common::pool_pair &pp )
+        :application(pp)
     { }
 
 private:
@@ -198,9 +199,8 @@ private:
 
 int main( ) try {
 
-    main_app app;
-    vtrc::common::thread_pool poll(app.get_io_service( ), 1);
-    vtrc::common::thread_pool rpc_poll(app.get_rpc_service( ), 1);
+    common::pool_pair pp(1, 1);
+    main_app app(pp);
 
     vtrc::shared_ptr<vtrc::server::endpoint_iface> tcp_ep
             (vtrc::server::endpoints::tcp::create(app, "0.0.0.0", 44667));
@@ -213,13 +213,10 @@ int main( ) try {
 
     tcp_ep->stop( );
 
-
-    poll.stop( );
-    rpc_poll.stop( );
-
     std::cout << "Stoppped. Wait ... \n";
-    poll.join_all( );
-    rpc_poll.join_all( );
+
+    pp.stop_all( );
+    pp.join_all( );
 
     return 0;
 

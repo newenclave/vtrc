@@ -3,7 +3,8 @@
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/service.h>
 
-#include "vtrc-common/vtrc-thread-pool.h"
+#include "vtrc-common/vtrc-pool-pair.h"
+
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-call-context.h"
 #include "vtrc-common/vtrc-exception.h"
@@ -99,11 +100,8 @@ using namespace vtrc;
 int main( )
 {
 
-    common::thread_pool tp(1);
-    common::thread_pool rpc_tp(1);
-    vtrc::shared_ptr<client::vtrc_client> cl(
-                          client::vtrc_client::create(tp.get_io_service( ),
-                                                    rpc_tp.get_io_service( )));
+    common::pool_pair pp(1, 1);
+    vtrc::shared_ptr<client::vtrc_client> cl(client::vtrc_client::create(pp));
 
     cl->connect( "127.0.0.1", "44667" );
     ///cl->async_connect( "127.0.0.1", "44667", on_connect );
@@ -146,10 +144,8 @@ int main( )
         }
     }
 
-    rpc_tp.stop( );
-    tp.stop( );
-    tp.join_all( );
-    rpc_tp.join_all( );
+    pp.stop_all( );
+    pp.join_all( );
 
     return 0;
 

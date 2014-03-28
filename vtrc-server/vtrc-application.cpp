@@ -6,6 +6,7 @@
 
 #include "vtrc-common/vtrc-enviroment.h"
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"
+#include "vtrc-common/vtrc-pool-pair.h"
 
 namespace vtrc { namespace server {
 
@@ -79,6 +80,12 @@ namespace vtrc { namespace server {
     application::application(  )
         :impl_(new impl)
     {}
+
+     application::application(common::pool_pair &pools)
+         :impl_(new impl(&pools.get_io_service( ), &pools.get_rpc_service( )))
+     {
+
+     }
 
     application::application( boost::asio::io_service &ios )
         :impl_(new impl(&ios))

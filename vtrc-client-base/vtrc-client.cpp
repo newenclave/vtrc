@@ -12,7 +12,7 @@
 #include "vtrc-bind.h"
 
 #include "vtrc-common/vtrc-mutex-typedefs.h"
-
+#include "vtrc-common/vtrc-pool-pair.h"
 
 namespace vtrc { namespace client {
 
@@ -162,6 +162,15 @@ namespace vtrc { namespace client {
     {
         vtrc::shared_ptr<vtrc_client> new_inst( new vtrc_client( ios, rpc_ios));
 
+        return new_inst;
+    }
+
+    vtrc::shared_ptr<vtrc_client> vtrc_client::create(common::pool_pair &pools)
+    {
+        vtrc::shared_ptr<vtrc_client>
+                new_inst( new vtrc_client(
+                              pools.get_io_service( ),
+                              pools.get_rpc_service( )));
         return new_inst;
     }
 

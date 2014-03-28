@@ -18,6 +18,7 @@ namespace vtrc {
         class enviroment;
         class rpc_service_wrapper;
         class connection_list;
+        class pool_pair;
     }
 
 namespace server {
@@ -37,6 +38,7 @@ namespace server {
     public:
 
         application( );
+        application( common::pool_pair &pools );
         application( boost::asio::io_service &ios );
         application( boost::asio::io_service &ios,
                      boost::asio::io_service &rpc_ios);

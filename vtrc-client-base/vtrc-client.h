@@ -19,7 +19,13 @@ namespace google { namespace protobuf {
     class Service;
 }}
 
-namespace vtrc { namespace client {
+namespace vtrc {
+
+    namespace common {
+        class pool_pair;
+    }
+
+namespace client {
 
     class vtrc_client: public vtrc::enable_shared_from_this<vtrc_client> {
 
@@ -31,6 +37,8 @@ namespace vtrc { namespace client {
 
         vtrc_client( boost::asio::io_service &ios,
                      boost::asio::io_service &rpc_ios );
+
+        vtrc_client( common::pool_pair &pools );
 
     public:
 
@@ -44,6 +52,8 @@ namespace vtrc { namespace client {
         static
         vtrc::shared_ptr<vtrc_client> create(boost::asio::io_service &ios,
                                              boost::asio::io_service &rpc_ios );
+        static
+        vtrc::shared_ptr<vtrc_client> create( common::pool_pair &pools );
 
         vtrc::weak_ptr<vtrc_client> weak_from_this( )
         {
