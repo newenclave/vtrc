@@ -57,8 +57,7 @@ namespace vtrc { namespace common  {
 
         while( wait ) {
 
-            lowlevel_unit_sptr top
-                    (vtrc::make_shared<lowlevel_unit_type>( ));
+            lowlevel_unit_sptr top (vtrc::make_shared<lowlevel_unit_type>( ));
 
             cl->get_protocol( ).read_slot_for( call_id, top,
                                                call_opt.call_timeout( ) );
@@ -70,11 +69,10 @@ namespace vtrc { namespace common  {
                                          top->error( ).additional( ) );
             }
 
-            // client: call, insert_call; server: event, callback
+            /// from client: call, insertion_call
+            /// from server: event, callback
             if( top->info( ).message_type( ) != mess_type ) {
-                std::cout << "1 call " << mess_type << llu->call( ).method( ) << "\n";
                 cl->get_protocol( ).make_call( top );
-                std::cout << "2 call " << mess_type << llu->call( ).method( ) << "\n";
             } else {
                 response->ParseFromString( top->response( ) );
                 wait = false;
