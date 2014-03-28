@@ -57,7 +57,7 @@ public:
         std::cout << "ping event rcvd "
                   << c_->get_protocol( ).get_call_context( )->get_lowlevel_message( )->id( )
                   << " " << vtrc::this_thread::get_id( ) << " "
-                  << vtrc::chrono::high_resolution_clock::now( )
+                  //<< vtrc::chrono::high_resolution_clock::now( )
                   << "\n";
 
         const vtrc::common::call_context *cc =
@@ -127,7 +127,7 @@ int main( )
     for( int i=0; i<29999999999; ++i ) {
         try {
             //vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(10) );
-            //work_time wt;
+            work_time wt;
             s.test( NULL, &mi, &mi, NULL );
             last = mi.message_type( );
             std::cout << "response: " << last << "\n";
