@@ -133,7 +133,7 @@ namespace vtrc { namespace common {
 #else
             bool res = call_wait( lck, value );
 #endif
-            
+
             if( res ) pop_all( value, result );
 
             return cancel_res2wait_res( value->canceled_, res );
@@ -218,8 +218,11 @@ namespace vtrc { namespace common {
             typename map_type::iterator f(store_.find( key ));
             if( f != store_.end( ) ) {
                 vtrc::upgrade_to_unique ulck(lck);
-                f->second->canceled_ = true;
-                f->second->cond_.notify_all( );
+                {
+                    unique_lock lck(f->second->lock_);
+                    f->second->canceled_ = true;
+                    f->second->cond_.notify_all( );
+                }
                 store_.erase( f );
             }
         }
@@ -230,6 +233,7 @@ namespace vtrc { namespace common {
             for(typename map_type::iterator b(store_.begin()), e(store_.end());
                                             b!=e; ++b)
             {
+                unique_lock lck(b->second->lock_);
                 b->second->canceled_ = true;
                 b->second->cond_.notify_all( );
             }
@@ -241,6 +245,7 @@ namespace vtrc { namespace common {
             vtrc::shared_lock lck(lock_);
             typedef typename map_type::iterator iterator_type;
             for( iterator_type b(store_.begin( )), e(store_.end( )); b!=e; ++b){
+                unique_lock lck(b->second->lock_);
                 b->second->canceled_ = true;
                 b->second->cond_.notify_all( );
             }
@@ -250,6 +255,8 @@ namespace vtrc { namespace common {
         {
             vtrc::shared_lock lck(lock_);
             typename map_type::iterator f(at( key ));
+
+            unique_lock flck(f->second->lock_);
             f->second->canceled_ = true;
             f->second->cond_.notify_all( );
         }
@@ -259,6 +266,7 @@ namespace vtrc { namespace common {
             vtrc::shared_lock lck(lock_);
             typename map_type::iterator f(at( key ));
 
+            unique_lock flck(f->second->lock_);
             f->second->data_.push_back( data );
             f->second->cond_.notify_one( );
         }
@@ -267,6 +275,7 @@ namespace vtrc { namespace common {
                                     const queue_value_type &data )
         {
 
+            unique_lock lck(f.second->lock_);
             f.second->data_.push_back( data );
             f.second->cond_.notify_one( );
         }
@@ -290,7 +299,7 @@ namespace vtrc { namespace common {
             }
 
             if( value )  {
-                vtrc::unique_lock lck(value->lock_);
+                unique_lock vlck(value->lock_);
                 value->data_.push_back( data );
                 value->cond_.notify_one( );
             }
@@ -301,7 +310,7 @@ namespace vtrc { namespace common {
             vtrc::shared_lock lck(lock_);
             typename map_type::iterator f(at( key ));
 
-            vtrc::unique_lock lck(f->second->lock_);
+            unique_lock flck(f->second->lock_);
 
             f->second->data_.insert( f->second->data_.end( ),
                                      data.begin( ), data.end( ));
