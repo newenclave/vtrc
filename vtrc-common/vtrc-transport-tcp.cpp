@@ -103,24 +103,6 @@ namespace vtrc { namespace common {
             return make_holder(data, length, vtrc::shared_ptr<closure_type>( ));
         }
 
-        static void wake_up( ) { }
-
-        void write_raw( const char *data, size_t length )
-        {
-#ifdef TRANSPORT_USE_ASYNC_WRITE
-            //write_dispatcher_.post( &this_type::wake_up );
-
-            message_holder_sptr mh(vtrc::make_shared<message_holder>( ));
-            mh->message_.assign( data, data + length );
-
-            write_dispatcher_.post(
-                   vtrc::bind( &this_type::write_impl, this, mh,
-                                vtrc::shared_ptr<closure_type>( ),
-                                parent_->shared_from_this( )));
-
-#endif
-        }
-
         void write( const char *data, size_t length )
         {
             message_holder_sptr mh(make_holder(data, length));

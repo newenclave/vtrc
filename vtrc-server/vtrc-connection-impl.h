@@ -1,6 +1,10 @@
 #ifndef VTRC_CONNECTION_IMPL_H
 #define VTRC_CONNECTION_IMPL_H
 
+#include "vtrc-memory.h"
+#include "vtrc-bind.h"
+#include "vtrc-ref.h"
+
 namespace vtrc { namespace server { namespace endpoints {
 
     namespace {
@@ -11,9 +15,9 @@ namespace vtrc { namespace server { namespace endpoints {
         template <typename ParentType>
         struct connection_impl: public ParentType {
 
-            typedef ParentType                          parent_type;
-            typedef connection_impl<ParentType>         this_type;
-            typedef typename ParentType::socket_type    socket_type;
+            typedef ParentType                       parent_type;
+            typedef connection_impl<ParentType>      this_type;
+            typedef typename ParentType::socket_type socket_type;
 
             endpoint_iface                     &endpoint_;
             application                        &app_;

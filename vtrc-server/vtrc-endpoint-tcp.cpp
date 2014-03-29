@@ -3,10 +3,6 @@
 #include <deque>
 #include <algorithm>
 
-#include "vtrc-memory.h"
-#include "vtrc-bind.h"
-#include "vtrc-ref.h"
-
 #include "vtrc-endpoint-iface.h"
 #include "vtrc-application.h"
 #include "vtrc-connection-iface.h"

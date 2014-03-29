@@ -24,11 +24,13 @@ namespace vtrc { namespace common {
     namespace basio = boost::asio;
     namespace bsys  = boost::system;
 
+    namespace {
+        typedef transport_unix_local::socket_type socket_type;
+    }
+
     struct transport_unix_local::impl {
 
         typedef impl this_type;
-
-        typedef transport_unix_local::socket_type socket_type;
 
         struct message_holder {
             std::string message_;
@@ -66,7 +68,7 @@ namespace vtrc { namespace common {
 
         const char *name( ) const
         {
-            return "tcp";
+            return "unix-local";
         }
 
         void close( )
@@ -102,24 +104,6 @@ namespace vtrc { namespace common {
         message_holder_sptr make_holder( const char *data, size_t length)
         {
             return make_holder(data, length, vtrc::shared_ptr<closure_type>( ));
-        }
-
-        static void wake_up( ) { }
-
-        void write_raw( const char *data, size_t length )
-        {
-#ifdef TRANSPORT_USE_ASYNC_WRITE
-            //write_dispatcher_.post( &this_type::wake_up );
-
-            message_holder_sptr mh(vtrc::make_shared<message_holder>( ));
-            mh->message_.assign( data, data + length );
-
-            write_dispatcher_.post(
-                   vtrc::bind( &this_type::write_impl, this, mh,
-                                vtrc::shared_ptr<closure_type>( ),
-                                parent_->shared_from_this( )));
-
-#endif
         }
 
         void write( const char *data, size_t length )
@@ -207,11 +191,6 @@ namespace vtrc { namespace common {
                     if( write_queue_.front( )->closure_ ) {
                         (*write_queue_.front( )->closure_)( error );
                     }
-
-//                    std::cout << "mesage was queued "
-//                              << vtrc::chrono::high_resolution_clock::now( ) -
-//                                 write_queue_.front( )->stored_
-//                              << "\n";
 
                     write_queue_.pop_front( );
                 }
