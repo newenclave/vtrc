@@ -1,0 +1,6 @@
+#ifndef VTRC_ENDPOINT_IMPL_H
+#define VTRC_ENDPOINT_IMPL_H
+
+
+
+#endif // VTRC_ENDPOINT_IMPL_H
