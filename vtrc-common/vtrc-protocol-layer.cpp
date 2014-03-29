@@ -379,6 +379,11 @@ namespace vtrc { namespace common {
             rpc_queue_.cancel_all( );
         }
 
+        void close_queue( )
+        {
+            rpc_queue_.close( );
+        }
+
         void closure( common::rpc_controller_sptr controller,
                       lowlevel_unit_sptr llu )
         {
@@ -674,6 +679,11 @@ namespace vtrc { namespace common {
     void protocol_layer::cancel_all_slots( )
     {
         impl_->cancel_all_slots( );
+    }
+
+    void protocol_layer::close_queue( )
+    {
+        impl_->close_queue( );
     }
 
     void protocol_layer::erase_all_slots( )

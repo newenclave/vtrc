@@ -93,6 +93,7 @@ namespace vtrc { namespace common {
 
         void erase_all_slots( );
         void cancel_all_slots( );
+        void close_queue( );
 
         const vtrc_rpc_lowlevel::options &get_method_options(
                             const google::protobuf::MethodDescriptor* method );
