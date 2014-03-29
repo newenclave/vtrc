@@ -209,7 +209,7 @@ namespace vtrc { namespace server {
 
         void process_call( lowlevel_unit_sptr &llu )
         {
-            std::cout << "current calls: " << current_calls_ << "\n";
+            //std::cout << "current calls: " << current_calls_ << "\n";
             if( ++current_calls_ <= maximum_calls_ ) {
                 app_.get_rpc_service( ).post(
                         vtrc::bind( &this_type::push_call, this,
