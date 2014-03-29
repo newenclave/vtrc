@@ -369,12 +369,14 @@ namespace vtrc { namespace common {
             return *result;
         }
 
-        void cancel_all_slots( bool erase )
+        void erase_all_slots(  )
         {
-            if( erase )
-                rpc_queue_.erase_all( );
-            else
-                rpc_queue_.cancel_all( );
+            rpc_queue_.erase_all( );
+        }
+
+        void cancel_all_slots( )
+        {
+            rpc_queue_.cancel_all( );
         }
 
         void closure( common::rpc_controller_sptr controller,
@@ -671,12 +673,12 @@ namespace vtrc { namespace common {
 
     void protocol_layer::cancel_all_slots( )
     {
-        impl_->cancel_all_slots( false );
+        impl_->cancel_all_slots( );
     }
 
     void protocol_layer::erase_all_slots( )
     {
-        impl_->cancel_all_slots( true );
+        impl_->erase_all_slots( );
     }
 
     void protocol_layer::push_rpc_message(uint64_t slot_id, ll_unit_sptr mess)
