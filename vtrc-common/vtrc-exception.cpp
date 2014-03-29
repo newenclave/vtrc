@@ -18,8 +18,7 @@ namespace vtrc { namespace common {
                 vtrc_errors::errors_numbers_descriptor( )
                                 ->FindValueByNumber( code );
             if( ev ) {
-                return ev->options( )
-                        .GetExtension( vtrc_errors::error_description );
+                return ev->options( ).GetExtension( vtrc_errors::description );
             }
             return unknown_error;
         }

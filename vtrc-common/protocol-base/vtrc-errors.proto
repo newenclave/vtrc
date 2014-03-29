@@ -6,7 +6,7 @@ import "google/protobuf/descriptor.proto";
 // index 52000
 
 extend google.protobuf.EnumValueOptions {
-    optional string error_description = 52001 [default = "Unknown error"];
+    optional string description = 52001 [default = "Unknown error"];
 }
 
 enum error_category {
@@ -17,23 +17,23 @@ enum error_category {
 
 enum errors_numbers { // CATEGORY_INTERNAL
                       // linux error codes using I am
-    ERR_NO_ERROR      =    0 [(error_description) = "No error"];
-    ERR_PERMISSION    =    1 [(error_description) = "Operation not permitted"];
-    ERR_NOT_FOUND     =    2 [(error_description) = "Object was not found"];
-    ERR_IO            =    5 [(error_description) = "I/O error"];
-    ERR_BAD_FILE      =    9 [(error_description) = "Bad file number"];
-    ERR_ACCESS        =   13 [(error_description) = "Permission denied"];
-    ERR_INVALID_VALUE =   22 [(error_description) = "Invalid value"];
-    ERR_NO_FUNC       =   38 [(error_description) = "Function not implemented"];
-    ERR_TIMEOUT       =   62 [(error_description) = "Timeout"];
-    ERR_COMM          =   70 [(error_description) = "Communication error on send"];
-    ERR_PROTOCOL      =   71 [(error_description) = "Protocol error"];
-    ERR_MESSAGE_SIZE  =   90 [(error_description) = "Message is too long"];
-    ERR_CANCELED      =  125 [(error_description) = "Operation canceled"];
-    ERR_UNKNOWN       = 1000 [(error_description) = "Unknown error"];
-    ERR_CALL_FAILED   = 1001 [(error_description) = "Call failed"];
-    ERR_INTERNAL      = 1002 [(error_description) = "Internal error"];
-    ERR_CHANNEL       = 1003 [(error_description) = "Channel error"];
+    ERR_NO_ERROR      =    0 [(description) = "No error"];
+    ERR_PERMISSION    =    1 [(description) = "Operation not permitted"];
+    ERR_NOT_FOUND     =    2 [(description) = "Object was not found"];
+    ERR_IO            =    5 [(description) = "I/O error"];
+    ERR_BAD_FILE      =    9 [(description) = "Bad file number"];
+    ERR_ACCESS        =   13 [(description) = "Permission denied"];
+    ERR_INVALID_VALUE =   22 [(description) = "Invalid value"];
+    ERR_NO_FUNC       =   38 [(description) = "Function not implemented"];
+    ERR_TIMEOUT       =   62 [(description) = "Timeout"];
+    ERR_COMM          =   70 [(description) = "Communication error on send"];
+    ERR_PROTOCOL      =   71 [(description) = "Protocol error"];
+    ERR_MESSAGE_SIZE  =   90 [(description) = "Message is too long"];
+    ERR_CANCELED      =  125 [(description) = "Operation canceled"];
+    ERR_UNKNOWN       = 1000 [(description) = "Unknown error"];
+    ERR_CALL_FAILED   = 1001 [(description) = "Call failed"];
+    ERR_INTERNAL      = 1002 [(description) = "Internal error"];
+    ERR_CHANNEL       = 1003 [(description) = "Channel error"];
 
 }
 
