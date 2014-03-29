@@ -20,7 +20,6 @@
 #include "vtrc-thread.h"
 #include "vtrc-chrono.h"
 
-
 using namespace vtrc;
 
 void on_connect( const boost::system::error_code &err )
@@ -102,21 +101,8 @@ public:
 
 };
 
-int main( )
+void run_client( vtrc::shared_ptr<client::vtrc_client> cl)
 {
-
-    common::pool_pair pp(1, 2);
-    vtrc::shared_ptr<client::vtrc_client> cl(client::vtrc_client::create(pp));
-
-    cl->connect( "/tmp/test" );
-    //cl->connect( "127.0.0.1", "44667" );
-    ///cl->async_connect( "127.0.0.1", "44667", on_connect );
-
-    cl->advise_handler( vtrc::shared_ptr<test_ev>(new test_ev(cl->connection( ).get( ))) );
-    cl->advise_handler( vtrc::shared_ptr<ping_impl>(new ping_impl(cl.get( ))) );
-
-    vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(2000) );
-
     vtrc::shared_ptr<google::protobuf::RpcChannel> ch(cl->create_channel( ));
     vtrc_service::test_rpc::Stub s( ch.get( ) );
 
@@ -149,6 +135,25 @@ int main( )
             //std::cout << "call error: " << ex.what( ) << "\n";
         }
     }
+}
+
+int main( )
+{
+
+    common::pool_pair pp(2, 4);
+    vtrc::shared_ptr<client::vtrc_client> cl(client::vtrc_client::create(pp));
+
+    cl->connect( "/tmp/test" );
+    //cl->connect( "127.0.0.1", "44667" );
+    ///cl->async_connect( "127.0.0.1", "44667", on_connect );
+
+    cl->advise_handler( vtrc::shared_ptr<test_ev>(new test_ev(cl->connection( ).get( ))) );
+    cl->advise_handler( vtrc::shared_ptr<ping_impl>(new ping_impl(cl.get( ))) );
+
+    vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(2000) );
+
+    vtrc::thread( run_client, cl ).detach( );
+    vtrc::thread( run_client, cl ).join( );
 
     pp.stop_all( );
     pp.join_all( );
