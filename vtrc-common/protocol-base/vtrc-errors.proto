@@ -6,7 +6,7 @@ import "google/protobuf/descriptor.proto";
 // index 52000
 
 extend google.protobuf.EnumValueOptions {
-    optional string error_description = 52000 [default = "Unknown error"];
+    optional string error_description = 52001 [default = "Unknown error"];
 }
 
 enum error_category {
