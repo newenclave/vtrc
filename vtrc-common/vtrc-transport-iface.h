@@ -18,7 +18,12 @@ namespace vtrc { namespace common {
 
         virtual ~transport_iface( ) { }
         //
-        virtual void init( ) = 0;
+
+        virtual const char *name( ) const   = 0;
+        virtual void close( )               = 0;
+        virtual bool active( ) const        = 0;
+        virtual void init( )                = 0;
+
         virtual void write( const char *data, size_t length ) = 0;
         virtual void write( const char *data, size_t length,
                                       closure_type &success ) = 0;

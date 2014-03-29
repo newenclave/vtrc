@@ -21,6 +21,10 @@ namespace vtrc { namespace common {
     namespace bip   = boost::asio::ip;
     namespace bsys  = boost::system;
 
+    namespace {
+        typedef bip::tcp::socket socket_type;
+    }
+
     struct transport_tcp::impl {
 
         typedef impl this_type;
@@ -39,7 +43,7 @@ namespace vtrc { namespace common {
 
         typedef vtrc::shared_ptr<message_holder> message_holder_sptr;
 
-        vtrc::shared_ptr<bip::tcp::socket>  sock_;
+        vtrc::shared_ptr<socket_type>       sock_;
         basio::io_service                  &ios_;
         enviroment                          env_;
 
@@ -54,7 +58,7 @@ namespace vtrc { namespace common {
 
 #endif
 
-        impl( bip::tcp::socket *s )
+        impl( socket_type *s )
             :sock_(s)
             ,ios_(sock_->get_io_service( ))
             ,write_dispatcher_(ios_)
@@ -235,12 +239,12 @@ namespace vtrc { namespace common {
         }
 #endif
 
-        boost::asio::ip::tcp::socket &get_socket( )
+        socket_type &get_socket( )
         {
             return *sock_;
         }
 
-        const boost::asio::ip::tcp::socket &get_socket( ) const
+        const socket_type &get_socket( ) const
         {
             return *sock_;
         }
@@ -251,7 +255,7 @@ namespace vtrc { namespace common {
         }
     };
 
-    transport_tcp::transport_tcp( bip::tcp::socket *s )
+    transport_tcp::transport_tcp( socket_type *s )
         :impl_(new impl(s))
     {
         impl_->parent_ = this;
@@ -282,11 +286,6 @@ namespace vtrc { namespace common {
         return impl_->get_enviroment( );
     }
 
-    boost::asio::io_service &transport_tcp::get_io_service( )
-    {
-        return impl_->get_io_service( );
-    }
-
     void transport_tcp::write( const char *data, size_t length )
     {
         return impl_->write( data, length );
@@ -298,32 +297,17 @@ namespace vtrc { namespace common {
         impl_->write( data, length, success );
     }
 
-//    void transport_tcp::write_raw( const char *data, size_t length )
-//    {
-//        impl_->write_raw( data, length );
-//    }
-
-    void transport_tcp::send_message( const char *data, size_t length )
-    {
-        return impl_->write( data, length );
-    }
-
-//    boost::asio::io_service::strand &transport_tcp::get_dispatcher( )
-//    {
-//        return impl_->get_dispatcher( );
-//    }
-
     std::string transport_tcp::prepare_for_write(const char *data, size_t len)
     {
         return impl_->prepare_for_write( data, len );
     }
 
-    boost::asio::ip::tcp::socket &transport_tcp::get_socket( )
+    socket_type &transport_tcp::get_socket( )
     {
         return impl_->get_socket( );
     }
 
-    const boost::asio::ip::tcp::socket &transport_tcp::get_socket( ) const
+    const socket_type &transport_tcp::get_socket( ) const
     {
         return impl_->get_socket( );
     }
