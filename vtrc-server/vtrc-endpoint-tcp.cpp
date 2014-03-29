@@ -38,9 +38,9 @@ namespace vtrc { namespace server { namespace endpoints {
 
             typedef endpoint_tcp this_type;
 
-            typedef common::transport_tcp                   transport_type;
-            typedef connection_impl<transport_type>         connection_type;
-            typedef typename connection_type::socket_type   socket_type;
+            typedef common::transport_tcp           transport_type;
+            typedef connection_impl<transport_type> connection_type;
+            typedef connection_type::socket_type    socket_type;
 
             application             &app_;
             basio::io_service       &ios_;
