@@ -40,7 +40,7 @@ namespace vtrc { namespace common {
 
             typedef vtrc::shared_ptr<message_holder> message_holder_sptr;
 
-            vtrc::shared_ptr<stream_type>       sock_;
+            vtrc::shared_ptr<stream_type>       stream_;
             basio::io_service                  &ios_;
             enviroment                          env_;
 
@@ -58,8 +58,8 @@ namespace vtrc { namespace common {
 #endif
 
             transport_impl( stream_type *s, const std::string &n )
-                :sock_(s)
-                ,ios_(sock_->get_io_service( ))
+                :stream_(s)
+                ,ios_(stream_->get_io_service( ))
                 ,write_dispatcher_(ios_)
                 ,closed_(false)
                 ,name_(n)
@@ -86,7 +86,7 @@ namespace vtrc { namespace common {
             void close( )
             {
                 closed_ = true;
-                sock_->close( );
+                stream_->close( );
             }
 
             bool active( ) const
@@ -164,7 +164,7 @@ namespace vtrc { namespace common {
             void async_write( )
             {
                 try {
-                    sock_->async_send(
+                    stream_->async_send(
                             basio::buffer( write_queue_.front( )->message_ ),
                             write_dispatcher_.wrap(
                                     vtrc::bind( &this_type::write_handler, this,
@@ -219,12 +219,12 @@ namespace vtrc { namespace common {
 #endif
             stream_type &get_socket( )
             {
-                return *sock_;
+                return *stream_;
             }
 
             const stream_type &get_socket( ) const
             {
-                return *sock_;
+                return *stream_;
             }
 
             boost::asio::io_service::strand &get_dispatcher( )
