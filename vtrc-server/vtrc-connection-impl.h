@@ -83,7 +83,7 @@ namespace vtrc { namespace server { namespace endpoints {
                         disp.wrap(vtrc::bind( &this_type::read_handler, this,
                              basio::placeholders::error,
                              basio::placeholders::bytes_transferred,
-                             weak_from_this( )))
+                             this->weak_from_this( )))
                     );
 #else
                 this->get_socket( ).async_read_some(
