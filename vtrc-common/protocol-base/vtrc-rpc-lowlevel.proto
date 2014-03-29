@@ -27,7 +27,9 @@ extend google.protobuf.MethodOptions {
 }
 
 message message_info {
+
     enum message_type_enum {
+
         MESSAGE_NONE            = 0; // invalid value for internal usage
 
         MESSAGE_CALL            = 1; // from client
