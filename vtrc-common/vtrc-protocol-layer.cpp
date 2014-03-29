@@ -107,6 +107,7 @@ namespace vtrc { namespace common {
         mutable vtrc::shared_mutex   options_map_lock_;
 
         bool                         working_;
+        const protocol_layer::lowlevel_unit_type fake_;
 
         impl( transport_iface *c, bool oddside )
             :connection_(c)
@@ -119,7 +120,24 @@ namespace vtrc { namespace common {
             ,queue_(data_queue::varint::create_parser(maximum_message_length))
             ,rpc_index_(oddside ? 101 : 100)
             ,working_(true)
+            ,fake_(make_fake_mess( ))
         {}
+
+        static protocol_layer::lowlevel_unit_type make_fake_mess( )
+        {
+            random_device rd(true);
+            std::string s1( 4, 4 );
+            std::string s2( 4, 4 );
+            protocol_layer::lowlevel_unit_type res;
+            rd.generate( &s1[0], &s1[0] + 4 );
+            rd.generate( &s2[0], &s2[0] + 4 );
+
+            res.set_request( s1 );
+            res.set_response( s1 );
+
+            return res;
+        }
+
 
         std::string prepare_data( const char *data, size_t length)
         {
@@ -454,22 +472,6 @@ namespace vtrc { namespace common {
             return call_opts.wait( );
         }
 
-
-        protocol_layer::lowlevel_unit_type make_fake_mess( )
-        {
-            random_device rd(true);
-            std::string s1( 4, 4 );
-            std::string s2( 4, 4 );
-            protocol_layer::lowlevel_unit_type res;
-            rd.generate( &s1[0], &s1[0] + 4 );
-            rd.generate( &s2[0], &s2[0] + 4 );
-
-            res.set_request( s1 );
-            res.set_response( s1 );
-
-            return res;
-        }
-
         void make_call(protocol_layer::lowlevel_unit_sptr llu)
         {
             bool failed       = true;
@@ -504,9 +506,7 @@ namespace vtrc { namespace common {
                 }
                 send_message( *llu );
             } else {
-                static const protocol_layer::lowlevel_unit_type
-                                                    fake(make_fake_mess( ));
-                send_message( fake );
+                send_message( fake_ );
                 //;;;
             }
         }
