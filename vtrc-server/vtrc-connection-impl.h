@@ -6,6 +6,9 @@
 #include "vtrc-ref.h"
 
 #include "vtrc-endpoint-iface.h"
+#include "vtrc-application.h"
+#include "vtrc-protocol-layer-s.h"
+#include "vtrc-common/vtrc-enviroment.h"
 
 namespace vtrc { namespace server { namespace endpoints {
 
@@ -17,7 +20,7 @@ namespace vtrc { namespace server { namespace endpoints {
         template <typename ParentType>
         struct connection_impl: public ParentType {
 
-            typedef ParentType                       parent_type;
+            typedef ParentType                       super_type;
             typedef connection_impl<ParentType>      this_type;
             typedef typename ParentType::socket_type socket_type;
 
@@ -33,7 +36,7 @@ namespace vtrc { namespace server { namespace endpoints {
             connection_impl(endpoint_iface &endpoint,
                             vtrc::shared_ptr<socket_type> sock,
                             size_t buffer_size)
-                :parent_type(sock)
+                :super_type(sock)
                 ,endpoint_(endpoint)
                 ,app_(endpoint_.get_application( ))
                 ,ios_(app_.get_io_service( ))
@@ -69,7 +72,7 @@ namespace vtrc { namespace server { namespace endpoints {
 
             void close(  )
             {
-                parent_type::close( );
+                super_type::close( );
                 //protocol_->close_queue( );
                 protocol_->erase_all_slots( );
             }
