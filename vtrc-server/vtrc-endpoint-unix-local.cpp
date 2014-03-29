@@ -143,7 +143,7 @@ namespace vtrc { namespace server { namespace endpoints {
 
         endpoint_iface *create( application &app, const std::string &name )
         {
-            const endpoint_options def_opts = { 10 };
+            const endpoint_options def_opts = { 5, 20 };
             return create( app, def_opts, name );
         }
 

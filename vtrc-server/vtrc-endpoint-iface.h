@@ -15,6 +15,7 @@ namespace server {
 
     struct endpoint_options {
         unsigned maximum_active_calls;
+        unsigned maximum_total_calls;
     };
 
     struct endpoint_iface {
@@ -26,6 +27,10 @@ namespace server {
         virtual std::string string( ) const = 0;
 
         virtual const endpoint_options &get_options( ) const = 0;
+
+//        virtual void lock_call( ) = 0;
+//        virtual void release_call( ) = 0;
+//        virtual unsigned current_calls( ) = 0;
 
         virtual void start( ) = 0;
         virtual void stop ( ) = 0;
