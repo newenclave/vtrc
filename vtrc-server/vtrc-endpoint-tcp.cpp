@@ -42,7 +42,8 @@ namespace vtrc { namespace server { namespace endpoints {
             {
                 std::ostringstream oss;
                 oss << "tcp://" << endpoint_.address( ).to_string( )
-                              << ":" << endpoint_.port( );
+                    << ":"
+                    << endpoint_.port( );
                 return oss.str( );
             }
 

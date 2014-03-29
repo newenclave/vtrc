@@ -203,8 +203,11 @@ int main( ) try {
     common::pool_pair pp(2, 4);
     main_app app(pp);
 
-    vtrc::shared_ptr<vtrc::server::endpoint_iface> tcp_ep
+    vtrc::shared_ptr<vtrc::server::endpoint_iface> tcp4_ep
             (vtrc::server::endpoints::tcp::create(app, "0.0.0.0", 44667));
+
+    vtrc::shared_ptr<vtrc::server::endpoint_iface> tcp6_ep
+            (vtrc::server::endpoints::tcp::create(app, "::1", 44667));
 
 #ifndef _WIN32
 
@@ -214,7 +217,8 @@ int main( ) try {
 
 #endif
 
-    tcp_ep->start( );
+    tcp4_ep->start( );
+    tcp6_ep->start( );
 
     boost::this_thread::sleep_for( vtrc::chrono::milliseconds(1200099999) );
 
@@ -223,7 +227,9 @@ int main( ) try {
 #ifndef _WIN32
     tcp_ul->stop( );
 #endif
-    tcp_ep->stop( );
+
+    tcp4_ep->stop( );
+    tcp6_ep->stop( );
 
     app.stop_all_clients( );
 

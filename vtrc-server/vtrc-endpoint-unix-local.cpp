@@ -33,7 +33,7 @@ namespace vtrc { namespace server { namespace endpoints {
                            const endpoint_options &opts,
                            const std::string &name )
                 :super_type(app, opts, endpoint_type(name))
-            {}
+            { }
 
             std::string string( ) const
             {
