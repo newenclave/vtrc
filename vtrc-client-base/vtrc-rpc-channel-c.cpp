@@ -41,7 +41,7 @@ namespace vtrc { namespace client {
             ,mess_type_(insert ? message_info::MESSAGE_INSERTION_CALL
                                : message_info::MESSAGE_CALL)
             ,disable_wait_(dw)
-        {}
+        { }
 
         void send_message( lowlevel_unit_type &llu,
                      const gpb::MethodDescriptor *method,
@@ -67,7 +67,6 @@ namespace vtrc { namespace client {
 
             parent_->configure_message_for( clk, llu );
             uint64_t call_id = llu.id( );
-
 
             if( llu.opt( ).wait( ) ) {  /// WAITABLE CALL
 
