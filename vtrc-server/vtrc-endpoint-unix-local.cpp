@@ -52,13 +52,23 @@ namespace vtrc { namespace server { namespace endpoints {
             bstream::endpoint       endpoint_;
             bstream::acceptor       acceptor_;
 
-            endpoint_unix( application &app, const std::string &name )
+            endpoint_options        opts_;
+
+            endpoint_unix( application &app,
+                           const endpoint_options &opts,
+                           const std::string &name )
                 :app_(app)
                 ,ios_(app_.get_io_service( ))
                 ,env_(app_.get_enviroment())
                 ,endpoint_(name)
                 ,acceptor_(ios_, endpoint_)
+                ,opts_(opts)
             {}
+
+            virtual const endpoint_options &get_options( ) const
+            {
+                return opts_;
+            }
 
             application &get_application( )
             {
@@ -125,7 +135,11 @@ namespace vtrc { namespace server { namespace endpoints {
         endpoint_iface *create( application &app, const std::string &name )
         {
             ::unlink( name.c_str( ) );
-            return new endpoint_unix( app, name );
+
+            endpoint_options def_opts;
+            def_opts.maximum_active_calls = 10;
+
+            return new endpoint_unix( app, def_opts, name );
         }
     }
 

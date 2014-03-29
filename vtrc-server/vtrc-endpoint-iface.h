@@ -13,6 +13,10 @@ namespace server {
 
     class application;
 
+    struct endpoint_options {
+        unsigned maximum_active_calls;
+    };
+
     struct endpoint_iface {
 
         virtual ~endpoint_iface( ) { }
@@ -20,6 +24,8 @@ namespace server {
         virtual common::enviroment &get_enviroment( ) = 0;
 
         virtual std::string string( ) const = 0;
+
+        virtual const endpoint_options &get_options( ) const = 0;
 
         virtual void start( ) = 0;
         virtual void stop ( ) = 0;

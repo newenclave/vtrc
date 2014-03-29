@@ -5,6 +5,8 @@
 #include "vtrc-bind.h"
 #include "vtrc-ref.h"
 
+#include "vtrc-endpoint-iface.h"
+
 namespace vtrc { namespace server { namespace endpoints {
 
     namespace {
@@ -38,8 +40,10 @@ namespace vtrc { namespace server { namespace endpoints {
                 ,env_(endpoint_.get_enviroment( ))
                 ,read_buff_(buffer_size)
             {
-                protocol_ = vtrc::make_shared<server::protocol_layer_s>
-                                                     (vtrc::ref(app_), this);
+                protocol_ =
+                        vtrc::make_shared<server::protocol_layer_s>
+                            (vtrc::ref(app_), this,
+                                 endpoint_.get_options( ).maximum_active_calls);
             }
 
             static vtrc::shared_ptr<this_type> create(endpoint_iface &endpoint,

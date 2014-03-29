@@ -23,6 +23,7 @@ enum errors_numbers { // CATEGORY_INTERNAL
     ERR_IO            =    5 [(description) = "I/O error"];
     ERR_BAD_FILE      =    9 [(description) = "Bad file number"];
     ERR_ACCESS        =   13 [(description) = "Permission denied"];
+    ERR_BUSY          =   16 [(description) = "Device or resource busy"];
     ERR_INVALID_VALUE =   22 [(description) = "Invalid value"];
     ERR_NO_FUNC       =   38 [(description) = "Function not implemented"];
     ERR_TIMEOUT       =   62 [(description) = "Timeout"];

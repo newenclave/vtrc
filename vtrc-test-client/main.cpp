@@ -143,11 +143,11 @@ void run_client( vtrc::shared_ptr<client::vtrc_client> cl, bool wait)
 int main( )
 {
 
-    common::pool_pair pp(2, 4);
+    common::pool_pair pp(2, 2);
     vtrc::shared_ptr<client::vtrc_client> cl(client::vtrc_client::create(pp));
 
-    //cl->connect( "/tmp/test" );
-    cl->connect( "192.168.56.101", "44667" );
+    cl->connect( "/tmp/test" );
+    //cl->connect( "192.168.56.101", "44667" );
     ///cl->async_connect( "127.0.0.1", "44667", on_connect );
 
     cl->advise_handler( vtrc::shared_ptr<test_ev>(new test_ev(cl->connection( ).get( ))) );

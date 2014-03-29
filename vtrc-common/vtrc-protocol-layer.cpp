@@ -514,6 +514,8 @@ namespace vtrc { namespace common {
         void on_system_error(const boost::system::error_code &err,
                              const std::string &add)
         {
+            working_ = false;
+
             vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
                             llu( new  vtrc_rpc_lowlevel::lowlevel_unit );
 
@@ -523,8 +525,6 @@ namespace vtrc { namespace common {
             err_cont->set_category(vtrc_errors::CATEGORY_SYSTEM);
             err_cont->set_fatal( true );
             err_cont->set_additional( add );
-
-            working_ = false;
 
             parent_->push_rpc_message_all( llu );
         }

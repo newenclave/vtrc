@@ -86,11 +86,11 @@ void test_send( common::connection_iface *connection,
     try {
         //for( ;; )
         {
-            std::cout << "ping 2 " << vtrc::this_thread::get_id( ) << "\n";
+//            std::cout << "ping 2 " << vtrc::this_thread::get_id( ) << "\n";
             ping.ping( NULL, &preq, &pres, NULL );
         }
     } catch( std::exception const &ex ) {
-        std::cout << "png error " << ex.what( ) << "\n";
+//        std::cout << "png error " << ex.what( ) << "\n";
     }
 
 }
@@ -135,15 +135,15 @@ public:
         const vtrc::common::call_context *cc =
                     vtrc::common::call_context::get( c_ );
 
-        std::cout << "test 2 " << vtrc::this_thread::get_id( ) << "\n\n";
+//        std::cout << "test 2 " << vtrc::this_thread::get_id( ) << "\n\n";
 
-        std::cout << "stack: ";
-        while (cc) {
-            std::cout << cc->get_lowlevel_message( )->call( ).method_id( )
-                      << " <- ";
-            cc = cc->parent( );
-        }
-        std::cout << "\n";
+//        std::cout << "stack: ";
+//        while (cc) {
+//            std::cout << cc->get_lowlevel_message( )->call( ).method_id( )
+//                      << " <- ";
+//            cc = cc->parent( );
+//        }
+//        std::cout << "\n";
 
         if( done ) done->Run( );
     }

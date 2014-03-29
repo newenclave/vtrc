@@ -26,6 +26,7 @@
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
 
 #include "vtrc-chrono.h"
+#include "vtrc-atomic.h"
 
 namespace vtrc { namespace server {
 
@@ -49,6 +50,20 @@ namespace vtrc { namespace server {
 
     namespace data_queue = common::data_queue;
 
+    struct atomic_counter_keeper {
+        vtrc::atomic<unsigned> &value_;
+        atomic_counter_keeper( vtrc::atomic<unsigned> &value )
+            :value_(value)
+        {
+            ++value_;
+        }
+
+        ~atomic_counter_keeper( )
+        {
+            --value_;
+        }
+    };
+
     struct protocol_layer_s::impl {
 
         typedef impl             this_type;
@@ -65,10 +80,16 @@ namespace vtrc { namespace server {
         typedef vtrc::function<void (void)> stage_function_type;
         stage_function_type  stage_function_;
 
-        impl( application &a, common::transport_iface *c )
+        vtrc::atomic<unsigned>              current_calls_;
+        const unsigned                      maximum_calls_;
+
+        impl( application &a, common::transport_iface *c,
+              unsigned maximum_calls)
             :app_(a)
             ,connection_(c)
             ,ready_(false)
+            ,current_calls_(0)
+            ,maximum_calls_(maximum_calls)
         {
             stage_function_ =
                     vtrc::bind( &this_type::on_client_selection, this );
@@ -166,10 +187,37 @@ namespace vtrc { namespace server {
             return true;
         }
 
+        void send_busy( lowlevel_unit_type &llu )
+        {
+            if( llu.opt( ).wait( ) ) {
+                llu.clear_call( );
+                llu.clear_request( );
+                llu.clear_response( );
+                llu.mutable_error( )->set_code( vtrc_errors::ERR_BUSY );
+                parent_->call_rpc_method( llu );
+            }
+            //llu->mutable_error( )->set_code(  );
+        }
+
+
         void push_call( lowlevel_unit_sptr llu,
                         common::connection_iface_sptr /*conn*/ )
         {
             parent_->make_call( llu );
+            --current_calls_;
+        }
+
+        void process_call( lowlevel_unit_sptr &llu )
+        {
+            std::cout << "current calls: " << current_calls_ << "\n";
+            if( ++current_calls_ <= maximum_calls_ ) {
+                app_.get_rpc_service( ).post(
+                        vtrc::bind( &this_type::push_call, this,
+                                    llu, connection_->shared_from_this( )));
+            } else {
+                --current_calls_;
+                send_busy( *llu );
+            }
         }
 
         void push_event_answer( lowlevel_unit_sptr llu,
@@ -178,19 +226,12 @@ namespace vtrc { namespace server {
             parent_->push_rpc_message( llu->id( ), llu );
         }
 
-        void process_call( lowlevel_unit_sptr &llu )
-        {
-            app_.get_rpc_service( ).post(
-                        vtrc::bind( &this_type::push_call, this,
-                                    llu, connection_->shared_from_this( )));
-        }
-
         void process_event_cb( lowlevel_unit_sptr &llu )
         {
-//            parent_->push_rpc_message( llu->id( ), llu );
-            app_.get_io_service( ).post(
-                        vtrc::bind( &this_type::push_event_answer, this,
-                                llu, connection_->shared_from_this( )));
+            parent_->push_rpc_message( llu->id( ), llu );
+//            app_.get_io_service( ).post(
+//                        vtrc::bind( &this_type::push_event_answer, this,
+//                                llu, connection_->shared_from_this( )));
         }
 
         void on_rcp_call_ready_( )
@@ -268,9 +309,10 @@ namespace vtrc { namespace server {
     };
 
     protocol_layer_s::protocol_layer_s( application &a,
-                                        common::transport_iface *connection )
+                                        common::transport_iface *connection,
+                                        unsigned maximym_calls)
         :common::protocol_layer(connection, false)
-        ,impl_(new impl(a, connection))
+        ,impl_(new impl(a, connection, maximym_calls))
     {
         impl_->parent_ = this;
     }

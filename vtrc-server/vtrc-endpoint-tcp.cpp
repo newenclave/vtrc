@@ -45,7 +45,10 @@ namespace vtrc { namespace server { namespace endpoints {
             bip::tcp::endpoint       endpoint_;
             bip::tcp::acceptor       acceptor_;
 
+            endpoint_options         opts_;
+
             endpoint_tcp( application &app,
+                          const endpoint_options &opts,
                           const std::string &address,
                           unsigned short port )
                 :app_(app)
@@ -53,6 +56,7 @@ namespace vtrc { namespace server { namespace endpoints {
                 ,env_(app_.get_enviroment())
                 ,endpoint_(bip::address::from_string(address), port)
                 ,acceptor_(ios_, endpoint_)
+                ,opts_(opts)
             {}
 
             application &get_application( )
@@ -95,6 +99,11 @@ namespace vtrc { namespace server { namespace endpoints {
                 acceptor_.close( );
             }
 
+            virtual const endpoint_options &get_options( ) const
+            {
+                return opts_;
+            }
+
             void on_accept( const bsys::error_code &error,
                             vtrc::shared_ptr<bip::tcp::socket> sock )
             {
@@ -115,7 +124,6 @@ namespace vtrc { namespace server { namespace endpoints {
 
         };
 
-
     }
 
     namespace tcp {
@@ -123,7 +131,9 @@ namespace vtrc { namespace server { namespace endpoints {
                                 const std::string &address,
                                 unsigned short service )
         {
-            return new endpoint_tcp( app, address, service );
+            endpoint_options def_opts;
+            def_opts.maximum_active_calls = 10;
+            return new endpoint_tcp( app, def_opts, address, service );
         }
     }
 
