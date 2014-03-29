@@ -1,6 +1,8 @@
 #ifndef VTRC_ENDPOINT_TCP_H
 #define VTRC_ENDPOINT_TCP_H
 
+#include <string>
+
 namespace vtrc { namespace server {
 
     struct endpoint_iface;
