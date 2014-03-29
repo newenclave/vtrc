@@ -169,29 +169,6 @@ private:
         }
     }
 
-    void on_new_connection_accepted(
-                    vtrc::common::connection_iface* connection )
-    {
-        std::cout << "connection accepted\n";
-    }
-
-    void on_new_connection_ready(
-                            vtrc::common::connection_iface* connection )
-    {
-        std::cout << "connection ready\n";
-    }
-
-    void on_connection_die( vtrc::common::connection_iface* connection )
-    {
-        std::cout << "connection die\n";
-    }
-
-    google::protobuf::Service *create_service(
-            const std::string &name, vtrc::common::connection_iface* connection)
-    {
-        return NULL;
-    }
-
     vtrc::common::rpc_service_wrapper_sptr get_service_by_name(
                                     vtrc::common::connection_iface *connection,
                                     const std::string &service_name)
