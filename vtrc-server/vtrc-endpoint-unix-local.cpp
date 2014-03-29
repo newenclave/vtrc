@@ -102,8 +102,7 @@ namespace vtrc { namespace server { namespace endpoints {
                 ::unlink(endpoint_.path( ).c_str( ));
             }
 
-            void on_accept( const bsys::error_code &error,
-                            socket_type *sock )
+            void on_accept( const bsys::error_code &error, socket_type *sock )
             {
                 if( error ) {
                     delete sock;
