@@ -77,12 +77,6 @@ public:
 
         s.test2( NULL, &mi, &mi, NULL );
 
-//        while (cc) {
-//            std::cout << cc->get_lowlevel_message( )->call( ).method( )
-//                      << "->";
-//            cc = cc->parent( );
-//        }
-
         //if( done ) done->Run( );
     }
 };

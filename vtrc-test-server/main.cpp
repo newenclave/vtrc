@@ -17,6 +17,7 @@
 #include "vtrc-server/vtrc-application.h"
 #include "vtrc-server/vtrc-endpoint-iface.h"
 #include "vtrc-server/vtrc-endpoint-tcp.h"
+#include "vtrc-server/vtrc-endpoint-unix-local.h"
 
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-pool-pair.h"
@@ -96,14 +97,14 @@ void test_send( common::connection_iface *connection,
 
 class teat_impl: public vtrc_service::test_rpc {
 
-    common::connection_iface *connection_;
+    common::connection_iface *c_;
     vtrc::server::application &app_;
     unsigned id_;
 
 public:
 
     teat_impl( common::connection_iface *c, vtrc::server::application &app )
-        :connection_(c)
+        :c_(c)
         ,app_(app)
         ,id_(0)
     { }
@@ -121,7 +122,7 @@ public:
 //        connection_->get_io_service( ).dispatch(
 //                    vtrc::bind(test_send, connection_));
 //        boost::thread(test_send, connection_).detach( );
-        test_send(connection_, app_);
+        test_send(c_, app_);
 
         if( done ) done->Run( );
     }
@@ -131,7 +132,19 @@ public:
                          ::vtrc_rpc_lowlevel::message_info* response,
                          ::google::protobuf::Closure* done)
     {
+        const vtrc::common::call_context *cc =
+                    vtrc::common::call_context::get( c_ );
+
         std::cout << "test 2 " << vtrc::this_thread::get_id( ) << "\n\n";
+
+        std::cout << "stack: ";
+        while (cc) {
+            std::cout << cc->get_lowlevel_message( )->call( ).method_id( )
+                      << " <- ";
+            cc = cc->parent( );
+        }
+        std::cout << "\n";
+
         if( done ) done->Run( );
     }
 };
@@ -192,9 +205,17 @@ int main( ) try {
     vtrc::shared_ptr<vtrc::server::endpoint_iface> tcp_ep
             (vtrc::server::endpoints::tcp::create(app, "0.0.0.0", 44667));
 
+#ifndef _WIN32
+
+    vtrc::shared_ptr<vtrc::server::endpoint_iface> tcp_ul
+            (vtrc::server::endpoints::unix_local::create(app, "/tmp/test"));
+    tcp_ul->start( );
+
+#endif
+
     tcp_ep->start( );
 
-    boost::this_thread::sleep_for( vtrc::chrono::milliseconds(12000) );
+    boost::this_thread::sleep_for( vtrc::chrono::milliseconds(120009999) );
 
     std::cout << "Stoppped. Wait ... \n";
 
@@ -207,7 +228,8 @@ int main( ) try {
 
     return 0;
 
-} catch( ... ) {
+} catch( const std::exception &ex ) {
 
+    std::cout << "general error: " << ex.what( ) << "\n";
     return 0;
 }

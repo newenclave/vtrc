@@ -121,10 +121,10 @@ namespace vtrc { namespace server { namespace endpoints {
         };
     }
 
-    namespace tcp {
-        endpoint_iface *create( application &app,
-                                const std::string &name )
+    namespace unix_local {
+        endpoint_iface *create( application &app, const std::string &name )
         {
+            ::unlink( name.c_str( ) );
             return new endpoint_unix( app, name );
         }
     }

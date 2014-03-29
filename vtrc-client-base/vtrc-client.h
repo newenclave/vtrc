@@ -77,7 +77,12 @@ namespace client {
         vtrc::shared_ptr<google::protobuf::RpcChannel>
                             create_channel( bool disable_wait, bool insertion );
 
+        void connect( const std::string &local_name );
         void connect( const std::string &address, const std::string &service );
+
+        void async_connect( const std::string &local_name,
+                            common::closure_type closure);
+
         void async_connect( const std::string &address,
                             const std::string &service,
                             common::closure_type closure);

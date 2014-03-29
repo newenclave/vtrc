@@ -7,6 +7,7 @@
 
 #include "vtrc-client.h"
 #include "vtrc-client-tcp.h"
+#include "vtrc-client-unix-local.h"
 
 #include "vtrc-rpc-channel-c.h"
 #include "vtrc-bind.h"
@@ -56,6 +57,18 @@ namespace vtrc { namespace client {
             connection_ = new_client;
         }
 
+        void connect(const std::string &local_name)
+        {
+#ifndef _WIN32
+            vtrc::shared_ptr<client_unix_local>
+                         new_client(client_unix_local::create( ios_, parent_ ));
+            new_client->connect( local_name );
+            connection_ = new_client;
+#else
+            throw std::runtime_error( "Not implemented yet" );
+#endif
+        }
+
         common::connection_iface_sptr connection( )
         {
             return connection_;
@@ -65,6 +78,24 @@ namespace vtrc { namespace client {
                                     common::closure_type closure )
         {
             closure(err);
+        }
+
+        void async_connect(const std::string &local_name,
+                           common::closure_type closure)
+        {
+#ifndef _WIN32
+            vtrc::shared_ptr<client_unix_local>
+                         new_client(client_unix_local::create( ios_ , parent_));
+
+            new_client->async_connect( local_name,
+                        vtrc::bind( &this_type::async_connect_success, this,
+                                     basio::placeholders::error,
+                                     closure ));
+            connection_ = new_client;
+#else
+            throw std::runtime_error( "Not implemented yet" );
+#endif
+
         }
 
         void async_connect( const std::string &address,
@@ -221,10 +252,21 @@ namespace vtrc { namespace client {
         return impl_->create_channel( dont_wait, insertion );
     }
 
+    void vtrc_client::connect(const std::string &local_name)
+    {
+        impl_->connect( local_name );
+    }
+
     void vtrc_client::connect( const std::string &address,
                                const std::string &service )
     {
         impl_->connect( address, service );
+    }
+
+    void vtrc_client::async_connect(const std::string &local_name,
+                                    common::closure_type closure)
+    {
+        impl_->async_connect( local_name, closure );
     }
 
     void vtrc_client::async_connect( const std::string &address,

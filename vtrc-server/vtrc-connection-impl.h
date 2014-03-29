@@ -70,7 +70,7 @@ namespace vtrc { namespace server { namespace endpoints {
             void on_write_error( const bsys::error_code &error )
             {
                 protocol_->on_write_error( error );
-                parent_type::close( );
+                this->close( );
                 //app_.get_clients( )->drop(this); // delete
             }
 
@@ -78,7 +78,7 @@ namespace vtrc { namespace server { namespace endpoints {
             {
 #if 0
                 basio::io_service::strand &disp(get_dispatcher( ));
-                get_socket( ).async_read_some(
+                this->get_socket( ).async_read_some(
                         basio::buffer( &read_buff_[0], read_buff_.size( ) ),
                         disp.wrap(vtrc::bind( &this_type::read_handler, this,
                              basio::placeholders::error,
@@ -86,12 +86,12 @@ namespace vtrc { namespace server { namespace endpoints {
                              weak_from_this( )))
                     );
 #else
-                parent_type::get_socket( ).async_read_some(
+                this->get_socket( ).async_read_some(
                         basio::buffer( &read_buff_[0], read_buff_.size( ) ),
                             vtrc::bind( &this_type::read_handler, this,
                                  basio::placeholders::error,
                                  basio::placeholders::bytes_transferred,
-                                 parent_type::weak_from_this( ))
+                                 this->weak_from_this( ))
                     );
 #endif
             }
@@ -106,14 +106,14 @@ namespace vtrc { namespace server { namespace endpoints {
                     try {
                         protocol_->process_data( &read_buff_[0], bytes );
                     } catch( const std::exception & /*ex*/ ) {
-                        parent_type::close( );
+                        this->close( );
                         app_.get_clients( )->drop(this); // delete
                         return;
                     }
                     start_reading( );
                 } else {
                     protocol_->on_read_error( error );
-                    parent_type::close( );
+                    this->close( );
                     app_.get_clients( )->drop(this); // delete
                 }
             }
