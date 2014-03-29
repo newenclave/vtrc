@@ -1,6 +1,8 @@
 #ifndef VTRC_TRANSPORT_UNIX_LOCAL_H
 #define VTRC_TRANSPORT_UNIX_LOCAL_H
 
+#ifndef  _WIN32
+
 #include "vtrc-transport-iface.h"
 #include <boost/asio/local/stream_protocol.hpp>
 
@@ -55,5 +57,6 @@ namespace vtrc { namespace common {
 
 }}
 
+#endif
 
 #endif // VTRC_TRANSPORT_UNIX_LOCAL_H

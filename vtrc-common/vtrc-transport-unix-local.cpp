@@ -1,5 +1,6 @@
 #include "vtrc-transport-unix-local.h"
 
+#ifndef  _WIN32
 
 
 #include <boost/asio.hpp>
@@ -305,3 +306,5 @@ namespace vtrc { namespace common {
     }
 
 }}
+
+#endif
