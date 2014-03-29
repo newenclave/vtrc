@@ -137,11 +137,11 @@ namespace vtrc { namespace server {
             }
 
             void send_message(lowlevel_unit_type &llu,
-                        const google::protobuf::MethodDescriptor* method,
-                              google::protobuf::RpcController* controller,
-                        const google::protobuf::Message* /*request*/,
-                              google::protobuf::Message* response,
-                              google::protobuf::Closure* done )
+                    const google::protobuf::MethodDescriptor* /* method     */,
+                          google::protobuf::RpcController*    /* controller */,
+                    const google::protobuf::Message*          /* request    */,
+                          google::protobuf::Message*          /* response   */,
+                          google::protobuf::Closure* done )
             {
                 common::closure_holder clhl(done);
 
