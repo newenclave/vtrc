@@ -186,6 +186,14 @@ namespace vtrc { namespace common {
             value.cond_.notify_all( );
         }
 
+        static void push_value_data( hold_value_type &value,
+                               const queue_value_type &data )
+        {
+            unique_lock lck(value.lock_);
+            value.data_.push_back( data );
+            value.cond_.notify_one( );
+        }
+
     public:
 
         condition_queues( )
@@ -257,19 +265,13 @@ namespace vtrc { namespace common {
         {
             vtrc::shared_lock lck(lock_);
             typename map_type::iterator f(at( key ));
-
-            unique_lock flck(f->second->lock_);
-            f->second->data_.push_back( data );
-            f->second->cond_.notify_one( );
+            push_value_data( *(f->second), data );
         }
 
         static void write_all_impl( typename map_type::value_type &f,
                                     const queue_value_type &data )
         {
-
-            unique_lock lck(f.second->lock_);
-            f.second->data_.push_back( data );
-            f.second->cond_.notify_one( );
+            push_value_data( *(f.second), data );
         }
 
         void write_all( const queue_value_type &data )
@@ -291,9 +293,7 @@ namespace vtrc { namespace common {
             }
 
             if( value )  {
-                unique_lock vlck(value->lock_);
-                value->data_.push_back( data );
-                value->cond_.notify_one( );
+                push_value_data( *value, data );
             }
         }
 
