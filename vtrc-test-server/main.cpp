@@ -219,6 +219,9 @@ int main( ) try {
 
     std::cout << "Stoppped. Wait ... \n";
 
+#ifndef _WIN32
+    tcp_ul->stop( );
+#endif
     tcp_ep->stop( );
 
     std::cout << "Stoppped. Wait ... \n";
