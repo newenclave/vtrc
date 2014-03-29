@@ -122,7 +122,7 @@ public:
 //        connection_->get_io_service( ).dispatch(
 //                    vtrc::bind(test_send, connection_));
 //        boost::thread(test_send, connection_).detach( );
-        test_send(c_, app_);
+//        test_send(c_, app_);
 
         if( done ) done->Run( );
     }
@@ -228,6 +228,8 @@ int main( ) try {
 
     pp.stop_all( );
     pp.join_all( );
+
+    google::protobuf::ShutdownProtobufLibrary( );
 
     return 0;
 
