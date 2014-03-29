@@ -13,9 +13,6 @@
 #include "vtrc-connection-iface.h"
 #include "vtrc-connection-list.h"
 
-#include "protocol/vtrc-auth.pb.h"
-
-#include "vtrc-common/vtrc-sizepack-policy.h"
 #include "vtrc-common/vtrc-enviroment.h"
 #include "vtrc-common/vtrc-hash-iface.h"
 #include "vtrc-common/vtrc-data-queue.h"
@@ -91,6 +88,7 @@ namespace vtrc { namespace server { namespace endpoints {
             {
                 vtrc::shared_ptr<socket_type> new_sock
                         (vtrc::make_shared<socket_type>(vtrc::ref(ios_)));
+
 
                 acceptor_.async_accept( *new_sock,
                     vtrc::bind( &this_type::on_accept, this,
