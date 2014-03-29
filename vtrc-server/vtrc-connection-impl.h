@@ -63,6 +63,12 @@ namespace vtrc { namespace server { namespace endpoints {
                 protocol_->ready( );
             }
 
+            void close(  )
+            {
+                parent_type::close( );
+                protocol_->cancel_all_slots( );
+            }
+
             endpoint_iface &endpoint( )
             {
                 return endpoint_;

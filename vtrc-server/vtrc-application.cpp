@@ -45,9 +45,18 @@ namespace vtrc { namespace server {
             ,clients_(common::connection_list::create( ))
         { }
 
+        static
+        bool close_all_connection( common::connection_iface_sptr next )
+        {
+            next->close( );
+            return true;
+        }
+
         ~impl( ) try
         {
+            clients_->foreach_while( close_all_connection );
             clients_->clear( );
+
             if( own_ios_ )      delete ios_;
             if( own_rpc_ios_ )  delete rpc_ios_;
 
