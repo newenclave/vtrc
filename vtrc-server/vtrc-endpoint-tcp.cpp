@@ -214,7 +214,6 @@ namespace vtrc { namespace server { namespace endpoints {
                         vtrc::shared_ptr<tcp_connection> new_conn
                                          (tcp_connection::create(*this, sock));
                         app_.get_clients( )->store( new_conn );
-                        app_.on_new_connection_ready( new_conn.get( ) );
                     } catch( ... ) {
                         ;;;
                     }

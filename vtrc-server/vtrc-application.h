@@ -48,25 +48,17 @@ namespace server {
         boost::asio::io_service &get_io_service( );
         boost::asio::io_service &get_rpc_service( );
 
-        vtrc::shared_ptr<common::connection_list>      get_clients( );
+        vtrc::shared_ptr<common::connection_list>  get_clients( );
 
         virtual vtrc::shared_ptr<common::rpc_service_wrapper>
                  get_service_by_name( common::connection_iface* connection,
                                       const std::string &service_name );
 
         /** TODO: fix it **/
+
         virtual void on_endpoint_started(   endpoint_iface * /*ep*/ ) { }
         virtual void on_endpoint_stopped(   endpoint_iface * /*ep*/ ) { }
         virtual void on_endpoint_exception( endpoint_iface * /*ep*/ ) { }
-
-        virtual void on_new_connection_accepted(
-                common::connection_iface* connection ) { }
-
-        virtual void on_new_connection_ready(
-                            common::connection_iface* connection ) { }
-
-        virtual void on_connection_die(
-                            common::connection_iface* connection ) { }
 
         /** TODO: fix it **/
 
