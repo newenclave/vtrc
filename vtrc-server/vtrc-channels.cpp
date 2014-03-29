@@ -47,12 +47,12 @@ namespace vtrc { namespace server {
 
             void send_message(lowlevel_unit_type &llu,
                         const google::protobuf::MethodDescriptor* method,
-                              google::protobuf::RpcController* controller,
-                        const google::protobuf::Message* /*request*/,
+                              google::protobuf::RpcController*  /*controller*/,
+                        const google::protobuf::Message*        /*request   */,
                               google::protobuf::Message* response,
                               google::protobuf::Closure* done )
             {
-                //common::closure_holder clhl(done);
+                common::closure_holder clhl(done);
                 common::connection_iface_sptr clk(client_.lock( ));
 
                 if( clk.get( ) == NULL ) {
@@ -72,11 +72,10 @@ namespace vtrc { namespace server {
                 else
                     llu.mutable_opt( )->set_wait(call_opt.wait( ));
 
-                rpc_channel::context_holder ch(&clk->get_protocol( ), &llu);
-                ch.ctx_->set_call_options( call_opt );
-
-
                 if( llu.opt( ).wait( ) ) { /// WAITABLE CALL
+
+                    rpc_channel::context_holder ch(&clk->get_protocol( ), &llu);
+                    ch.ctx_->set_call_options( call_opt );
 
                     process_waitable_call( call_id, llu, response,
                                            clk, call_opt );

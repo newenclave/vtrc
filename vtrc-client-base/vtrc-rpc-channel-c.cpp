@@ -68,15 +68,16 @@ namespace vtrc { namespace client {
             parent_->configure_message_for( clk, llu );
             uint64_t call_id = llu.id( );
 
-            rpc_channel::context_holder ch( &clk->get_protocol( ), &llu );
-            ch.ctx_->set_call_options( call_opt );
 
-            if( llu.opt( ).wait( ) ) { // WAITABLE CALL
+            if( llu.opt( ).wait( ) ) {  /// WAITABLE CALL
+
+                rpc_channel::context_holder ch( &clk->get_protocol( ), &llu );
+                ch.ctx_->set_call_options( call_opt );
 
                 parent_->process_waitable_call( call_id, llu, response,
                                                 clk, call_opt );
 
-            } else { // NOT WAITABLE CALL
+            } else {                    /// NOT WAITABLE CALL
                 clk->get_protocol( ).call_rpc_method( llu );
             }
 
