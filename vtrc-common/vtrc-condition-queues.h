@@ -225,11 +225,7 @@ namespace vtrc { namespace common {
             typename map_type::iterator f(store_.find( key ));
             if( f != store_.end( ) ) {
                 vtrc::upgrade_to_unique ulck(lck);
-                {
-                    unique_lock lck(f->second->lock_);
-                    f->second->canceled_ = true;
-                    f->second->cond_.notify_all( );
-                }
+                cancel_value( *(f->second) );
                 store_.erase( f );
             }
         }
@@ -240,7 +236,7 @@ namespace vtrc { namespace common {
             for(typename map_type::iterator b(store_.begin()), e(store_.end());
                                             b!=e; ++b)
             {
-                cancel_value( *b->second );
+                cancel_value( *(b->second) );
             }
             store_.clear( );
         }
@@ -250,7 +246,7 @@ namespace vtrc { namespace common {
             vtrc::shared_lock lck(lock_);
             typedef typename map_type::iterator iterator_type;
             for( iterator_type b(store_.begin( )), e(store_.end( )); b!=e; ++b){
-                cancel_value( *b->second );
+                cancel_value( *(b->second) );
             }
         }
 
@@ -258,7 +254,7 @@ namespace vtrc { namespace common {
         {
             vtrc::shared_lock lck(lock_);
             typename map_type::iterator f(at( key ));
-            cancel_value( *f->second );
+            cancel_value( *(f->second) );
         }
 
         void write_queue( const key_type &key, const queue_value_type &data )
