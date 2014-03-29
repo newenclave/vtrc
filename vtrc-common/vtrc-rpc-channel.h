@@ -14,9 +14,6 @@ namespace vtrc { namespace common  {
 
     class rpc_channel: public google::protobuf::RpcChannel {
 
-        struct impl;
-        impl  *impl_;
-
         rpc_channel( const rpc_channel & );
         rpc_channel&  operator = ( const rpc_channel & );
 
@@ -27,6 +24,7 @@ namespace vtrc { namespace common  {
 
         rpc_channel( );
         virtual ~rpc_channel( );
+
     public:
 
         lowlevel_unit_sptr create_lowlevel(
@@ -40,7 +38,25 @@ namespace vtrc { namespace common  {
                             common::connection_iface_sptr &cl,
                             const vtrc_rpc_lowlevel::options &call_opt ) const;
     protected:
+
         typedef protocol_layer::context_holder context_holder;
+
+        void CallMethod(const google::protobuf::MethodDescriptor* method,
+                        google::protobuf::RpcController* controller,
+                        const google::protobuf::Message* request,
+                        google::protobuf::Message* response,
+                        google::protobuf::Closure* done);
+
+        ///
+        /// send implementation for children
+        ///
+        virtual void send_message(
+                    vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> llu,
+                    const google::protobuf::MethodDescriptor* method,
+                          google::protobuf::RpcController* controller,
+                    const google::protobuf::Message* request,
+                          google::protobuf::Message* response,
+                          google::protobuf::Closure* done ) = 0;
 
     };
 }}

@@ -12,17 +12,11 @@ namespace vtrc { namespace common  {
 
     namespace gpb = google::protobuf;
 
-    struct rpc_channel::impl {
-    };
-
     rpc_channel::rpc_channel( )
-        :impl_(new impl)
-    {}
+    { }
 
     rpc_channel::~rpc_channel( )
-    {
-        delete impl_;
-    }
+    { }
 
     rpc_channel::lowlevel_unit_sptr rpc_channel::create_lowlevel(
             const gpb::MethodDescriptor *method,
@@ -44,10 +38,10 @@ namespace vtrc { namespace common  {
     }
 
     void rpc_channel::process_waitable_call(google::protobuf::uint64 call_id,
-                rpc_channel::lowlevel_unit_sptr &llu,
-                google::protobuf::Message *response,
-                connection_iface_sptr &cl,
-                const vtrc_rpc_lowlevel::options &call_opt) const
+                            rpc_channel::lowlevel_unit_sptr &llu,
+                            google::protobuf::Message *response,
+                            connection_iface_sptr &cl,
+                            const vtrc_rpc_lowlevel::options &call_opt) const
     {
         cl->get_protocol( ).call_rpc_method( call_id, *llu );
 
@@ -79,6 +73,16 @@ namespace vtrc { namespace common  {
             }
         }
         cl->get_protocol( ).erase_slot( call_id );
+    }
+
+    void rpc_channel::CallMethod( const gpb::MethodDescriptor *method,
+                                        gpb::RpcController *controller,
+                                  const gpb::Message *request,
+                                        gpb::Message *response,
+                                        gpb::Closure *done)
+    {
+        lowlevel_unit_sptr llu( create_lowlevel( method, request, response ) );
+        send_message( llu, method, controller, request, response, done );
     }
 
 }}

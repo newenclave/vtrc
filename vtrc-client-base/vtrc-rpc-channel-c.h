@@ -11,11 +11,15 @@ namespace google { namespace protobuf {
     class MethodDescriptor;
 }}
 
+namespace vtrc_rpc_lowlevel {
+    class lowlevel_unit;
+}
+
 namespace vtrc {
 
-namespace common {
-    struct connection_iface;
-}
+    namespace common {
+        struct connection_iface;
+    }
 
 namespace client {
 
@@ -43,11 +47,14 @@ namespace client {
 
     private:
 
-        void CallMethod(const google::protobuf::MethodDescriptor* method,
-                        google::protobuf::RpcController* controller,
-                        const google::protobuf::Message* request,
-                        google::protobuf::Message* response,
-                        google::protobuf::Closure* done);
+        void send_message(
+                    vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> llu,
+                    const google::protobuf::MethodDescriptor* method,
+                          google::protobuf::RpcController* controller,
+                    const google::protobuf::Message* request,
+                          google::protobuf::Message* response,
+                          google::protobuf::Closure* done );
+
     };
 
     typedef vtrc::shared_ptr<rpc_channel_c> rpc_channel_c_sptr;

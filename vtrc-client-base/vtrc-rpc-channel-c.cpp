@@ -66,23 +66,19 @@ namespace vtrc { namespace client {
             }
         }
 
-        void CallMethod(const gpb::MethodDescriptor* method,
-                        gpb::RpcController* controller,
-                        const gpb::Message* request,
-                        gpb::Message* response,
-                        gpb::Closure* done)
+        void send_message( lowlevel_unit_sptr llu,
+                     const gpb::MethodDescriptor *method,
+                           gpb::RpcController *controller,
+                     const gpb::Message * /*request*/,
+                           gpb::Message *response,
+                           gpb::Closure *done)
         {
-            //common::closure_holder hold(done);
-
             common::connection_iface_sptr clk(connection_.lock( ));
 
             if( clk.get( ) == NULL ) {
                 throw vtrc::common::exception( vtrc_errors::ERR_CHANNEL,
                                                "Connection lost");
             }
-
-            lowlevel_unit_sptr llu(
-                        parent_->create_lowlevel(method, request, response));
 
             const vtrc_rpc_lowlevel::options &call_opt
                             ( clk->get_protocol( ).get_method_options(method) );
@@ -108,7 +104,9 @@ namespace vtrc { namespace client {
             } else { // NOT WAITABLE CALL
                 clk->get_protocol( ).call_rpc_method( *llu );
             }
+
         }
+
     };
 
     rpc_channel_c::rpc_channel_c( common::connection_iface_sptr c )
@@ -135,13 +133,14 @@ namespace vtrc { namespace client {
         delete impl_;
     }
 
-    void rpc_channel_c::CallMethod(const gpb::MethodDescriptor* method,
-                    gpb::RpcController* controller,
-                    const gpb::Message* request,
-                    gpb::Message* response,
-                    gpb::Closure* done)
+    void rpc_channel_c::send_message( lowlevel_unit_sptr llu,
+                                const gpb::MethodDescriptor *method,
+                                      gpb::RpcController *controller,
+                                const gpb::Message *request,
+                                      gpb::Message *response,
+                                      gpb::Closure *done)
     {
-        impl_->CallMethod( method, controller, request, response, done );
+        impl_->send_message( llu, method, controller, request, response, done );
     }
 
 }}

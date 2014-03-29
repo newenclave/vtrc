@@ -4,6 +4,7 @@
 #include "vtrc-common/vtrc-call-context.h"
 #include "vtrc-common/vtrc-exception.h"
 #include "vtrc-common/vtrc-closure-holder.h"
+#include "vtrc-common/vtrc-rpc-channel.h"
 
 #include "protocol/vtrc-errors.pb.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
@@ -44,7 +45,7 @@ namespace vtrc { namespace server {
 
         }
 
-        class unicast_channel: public common_channel {
+        class unicast_channel: public common::rpc_channel {
 
             common::connection_iface_wptr client_;
             const unsigned                message_type_;
@@ -101,7 +102,7 @@ namespace vtrc { namespace server {
             }
         };
 
-        class broadcast_channel: public common_channel {
+        class broadcast_channel: public common::rpc_channel {
 
             typedef broadcast_channel               this_type;
             vtrc::weak_ptr<common::connection_list> clients_;
@@ -188,16 +189,16 @@ namespace vtrc { namespace server {
 
     namespace unicast {
 
-        common_channel *create_event_channel( common::connection_iface_sptr c,
-                                              bool disable_wait)
+        common::rpc_channel *create_event_channel(
+                             common::connection_iface_sptr c, bool disable_wait)
         {
             static const unsigned message_type
                 (vtrc_rpc_lowlevel::message_info::MESSAGE_EVENT);
             return new unicast_channel(c, message_type, disable_wait);
         }
 
-        common_channel *create_callback_channel(common::connection_iface_sptr c,
-                                                bool disable_wait)
+        common::rpc_channel *create_callback_channel(
+                             common::connection_iface_sptr c, bool disable_wait)
         {
             static const unsigned message_type
                 (vtrc_rpc_lowlevel::message_info::MESSAGE_CALLBACK);
@@ -209,7 +210,7 @@ namespace vtrc { namespace server {
 
     namespace broadcast {
 
-        common_channel *create_event_channel(
+        common::rpc_channel *create_event_channel(
                                 vtrc::shared_ptr<common::connection_list> cl,
                                 common::connection_iface_sptr c )
         {
@@ -221,7 +222,7 @@ namespace vtrc { namespace server {
 
         }
 
-        common_channel *create_event_channel(
+        common::rpc_channel *create_event_channel(
                                 vtrc::shared_ptr<common::connection_list> cl )
         {
             static const unsigned message_type
@@ -229,7 +230,7 @@ namespace vtrc { namespace server {
             return new broadcast_channel(cl->weak_from_this( ), message_type );
         }
 
-        common_channel *create_callback_channel(
+        common::rpc_channel *create_callback_channel(
                                vtrc::shared_ptr<common::connection_list> cl,
                                common::connection_iface_sptr c )
         {
@@ -239,7 +240,7 @@ namespace vtrc { namespace server {
                                          message_type, c->weak_from_this( ));
         }
 
-        common_channel *create_callback_channel(
+        common::rpc_channel *create_callback_channel(
                                  vtrc::shared_ptr<common::connection_list> cl)
         {
             static const unsigned message_type
