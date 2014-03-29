@@ -229,7 +229,7 @@ namespace vtrc { namespace common {
             vtrc::unique_shared_lock lck(lock_);
 
             if( closed_ )
-                throw std::runtime_error( "File closed." );
+                throw std::runtime_error( "The queue is closed." );
 
             store_.insert( std::make_pair( key,
                                       vtrc::make_shared<hold_value_type>( ) ));
