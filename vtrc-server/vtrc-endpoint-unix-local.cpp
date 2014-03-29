@@ -77,7 +77,7 @@ namespace vtrc { namespace server { namespace endpoints {
             std::string string( ) const
             {
                 std::ostringstream oss;
-                oss << "unix/" << endpoint_.path( );
+                oss << "unix://" << endpoint_.path( );
                 return oss.str( );
             }
 
@@ -98,6 +98,8 @@ namespace vtrc { namespace server { namespace endpoints {
             void stop ( )
             {
                 app_.on_endpoint_stopped( this );
+                acceptor_.close( );
+                ::unlink(endpoint_.path( ).c_str( ));
             }
 
             void on_accept( const bsys::error_code &error,

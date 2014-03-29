@@ -215,7 +215,7 @@ int main( ) try {
 
     tcp_ep->start( );
 
-    boost::this_thread::sleep_for( vtrc::chrono::milliseconds(120009999) );
+    boost::this_thread::sleep_for( vtrc::chrono::milliseconds(12000) );
 
     std::cout << "Stoppped. Wait ... \n";
 
