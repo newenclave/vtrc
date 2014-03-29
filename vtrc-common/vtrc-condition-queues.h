@@ -203,7 +203,7 @@ namespace vtrc { namespace common {
 
         void close( )
         {
-            vtrc::unique_shared_lock lck(lock_);
+            // vtrc::unique_shared_lock lck(lock_);
             closed_ = true;
         }
 
