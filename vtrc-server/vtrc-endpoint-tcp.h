@@ -3,13 +3,18 @@
 
 #include <string>
 
+#include "vtrc-endpoint-iface.h"
+
 namespace vtrc { namespace server {
 
-    struct endpoint_iface;
     class application;
 
     namespace endpoints { namespace tcp {
         endpoint_iface *create( application &app,
+                                const std::string &address,
+                                unsigned short service );
+
+        endpoint_iface *create( application &app, const endpoint_options &opts,
                                 const std::string &address,
                                 unsigned short service );
     }}

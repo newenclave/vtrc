@@ -118,6 +118,7 @@ public:
         response->set_message_type( id_++ );
         if( (id_ % 100) == 0 )
             throw std::runtime_error( "oops 10 =)" );
+        vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(200) );
 
 //        connection_->get_io_service( ).dispatch(
 //                    vtrc::bind(test_send, connection_));

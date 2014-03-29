@@ -5,13 +5,16 @@
 
 #include <string>
 
+#include "vtrc-endpoint-iface.h"
+
 namespace vtrc { namespace server {
 
-    struct endpoint_iface;
     class application;
 
     namespace endpoints { namespace unix_local {
         endpoint_iface *create( application &app, const std::string &name );
+        endpoint_iface *create( application &app, const endpoint_options &opts,
+                                const std::string &name );
     }}
 
 }}

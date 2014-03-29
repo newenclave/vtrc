@@ -127,13 +127,19 @@ namespace vtrc { namespace server { namespace endpoints {
     }
 
     namespace tcp {
+
+        endpoint_iface *create(application &app, const endpoint_options &opts,
+                            const std::string &address, unsigned short service)
+        {
+            return new endpoint_tcp( app, opts, address, service );
+        }
+
         endpoint_iface *create( application &app,
                                 const std::string &address,
                                 unsigned short service )
         {
-            endpoint_options def_opts;
-            def_opts.maximum_active_calls = 10;
-            return new endpoint_tcp( app, def_opts, address, service );
+            const endpoint_options def_opts = { 10 };
+            return create( app, def_opts, address, service );
         }
     }
 

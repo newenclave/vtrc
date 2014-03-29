@@ -132,15 +132,21 @@ namespace vtrc { namespace server { namespace endpoints {
     }
 
     namespace unix_local {
-        endpoint_iface *create( application &app, const std::string &name )
+
+        endpoint_iface *create(application &app,
+                               const endpoint_options &opts,
+                               const std::string &name)
         {
             ::unlink( name.c_str( ) );
-
-            endpoint_options def_opts;
-            def_opts.maximum_active_calls = 10;
-
-            return new endpoint_unix( app, def_opts, name );
+            return new endpoint_unix( app, opts, name );
         }
+
+        endpoint_iface *create( application &app, const std::string &name )
+        {
+            const endpoint_options def_opts = { 10 };
+            return create( app, def_opts, name );
+        }
+
     }
 
 }}}
