@@ -30,8 +30,8 @@ namespace vtrc { namespace common  {
         const std::string &serv_name(method->service( )->full_name( ));
         const std::string &meth_name(method->name( ));
 
-        llu->mutable_call( )->set_service( serv_name );
-        llu->mutable_call( )->set_method( meth_name );
+        llu->mutable_call( )->set_service_id( serv_name );
+        llu->mutable_call( )->set_method_id( meth_name );
 
         llu->set_request( request->SerializeAsString( ) );
         llu->set_response( response->SerializeAsString( ) );

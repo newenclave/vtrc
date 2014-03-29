@@ -394,7 +394,7 @@ namespace vtrc { namespace common {
             protocol_layer::context_holder ch( parent_, llu.get( ) );
 
             common::rpc_service_wrapper_sptr
-                    service(get_service(llu->call( ).service( )));
+                    service(get_service(llu->call( ).service_id( )));
 
             if( !service || !service->service( ) ) {
                 throw vtrc::common::exception( vtrc_errors::ERR_BAD_FILE,
@@ -402,7 +402,7 @@ namespace vtrc { namespace common {
             }
 
             gpb::MethodDescriptor const *meth
-                (service->get_method(llu->call( ).method( )));
+                (service->get_method(llu->call( ).method_id( )));
 
             if( !meth ) {
                 throw vtrc::common::exception( vtrc_errors::ERR_NO_FUNC );

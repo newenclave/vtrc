@@ -46,8 +46,8 @@ message message_info {
 }
 
 message call_info {
-    optional bytes service = 1; // we can use name, full_name or crc :]
-    optional bytes method  = 2;
+    optional bytes service_id = 1; // we can use name, full_name or crc :]
+    optional bytes method_id  = 2;
 }
 
 message lowlevel_unit {
