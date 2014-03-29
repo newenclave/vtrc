@@ -3,7 +3,7 @@ import "vtrc-errors.proto";
 
 package vtrc_rpc_lowlevel;
 
-// index 51300
+// index 53000
 
 option cc_generic_services = true;
 
@@ -19,11 +19,11 @@ message rpc_options_type {
 
 
 extend google.protobuf.ServiceOptions {
-    optional rpc_options_type service_options = 51301;
+    optional rpc_options_type service_options = 53001;
 }
 
 extend google.protobuf.MethodOptions {
-    optional rpc_options_type  method_options = 51302;
+    optional rpc_options_type  method_options = 53002;
 }
 
 message message_info {
