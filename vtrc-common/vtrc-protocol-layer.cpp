@@ -522,7 +522,7 @@ namespace vtrc { namespace common {
             err_cont->set_additional( add );
 
             parent_->push_rpc_message_all( llu );
-
+            rpc_queue_.close( );
         }
 
     };
@@ -681,10 +681,10 @@ namespace vtrc { namespace common {
         impl_->cancel_all_slots( );
     }
 
-    void protocol_layer::close_queue( )
-    {
-        impl_->close_queue( );
-    }
+//    void protocol_layer::close_queue( )
+//    {
+//        impl_->close_queue( );
+//    }
 
     void protocol_layer::erase_all_slots( )
     {

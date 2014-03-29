@@ -117,7 +117,9 @@ void run_client( vtrc::shared_ptr<client::vtrc_client> cl, bool wait)
 
     for( int i=0; i<29999999999; ++i ) {
         try {
-            //vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(10) );
+
+            if( wait )
+                vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(1) );
             work_time wt;
             s.test( NULL, &mi, &mi, NULL );
             last = mi.message_type( );
