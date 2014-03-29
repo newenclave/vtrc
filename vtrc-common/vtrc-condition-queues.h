@@ -179,6 +179,13 @@ namespace vtrc { namespace common {
         condition_queues( const condition_queues &other );
         condition_queues& operator = (const condition_queues &other);
 
+        static void cancel_value( hold_value_type &value )
+        {
+            unique_lock lck(value.lock_);
+            value.canceled_ = true;
+            value.cond_.notify_all( );
+        }
+
     public:
 
         condition_queues( )
@@ -233,9 +240,7 @@ namespace vtrc { namespace common {
             for(typename map_type::iterator b(store_.begin()), e(store_.end());
                                             b!=e; ++b)
             {
-                unique_lock lck(b->second->lock_);
-                b->second->canceled_ = true;
-                b->second->cond_.notify_all( );
+                cancel_value( *b->second );
             }
             store_.clear( );
         }
@@ -245,9 +250,7 @@ namespace vtrc { namespace common {
             vtrc::shared_lock lck(lock_);
             typedef typename map_type::iterator iterator_type;
             for( iterator_type b(store_.begin( )), e(store_.end( )); b!=e; ++b){
-                unique_lock lck(b->second->lock_);
-                b->second->canceled_ = true;
-                b->second->cond_.notify_all( );
+                cancel_value( *b->second );
             }
         }
 
@@ -255,10 +258,7 @@ namespace vtrc { namespace common {
         {
             vtrc::shared_lock lck(lock_);
             typename map_type::iterator f(at( key ));
-
-            unique_lock flck(f->second->lock_);
-            f->second->canceled_ = true;
-            f->second->cond_.notify_all( );
+            cancel_value( *f->second );
         }
 
         void write_queue( const key_type &key, const queue_value_type &data )
