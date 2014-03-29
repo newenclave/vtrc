@@ -86,8 +86,6 @@ namespace vtrc { namespace client {
             connection_->write(s.c_str( ), s.size( ), closure );
         }
 
-        void closure( ) { }
-
         void process_event_impl( vtrc_client_wptr client,
                                  lowlevel_unit_sptr llu)
         {
