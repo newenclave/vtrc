@@ -213,7 +213,7 @@ namespace vtrc { namespace common {
         size_t queue_size( const key_type &key ) const
         {
             vtrc::shared_lock lck(lock_);
-            return at(key)->second->data_.size( );
+            return value_at_key(key)->data_.size( );
         }
 
         void add_queue( const key_type &key )
