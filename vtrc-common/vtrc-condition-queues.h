@@ -210,13 +210,9 @@ namespace vtrc { namespace common {
 
         void add_queue( const key_type &key )
         {
-            vtrc::upgradable_lock lck(lock_);
-            typename map_type::iterator f(store_.find( key ));
-            if( f == store_.end( ) ) {
-                vtrc::upgrade_to_unique ulck(lck);
-                store_.insert( std::make_pair( key,
-                                    vtrc::make_shared<hold_value_type>( ) ));
-            }
+            vtrc::unique_shared_lock lck(lock_);
+            store_.insert( std::make_pair( key,
+                                      vtrc::make_shared<hold_value_type>( ) ));
         }
 
         void erase_queue( const key_type &key )
