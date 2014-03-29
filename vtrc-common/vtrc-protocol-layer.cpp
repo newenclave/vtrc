@@ -106,6 +106,8 @@ namespace vtrc { namespace common {
         options_map_type             options_map_;
         mutable vtrc::shared_mutex   options_map_lock_;
 
+        bool                         working_;
+
         impl( transport_iface *c, bool oddside )
             :connection_(c)
             ,hash_maker_(common::hash::create_default( ))
@@ -116,6 +118,7 @@ namespace vtrc { namespace common {
             ,reverter_(common::transformers::none::create( ))
             ,queue_(data_queue::varint::create_parser(maximum_message_length))
             ,rpc_index_(oddside ? 101 : 100)
+            ,working_(true)
         {}
 
         std::string prepare_data( const char *data, size_t length)
@@ -282,12 +285,17 @@ namespace vtrc { namespace common {
 
         void call_rpc_method( uint64_t slot_id, const ll_unit_type &llu )
         {
+            if( !working_ )
+                throw vtrc::common::exception( vtrc_errors::ERR_CANCELED );
             rpc_queue_.add_queue( slot_id );
             send_message( llu );
         }
 
         void call_rpc_method( const ll_unit_type &llu )
         {
+            if( !working_ )
+                throw vtrc::common::exception( vtrc_errors::ERR_CANCELED );
+
             //if( llu.has_id( ) && llu.info( ).has_message_type( ) )
                 send_message( llu );
 //            else
@@ -377,11 +385,6 @@ namespace vtrc { namespace common {
         void cancel_all_slots( )
         {
             rpc_queue_.cancel_all( );
-        }
-
-        void close_queue( )
-        {
-            rpc_queue_.close( );
         }
 
         void closure( common::rpc_controller_sptr controller,
@@ -521,8 +524,9 @@ namespace vtrc { namespace common {
             err_cont->set_fatal( true );
             err_cont->set_additional( add );
 
+            working_ = false;
+
             parent_->push_rpc_message_all( llu );
-            rpc_queue_.close( );
         }
 
     };

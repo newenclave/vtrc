@@ -51,7 +51,6 @@ namespace vtrc { namespace common {
 
         map_type            store_;
         mutable mutex_type  lock_;
-        bool                closed_;
 
     private:
 
@@ -198,14 +197,7 @@ namespace vtrc { namespace common {
     public:
 
         condition_queues( )
-            :closed_(false)
         { }
-
-        void close( )
-        {
-            // vtrc::unique_shared_lock lck(lock_);
-            closed_ = true;
-        }
 
         ~condition_queues( ) try
         {
@@ -227,10 +219,6 @@ namespace vtrc { namespace common {
         void add_queue( const key_type &key )
         {
             vtrc::unique_shared_lock lck(lock_);
-
-            if( closed_ )
-                throw std::runtime_error( "The queue is closed." );
-
             store_.insert( std::make_pair( key,
                                       vtrc::make_shared<hold_value_type>( ) ));
         }
