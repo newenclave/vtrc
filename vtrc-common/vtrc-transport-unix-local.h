@@ -40,15 +40,13 @@ namespace vtrc { namespace common {
 
         common::enviroment      &get_enviroment( )    ;
 
-        socket_type &get_socket( )   ;
-        const socket_type &get_socket( ) const;
+        socket_type         &get_socket( )      ;
+        const socket_type   &get_socket( ) const;
 
         void write( const char *data, size_t length ) ;
         void write( const char *data, size_t length, closure_type &success ) ;
 
         virtual void on_write_error( const boost::system::error_code &err ) = 0;
-
-        void send_message( const char *data, size_t length );
 
     private:
 

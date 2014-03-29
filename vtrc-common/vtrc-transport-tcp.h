@@ -26,7 +26,9 @@ namespace vtrc { namespace common {
 
     public:
 
-        transport_tcp( boost::asio::ip::tcp::socket *sock );
+        typedef boost::asio::ip::tcp::socket socket_type;
+
+        transport_tcp( socket_type *sock );
         virtual ~transport_tcp(  );
 
         const char *name( ) const                     ;
@@ -35,8 +37,8 @@ namespace vtrc { namespace common {
 
         common::enviroment      &get_enviroment( )    ;
 
-        boost::asio::ip::tcp::socket &get_socket( )   ;
-        const boost::asio::ip::tcp::socket &get_socket( ) const;
+        socket_type &get_socket( )   ;
+        const socket_type &get_socket( ) const;
 
         void write( const char *data, size_t length ) ;
         void write( const char *data, size_t length, closure_type &success ) ;

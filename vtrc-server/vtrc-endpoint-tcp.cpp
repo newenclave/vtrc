@@ -23,6 +23,8 @@
 
 #include "vtrc-protocol-layer-s.h"
 
+#include "vtrc-connection-impl.h"
+
 namespace vtrc { namespace server { namespace endpoints {
 
     namespace {
@@ -32,122 +34,13 @@ namespace vtrc { namespace server { namespace endpoints {
 
         namespace bip   = basio::ip;
 
-        struct tcp_connection: public common::transport_tcp {
-
-            typedef tcp_connection this_type;
-
-            endpoint_iface                     &endpoint_;
-            application                        &app_;
-            basio::io_service                  &ios_;
-            common::enviroment                  env_;
-
-            std::vector<char>                   read_buff_;
-
-            vtrc::shared_ptr<protocol_layer_s>  protocol_;
-
-            tcp_connection(endpoint_iface &endpoint, bip::tcp::socket *sock)
-                :common::transport_tcp(sock)
-                ,endpoint_(endpoint)
-                ,app_(endpoint_.get_application( ))
-                ,ios_(app_.get_io_service( ))
-                ,env_(endpoint_.get_enviroment( ))
-                ,read_buff_(4096)
-            {
-                protocol_ = vtrc::make_shared<server::protocol_layer_s>
-                                                     (vtrc::ref(app_), this);
-            }
-
-            static vtrc::shared_ptr<tcp_connection> create
-                             (endpoint_iface &endpoint, bip::tcp::socket *sock)
-            {
-                vtrc::shared_ptr<tcp_connection> new_inst
-                                    (vtrc::make_shared<tcp_connection>
-                                                  (vtrc::ref(endpoint), sock));
-                new_inst->init( );
-                return new_inst;
-            }
-
-            void init( )
-            {
-                start_reading( );
-                protocol_ ->init( );
-            }
-
-            bool ready( ) const
-            {
-                protocol_->ready( );
-            }
-
-            endpoint_iface &endpoint( )
-            {
-                return endpoint_;
-            }
-
-            std::string prepare_for_write( const char *data, size_t length )
-            {
-                return protocol_->prepare_data( data, length );
-            }
-
-            void on_write_error( const bsys::error_code &error )
-            {
-                protocol_->on_write_error( error );
-                close( );
-                //app_.get_clients( )->drop(this); // delete
-            }
-
-            void start_reading( )
-            {
-#if 0
-                basio::io_service::strand &disp(get_dispatcher( ));
-                get_socket( ).async_read_some(
-                        basio::buffer( &read_buff_[0], read_buff_.size( ) ),
-                        disp.wrap(vtrc::bind( &this_type::read_handler, this,
-                             basio::placeholders::error,
-                             basio::placeholders::bytes_transferred,
-                             weak_from_this( )))
-                    );
-#else
-                get_socket( ).async_read_some(
-                        basio::buffer( &read_buff_[0], read_buff_.size( ) ),
-                            vtrc::bind( &this_type::read_handler, this,
-                                 basio::placeholders::error,
-                                 basio::placeholders::bytes_transferred,
-                                 weak_from_this( ))
-                    );
-#endif
-            }
-
-            void read_handler( const bsys::error_code &error, size_t bytes,
-                               common::connection_iface_wptr parent)
-            {
-                common::connection_iface_sptr lk(parent.lock( ));
-                if( !lk ) return;
-
-                if( !error ) {
-                    try {
-                        protocol_->process_data( &read_buff_[0], bytes );
-                    } catch( const std::exception & /*ex*/ ) {
-                        close( );
-                        app_.get_clients( )->drop(this); // delete
-                        return;
-                    }
-                    start_reading( );
-                } else {
-                    protocol_->on_read_error( error );
-                    close( );
-                    app_.get_clients( )->drop(this); // delete
-                }
-            }
-
-            protocol_layer_s &get_protocol( )
-            {
-                return *protocol_;
-            }
-        };
-
         struct endpoint_tcp: public endpoint_iface {
 
             typedef endpoint_tcp this_type;
+
+            typedef common::transport_tcp                   transport_type;
+            typedef connection_impl<transport_type>         connection_type;
+            typedef typename connection_type::socket_type   socket_type;
 
             application             &app_;
             basio::io_service       &ios_;
@@ -211,8 +104,8 @@ namespace vtrc { namespace server { namespace endpoints {
                 } else {
                     try {
                         std::cout << "accept\n";
-                        vtrc::shared_ptr<tcp_connection> new_conn
-                                         (tcp_connection::create(*this, sock));
+                        vtrc::shared_ptr<connection_type> new_conn
+                                         (connection_type::create(*this, sock));
                         app_.get_clients( )->store( new_conn );
                     } catch( ... ) {
                         ;;;
