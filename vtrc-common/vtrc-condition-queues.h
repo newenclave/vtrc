@@ -228,8 +228,10 @@ namespace vtrc { namespace common {
             vtrc::upgradable_lock lck(lock_);
             typename map_type::iterator f(store_.find( key ));
             if( f != store_.end( ) ) {
-                vtrc::upgrade_to_unique ulck(lck);
+
                 cancel_value( *(f->second) );
+
+                vtrc::upgrade_to_unique ulck(lck);
                 store_.erase( f );
             }
         }
@@ -300,13 +302,12 @@ namespace vtrc { namespace common {
         void write_queue( const key_type &key, const queue_type &data )
         {
             vtrc::shared_lock lck(lock_);
-            typename map_type::iterator f(at( key ));
+            hold_value_type_sptr value(value_at_key( key ));
 
-            unique_lock flck(f->second->lock_);
-
-            f->second->data_.insert( f->second->data_.end( ),
-                                     data.begin( ), data.end( ));
-            f->second->cond_.notify_one( );
+            unique_lock vlck(value->lock_);
+            value->data_.insert( value->data_.end( ),
+                                 data.begin( ), data.end( ));
+            value->cond_.notify_one( );
         }
 
         wait_result_codes wait_queue( const key_type &key )
