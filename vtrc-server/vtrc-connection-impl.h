@@ -24,24 +24,25 @@ namespace vtrc { namespace server { namespace endpoints {
 
             vtrc::shared_ptr<protocol_layer_s>  protocol_;
 
-            connection_impl(endpoint_iface &endpoint, socket_type *sock)
+            connection_impl(endpoint_iface &endpoint,
+                            socket_type *sock, size_t buffer_size)
                 :parent_type(sock)
                 ,endpoint_(endpoint)
                 ,app_(endpoint_.get_application( ))
                 ,ios_(app_.get_io_service( ))
                 ,env_(endpoint_.get_enviroment( ))
-                ,read_buff_(4096)
+                ,read_buff_(buffer_size)
             {
                 protocol_ = vtrc::make_shared<server::protocol_layer_s>
                                                      (vtrc::ref(app_), this);
             }
 
-            static vtrc::shared_ptr<this_type> create
-                             (endpoint_iface &endpoint, socket_type *sock)
+            static vtrc::shared_ptr<this_type> create(endpoint_iface &endpoint,
+                            socket_type *sock,  size_t buffer_size )
             {
                 vtrc::shared_ptr<this_type> new_inst
-                                    (vtrc::make_shared<this_type>
-                                                  (vtrc::ref(endpoint), sock));
+                            (vtrc::make_shared<this_type>
+                                     (vtrc::ref(endpoint), sock, buffer_size));
                 new_inst->init( );
                 return new_inst;
             }

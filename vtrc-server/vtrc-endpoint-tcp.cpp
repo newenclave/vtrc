@@ -106,7 +106,7 @@ namespace vtrc { namespace server { namespace endpoints {
                     try {
                         std::cout << "accept\n";
                         vtrc::shared_ptr<connection_type> new_conn
-                                         (connection_type::create(*this, sock));
+                                 (connection_type::create(*this, sock, 4096));
                         app_.get_clients( )->store( new_conn );
                     } catch( ... ) {
                         ;;;
