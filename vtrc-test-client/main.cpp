@@ -70,7 +70,7 @@ public:
                     vtrc::common::call_context::get( c_->connection( ) );
 
         vtrc::shared_ptr<google::protobuf::RpcChannel>
-                ch(c_->create_channel( false, false ));
+                ch(c_->create_channel( false, true ));
 
         vtrc_rpc_lowlevel::message_info mi;
         vtrc_service::test_rpc::Stub s( ch.get( ) );

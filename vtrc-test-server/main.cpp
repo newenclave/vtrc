@@ -67,7 +67,7 @@ void test_send( common::connection_iface *connection,
     vtrc::shared_ptr<google::protobuf::RpcChannel> ev(
                 vtrc::server
                 ::channels::unicast
-                ::create_event_channel( s, true ));
+                ::create_event_channel( s, false ));
 
     const vtrc_rpc_lowlevel::lowlevel_unit *pllu =
             common::call_context::get( s )->get_lowlevel_message( );
