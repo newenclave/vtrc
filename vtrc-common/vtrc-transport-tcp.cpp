@@ -29,15 +29,10 @@ namespace vtrc { namespace common {
 
         typedef impl this_type;
 
-        typedef vtrc::chrono::high_resolution_clock high_resolution_clock;
-        typedef high_resolution_clock::time_point time_point;
-
         struct message_holder {
             std::string message_;
             vtrc::shared_ptr<closure_type> closure_;
-            time_point  stored_;
             message_holder( )
-                :stored_(high_resolution_clock::now( ))
             { }
         };
 
@@ -205,24 +200,11 @@ namespace vtrc { namespace common {
                             size_t messages,
                             common::connection_iface_sptr /*inst*/)
         {
-
-            typedef vtrc::chrono::high_resolution_clock::time_point time_point;
-            static time_point stp(vtrc::chrono::high_resolution_clock::now( ));
-
-            time_point tp(vtrc::chrono::high_resolution_clock::now( ));
-
-
             if( !error ) {
                 while( messages-- ) {
                     if( write_queue_.front( )->closure_ ) {
                         (*write_queue_.front( )->closure_)( error );
                     }
-
-//                    std::cout << "mesage was queued "
-//                              << vtrc::chrono::high_resolution_clock::now( ) -
-//                                 write_queue_.front( )->stored_
-//                              << "\n";
-
                     write_queue_.pop_front( );
                 }
                 if( !write_queue_.empty( ) )
