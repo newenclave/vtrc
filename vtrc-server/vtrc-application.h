@@ -44,6 +44,8 @@ namespace server {
                      boost::asio::io_service &rpc_ios);
         virtual ~application( );
 
+        void stop_all_clients( );
+
         common::enviroment      &get_enviroment( );
         boost::asio::io_service &get_io_service( );
         boost::asio::io_service &get_rpc_service( );

@@ -52,9 +52,14 @@ namespace vtrc { namespace server {
             return true;
         }
 
-        ~impl( ) try
+        void stop_all_clients( )
         {
             clients_->foreach_while( close_all_connection );
+        }
+
+        ~impl( ) try
+        {
+            stop_all_clients( );
             clients_->clear( );
 
             if( own_ios_ )      delete ios_;
@@ -108,6 +113,11 @@ namespace vtrc { namespace server {
     application::~application( )
     {
         delete impl_;
+    }
+
+    void application::stop_all_clients( )
+    {
+        impl_->stop_all_clients( );
     }
 
     common::enviroment &application::get_enviroment( )

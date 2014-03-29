@@ -224,6 +224,8 @@ int main( ) try {
 #endif
     tcp_ep->stop( );
 
+    app.stop_all_clients( );
+
     std::cout << "Stoppped. Wait ... \n";
 
     pp.stop_all( );
