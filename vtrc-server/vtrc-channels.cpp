@@ -73,16 +73,15 @@ namespace vtrc { namespace server {
                 rpc_channel::context_holder ch(&clk->get_protocol( ), &llu);
                 ch.ctx_->set_call_options( call_opt );
 
-                //// WAITABLE CALL
-                if( llu.opt( ).wait( ) ) {
+
+                if( llu.opt( ).wait( ) ) { /// WAITABLE CALL
 
                     process_waitable_call( call_id, llu, response,
                                            clk, call_opt );
 
-                } else { // NOT WAITABLE CALL
+                } else {                  /// NOT WAITABLE CALL
                     clk->get_protocol( ).call_rpc_method( llu );
                 }
-
             }
         };
 
@@ -113,12 +112,12 @@ namespace vtrc { namespace server {
 
 
 
-            bool send_to_client( common::connection_iface_sptr next,
-                                 common::connection_iface_sptr sender,
+            bool send_to_client( common::connection_iface_sptr  next,
+                                 const common::connection_iface_sptr &sender,
                                  lowlevel_unit_type &mess,
                                  unsigned mess_type)
             {
-                if( (sender != next) ) {
+                if( sender != next ) {
                     configure_message( next, mess_type, mess );
                     next->get_protocol( ).call_rpc_method( mess );
                 }
@@ -126,8 +125,8 @@ namespace vtrc { namespace server {
             }
 
 
-            bool send_to_client2( common::connection_iface_sptr next,
-                                  common::connection_iface_sptr sender,
+            bool send_to_client2( common::connection_iface_sptr  next,
+                                  const common::connection_iface_sptr &sender,
                                   lowlevel_unit_type &mess,
                                   unsigned mess_type)
             {
@@ -162,12 +161,12 @@ namespace vtrc { namespace server {
                 if( clk ) {
                     lck_list->foreach_while(
                             vtrc::bind( &this_type::send_to_client, this, _1,
-                                        clk, vtrc::ref(llu),
+                                        vtrc::cref(clk), vtrc::ref(llu),
                                         message_type_) );
                 } else {
                     lck_list->foreach_while(
                             vtrc::bind( &this_type::send_to_client2, this, _1,
-                                        clk, vtrc::ref(llu),
+                                        vtrc::cref(clk), vtrc::ref(llu),
                                         message_type_) );
                 }
             }
