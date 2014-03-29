@@ -48,6 +48,8 @@ namespace vtrc { namespace common {
         transport_unix_local                *parent_;
         vtrc::atomic<bool>                   closed_;
 
+        std::string                          name_;
+
 #ifndef TRANSPORT_USE_ASYNC_WRITE
         vtrc::mutex                          write_lock_;
 #else
@@ -56,11 +58,12 @@ namespace vtrc { namespace common {
 
 #endif
 
-        impl( socket_type *s )
+        impl( socket_type *s, const std::string &n )
             :sock_(s)
             ,ios_(sock_->get_io_service( ))
             ,write_dispatcher_(ios_)
             ,closed_(false)
+            ,name_(n)
         { }
 
         ~impl( )
@@ -68,7 +71,7 @@ namespace vtrc { namespace common {
 
         const char *name( ) const
         {
-            return "unix-local";
+            return name_.c_str( );
         }
 
         void close( )
@@ -163,7 +166,7 @@ namespace vtrc { namespace common {
                                      1, parent_->shared_from_this( )))
                         );
             } catch( const std::exception & ) {
-                close( );
+                this->close( );
             }
 
         }
@@ -226,7 +229,7 @@ namespace vtrc { namespace common {
 
     transport_unix_local::transport_unix_local(
                                          transport_unix_local::socket_type *s )
-        :impl_(new impl(s))
+        :impl_(new impl(s, "unix-local"))
     {
         impl_->parent_ = this;
     }
