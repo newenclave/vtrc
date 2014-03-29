@@ -47,8 +47,10 @@ namespace client {
 
     private:
 
-        void send_message(
-                    vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> llu,
+        void configure_message_for( common::connection_iface_sptr c,
+                                lowlevel_unit_type &llu ) const;
+
+        void send_message( lowlevel_unit_type &llu,
                     const google::protobuf::MethodDescriptor* method,
                           google::protobuf::RpcController* controller,
                     const google::protobuf::Message* request,

@@ -17,12 +17,15 @@ namespace vtrc { namespace common  {
         rpc_channel( const rpc_channel & );
         rpc_channel&  operator = ( const rpc_channel & );
 
+        unsigned direct_call_type_;
+        unsigned callback_type_;
+
     public:
 
         typedef vtrc_rpc_lowlevel::lowlevel_unit     lowlevel_unit_type;
         typedef vtrc::shared_ptr<lowlevel_unit_type> lowlevel_unit_sptr;
 
-        rpc_channel( );
+        rpc_channel(unsigned direct_call_type, unsigned callback_type);
         virtual ~rpc_channel( );
 
     public:
@@ -33,13 +36,17 @@ namespace vtrc { namespace common  {
                                 google::protobuf::Message* response) const;
 
         void process_waitable_call( google::protobuf::uint64 call_id,
-                            lowlevel_unit_sptr &llu,
+                            const lowlevel_unit_type &llu,
                             google::protobuf::Message* response,
                             common::connection_iface_sptr &cl,
                             const vtrc_rpc_lowlevel::options &call_opt ) const;
     protected:
 
         typedef protocol_layer::context_holder context_holder;
+
+        void configure_message( common::connection_iface_sptr c,
+                                unsigned specified_call_type,
+                                lowlevel_unit_type &llu ) const;
 
         void CallMethod(const google::protobuf::MethodDescriptor* method,
                         google::protobuf::RpcController* controller,
@@ -50,8 +57,7 @@ namespace vtrc { namespace common  {
         ///
         /// send implementation for children
         ///
-        virtual void send_message(
-                    vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit> llu,
+        virtual void send_message( lowlevel_unit_type &llu,
                     const google::protobuf::MethodDescriptor* method,
                           google::protobuf::RpcController* controller,
                     const google::protobuf::Message* request,

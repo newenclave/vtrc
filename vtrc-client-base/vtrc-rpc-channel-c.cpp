@@ -22,13 +22,17 @@ namespace vtrc { namespace client {
             vtrc_rpc_lowlevel::lowlevel_unit
         > lowlevel_unit_sptr;
         typedef vtrc_rpc_lowlevel::message_info message_info;
+
+        const unsigned direct_call_type = message_info::MESSAGE_CALL;
+        const unsigned callback_type    = message_info::MESSAGE_INSERTION_CALL;
+
     }
 
     struct rpc_channel_c::impl {
 
         vtrc::weak_ptr<common::connection_iface> connection_;
 
-        rpc_channel *parent_;
+        rpc_channel_c *parent_;
         const unsigned mess_type_;
         const bool     disable_wait_;
 
@@ -39,39 +43,12 @@ namespace vtrc { namespace client {
             ,disable_wait_(dw)
         {}
 
-        static bool waitable_call( const lowlevel_unit_sptr &llu )
-        {
-            const bool  has = llu->opt( ).has_wait( );
-            return !has || (has && llu->opt( ).wait( ));
-        }
-
-        static void configure_message( common::connection_iface_sptr c,
-                                       unsigned mess_type,
-                                       lowlevel_unit_sptr llu )
-        {
-            const common::call_context *cc(common::call_context::get(c));
-            switch( mess_type ) {
-            case message_info::MESSAGE_INSERTION_CALL:
-                if( cc && cc->get_lowlevel_message( )->opt( ).wait( ) ) {
-                    llu->mutable_info( )->set_message_type( mess_type );
-                    llu->set_id( cc->get_lowlevel_message( )->id( ) );
-                    break;
-                } else {
-                    mess_type = message_info::MESSAGE_CALL;
-                }
-            case message_info::MESSAGE_CALL:
-                llu->mutable_info( )->set_message_type( mess_type );
-                llu->set_id(c->get_protocol( ).next_index( ));
-                break;
-            }
-        }
-
-        void send_message( lowlevel_unit_sptr llu,
+        void send_message( lowlevel_unit_type &llu,
                      const gpb::MethodDescriptor *method,
-                           gpb::RpcController *controller,
-                     const gpb::Message * /*request*/,
+                           gpb::RpcController * /* controller*/,
+                     const gpb::Message *       /*  request  */,
                            gpb::Message *response,
-                           gpb::Closure *done)
+                           gpb::Closure *       /*    done   */ )
         {
             common::connection_iface_sptr clk(connection_.lock( ));
 
@@ -84,25 +61,23 @@ namespace vtrc { namespace client {
                             ( clk->get_protocol( ).get_method_options(method) );
 
             if( disable_wait_ )
-                llu->mutable_opt( )->set_wait( false );
+                llu.mutable_opt( )->set_wait( false );
             else
-                llu->mutable_opt( )->set_wait( call_opt.wait( ) );
+                llu.mutable_opt( )->set_wait( call_opt.wait( ) );
 
-            configure_message( clk, mess_type_, llu );
-            uint64_t call_id = llu->id( );
+            parent_->configure_message_for( clk, llu );
+            uint64_t call_id = llu.id( );
 
-            rpc_channel::context_holder ch(&clk->get_protocol( ), llu.get( ));
+            rpc_channel::context_holder ch( &clk->get_protocol( ), &llu );
             ch.ctx_->set_call_options( call_opt );
 
-            llu->set_id( call_id );
-
-            if( llu->opt( ).wait( ) ) { // WAITABLE CALL
+            if( llu.opt( ).wait( ) ) { // WAITABLE CALL
 
                 parent_->process_waitable_call( call_id, llu, response,
                                                 clk, call_opt );
 
             } else { // NOT WAITABLE CALL
-                clk->get_protocol( ).call_rpc_method( *llu );
+                clk->get_protocol( ).call_rpc_method( llu );
             }
 
         }
@@ -110,20 +85,23 @@ namespace vtrc { namespace client {
     };
 
     rpc_channel_c::rpc_channel_c( common::connection_iface_sptr c )
-        :impl_(new impl(c, false, false))
+        :common::rpc_channel(direct_call_type, callback_type)
+        ,impl_(new impl(c, false, false))
     {
         impl_->parent_ = this;
     }
 
     rpc_channel_c::rpc_channel_c( common::connection_iface_sptr c, bool dw )
-        :impl_(new impl(c, dw, false))
+        :common::rpc_channel(direct_call_type, callback_type)
+        ,impl_(new impl(c, dw, false))
     {
         impl_->parent_ = this;
     }
 
     rpc_channel_c::rpc_channel_c( common::connection_iface_sptr c,
                                   bool disable_wait, bool ins)
-        :impl_(new impl(c, disable_wait, ins))
+        :common::rpc_channel(direct_call_type, callback_type)
+        ,impl_(new impl(c, disable_wait, ins))
     {
         impl_->parent_ = this;
     }
@@ -133,7 +111,13 @@ namespace vtrc { namespace client {
         delete impl_;
     }
 
-    void rpc_channel_c::send_message( lowlevel_unit_sptr llu,
+    void rpc_channel_c::configure_message_for(common::connection_iface_sptr c,
+                            common::rpc_channel::lowlevel_unit_type &llu) const
+    {
+        configure_message( c, impl_->mess_type_, llu );
+    }
+
+    void rpc_channel_c::send_message( lowlevel_unit_type &llu,
                                 const gpb::MethodDescriptor *method,
                                       gpb::RpcController *controller,
                                 const gpb::Message *request,

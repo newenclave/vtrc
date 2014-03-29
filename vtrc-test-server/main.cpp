@@ -67,7 +67,7 @@ void test_send( common::connection_iface *connection,
     vtrc::shared_ptr<google::protobuf::RpcChannel> ev(
                 vtrc::server
                 ::channels::unicast
-                ::create_event_channel( s, false ));
+                ::create_event_channel( s, true ));
 
     const vtrc_rpc_lowlevel::lowlevel_unit *pllu =
             common::call_context::get( s )->get_lowlevel_message( );
@@ -209,7 +209,7 @@ private:
 
 int main( ) try {
 
-    common::pool_pair pp(1, 2);
+    common::pool_pair pp(1, 1);
     main_app app(pp);
 
     vtrc::shared_ptr<vtrc::server::endpoint_iface> tcp_ep
