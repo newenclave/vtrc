@@ -169,7 +169,7 @@ namespace vtrc { namespace common {
         }
 
         static bool cond_wait( unique_lock &lck,
-                        hold_value_type_sptr &value )
+                               hold_value_type_sptr &value )
         {
             value->cond_.wait( lck,
                           vtrc::bind( &this_type::queue_empty_predic, value ));
@@ -187,7 +187,7 @@ namespace vtrc { namespace common {
         ~condition_queues( ) try
         {
             cancel_all( );
-        } catch ( ... ) { ;;; }
+        } catch ( ... ) { ;;; /*Cthulhu*/ }
 
         size_t size( ) const
         {
