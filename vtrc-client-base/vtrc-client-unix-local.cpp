@@ -9,6 +9,7 @@
 
 #include "vtrc-client.h"
 #include "vtrc-bind.h"
+#include "vtrc-ref.h"
 #include "vtrc-chrono.h"
 
 namespace vtrc { namespace client {
@@ -139,9 +140,14 @@ namespace vtrc { namespace client {
 
     };
 
+    static vtrc::shared_ptr<socket_type> create_socket( basio::io_service &ios )
+    {
+        return vtrc::make_shared<socket_type>(vtrc::ref(ios));
+    }
+
     client_unix_local::client_unix_local( boost::asio::io_service &ios,
                                                         vtrc_client *client )
-        :common::transport_unix_local(new socket_type(ios))
+        :common::transport_unix_local(create_socket(ios))
         ,impl_(new impl(ios, client))
     {
         impl_->parent_ = this;

@@ -29,7 +29,8 @@ namespace vtrc { namespace server { namespace endpoints {
             vtrc::shared_ptr<protocol_layer_s>  protocol_;
 
             connection_impl(endpoint_iface &endpoint,
-                            socket_type *sock, size_t buffer_size)
+                            vtrc::shared_ptr<socket_type> sock,
+                            size_t buffer_size)
                 :parent_type(sock)
                 ,endpoint_(endpoint)
                 ,app_(endpoint_.get_application( ))
@@ -42,7 +43,7 @@ namespace vtrc { namespace server { namespace endpoints {
             }
 
             static vtrc::shared_ptr<this_type> create(endpoint_iface &endpoint,
-                            socket_type *sock,  size_t buffer_size )
+                      vtrc::shared_ptr<socket_type> sock,  size_t buffer_size )
             {
                 vtrc::shared_ptr<this_type> new_inst
                             (vtrc::make_shared<this_type>

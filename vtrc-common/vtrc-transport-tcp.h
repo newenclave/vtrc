@@ -3,6 +3,8 @@
 
 #include <boost/asio/ip/tcp.hpp>
 
+#include "vtrc-memory.h"
+
 namespace boost {
 
 namespace asio {
@@ -28,7 +30,7 @@ namespace vtrc { namespace common {
 
         typedef boost::asio::ip::tcp::socket socket_type;
 
-        transport_tcp( socket_type *sock );
+        transport_tcp( vtrc::shared_ptr<socket_type> sock );
         virtual ~transport_tcp(  );
 
         const char *name( ) const                     ;

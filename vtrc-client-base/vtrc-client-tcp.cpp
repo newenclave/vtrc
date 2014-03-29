@@ -6,12 +6,18 @@
 
 #include "vtrc-client.h"
 #include "vtrc-bind.h"
+#include "vtrc-ref.h"
 #include "vtrc-chrono.h"
 
 namespace vtrc { namespace client {
 
     namespace basio = boost::asio;
     namespace bsys = boost::system;
+
+
+    namespace {
+        typedef boost::asio::ip::tcp::socket socket_type;
+    }
 
     struct client_tcp::impl  {
 
@@ -137,8 +143,13 @@ namespace vtrc { namespace client {
 
     };
 
+    static vtrc::shared_ptr<socket_type> create_socket( basio::io_service &ios )
+    {
+        return vtrc::make_shared<socket_type>(vtrc::ref(ios));
+    }
+
     client_tcp::client_tcp( boost::asio::io_service &ios, vtrc_client *client )
-        :common::transport_tcp(new boost::asio::ip::tcp::socket(ios))
+        :common::transport_tcp(create_socket(ios))
         ,impl_(new impl(ios, client))
     {
         impl_->parent_ = this;

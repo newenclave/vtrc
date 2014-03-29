@@ -79,7 +79,9 @@ namespace vtrc { namespace server { namespace endpoints {
 
             void start_accept(  )
             {
-                socket_type *new_sock = new socket_type(ios_);
+                vtrc::shared_ptr<socket_type> new_sock
+                        (vtrc::make_shared<socket_type>(vtrc::ref(ios_)));
+
                 acceptor_.async_accept( *new_sock,
                     vtrc::bind( &this_type::on_accept, this,
                                  basio::placeholders::error, new_sock ));
@@ -98,10 +100,11 @@ namespace vtrc { namespace server { namespace endpoints {
                 ::unlink(endpoint_.path( ).c_str( ));
             }
 
-            void on_accept( const bsys::error_code &error, socket_type *sock )
+            void on_accept( const bsys::error_code &error,
+                            vtrc::shared_ptr<socket_type> sock )
             {
                 if( error ) {
-                    delete sock;
+                    //delete sock;
                 } else {
                     try {
                         std::cout << "accept\n";

@@ -57,7 +57,8 @@ namespace vtrc { namespace common {
 
 #endif
 
-            transport_impl( stream_type *s, const std::string &n )
+            transport_impl( vtrc::shared_ptr<stream_type> s,
+                            const std::string &n )
                 :stream_(s)
                 ,ios_(stream_->get_io_service( ))
                 ,write_dispatcher_(ios_)

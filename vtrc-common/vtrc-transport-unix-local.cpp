@@ -16,7 +16,7 @@ namespace vtrc { namespace common {
 
     struct transport_unix_local::impl: public impl_type {
 
-        impl( socket_type *s, const std::string &n )
+        impl( vtrc::shared_ptr<socket_type> s, const std::string &n )
             :impl_type(s, n)
         { }
 
@@ -26,8 +26,7 @@ namespace vtrc { namespace common {
         }
     };
 
-    transport_unix_local::transport_unix_local(
-                                         transport_unix_local::socket_type *s )
+    transport_unix_local::transport_unix_local(vtrc::shared_ptr<socket_type> s )
         :impl_(new impl(s, "unix-local"))
     {
         impl_->set_parent( this );
