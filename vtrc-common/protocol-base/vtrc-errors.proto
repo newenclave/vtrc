@@ -26,10 +26,10 @@ enum errors_numbers { // CATEGORY_INTERNAL
     ERR_INVALID_VALUE =   22 [(error_description) = "Invalid value"];
     ERR_NO_FUNC       =   38 [(error_description) = "Function not implemented"];
     ERR_TIMEOUT       =   62 [(error_description) = "Timeout"];
+    ERR_COMM          =   70 [(error_description) = "Communication error on send"];
     ERR_PROTOCOL      =   71 [(error_description) = "Protocol error"];
     ERR_MESSAGE_SIZE  =   90 [(error_description) = "Message is too long"];
     ERR_CANCELED      =  125 [(error_description) = "Operation canceled"];
-
     ERR_UNKNOWN       = 1000 [(error_description) = "Unknown error"];
     ERR_CALL_FAILED   = 1001 [(error_description) = "Call failed"];
     ERR_INTERNAL      = 1002 [(error_description) = "Internal error"];

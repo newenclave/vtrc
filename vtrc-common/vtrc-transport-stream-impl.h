@@ -87,7 +87,9 @@ namespace vtrc { namespace common {
             void close( )
             {
                 closed_ = true;
-                stream_->close( );
+                try {
+                    stream_->close( );
+                } catch ( ... ) { ;;; }
             }
 
             bool active( ) const

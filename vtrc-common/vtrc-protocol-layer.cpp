@@ -286,7 +286,7 @@ namespace vtrc { namespace common {
         void call_rpc_method( uint64_t slot_id, const ll_unit_type &llu )
         {
             if( !working_ )
-                throw vtrc::common::exception( vtrc_errors::ERR_CANCELED );
+                throw vtrc::common::exception( vtrc_errors::ERR_COMM );
             rpc_queue_.add_queue( slot_id );
             send_message( llu );
         }
@@ -294,7 +294,7 @@ namespace vtrc { namespace common {
         void call_rpc_method( const ll_unit_type &llu )
         {
             if( !working_ )
-                throw vtrc::common::exception( vtrc_errors::ERR_CANCELED );
+                throw vtrc::common::exception( vtrc_errors::ERR_COMM );
 
             //if( llu.has_id( ) && llu.info( ).has_message_type( ) )
                 send_message( llu );
