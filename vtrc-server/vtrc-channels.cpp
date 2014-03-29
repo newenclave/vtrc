@@ -17,6 +17,8 @@ namespace vtrc { namespace server {
 
     namespace {
 
+        namespace gpb = google::protobuf;
+
         typedef vtrc_rpc_lowlevel::message_info message_info;
 
         const unsigned direct_call_type = message_info::MESSAGE_EVENT;
