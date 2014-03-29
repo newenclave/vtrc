@@ -34,29 +34,33 @@ namespace vtrc { namespace server { namespace endpoints {
             vtrc::shared_ptr<protocol_layer_s>  protocol_;
 
             connection_impl(endpoint_iface &endpoint,
-                            vtrc::shared_ptr<socket_type> sock,
-                            size_t buffer_size)
+                            vtrc::shared_ptr<socket_type> sock )
                 :super_type(sock)
                 ,endpoint_(endpoint)
                 ,app_(endpoint_.get_application( ))
                 ,ios_(app_.get_io_service( ))
                 ,env_(endpoint_.get_enviroment( ))
-                ,read_buff_(buffer_size)
+                ,read_buff_(endpoint_.get_options( ).read_buffer_size)
             {
-                protocol_ =
-                        vtrc::make_shared<server::protocol_layer_s>
+                protocol_ = vtrc::make_shared<server::protocol_layer_s>
                             (vtrc::ref(app_), this,
                                  endpoint_.get_options( ).maximum_active_calls);
             }
 
             static vtrc::shared_ptr<this_type> create(endpoint_iface &endpoint,
-                      vtrc::shared_ptr<socket_type> sock,  size_t buffer_size )
+                                            vtrc::shared_ptr<socket_type> sock )
             {
                 vtrc::shared_ptr<this_type> new_inst
-                            (vtrc::make_shared<this_type>
-                                     (vtrc::ref(endpoint), sock, buffer_size));
+                     (vtrc::make_shared<this_type>(vtrc::ref(endpoint), sock ));
+
                 new_inst->init( );
                 return new_inst;
+            }
+
+            static vtrc::shared_ptr<this_type> create(endpoint_iface &endpoint,
+                                                        socket_type *sock )
+            {
+                return create( endpoint, vtrc::shared_ptr<socket_type>(sock) );
             }
 
             void init( )
@@ -73,7 +77,6 @@ namespace vtrc { namespace server { namespace endpoints {
             void close(  )
             {
                 super_type::close( );
-                //protocol_->close_queue( );
                 protocol_->erase_all_slots( );
             }
 

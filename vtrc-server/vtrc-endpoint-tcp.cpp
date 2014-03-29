@@ -60,7 +60,7 @@ namespace vtrc { namespace server { namespace endpoints {
                                 const std::string &address,
                                 unsigned short service )
         {
-            const endpoint_options def_opts = { 5, 20 };
+            const endpoint_options def_opts = { 5, 20, 4096 };
             return create( app, def_opts, address, service );
         }
     }

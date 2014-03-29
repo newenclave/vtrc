@@ -16,6 +16,7 @@ namespace server {
     struct endpoint_options {
         unsigned maximum_active_calls;
         unsigned maximum_total_calls;
+        unsigned read_buffer_size;
     };
 
     struct endpoint_iface {
