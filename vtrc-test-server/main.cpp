@@ -207,7 +207,7 @@ int main( ) try {
             (vtrc::server::endpoints::tcp::create(app, "0.0.0.0", 44667));
 
     vtrc::shared_ptr<vtrc::server::endpoint_iface> tcp6_ep
-            (vtrc::server::endpoints::tcp::create(app, "::1", 44667));
+            (vtrc::server::endpoints::tcp::create(app, "::", 44668));
 
 #ifndef _WIN32
 
@@ -220,7 +220,7 @@ int main( ) try {
     tcp4_ep->start( );
     tcp6_ep->start( );
 
-    boost::this_thread::sleep_for( vtrc::chrono::milliseconds(1200099999) );
+    boost::this_thread::sleep_for( vtrc::chrono::milliseconds(12000) );
 
     std::cout << "Stoppped. Wait ... \n";
 
