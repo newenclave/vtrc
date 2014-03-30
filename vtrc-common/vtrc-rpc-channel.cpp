@@ -6,7 +6,6 @@
 #include "vtrc-rpc-channel.h"
 #include "vtrc-protocol-layer.h"
 #include "vtrc-exception.h"
-#include "vtrc-chrono.h"
 
 namespace vtrc { namespace common  {
 
