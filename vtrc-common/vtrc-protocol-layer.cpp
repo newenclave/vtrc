@@ -405,6 +405,7 @@ namespace vtrc { namespace common {
             rpc_queue_.cancel_all( );
         }
 
+
         void closure( common::rpc_controller_sptr controller,
                       lowlevel_unit_sptr llu )
         {
