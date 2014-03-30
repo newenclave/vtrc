@@ -51,10 +51,7 @@ namespace vtrc { namespace server { namespace endpoints {
                                const endpoint_options &opts,
                                const std::string &name)
         {
-            ::unlink( name.c_str( ) );
             return new endpoint_unix( app, opts, name );
-            //::chmod(name.c_str( ), 0xFFFFFF );
-
         }
 
         endpoint_iface *create( application &app, const std::string &name )

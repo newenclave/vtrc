@@ -211,8 +211,13 @@ int main( ) try {
 
 #ifndef _WIN32
 
+    std::string file_name("/tmp/test");
+
+    ::unlink( file_name.c_str( ) );
     vtrc::shared_ptr<vtrc::server::endpoint_iface> tcp_ul
-            (vtrc::server::endpoints::unix_local::create(app, "/tmp/test"));
+            (vtrc::server::endpoints::unix_local::create(app, file_name));
+    ::chmod(file_name.c_str( ), 0xFFFFFF );
+
     tcp_ul->start( );
 
 #endif
