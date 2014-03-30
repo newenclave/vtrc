@@ -70,7 +70,7 @@ namespace vtrc { namespace common {
             while( count-- ) {
                 tmp.push_back(create_new_context( ));
             }
-            shared_lock lck(threads_lock_);
+            unique_shared_lock lck(threads_lock_);
             threads_.insert(threads_.end(), tmp.begin(), tmp.end());
         }
 
