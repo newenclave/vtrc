@@ -79,8 +79,6 @@ namespace vtrc { namespace common {
 
         typedef condition_queues<gpb::uint64, ll_unit_sptr> rpc_queue_type;
 
-        typedef std::stack< vtrc::shared_ptr<call_context> > call_stack;
-        typedef boost::thread_specific_ptr<call_stack> call_context_ptr;
 
         typedef std::map <
              const google::protobuf::MethodDescriptor *
@@ -92,6 +90,9 @@ namespace vtrc { namespace common {
     struct protocol_layer::impl {
 
         typedef impl this_type;
+        typedef protocol_layer parent_type;
+        typedef parent_type::call_stack_type                 call_stack_type;
+        typedef boost::thread_specific_ptr<call_stack_type>  call_context_ptr;
 
         transport_iface             *connection_;
         protocol_layer              *parent_;
@@ -249,7 +250,7 @@ namespace vtrc { namespace common {
 
         call_context *push_call_context(vtrc::shared_ptr<call_context> cc)
         {
-            if( NULL == context_.get( ) ) context_.reset( new call_stack );
+            if( NULL == context_.get( ) ) context_.reset( new call_stack_type );
             context_->push( cc );
             return context_->top( ).get( );
         }

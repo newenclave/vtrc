@@ -123,7 +123,7 @@ public:
 //        connection_->get_io_service( ).dispatch(
 //                    vtrc::bind(test_send, connection_));
 //        boost::thread(test_send, connection_).detach( );
-        //test_send(c_, app_);
+        test_send(c_, app_);
 
         if( done ) done->Run( );
     }
@@ -138,13 +138,13 @@ public:
 
 //        std::cout << "test 2 " << vtrc::this_thread::get_id( ) << "\n\n";
 
-//        std::cout << "stack: ";
-//        while (cc) {
-//            std::cout << cc->get_lowlevel_message( )->call( ).method_id( )
-//                      << " <- ";
-//            cc = cc->parent( );
-//        }
-//        std::cout << "\n";
+        std::cout << std::setw(8) << id_ << " stack: ";
+        while (cc) {
+            std::cout << cc->get_lowlevel_message( )->call( ).method_id( )
+                      << " <- ";
+            cc = cc->parent( );
+        }
+        std::cout << "\n";
 
         if( done ) done->Run( );
     }
