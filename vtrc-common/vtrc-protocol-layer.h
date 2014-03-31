@@ -5,7 +5,6 @@
 #include <stdint.h>
 #include <string>
 #include <deque>
-#include <stack>
 #include "vtrc-memory.h"
 
 #include "vtrc-call-context.h"
@@ -135,7 +134,7 @@ namespace vtrc { namespace common {
         virtual void init( )            = 0;
         virtual void on_data_ready( )   = 0;
 
-        typedef std::stack< vtrc::shared_ptr<call_context> > call_stack_type;
+        typedef std::deque< vtrc::shared_ptr<call_context> > call_stack_type;
 
         call_context *push_call_context ( call_context *cc );
         call_context *push_call_context ( vtrc::shared_ptr<call_context> cc );

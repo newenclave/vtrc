@@ -53,6 +53,11 @@ namespace vtrc { namespace common {
         return impl_->parent_context_;
     }
 
+    void call_context::set_parent( call_context *parent )
+    {
+        impl_->parent_context_ = parent;
+    }
+
     const lowlevel_unit *call_context::get_lowlevel_message( ) const
     {
         return impl_->llu_;

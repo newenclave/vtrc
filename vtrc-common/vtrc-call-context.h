@@ -30,6 +30,8 @@ namespace vtrc { namespace common {
         call_context       *parent( );
         const call_context *parent( ) const;
 
+        void set_parent(call_context *parent);
+
         vtrc_rpc_lowlevel::lowlevel_unit       *get_lowlevel_message( );
         const vtrc_rpc_lowlevel::lowlevel_unit *get_lowlevel_message( ) const;
 
