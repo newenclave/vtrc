@@ -471,7 +471,7 @@ namespace vtrc { namespace common {
             return parent_->get_service_by_name( name );
         }
 
-        bool make_call_impl( lowlevel_unit_sptr llu )
+        void make_call_impl( lowlevel_unit_sptr llu )
         {
 
             protocol_layer::context_holder ch( parent_, llu.get( ) );
