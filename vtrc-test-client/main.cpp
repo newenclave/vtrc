@@ -64,7 +64,6 @@ public:
                   << " " << vtrc::this_thread::get_id( ) << " "
                   //<< vtrc::chrono::high_resolution_clock::now( )
                   << "\n";
-
         const vtrc::common::call_context *cc =
                     vtrc::common::call_context::get( c_->connection( ) );
 

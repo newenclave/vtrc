@@ -18,8 +18,7 @@ namespace vtrc { namespace common {
 
     public:
 
-        call_context( vtrc_rpc_lowlevel::lowlevel_unit *lowlevel,
-                      call_context *parent );
+        call_context( vtrc_rpc_lowlevel::lowlevel_unit *lowlevel );
 
         static const call_context *get( connection_iface *iface );
         static const call_context *get( connection_iface_sptr iface );
@@ -27,10 +26,10 @@ namespace vtrc { namespace common {
         call_context( const call_context &other );
         call_context &operator = ( const call_context &other );
 
-        call_context       *parent( );
-        const call_context *parent( ) const;
+        call_context       *next( );
+        const call_context *next( ) const;
 
-        void set_parent(call_context *parent);
+        void set_next(call_context *next);
 
         vtrc_rpc_lowlevel::lowlevel_unit       *get_lowlevel_message( );
         const vtrc_rpc_lowlevel::lowlevel_unit *get_lowlevel_message( ) const;

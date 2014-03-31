@@ -105,15 +105,13 @@ namespace vtrc { namespace common {
 
         struct context_holder {
             protocol_layer *p_;
-            call_context   *old_ctx_;
             call_context   *ctx_;
             context_holder( protocol_layer *parent,
                             lowlevel_unit_type *llu )
                 :p_(parent)
-                ,old_ctx_(p_->top_call_context( ))
 
             {
-                ctx_ = new call_context(llu, old_ctx_);
+                ctx_ = new call_context( llu );
                 p_->push_call_context( ctx_ );
             }
 

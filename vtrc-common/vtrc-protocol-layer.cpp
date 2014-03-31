@@ -264,6 +264,8 @@ namespace vtrc { namespace common {
         call_context *push_call_context(vtrc::shared_ptr<call_context> cc)
         {
             check_create_stack( );
+            call_context *top = top_call_context( );
+            cc->set_next( top );
             context_->push_front( cc );
             return context_->front( ).get( );
         }
@@ -275,7 +277,8 @@ namespace vtrc { namespace common {
 
         void pop_call_context( )
         {
-            context_->pop_front( );
+            if( !context_->empty( ) )
+                context_->pop_front( );
         }
 
         void reset_call_context( )
@@ -298,9 +301,9 @@ namespace vtrc { namespace common {
                 iter next( b );
                 ++next;
                 if( next == e )
-                    (*b)->set_parent( NULL );
+                    (*b)->set_next( NULL );
                 else
-                    (*b)->set_parent( next->get( ) );
+                    (*b)->set_next( next->get( ) );
             }
 
             other.swap(tmp);

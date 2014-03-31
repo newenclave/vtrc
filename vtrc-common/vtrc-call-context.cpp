@@ -16,11 +16,10 @@ namespace vtrc { namespace common {
         { }
     };
 
-    call_context::call_context( lowlevel_unit *lowlevel, call_context *parent )
+    call_context::call_context( lowlevel_unit *lowlevel )
         :impl_(new impl)
     {
         impl_->llu_ = lowlevel;
-        impl_->parent_context_ = parent;
     }
 
     const call_context *call_context::get( connection_iface *iface )
@@ -43,17 +42,17 @@ namespace vtrc { namespace common {
         return *this;
     }
 
-    call_context *call_context::parent( )
+    call_context *call_context::next( )
     {
         return impl_->parent_context_;
     }
 
-    const call_context *call_context::parent( ) const
+    const call_context *call_context::next( ) const
     {
         return impl_->parent_context_;
     }
 
-    void call_context::set_parent( call_context *parent )
+    void call_context::set_next( call_context *parent )
     {
         impl_->parent_context_ = parent;
     }
