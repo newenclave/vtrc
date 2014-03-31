@@ -40,6 +40,7 @@ namespace vtrc { namespace common {
 
     };
 
+    typedef vtrc::shared_ptr<call_context> call_context_sptr;
 }}
 
 #endif // VTRCCALLCONTEXT_H

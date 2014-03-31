@@ -250,7 +250,9 @@ namespace vtrc { namespace common {
 
         void check_create_stack( )
         {
-            if( NULL == context_.get( ) ) context_.reset( new call_stack_type );
+            if( NULL == context_.get( ) ) {
+                context_.reset( new call_stack_type );
+            }
         }
 
         call_context *push_call_context(vtrc::shared_ptr<call_context> cc)
