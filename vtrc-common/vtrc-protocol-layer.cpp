@@ -599,11 +599,11 @@ namespace vtrc { namespace common {
             closure_holder_sptr closure_hold
                                 (vtrc::make_shared<closure_holder_type>( ));
 
-            closure_hold->connection_ = connection_->shared_from_this( );
-            closure_hold->req_        = req;
-            closure_hold->res_        = res;
-            closure_hold->controller_ = controller;
-            closure_hold->llu_        = llu;
+            closure_hold->connection_       = connection_->weak_from_this( );
+            closure_hold->req_              = req;
+            closure_hold->res_              = res;
+            closure_hold->controller_       = controller;
+            closure_hold->llu_              = llu;
 
             closure_hold->internal_closure_ = done;
 
