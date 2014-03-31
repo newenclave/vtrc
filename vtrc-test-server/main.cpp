@@ -97,6 +97,21 @@ void test_send( common::connection_iface *connection,
 
 }
 
+void call_delayed_test( ::google::protobuf::RpcController* controller,
+                        const ::vtrc_rpc_lowlevel::message_info* request,
+                        ::vtrc_rpc_lowlevel::message_info* response,
+                        ::google::protobuf::Closure* done,
+                        unsigned id,
+                        common::connection_iface *c_,
+                        vtrc::server::application &app_)
+{
+
+    common::closure_holder ch(done);
+    response->set_message_type( id );
+
+    test_send(c_, app_);
+}
+
 class teat_impl: public vtrc_service::test_rpc {
 
     common::connection_iface *c_;
@@ -117,15 +132,19 @@ public:
               ::google::protobuf::Closure* done)
     {
 
-        common::closure_holder ch(done);
-        response->set_message_type( id_++ );
-        if( (id_ % 100) == 0 )
-            throw std::runtime_error( "oops 10 =)" );
+        app_.get_rpc_service( ).post( boost::bind( call_delayed_test,
+                                      controller, request, response, done,
+                                                   ++id_,
+                                                   c_, vtrc::ref(app_)) );
+
+//        response->set_message_type( id_++ );
+//        if( (id_ % 100) == 0 )
+//            throw std::runtime_error( "oops 10 =)" );
 
 //        connection_->get_io_service( ).dispatch(
 //                    vtrc::bind(test_send, connection_));
 //        boost::thread(test_send, connection_).detach( );
-        test_send(c_, app_);
+//        test_send(c_, app_);
     }
 
     virtual void test2(::google::protobuf::RpcController* controller,
