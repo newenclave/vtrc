@@ -142,6 +142,7 @@ namespace vtrc { namespace common {
         void           pop_call_context ( );
         call_context  *top_call_context ( );
         void         reset_call_stack   ( );
+        void          swap_call_stack   ( call_stack_type& other );
 
     public:
 

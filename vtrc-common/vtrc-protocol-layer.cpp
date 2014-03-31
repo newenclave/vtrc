@@ -248,9 +248,14 @@ namespace vtrc { namespace common {
             return result;
         }
 
-        call_context *push_call_context(vtrc::shared_ptr<call_context> cc)
+        void check_create_stack( )
         {
             if( NULL == context_.get( ) ) context_.reset( new call_stack_type );
+        }
+
+        call_context *push_call_context(vtrc::shared_ptr<call_context> cc)
+        {
+            check_create_stack( );
             context_->push( cc );
             return context_->top( ).get( );
         }
@@ -268,6 +273,12 @@ namespace vtrc { namespace common {
         void reset_call_context( )
         {
             context_.reset(  );
+        }
+
+        void swap_call_stack(protocol_layer::call_stack_type &other)
+        {
+            check_create_stack( );
+            std::swap( *context_, other );
         }
 
         const call_context *get_call_context( ) const
@@ -599,6 +610,11 @@ namespace vtrc { namespace common {
     void protocol_layer::reset_call_stack( )
     {
         impl_->reset_call_context(  );
+    }
+
+    void protocol_layer::swap_call_stack(protocol_layer::call_stack_type &other)
+    {
+        impl_->swap_call_stack( other );
     }
 
     const vtrc_rpc_lowlevel::options &protocol_layer::get_method_options(
