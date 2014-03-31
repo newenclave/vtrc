@@ -551,6 +551,14 @@ namespace vtrc { namespace common {
             return parent_->get_service_by_name( name );
         }
 
+        gpb::Closure *make_closure(closure_holder_sptr &closure_hold, bool fake)
+        {
+            return (gpb::NewPermanentCallback( this,
+                        fake ? &this_type::closure_fake
+                             : &this_type::closure_done,
+                        closure_hold ));
+        }
+
         void make_call_impl( lowlevel_unit_sptr llu, closure_type done )
         {
 
@@ -601,17 +609,15 @@ namespace vtrc { namespace common {
 
             if( llu->opt( ).wait( ) ) {
 
-                gpb::Closure* clos
-                     (gpb::NewPermanentCallback( this, &this_type::closure_done,
-                                                             closure_hold ));
+                gpb::Closure* clos(make_closure(closure_hold, false));
+
                 closure_hold->proto_closure_ = clos;
                 service->service( )->CallMethod( meth, controller.get( ),
                                                 req.get( ), res.get( ), clos );
             } else {
 
-                gpb::Closure  *clos
-                   (gpb::NewPermanentCallback(this, &this_type::closure_fake,
-                                                              closure_hold ));
+                gpb::Closure* clos(make_closure(closure_hold, true));
+
                 closure_hold->proto_closure_ = clos;
                 service->service( )->CallMethod( meth, controller.get( ),
                                                 req.get( ), res.get( ), clos );
