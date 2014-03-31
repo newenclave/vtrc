@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <stdlib.h>
 
@@ -198,6 +199,8 @@ private:
 };
 
 int main( ) try {
+
+    assert( 1 == 2 );
 
     common::pool_pair pp(2, 4);
     main_app app(pp);
