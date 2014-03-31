@@ -604,7 +604,6 @@ namespace vtrc { namespace common {
             closure_hold->res_              = res;
             closure_hold->controller_       = controller;
             closure_hold->llu_              = llu;
-
             closure_hold->internal_closure_ = done;
 
             if( llu->opt( ).wait( ) ) {
