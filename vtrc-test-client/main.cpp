@@ -153,8 +153,8 @@ int main( )
     vtrc::shared_ptr<client::vtrc_client> cl(client::vtrc_client::create(pp));
 
     //cl->connect( "/tmp/test" );
-    //cl->connect( "192.168.56.101", "44667" );
-    cl->connect( "127.0.0.1", "44667" );
+    cl->connect( "192.168.56.101", "44667" );
+    //cl->connect( "127.0.0.1", "44667" );
     //cl->connect( "::1", "44668" );
     ///cl->async_connect( "127.0.0.1", "44667", on_connect );
 

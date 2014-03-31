@@ -610,7 +610,7 @@ namespace vtrc { namespace common {
             } else {
 
                 gpb::Closure  *clos
-                   (gpb::NewCallback(this, &this_type::closure_fake,
+                   (gpb::NewPermanentCallback(this, &this_type::closure_fake,
                                                               closure_hold ));
                 closure_hold->proto_closure_ = clos;
                 service->service( )->CallMethod( meth, controller.get( ),
