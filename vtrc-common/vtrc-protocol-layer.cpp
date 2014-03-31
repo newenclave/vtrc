@@ -191,6 +191,13 @@ namespace vtrc { namespace common {
 
         }
 
+        void parse_message( const std::string &mess, gpb::Message &result )
+        {
+            const size_t hash_length = hash_checker_->hash_size( );
+            result.ParseFromArray( mess.c_str( ) + hash_length,
+                                   mess.size( )  - hash_length );
+        }
+
         void drop_first( )
         {
             queue_->messages( ).pop_front( );
@@ -222,14 +229,6 @@ namespace vtrc { namespace common {
         const message_queue_type &message_queue( ) const
         {
             return queue_->messages( );
-        }
-
-        void parse_message( const std::string &mess,
-                            google::protobuf::Message &result )
-        {
-            const size_t hash_length = hash_checker_->hash_size( );
-            const size_t diff_len    = mess.size( ) - hash_length;
-            result.ParseFromArray( mess.c_str( ) + hash_length, diff_len );
         }
 
         bool check_message( const std::string &mess )
