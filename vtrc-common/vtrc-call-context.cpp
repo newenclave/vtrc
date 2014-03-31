@@ -8,11 +8,13 @@ namespace vtrc { namespace common {
     typedef vtrc_rpc_lowlevel::lowlevel_unit lowlevel_unit;
 
     struct call_context::impl {
-        lowlevel_unit *llu_;
-        call_context  *parent_context_;
+        lowlevel_unit                    *llu_;
+        call_context                     *parent_context_;
         const vtrc_rpc_lowlevel::options *opts_;
+        google::protobuf::Closure        *closure_;
         impl( )
             :opts_(NULL)
+            ,closure_(NULL)
         { }
     };
 
@@ -55,6 +57,11 @@ namespace vtrc { namespace common {
     void call_context::set_next( call_context *parent )
     {
         impl_->parent_context_ = parent;
+    }
+
+    void call_context::set_done_handler(google::protobuf::Closure *closure)
+    {
+        impl_->closure_ = closure;
     }
 
     const lowlevel_unit *call_context::get_lowlevel_message( ) const

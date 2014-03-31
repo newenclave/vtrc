@@ -8,6 +8,10 @@ namespace vtrc_rpc_lowlevel {
     class options;
 }
 
+namespace google { namespace protobuf {
+    class Closure;
+}}
+
 namespace vtrc { namespace common {
 
     class call_context {
@@ -30,6 +34,7 @@ namespace vtrc { namespace common {
         const call_context *next( ) const;
 
         void set_next(call_context *next);
+        void set_done_handler( google::protobuf::Closure *closure );
 
         vtrc_rpc_lowlevel::lowlevel_unit       *get_lowlevel_message( );
         const vtrc_rpc_lowlevel::lowlevel_unit *get_lowlevel_message( ) const;
