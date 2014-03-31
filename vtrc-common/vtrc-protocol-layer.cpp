@@ -315,21 +315,26 @@ namespace vtrc { namespace common {
             std::swap( *context_, other );
         }
 
-        void copy_call_stack( call_stack_type &other )
+        void copy_call_stack( call_stack_type &other ) const
         {
-            check_create_stack( );
-            call_stack_type tmp(*context_);
-            typedef call_stack_type::iterator iter;
-            for( iter b(tmp.begin( )), e(tmp.end( )); b!=e; ++b ) {
-                iter next( b );
-                ++next;
-                if( next == e )
-                    (*b)->set_next( NULL );
-                else
-                    (*b)->set_next( next->get( ) );
-            }
+            if( NULL == context_.get( ) ) {
+                call_stack_type tmp;
+                other.swap( tmp );
+            } else {
+                call_stack_type tmp(*context_);
 
-            other.swap(tmp);
+                typedef call_stack_type::const_iterator iter;
+
+                for( iter b(tmp.begin( )), e(tmp.end( )); b!=e; ++b ) {
+                    iter next( b );
+                    ++next;
+                    if( next == e )
+                        (*b)->set_next( NULL );
+                    else
+                        (*b)->set_next( next->get( ) );
+                }
+                other.swap(tmp);
+            }
         }
 
         const call_context *get_call_context( ) const
@@ -540,15 +545,11 @@ namespace vtrc { namespace common {
 //                          << "::"
 //                          << holder->llu_->call( ).method_id( )
 //                          << std::endl;
-                return;
             } else {
-
                 connection_iface_sptr lck(holder->connection_.lock( ));
-                if( !lck ) return;
-
-                wait ? closure_done( holder ) : closure_fake( holder );
+                if( lck )
+                    wait ? closure_done( holder ) : closure_fake( holder );
             }
-
         }
 
         gpb::Closure *make_closure(closure_holder_sptr &closure_hold, bool wait)
@@ -612,14 +613,6 @@ namespace vtrc { namespace common {
             service->service( )->CallMethod( meth, controller.get( ),
                                             req.get( ), res.get( ), clos );
 
-//            if( controller->Failed( ) ) {
-//                throw vtrc::common::exception( vtrc_errors::ERR_INTERNAL,
-//                                               controller->ErrorText( ));
-//            } else if( controller->IsCanceled( ) ) {
-//                throw vtrc::common::exception( vtrc_errors::ERR_CANCELED );
-//            }
-
-//            llu->set_response( res->SerializeAsString( ) );
         }
 
         void make_call(protocol_layer::lowlevel_unit_sptr llu)
@@ -630,10 +623,9 @@ namespace vtrc { namespace common {
         void make_call(protocol_layer::lowlevel_unit_sptr llu,
                        closure_type done)
         {
-            bool failed       = true;
-            bool request_wait = llu->opt( ).wait( );
-
+            bool failed        = true;
             unsigned errorcode = 0;
+
             try {
 
                 make_call_impl( llu, done );
@@ -652,7 +644,7 @@ namespace vtrc { namespace common {
                 llu->mutable_error( )->set_additional( "..." );
             }
 
-            if( request_wait ) {
+            if( llu->opt( ).wait( ) ) {
                 if( failed ) {
                     llu->mutable_error( )->set_code( errorcode );
                     llu->clear_response( );
@@ -717,10 +709,6 @@ namespace vtrc { namespace common {
         return impl_->prepare_data( data, length );
     }
 
-//    void protocol_layer::send_message(const google::protobuf::Message &message)
-//    {
-//        impl_->send_message( message );
-//    }
 
     /*
      * call context
@@ -752,7 +740,8 @@ namespace vtrc { namespace common {
         impl_->swap_call_stack( other );
     }
 
-    void protocol_layer::copy_call_stack(protocol_layer::call_stack_type &other)
+    void protocol_layer::copy_call_stack(
+                                protocol_layer::call_stack_type &other) const
     {
         impl_->copy_call_stack( other );
     }
