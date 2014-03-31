@@ -4,7 +4,7 @@
 #include <google/protobuf/message.h>
 #include <google/protobuf/descriptor.h>
 
-#include <stack>
+#include <exception>
 
 #include "vtrc-thread.h"
 
@@ -480,6 +480,15 @@ namespace vtrc { namespace common {
 
         void closure_done( closure_holder_sptr holder )
         {
+            if( std::uncaught_exception( ) ) {
+//                std::cerr << "Uncaught exception at done handler for "
+//                          << holder->llu_->call( ).service_id( )
+//                          << "::"
+//                          << holder->llu_->call( ).method_id( )
+//                          << std::endl;
+                return;
+            }
+
             connection_iface_sptr lck(holder->connection_.lock( ));
             if( !lck ) return;
 
@@ -571,22 +580,26 @@ namespace vtrc { namespace common {
             closure_hold->controller_ = controller;
             closure_hold->llu_        = llu;
 
+//            gpb::Closure* clos
+//                    (gpb::NewPermanentCallback( this, &this_type::closure_fake,
+//                                                closure_hold ));
+
             gpb::Closure* clos
-                    (gpb::NewCallback( this, &this_type::closure_fake,
+                    (gpb::NewCallback( this, &this_type::closure_done,
                                                 closure_hold ));
 
             service->service( )
                    ->CallMethod( meth, controller.get( ),
                                  req.get( ), res.get( ), clos );
 
-            if( controller->Failed( ) ) {
-                throw vtrc::common::exception( vtrc_errors::ERR_INTERNAL,
-                                               controller->ErrorText( ));
-            } else if( controller->IsCanceled( ) ) {
-                throw vtrc::common::exception( vtrc_errors::ERR_CANCELED );
-            }
+//            if( controller->Failed( ) ) {
+//                throw vtrc::common::exception( vtrc_errors::ERR_INTERNAL,
+//                                               controller->ErrorText( ));
+//            } else if( controller->IsCanceled( ) ) {
+//                throw vtrc::common::exception( vtrc_errors::ERR_CANCELED );
+//            }
 
-            llu->set_response( res->SerializeAsString( ) );
+//            llu->set_response( res->SerializeAsString( ) );
         }
 
         void make_call(protocol_layer::lowlevel_unit_sptr llu)
@@ -614,18 +627,25 @@ namespace vtrc { namespace common {
 
             }
 
-            if( request_wait ) {
-                llu->clear_request( );
-                llu->clear_call( );
-                if( failed ) {
-                    llu->mutable_error( )->set_code( errorcode );
-                    llu->clear_response( );
-                }
+            if( failed && request_wait) {
+                llu->mutable_error( )->set_code( errorcode );
+                llu->clear_response( );
                 send_message( *llu );
             } else {
                 send_message( fake_ );
-                //;;;
             }
+//            if( request_wait ) {
+//                llu->clear_request( );
+//                llu->clear_call( );
+//                if( failed ) {
+//                    llu->mutable_error( )->set_code( errorcode );
+//                    llu->clear_response( );
+//                }
+//                send_message( *llu );
+//            } else {
+//                send_message( fake_ );
+//                //;;;
+//            }
         }
 
         void on_system_error(const boost::system::error_code &err,
