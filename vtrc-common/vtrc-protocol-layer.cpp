@@ -275,10 +275,16 @@ namespace vtrc { namespace common {
             context_.reset(  );
         }
 
-        void swap_call_stack(protocol_layer::call_stack_type &other)
+        void swap_call_stack( call_stack_type &other )
         {
             check_create_stack( );
             std::swap( *context_, other );
+        }
+
+        void copy_call_stack( call_stack_type &other )
+        {
+            check_create_stack( );
+            other = *context_;
         }
 
         const call_context *get_call_context( ) const
@@ -615,6 +621,11 @@ namespace vtrc { namespace common {
     void protocol_layer::swap_call_stack(protocol_layer::call_stack_type &other)
     {
         impl_->swap_call_stack( other );
+    }
+
+    void protocol_layer::copy_call_stack(protocol_layer::call_stack_type &other)
+    {
+        impl_->copy_call_stack( other );
     }
 
     const vtrc_rpc_lowlevel::options &protocol_layer::get_method_options(
