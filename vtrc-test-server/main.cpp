@@ -69,7 +69,7 @@ void test_send( common::connection_iface *connection,
     vtrc::shared_ptr<google::protobuf::RpcChannel> ev(
                 vtrc::server
                 ::channels::unicast
-                ::create_event_channel( s, false ));
+                ::create_event_channel( s, true));
 
     const vtrc_rpc_lowlevel::lowlevel_unit *pllu =
             common::call_context::get( s )->get_lowlevel_message( );
@@ -124,7 +124,7 @@ public:
 //        connection_->get_io_service( ).dispatch(
 //                    vtrc::bind(test_send, connection_));
 //        boost::thread(test_send, connection_).detach( );
-//        test_send(c_, app_);
+        test_send(c_, app_);
     }
 
     virtual void test2(::google::protobuf::RpcController* controller,

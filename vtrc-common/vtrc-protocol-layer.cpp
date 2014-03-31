@@ -469,9 +469,9 @@ namespace vtrc { namespace common {
         }
 
 
-        void closure_fake( closure_holder_sptr /*holder*/ )
+        void closure_fake(  )
         {
-            ;;;
+            //send_message( fake_ );
         }
 
         void closure_done( closure_holder_sptr holder )
@@ -509,20 +509,16 @@ namespace vtrc { namespace common {
 
             }
 
-            if( llu->opt( ).wait( ) ) {
-                llu->clear_request( );
-                llu->clear_call( );
-                if( failed ) {
-                    llu->mutable_error( )->set_code( errorcode );
-                    llu->clear_response( );
-                } else {
-                    llu->set_response( holder->res_->SerializeAsString( ) );
-                }
-                send_message( *llu );
+            llu->clear_request( );
+            llu->clear_call( );
+            if( failed ) {
+                llu->mutable_error( )->set_code( errorcode );
+                llu->clear_response( );
             } else {
-                send_message( fake_ );
-                //;;;
+                llu->set_response( holder->res_->SerializeAsString( ) );
             }
+            send_message( *llu );
+
         }
 
         common::rpc_service_wrapper_sptr get_service(const std::string &name)
@@ -555,9 +551,6 @@ namespace vtrc { namespace common {
 
             ch.ctx_->set_call_options( call_opts );
 
-            closure_holder_sptr closure_hold
-                                   (vtrc::make_shared<closure_holder_type>( ));
-
             vtrc::shared_ptr<gpb::Message> req
                 (service->service( )->GetRequestPrototype( meth ).New( ));
 
@@ -570,23 +563,32 @@ namespace vtrc { namespace common {
             rpc_controller_sptr controller
                                 (vtrc::make_shared<common::rpc_controller>( ));
 
-            closure_hold->connection_ = connection_->shared_from_this( );
-            closure_hold->req_        = req;
-            closure_hold->res_        = res;
-            closure_hold->controller_ = controller;
-            closure_hold->llu_        = llu;
 
-//            gpb::Closure* clos
-//                    (gpb::NewPermanentCallback( this, &this_type::closure_fake,
-//                                                closure_hold ));
+            if( llu->opt( ).wait( ) ) {
 
-            gpb::Closure* clos
-                    (gpb::NewCallback( this, &this_type::closure_done,
-                                                         closure_hold ));
+                closure_holder_sptr closure_hold
+                                    (vtrc::make_shared<closure_holder_type>( ));
 
-            service->service( )
+                closure_hold->connection_ = connection_->shared_from_this( );
+                closure_hold->req_        = req;
+                closure_hold->res_        = res;
+                closure_hold->controller_ = controller;
+                closure_hold->llu_        = llu;
+
+                gpb::Closure* clos
+                        (gpb::NewCallback( this, &this_type::closure_done,
+                                                             closure_hold ));
+
+                service->service( )
                    ->CallMethod( meth, controller.get( ),
                                  req.get( ), res.get( ), clos );
+            } else {
+                vtrc::shared_ptr<gpb::Closure> clos
+                   (gpb::NewPermanentCallback(this, &this_type::closure_fake));
+
+                service->service( )->CallMethod( meth, controller.get( ),
+                                   req.get( ), res.get( ), clos.get( ) );
+            }
 
 //            if( controller->Failed( ) ) {
 //                throw vtrc::common::exception( vtrc_errors::ERR_INTERNAL,
@@ -622,15 +624,16 @@ namespace vtrc { namespace common {
                 llu->mutable_error( )->set_additional( "..." );
             }
 
-            if( failed ) {
-                if( request_wait ) {
+            if( request_wait ) {
+                if( failed ) {
                     llu->mutable_error( )->set_code( errorcode );
                     llu->clear_response( );
                     send_message( *llu );
-                } else {
-                    //send_message( fake_ );
                 }
+            } else {
+                send_message( fake_ );
             }
+
 //            if( request_wait ) {
 //                llu->clear_request( );
 //                llu->clear_call( );

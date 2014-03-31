@@ -57,6 +57,7 @@ public:
                          ::vtrc_service::pong_res* response,
                          ::google::protobuf::Closure* done)
     {
+        common::closure_holder chold(done);
         std::cout << "ping event rcvd "
                   << c_->connection( )
                      ->get_protocol( ).get_call_context( )
@@ -64,11 +65,14 @@ public:
                   << " " << vtrc::this_thread::get_id( ) << " "
                   //<< vtrc::chrono::high_resolution_clock::now( )
                   << "\n";
+
+        return;
+
         const vtrc::common::call_context *cc =
                     vtrc::common::call_context::get( c_->connection( ) );
 
         vtrc::shared_ptr<google::protobuf::RpcChannel>
-                ch(c_->create_channel( false, true ));
+                            ch(c_->create_channel( false, true ));
 
         vtrc_rpc_lowlevel::message_info mi;
         vtrc_service::test_rpc::Stub s( ch.get( ) );
@@ -92,6 +96,7 @@ public:
                          ::vtrc_rpc_lowlevel::message_info* response,
                          ::google::protobuf::Closure* done)
     {
+        common::closure_holder ch(done);
         std::cout << "test event rcvd "
                   << c_->get_protocol( ).get_call_context( )->get_lowlevel_message( )->id( )
                   << " " << vtrc::this_thread::get_id( ) << " "
@@ -155,7 +160,7 @@ int main( )
 
     vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(2000) );
 
-    vtrc::thread( run_client, cl, true ).detach( );
+    //vtrc::thread( run_client, cl, true ).detach( );
     vtrc::thread( run_client, cl, false ).join( );
 
     pp.stop_all( );
