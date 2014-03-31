@@ -6,6 +6,7 @@
 namespace vtrc { namespace common {
 
     class closure_holder {
+
         google::protobuf::Closure *done_;
 
         closure_holder( const closure_holder &other );
@@ -13,9 +14,16 @@ namespace vtrc { namespace common {
 
     public:
 
+        google::protobuf::Closure *release( )
+        {
+            google::protobuf::Closure *old = done_;
+            done_ =  NULL;
+            return old;
+        }
+
         closure_holder( google::protobuf::Closure *done )
             :done_(done)
-        {}
+        { }
 
         ~closure_holder( )
         {

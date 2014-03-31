@@ -12,17 +12,16 @@ namespace vtrc { namespace common {
         call_context                     *parent_context_;
         const vtrc_rpc_lowlevel::options *opts_;
         google::protobuf::Closure        *closure_;
-        impl( )
-            :opts_(NULL)
+        impl(lowlevel_unit *llu)
+            :llu_(llu)
+            ,opts_(NULL)
             ,closure_(NULL)
         { }
     };
 
     call_context::call_context( lowlevel_unit *lowlevel )
-        :impl_(new impl)
-    {
-        impl_->llu_ = lowlevel;
-    }
+        :impl_(new impl(lowlevel))
+    { }
 
     const call_context *call_context::get( connection_iface *iface )
     {
@@ -41,7 +40,7 @@ namespace vtrc { namespace common {
     call_context &call_context::operator = ( const call_context &other )
     {
         *impl_ = *other.impl_;
-        return *this;
+        return   *this;
     }
 
     call_context *call_context::next( )
