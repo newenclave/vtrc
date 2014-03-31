@@ -85,6 +85,13 @@ namespace vtrc { namespace common {
             ,vtrc::shared_ptr<vtrc_rpc_lowlevel::options>
         > options_map_type;
 
+        struct closure_holder_type {
+            connection_iface_wptr          connection_;
+            vtrc::shared_ptr<gpb::Message> req_;
+            vtrc::shared_ptr<gpb::Message> res_;
+            rpc_controller_sptr            controller_;
+        };
+
     }
 
     struct protocol_layer::impl {
@@ -498,7 +505,7 @@ namespace vtrc { namespace common {
             req->ParseFromString( llu->request( ) );
             res->ParseFromString( llu->response( ));
 
-            common::rpc_controller_sptr controller
+            rpc_controller_sptr controller
                                 (vtrc::make_shared<common::rpc_controller>( ));
 
             vtrc::shared_ptr<gpb::Closure> clos
@@ -517,18 +524,17 @@ namespace vtrc { namespace common {
             }
 
             llu->set_response( res->SerializeAsString( ) );
-            return call_opts.wait( );
         }
 
         void make_call(protocol_layer::lowlevel_unit_sptr llu)
         {
             bool failed       = true;
-            bool opt_wait     = true;
             bool request_wait = llu->opt( ).wait( );
 
             unsigned errorcode = 0;
             try {
-                opt_wait = make_call_impl( llu );
+
+                make_call_impl( llu );
                 failed   = false;
 
             } catch ( const vtrc::common::exception &ex ) {
