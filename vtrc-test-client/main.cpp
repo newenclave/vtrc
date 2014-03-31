@@ -123,8 +123,8 @@ void run_client( vtrc::shared_ptr<client::vtrc_client> cl, bool wait)
     for( int i=0; i<29999999999; ++i ) {
         try {
 
-//            if( wait )
-//                vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(1) );
+            if( wait )
+                vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(1) );
             work_time wt;
             s.test( NULL, &mi, &mi, NULL );
             last = mi.message_type( );
@@ -164,8 +164,8 @@ int main( )
 
     vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(2000) );
 
-    //vtrc::thread( run_client, cl, true ).detach( );
-    //vtrc::thread( run_client, cl, false ).detach( );
+    vtrc::thread( run_client, cl, true ).detach( );
+    vtrc::thread( run_client, cl, false ).detach( );
     vtrc::thread( run_client, cl, false ).join( );
 
     pp.stop_all( );

@@ -45,7 +45,8 @@ namespace vtrc { namespace common {
             enviroment                          env_;
 
             parent_type                         *parent_;
-            vtrc::atomic<bool>                   closed_;
+            bool                                 closed_;
+            vtrc::mutex                          close_lock_;
 
             std::string                          name_;
 
@@ -86,10 +87,19 @@ namespace vtrc { namespace common {
 
             void close( )
             {
-                closed_ = true;
-                try {
+                vtrc::lock_guard<vtrc::mutex> lk(close_lock_);
+                if( !closed_ ) {
+                    closed_ = true;
                     stream_->close( );
-                } catch ( ... ) { ;;; }
+                }
+
+//                if( !closed_ ) {
+//                    try {
+//                        stream_.reset( );
+//                        std::cout << "\n\nClose\n";
+//                        //stream_->close( );
+//                    } catch ( ... ) { ;;; }
+//                }
             }
 
             bool active( ) const

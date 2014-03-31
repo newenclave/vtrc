@@ -178,13 +178,13 @@ public:
 
 //        std::cout << "test 2 " << vtrc::this_thread::get_id( ) << "\n\n";
 
-        std::cout << std::setw(8) << id_ << " stack: ";
-        while (cc) {
-            std::cout << cc->get_lowlevel_message( )->call( ).method_id( )
-                      << " <- ";
-            cc = cc->next( );
-        }
-        std::cout << "\n";
+//        std::cout << std::setw(8) << id_ << " stack: ";
+//        while (cc) {
+//            std::cout << cc->get_lowlevel_message( )->call( ).method_id( )
+//                      << " <- ";
+//            cc = cc->next( );
+//        }
+//        std::cout << "\n";
     }
 };
 
@@ -238,6 +238,8 @@ private:
 
 int main( ) try {
 
+//    ::unlink("/tmp/test");
+//    return 0;
     common::pool_pair pp(4, 8);
     main_app app(pp);
 
@@ -263,7 +265,7 @@ int main( ) try {
     tcp4_ep->start( );
     tcp6_ep->start( );
 
-    boost::this_thread::sleep_for( vtrc::chrono::milliseconds(12000) );
+    boost::this_thread::sleep_for( vtrc::chrono::milliseconds(1200099999) );
 
     std::cout << "Stoppped. Wait ... \n";
 
