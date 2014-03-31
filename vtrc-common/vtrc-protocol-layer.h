@@ -112,8 +112,8 @@ namespace vtrc { namespace common {
                 ,old_ctx_(p_->top_call_context( ))
 
             {
-                call_context *ncc = new call_context(llu, old_ctx_);
-                p_->push_call_context( ncc );
+                ctx_ = new call_context(llu, old_ctx_);
+                p_->push_call_context( ctx_ );
             }
 
             ~context_holder( ) try
@@ -136,8 +136,8 @@ namespace vtrc { namespace common {
         call_context *push_call_context ( call_context *cc );
         call_context *push_call_context ( vtrc::shared_ptr<call_context> cc );
         void           pop_call_context ( );
-        void         reset_call_context ( );
         call_context  *top_call_context ( );
+        void         reset_call_stack   ( );
 
     public:
 

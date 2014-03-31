@@ -595,7 +595,7 @@ namespace vtrc { namespace common {
         return impl_->pop_call_context( );
     }
 
-    void protocol_layer::reset_call_context( )
+    void protocol_layer::reset_call_stack( )
     {
         impl_->reset_call_context(  );
     }
