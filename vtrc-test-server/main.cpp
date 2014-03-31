@@ -34,6 +34,7 @@
 #include "vtrc-common/vtrc-call-context.h"
 #include "vtrc-common/vtrc-closure-holder.h"
 #include "vtrc-common/vtrc-connection-iface.h"
+#include "vtrc-common/vtrc-delayed-call.h"
 
 #include "protocol/vtrc-errors.pb.h"
 #include "protocol/vtrc-auth.pb.h"
@@ -62,6 +63,8 @@ struct work_time {
         std::cout << "call time: " << stop - start_ << "\n";
     }
 };
+
+
 
 void test_send( common::connection_iface *connection,
                 vtrc::server::application &app )
@@ -98,7 +101,8 @@ void test_send( common::connection_iface *connection,
 
 }
 
-void call_delayed_test( ::google::protobuf::RpcController* controller,
+void call_delayed_test( const boost::system::error_code &err,
+                        ::google::protobuf::RpcController* controller,
                         const ::vtrc_rpc_lowlevel::message_info* request,
                         ::vtrc_rpc_lowlevel::message_info* response,
                         ::google::protobuf::Closure* done,
@@ -113,11 +117,47 @@ void call_delayed_test( ::google::protobuf::RpcController* controller,
     test_send(c_, app_);
 }
 
+class delayed_call {
+
+    common::timer::monotonic timer_;
+
+public:
+
+    delayed_call( boost::asio::io_service &ios )
+        :timer_(ios)
+    {}
+
+    common::timer::monotonic &timer( )
+    {
+        return timer_;
+    }
+
+    const common::timer::monotonic &timer( ) const
+    {
+        return timer_;
+    }
+
+    void cancel( )
+    {
+        timer_.cancel( );
+    }
+
+    template <typename FuncType, typename TimerType>
+    void call_from_now( FuncType f, const TimerType &tt )
+    {
+        timer_.expires_from_now( tt );
+        timer_.async_wait( f );
+    }
+
+};
+
+
 class teat_impl: public vtrc_service::test_rpc {
 
     common::connection_iface *c_;
     vtrc::server::application &app_;
     unsigned id_;
+    delayed_call dc_;
 
 public:
 
@@ -125,6 +165,7 @@ public:
         :c_(c)
         ,app_(app)
         ,id_(0)
+        ,dc_(app_.get_rpc_service( ))
     { }
 
     void test(::google::protobuf::RpcController* controller,
@@ -135,10 +176,20 @@ public:
 
         //common::closure_holder ch(done);
 
-        app_.get_rpc_service( ).post( boost::bind( call_delayed_test,
-                                      controller, request, response, done,
-                                                   ++id_,
-                                                   c_, vtrc::ref(app_)) );
+        boost::system::error_code ec(0, boost::system::get_system_category( ));
+
+        boost::function<void ()> f(boost::bind(call_delayed_test,
+                                   ec,
+                                   controller, request, response, done,
+                                   ++id_, c_, vtrc::ref(app_)));
+
+        app_.get_rpc_service( ).post( f );
+
+//        dc_.call_from_now( boost::bind(call_delayed_test,
+//                                       boost::asio::placeholders::error,
+//                                       controller, request, response, done,
+//                                       ++id_, c_, vtrc::ref(app_)),
+//                           boost::posix_time::milliseconds( 100 ) );
 
 //        response->set_message_type( id_++ );
 //        if( (id_ % 100) == 0 )
