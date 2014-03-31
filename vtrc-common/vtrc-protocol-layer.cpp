@@ -571,13 +571,13 @@ namespace vtrc { namespace common {
             closure_hold->controller_ = controller;
             closure_hold->llu_        = llu;
 
-            vtrc::shared_ptr<gpb::Closure> clos
-                    (gpb::NewPermanentCallback( this, &this_type::closure_fake,
+            gpb::Closure* clos
+                    (gpb::NewCallback( this, &this_type::closure_fake,
                                                 closure_hold ));
 
             service->service( )
                    ->CallMethod( meth, controller.get( ),
-                                 req.get( ), res.get( ), clos.get( ) );
+                                 req.get( ), res.get( ), clos );
 
             if( controller->Failed( ) ) {
                 throw vtrc::common::exception( vtrc_errors::ERR_INTERNAL,

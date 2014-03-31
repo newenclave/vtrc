@@ -31,6 +31,7 @@
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"
 #include "vtrc-common/vtrc-protocol-layer.h"
 #include "vtrc-common/vtrc-call-context.h"
+#include "vtrc-common/vtrc-closure-holder.h"
 #include "vtrc-common/vtrc-connection-iface.h"
 
 #include "protocol/vtrc-errors.pb.h"
@@ -115,6 +116,7 @@ public:
               ::google::protobuf::Closure* done)
     {
 
+        common::closure_holder ch(done);
         response->set_message_type( id_++ );
         if( (id_ % 100) == 0 )
             throw std::runtime_error( "oops 10 =)" );
@@ -123,8 +125,6 @@ public:
 //                    vtrc::bind(test_send, connection_));
 //        boost::thread(test_send, connection_).detach( );
 //        test_send(c_, app_);
-
-        if( done ) done->Run( );
     }
 
     virtual void test2(::google::protobuf::RpcController* controller,
@@ -132,6 +132,8 @@ public:
                          ::vtrc_rpc_lowlevel::message_info* response,
                          ::google::protobuf::Closure* done)
     {
+        common::closure_holder ch(done);
+
         const vtrc::common::call_context *cc =
                     vtrc::common::call_context::get( c_ );
 
@@ -144,8 +146,6 @@ public:
             cc = cc->next( );
         }
         std::cout << "\n";
-
-        if( done ) done->Run( );
     }
 };
 
