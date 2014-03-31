@@ -90,8 +90,7 @@ namespace vtrc { namespace common {
 
         struct closure_holder_type {
             closure_holder_type( )
-                :made_(false)
-                ,proto_closure_(NULL)
+                :proto_closure_(NULL)
             {}
 
             ~closure_holder_type( ) try
@@ -104,7 +103,6 @@ namespace vtrc { namespace common {
                 if(internal_closure_) internal_closure_( err );
             } catch( ... ) { ;;; }
 
-            bool                                    made_;
             connection_iface_wptr                   connection_;
             vtrc::shared_ptr<gpb::Message>          req_;
             vtrc::shared_ptr<gpb::Message>          res_;
@@ -479,12 +477,13 @@ namespace vtrc { namespace common {
             rpc_queue_.cancel_all( );
         }
 
+        common::rpc_service_wrapper_sptr get_service(const std::string &name)
+        {
+            return parent_->get_service_by_name( name );
+        }
 
         void closure_fake( closure_holder_sptr holder )
         {
-            connection_iface_sptr lck(holder->connection_.lock( ));
-            if( !lck ) return;
-
             if( holder->internal_closure_ ) {
                 boost::system::error_code err( 0,
                         boost::system::get_system_category( ) );
@@ -495,27 +494,6 @@ namespace vtrc { namespace common {
 
         void closure_done( closure_holder_sptr holder )
         {
-            if( holder->proto_closure_ ) {
-                delete holder->proto_closure_;
-                holder->proto_closure_ = NULL;
-            } else {
-                return;
-            }
-
-            if( std::uncaught_exception( ) ) {
-//                std::cerr << "Uncaught exception at done handler for "
-//                          << holder->llu_->call( ).service_id( )
-//                          << "::"
-//                          << holder->llu_->call( ).method_id( )
-//                          << std::endl;
-                return;
-            }
-
-            connection_iface_sptr lck(holder->connection_.lock( ));
-            if( !lck ) return;
-
-            holder->made_ = true;
-
             lowlevel_unit_sptr &llu = holder->llu_;
 
             bool failed = false;
@@ -537,6 +515,7 @@ namespace vtrc { namespace common {
 
             llu->clear_request( );
             llu->clear_call( );
+
             if( failed ) {
                 llu->mutable_error( )->set_code( errorcode );
                 llu->clear_response( );
@@ -546,17 +525,39 @@ namespace vtrc { namespace common {
             send_message( *llu );
         }
 
-        common::rpc_service_wrapper_sptr get_service(const std::string &name)
+        void closure_runner( closure_holder_sptr holder, bool wait )
         {
-            return parent_->get_service_by_name( name );
+            if( holder->proto_closure_ ) {
+                delete holder->proto_closure_;
+                holder->proto_closure_ = NULL;
+            } else {
+                return;
+            }
+
+            if( std::uncaught_exception( ) ) {
+//                std::cerr << "Uncaught exception at done handler for "
+//                          << holder->llu_->call( ).service_id( )
+//                          << "::"
+//                          << holder->llu_->call( ).method_id( )
+//                          << std::endl;
+                return;
+            } else {
+
+                connection_iface_sptr lck(holder->connection_.lock( ));
+                if( !lck ) return;
+
+                wait ? closure_done( holder ) : closure_fake( holder );
+            }
+
         }
 
-        gpb::Closure *make_closure(closure_holder_sptr &closure_hold, bool fake)
+        gpb::Closure *make_closure(closure_holder_sptr &closure_hold, bool wait)
         {
-            return (gpb::NewPermanentCallback( this,
-                        fake ? &this_type::closure_fake
-                             : &this_type::closure_done,
-                        closure_hold ));
+            gpb::Closure *clos(gpb::NewPermanentCallback( this,
+                            &this_type::closure_runner, closure_hold, wait ));
+            closure_hold->proto_closure_ = clos;
+
+            return clos;
         }
 
         void make_call_impl( lowlevel_unit_sptr llu, closure_type done )
@@ -606,21 +607,10 @@ namespace vtrc { namespace common {
             closure_hold->llu_              = llu;
             closure_hold->internal_closure_ = done;
 
-            if( llu->opt( ).wait( ) ) {
+            gpb::Closure* clos(make_closure(closure_hold, llu->opt( ).wait( )));
 
-                gpb::Closure* clos(make_closure(closure_hold, false));
-
-                closure_hold->proto_closure_ = clos;
-                service->service( )->CallMethod( meth, controller.get( ),
-                                                req.get( ), res.get( ), clos );
-            } else {
-
-                gpb::Closure* clos(make_closure(closure_hold, true));
-
-                closure_hold->proto_closure_ = clos;
-                service->service( )->CallMethod( meth, controller.get( ),
-                                                req.get( ), res.get( ), clos );
-            }
+            service->service( )->CallMethod( meth, controller.get( ),
+                                            req.get( ), res.get( ), clos );
 
 //            if( controller->Failed( ) ) {
 //                throw vtrc::common::exception( vtrc_errors::ERR_INTERNAL,
