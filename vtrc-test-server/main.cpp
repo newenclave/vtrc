@@ -140,10 +140,9 @@ public:
                                                    ++id_,
                                                    c_, vtrc::ref(app_)) );
 
-        response->set_message_type( id_++ );
-        if( (id_ % 100) == 0 )
-            throw std::runtime_error( "oops 10 =)" );
-
+//        response->set_message_type( id_++ );
+//        if( (id_ % 100) == 0 )
+//            throw std::runtime_error( "oops 10 =)" );
 //        connection_->get_io_service( ).dispatch(
 //                    vtrc::bind(test_send, connection_));
 //        boost::thread(test_send, connection_).detach( );
