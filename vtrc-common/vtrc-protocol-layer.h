@@ -109,17 +109,16 @@ namespace vtrc { namespace common {
             context_holder( protocol_layer *parent,
                             lowlevel_unit_type *llu )
                 :p_(parent)
-                ,old_ctx_(p_->mutable_call_context( ))
+                ,old_ctx_(p_->top_call_context( ))
 
             {
                 call_context *ncc = new call_context(llu, old_ctx_);
-                p_->release_call_context( );
-                ctx_ = p_->reset_call_context(ncc);
+                p_->push_call_context( ncc );
             }
 
             ~context_holder( ) try
             {
-                p_->reset_call_context( old_ctx_ );
+                p_->pop_call_context( );
             } catch( ... ) { ;;; /*Cthulhu*/ }
 
         private:
@@ -134,11 +133,14 @@ namespace vtrc { namespace common {
         virtual void init( )            = 0;
         virtual void on_data_ready( )   = 0;
 
-        call_context *reset_call_context ( call_context *cc );
-        call_context *mutable_call_context( );
-        call_context *release_call_context( );
+        call_context *push_call_context ( call_context *cc );
+        call_context *push_call_context ( vtrc::shared_ptr<call_context> cc );
+        void           pop_call_context ( );
+        void         reset_call_context ( );
+        call_context  *top_call_context ( );
 
     public:
+
         const call_context *get_call_context( ) const;
 
     protected:

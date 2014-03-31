@@ -1,9 +1,12 @@
 
 #include <boost/thread/tss.hpp>
-#include "vtrc-thread.h"
 
 #include <google/protobuf/message.h>
 #include <google/protobuf/descriptor.h>
+
+#include <stack>
+
+#include "vtrc-thread.h"
 
 #include "vtrc-atomic.h"
 #include "vtrc-mutex.h"
@@ -76,7 +79,8 @@ namespace vtrc { namespace common {
 
         typedef condition_queues<gpb::uint64, ll_unit_sptr> rpc_queue_type;
 
-        typedef boost::thread_specific_ptr<call_context> call_context_ptr;
+        typedef std::stack< vtrc::shared_ptr<call_context> > call_stack;
+        typedef boost::thread_specific_ptr<call_stack> call_context_ptr;
 
         typedef std::map <
              const google::protobuf::MethodDescriptor *
@@ -243,27 +247,40 @@ namespace vtrc { namespace common {
             return result;
         }
 
-        call_context *release_call_context( )
+        call_context *push_call_context(vtrc::shared_ptr<call_context> cc)
         {
-            call_context *old = context_.get( );
-            context_.release( );
-            return old;
+            if( NULL == context_.get( ) ) context_.reset( new call_stack );
+            context_->push( cc );
+            return context_->top( ).get( );
         }
 
-        call_context *reset_call_context( call_context *cc )
+        call_context *push_call_context( call_context *cc)
         {
-            context_.reset( cc );
-            return cc;
+            return push_call_context( vtrc::shared_ptr<call_context>(cc) );
+        }
+
+        void pop_call_context( )
+        {
+            context_->pop( );
+        }
+
+        void reset_call_context( )
+        {
+            context_.reset(  );
         }
 
         const call_context *get_call_context( ) const
         {
-            return context_.get( );
+            return context_.get( ) && !context_->empty( )
+                    ? context_->top( ).get( )
+                    : NULL;
         }
 
-        call_context *get_call_context( )
+        call_context *top_call_context( )
         {
-            return context_.get( );
+            return context_.get( ) && !context_->empty( )
+                    ? context_->top( ).get( )
+                    : NULL;
         }
 
         void change_sign_checker( hash_iface *new_signer )
@@ -558,14 +575,29 @@ namespace vtrc { namespace common {
 //        impl_->send_message( message );
 //    }
 
-    call_context *protocol_layer::reset_call_context(call_context *cc)
+    /*
+     * call context
+    */
+
+    call_context *protocol_layer::push_call_context(
+                                             vtrc::shared_ptr<call_context> cc)
     {
-        return impl_->reset_call_context( cc );
+        return impl_->push_call_context( cc );
     }
 
-    call_context *protocol_layer::release_call_context( )
+    call_context *protocol_layer::push_call_context( call_context *cc )
     {
-        return impl_->release_call_context( );
+        return impl_->push_call_context( cc );
+    }
+
+    void protocol_layer::pop_call_context( )
+    {
+        return impl_->pop_call_context( );
+    }
+
+    void protocol_layer::reset_call_context( )
+    {
+        impl_->reset_call_context(  );
     }
 
     const vtrc_rpc_lowlevel::options &protocol_layer::get_method_options(
@@ -580,10 +612,12 @@ namespace vtrc { namespace common {
         return impl_->get_call_context( );
     }
 
-    call_context *protocol_layer::mutable_call_context( )
+    call_context *protocol_layer::top_call_context( )
     {
-        return impl_->get_call_context( );
+        return impl_->top_call_context( );
     }
+
+    // ===============
 
     bool protocol_layer::check_message( const std::string &mess )
     {
@@ -715,5 +749,6 @@ namespace vtrc { namespace common {
     {
         impl_->on_system_error( err, "Transport read error." );
     }
+
 
 }}
