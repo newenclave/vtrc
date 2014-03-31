@@ -31,6 +31,7 @@ enum errors_numbers { // CATEGORY_INTERNAL
     ERR_PROTOCOL      =   71 [(description) = "Protocol error"];
     ERR_MESSAGE_SIZE  =   90 [(description) = "Message is too long"];
     ERR_CANCELED      =  125 [(description) = "Operation canceled"];
+
     ERR_UNKNOWN       = 1000 [(description) = "Unknown error"];
     ERR_CALL_FAILED   = 1001 [(description) = "Call failed"];
     ERR_INTERNAL      = 1002 [(description) = "Internal error"];

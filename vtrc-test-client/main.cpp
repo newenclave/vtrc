@@ -13,6 +13,7 @@
 #include "vtrc-client-base/vtrc-client.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
 #include "protocol/vtrc-service.pb.h"
+#include "protocol/vtrc-errors.pb.h"
 
 #include <boost/random.hpp>
 #include <boost/random/random_device.hpp>
@@ -137,7 +138,8 @@ void run_client( vtrc::shared_ptr<client::vtrc_client> cl, bool wait)
                       << " (" << ex.additional( ) << ")"
                       << "\n";
             //if( i % 100 == 0 )
-                std::cout << i << "\n";
+            std::cout << i << "\n";
+            if( ex.category( ) == vtrc_errors::CATEGORY_SYSTEM ) break;
         } catch( const std::exception &ex ) {
             //std::cout << "call error: " << ex.what( ) << "\n";
         }
