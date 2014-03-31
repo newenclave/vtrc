@@ -117,47 +117,12 @@ void call_delayed_test( const boost::system::error_code &err,
     test_send(c_, app_);
 }
 
-class delayed_call {
-
-    common::timer::monotonic timer_;
-
-public:
-
-    delayed_call( boost::asio::io_service &ios )
-        :timer_(ios)
-    {}
-
-    common::timer::monotonic &timer( )
-    {
-        return timer_;
-    }
-
-    const common::timer::monotonic &timer( ) const
-    {
-        return timer_;
-    }
-
-    void cancel( )
-    {
-        timer_.cancel( );
-    }
-
-    template <typename FuncType, typename TimerType>
-    void call_from_now( FuncType f, const TimerType &tt )
-    {
-        timer_.expires_from_now( tt );
-        timer_.async_wait( f );
-    }
-
-};
-
-
 class teat_impl: public vtrc_service::test_rpc {
 
     common::connection_iface *c_;
     vtrc::server::application &app_;
     unsigned id_;
-    delayed_call dc_;
+    common::delayed_call dc_;
 
 public:
 
@@ -174,30 +139,33 @@ public:
               ::google::protobuf::Closure* done)
     {
 
-        //common::closure_holder ch(done);
+//        boost::system::error_code ec(0, boost::system::get_system_category( ));
 
-        boost::system::error_code ec(0, boost::system::get_system_category( ));
+//        boost::function<void ()> f(boost::bind(call_delayed_test,
+//                                   ec,
+//                                   controller, request, response, done,
+//                                   ++id_, c_, vtrc::ref(app_)));
 
-        boost::function<void ()> f(boost::bind(call_delayed_test,
-                                   ec,
-                                   controller, request, response, done,
-                                   ++id_, c_, vtrc::ref(app_)));
-
-        app_.get_rpc_service( ).post( f );
+//        app_.get_rpc_service( ).post( f );
 
 //        dc_.call_from_now( boost::bind(call_delayed_test,
 //                                       boost::asio::placeholders::error,
 //                                       controller, request, response, done,
 //                                       ++id_, c_, vtrc::ref(app_)),
-//                           boost::posix_time::milliseconds( 100 ) );
+//                           boost::posix_time::milliseconds( 0 ) );
 
 //        response->set_message_type( id_++ );
-//        if( (id_ % 100) == 0 )
-//            throw std::runtime_error( "oops 10 =)" );
+        {
+            common::closure_holder ch(done);
+
+            if( (id_++ % 100) == 0 )
+                throw std::runtime_error( "oops 10 =)" );
+
 //        connection_->get_io_service( ).dispatch(
 //                    vtrc::bind(test_send, connection_));
 //        boost::thread(test_send, connection_).detach( );
-//        test_send(c_, app_);
+            test_send(c_, app_);
+        }
     }
 
     virtual void test2(::google::protobuf::RpcController* controller,
