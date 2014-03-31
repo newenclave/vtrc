@@ -140,6 +140,7 @@ void run_client( vtrc::shared_ptr<client::vtrc_client> cl, bool wait)
             //if( i % 100 == 0 )
             std::cout << i << "\n";
             if( ex.category( ) == vtrc_errors::CATEGORY_SYSTEM ) break;
+            if( ex.code( ) == vtrc_errors::ERR_COMM ) break;
         } catch( const std::exception &ex ) {
             //std::cout << "call error: " << ex.what( ) << "\n";
         }
@@ -152,8 +153,8 @@ int main( )
     common::pool_pair pp(2, 2);
     vtrc::shared_ptr<client::vtrc_client> cl(client::vtrc_client::create(pp));
 
-    //cl->connect( "/tmp/test" );
-    cl->connect( "192.168.56.101", "44667" );
+    cl->connect( "/tmp/test" );
+    //cl->connect( "192.168.56.101", "44667" );
     //cl->connect( "127.0.0.1", "44667" );
     //cl->connect( "::1", "44668" );
     ///cl->async_connect( "127.0.0.1", "44667", on_connect );

@@ -133,12 +133,12 @@ public:
               ::google::protobuf::Closure* done)
     {
 
-        common::closure_holder ch(done);
+        //common::closure_holder ch(done);
 
-//        app_.get_rpc_service( ).post( boost::bind( call_delayed_test,
-//                                      controller, request, response, done,
-//                                                   ++id_,
-//                                                   c_, vtrc::ref(app_)) );
+        app_.get_rpc_service( ).post( boost::bind( call_delayed_test,
+                                      controller, request, response, done,
+                                                   ++id_,
+                                                   c_, vtrc::ref(app_)) );
 
         response->set_message_type( id_++ );
         if( (id_ % 100) == 0 )
@@ -222,7 +222,7 @@ private:
 
 int main( ) try {
 
-    common::pool_pair pp(2, 4);
+    common::pool_pair pp(4, 8);
     main_app app(pp);
 
     vtrc::shared_ptr<vtrc::server::endpoint_iface> tcp4_ep
