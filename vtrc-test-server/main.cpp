@@ -64,8 +64,6 @@ struct work_time {
     }
 };
 
-
-
 void test_send( common::connection_iface *connection,
                 vtrc::server::application &app )
 {
