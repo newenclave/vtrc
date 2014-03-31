@@ -402,10 +402,6 @@ namespace vtrc { namespace common {
                         slot_id, mess,
                         vtrc::chrono::milliseconds(millisec) );
 
-//            std::cout << slot_id << " pop at "
-//                      << vtrc::chrono::high_resolution_clock::now( )
-//                      << "\n";
-
             raise_wait_error( qwr );
         }
 
@@ -586,7 +582,7 @@ namespace vtrc { namespace common {
 
             gpb::Closure* clos
                     (gpb::NewCallback( this, &this_type::closure_done,
-                                                closure_hold ));
+                                                         closure_hold ));
 
             service->service( )
                    ->CallMethod( meth, controller.get( ),
@@ -624,15 +620,16 @@ namespace vtrc { namespace common {
             } catch ( ... ) {
                 errorcode = vtrc_errors::ERR_UNKNOWN;
                 llu->mutable_error( )->set_additional( "..." );
-
             }
 
-            if( failed && request_wait) {
-                llu->mutable_error( )->set_code( errorcode );
-                llu->clear_response( );
-                send_message( *llu );
-            } else {
-                send_message( fake_ );
+            if( failed ) {
+                if( request_wait ) {
+                    llu->mutable_error( )->set_code( errorcode );
+                    llu->clear_response( );
+                    send_message( *llu );
+                } else {
+                    //send_message( fake_ );
+                }
             }
 //            if( request_wait ) {
 //                llu->clear_request( );
