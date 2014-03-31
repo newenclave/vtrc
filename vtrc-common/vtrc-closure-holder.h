@@ -25,10 +25,10 @@ namespace vtrc { namespace common {
             :done_(done)
         { }
 
-        ~closure_holder( )
+        ~closure_holder( ) try
         {
             if( done_ ) done_->Run( );
-        }
+        } catch( ... ) { ;;; }
 
     };
 }}
