@@ -74,10 +74,13 @@ namespace vtrc { namespace common {
             return lhs.id_ < rhs.id_;
         }
 
-        typedef vtrc_rpc_lowlevel::lowlevel_unit ll_unit_type;
-        typedef vtrc::shared_ptr<ll_unit_type>   ll_unit_sptr;
+        typedef vtrc_rpc_lowlevel::lowlevel_unit       lowlevel_unit_type;
+        typedef vtrc::shared_ptr<lowlevel_unit_type>   lowlevel_unit_sptr;
 
-        typedef condition_queues<gpb::uint64, ll_unit_sptr> rpc_queue_type;
+        typedef condition_queues<
+                gpb::uint64,
+                lowlevel_unit_sptr
+        > rpc_queue_type;
 
 
         typedef std::map <
@@ -86,11 +89,18 @@ namespace vtrc { namespace common {
         > options_map_type;
 
         struct closure_holder_type {
-            connection_iface_wptr          connection_;
-            vtrc::shared_ptr<gpb::Message> req_;
-            vtrc::shared_ptr<gpb::Message> res_;
-            rpc_controller_sptr            controller_;
+            closure_holder_type( )
+                :made_(false)
+            {}
+            bool                                    made_;
+            connection_iface_wptr                   connection_;
+            vtrc::shared_ptr<gpb::Message>          req_;
+            vtrc::shared_ptr<gpb::Message>          res_;
+            rpc_controller_sptr                     controller_;
+            lowlevel_unit_sptr                      llu_;
         };
+
+        typedef vtrc::shared_ptr<closure_holder_type> closure_holder_sptr;
 
     }
 
@@ -348,17 +358,17 @@ namespace vtrc { namespace common {
             queue_->messages( ).pop_front( );
         }
 
-        void push_rpc_message(uint64_t slot_id, ll_unit_sptr mess)
+        void push_rpc_message(uint64_t slot_id, lowlevel_unit_sptr mess)
         {
             rpc_queue_.write_queue_if_exists( slot_id, mess );
         }
 
-        void push_rpc_message_all( ll_unit_sptr mess)
+        void push_rpc_message_all( lowlevel_unit_sptr mess)
         {
             rpc_queue_.write_all( mess );
         }
 
-        void call_rpc_method( uint64_t slot_id, const ll_unit_type &llu )
+        void call_rpc_method( uint64_t slot_id, const lowlevel_unit_type &llu )
         {
             if( !working_ )
                 throw vtrc::common::exception( vtrc_errors::ERR_COMM );
@@ -366,7 +376,7 @@ namespace vtrc { namespace common {
             send_message( llu );
         }
 
-        void call_rpc_method( const ll_unit_type &llu )
+        void call_rpc_method( const lowlevel_unit_type &llu )
         {
             if( !working_ )
                 throw vtrc::common::exception( vtrc_errors::ERR_COMM );
@@ -384,7 +394,7 @@ namespace vtrc { namespace common {
             raise_wait_error( qwr );
         }
 
-        void read_slot_for(uint64_t slot_id, ll_unit_sptr &mess,
+        void read_slot_for(uint64_t slot_id, lowlevel_unit_sptr &mess,
                                              uint32_t millisec)
         {
             wait_result_codes qwr =
@@ -400,7 +410,7 @@ namespace vtrc { namespace common {
         }
 
         void read_slot_for(uint64_t slot_id,
-                        std::deque<ll_unit_sptr> &data_list, uint32_t millisec )
+                        std::deque<lowlevel_unit_sptr> &data_list, uint32_t millisec )
         {
             wait_result_codes qwr = rpc_queue_.read_queue(
                         slot_id, data_list,
@@ -463,10 +473,51 @@ namespace vtrc { namespace common {
         }
 
 
-        void closure( common::rpc_controller_sptr controller,
-                      lowlevel_unit_sptr llu )
+        void closure_fake( closure_holder_sptr /*holder*/ )
         {
             ;;;
+        }
+
+        void closure_done( closure_holder_sptr holder )
+        {
+            connection_iface_sptr lck(holder->connection_.lock( ));
+            if( !lck ) return;
+
+            holder->made_ = true;
+
+            lowlevel_unit_sptr &llu = holder->llu_;
+
+            bool failed = false;
+            unsigned errorcode = 0;
+
+            if( holder->controller_->Failed( ) ) {
+
+                errorcode = vtrc_errors::ERR_INTERNAL;
+                llu->mutable_error( )
+                        ->set_additional( holder->controller_->ErrorText( ));
+                failed = true;
+
+            } else if( holder->controller_->IsCanceled( ) ) {
+
+                errorcode = vtrc_errors::ERR_CANCELED;
+                failed = true;
+
+            }
+
+            if( llu->opt( ).wait( ) ) {
+                llu->clear_request( );
+                llu->clear_call( );
+                if( failed ) {
+                    llu->mutable_error( )->set_code( errorcode );
+                    llu->clear_response( );
+                } else {
+                    llu->set_response( holder->res_->SerializeAsString( ) );
+                }
+                send_message( *llu );
+            } else {
+                send_message( fake_ );
+                //;;;
+            }
         }
 
         common::rpc_service_wrapper_sptr get_service(const std::string &name)
@@ -499,6 +550,9 @@ namespace vtrc { namespace common {
 
             ch.ctx_->set_call_options( call_opts );
 
+            closure_holder_sptr closure_hold
+                                   (vtrc::make_shared<closure_holder_type>( ));
+
             vtrc::shared_ptr<gpb::Message> req
                 (service->service( )->GetRequestPrototype( meth ).New( ));
 
@@ -511,9 +565,15 @@ namespace vtrc { namespace common {
             rpc_controller_sptr controller
                                 (vtrc::make_shared<common::rpc_controller>( ));
 
+            closure_hold->connection_ = connection_->shared_from_this( );
+            closure_hold->req_        = req;
+            closure_hold->res_        = res;
+            closure_hold->controller_ = controller;
+            closure_hold->llu_        = llu;
+
             vtrc::shared_ptr<gpb::Closure> clos
-                    (gpb::NewPermanentCallback( this, &this_type::closure,
-                                                controller, llu ));
+                    (gpb::NewPermanentCallback( this, &this_type::closure_fake,
+                                                closure_hold ));
 
             service->service( )
                    ->CallMethod( meth, controller.get( ),
@@ -724,13 +784,13 @@ namespace vtrc { namespace common {
         return impl_->next_index( );
     }
 
-    void protocol_layer::call_rpc_method( const ll_unit_type &llu )
+    void protocol_layer::call_rpc_method( const lowlevel_unit_type &llu )
     {
         impl_->call_rpc_method( llu );
     }
 
     void protocol_layer::call_rpc_method( uint64_t slot_id,
-                                          const ll_unit_type &llu )
+                                          const lowlevel_unit_type &llu )
     {
         impl_->call_rpc_method( slot_id, llu );
     }
@@ -741,14 +801,14 @@ namespace vtrc { namespace common {
     }
 
     void protocol_layer::read_slot_for( uint64_t slot_id,
-                                        ll_unit_sptr &mess,
+                                        lowlevel_unit_sptr &mess,
                                         uint32_t millisec)
     {
         impl_->read_slot_for( slot_id, mess, millisec);
     }
 
     void protocol_layer::read_slot_for( uint64_t slot_id,
-                                        std::deque<ll_unit_sptr> &mess_list,
+                                        std::deque<lowlevel_unit_sptr> &mess_list,
                                         uint32_t millisec )
     {
         impl_->read_slot_for( slot_id, mess_list, millisec);
@@ -779,12 +839,12 @@ namespace vtrc { namespace common {
         impl_->erase_all_slots( );
     }
 
-    void protocol_layer::push_rpc_message(uint64_t slot_id, ll_unit_sptr mess)
+    void protocol_layer::push_rpc_message(uint64_t slot_id, lowlevel_unit_sptr mess)
     {
         impl_->push_rpc_message(slot_id, mess);
     }
 
-    void protocol_layer::push_rpc_message_all( ll_unit_sptr mess)
+    void protocol_layer::push_rpc_message_all( lowlevel_unit_sptr mess)
     {
         impl_->push_rpc_message_all( mess );
     }
