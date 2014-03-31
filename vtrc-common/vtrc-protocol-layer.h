@@ -73,6 +73,8 @@ namespace vtrc { namespace common {
         //void send_message( const google::protobuf::Message &message );
 
         void make_call( lowlevel_unit_sptr llu );
+        void make_call(protocol_layer::lowlevel_unit_sptr llu,
+                       common::closure_type done);
 
         void call_rpc_method( const vtrc_rpc_lowlevel::lowlevel_unit &llu );
         void call_rpc_method( uint64_t slot_id,

@@ -92,12 +92,22 @@ namespace vtrc { namespace common {
             closure_holder_type( )
                 :made_(false)
             {}
+
+            ~closure_holder_type( ) try
+            {
+                boost::system::error_code err( 0,
+                        boost::system::get_system_category( ) );
+                if(internal_closure_) internal_closure_( err );
+            } catch( ... ) { ;;; }
+
             bool                                    made_;
             connection_iface_wptr                   connection_;
             vtrc::shared_ptr<gpb::Message>          req_;
             vtrc::shared_ptr<gpb::Message>          res_;
             rpc_controller_sptr                     controller_;
             lowlevel_unit_sptr                      llu_;
+            common::closure_type                    internal_closure_;
+
         };
 
         typedef vtrc::shared_ptr<closure_holder_type> closure_holder_sptr;
@@ -469,8 +479,12 @@ namespace vtrc { namespace common {
         }
 
 
-        void closure_fake(  )
+        void closure_fake( closure_type done )
         {
+            boost::system::error_code err( 0,
+                    boost::system::get_system_category( ) );
+
+            if( done ) done( err );
             //send_message( fake_ );
         }
 
@@ -526,7 +540,7 @@ namespace vtrc { namespace common {
             return parent_->get_service_by_name( name );
         }
 
-        void make_call_impl( lowlevel_unit_sptr llu )
+        void make_call_impl( lowlevel_unit_sptr llu, closure_type done )
         {
 
             protocol_layer::context_holder ch( parent_, llu.get( ) );
@@ -575,6 +589,8 @@ namespace vtrc { namespace common {
                 closure_hold->controller_ = controller;
                 closure_hold->llu_        = llu;
 
+                closure_hold->internal_closure_ = done;
+
                 gpb::Closure* clos
                         (gpb::NewCallback( this, &this_type::closure_done,
                                                              closure_hold ));
@@ -584,7 +600,8 @@ namespace vtrc { namespace common {
                                  req.get( ), res.get( ), clos );
             } else {
                 vtrc::shared_ptr<gpb::Closure> clos
-                   (gpb::NewPermanentCallback(this, &this_type::closure_fake));
+                   (gpb::NewPermanentCallback(this, &this_type::closure_fake,
+                                              done ));
 
                 service->service( )->CallMethod( meth, controller.get( ),
                                    req.get( ), res.get( ), clos.get( ) );
@@ -602,13 +619,19 @@ namespace vtrc { namespace common {
 
         void make_call(protocol_layer::lowlevel_unit_sptr llu)
         {
+            make_call(llu, closure_type( ));
+        }
+
+        void make_call(protocol_layer::lowlevel_unit_sptr llu,
+                       closure_type done)
+        {
             bool failed       = true;
             bool request_wait = llu->opt( ).wait( );
 
             unsigned errorcode = 0;
             try {
 
-                make_call_impl( llu );
+                make_call_impl( llu, done );
                 failed   = false;
 
             } catch ( const vtrc::common::exception &ex ) {
@@ -762,6 +785,12 @@ namespace vtrc { namespace common {
     void protocol_layer::make_call(protocol_layer::lowlevel_unit_sptr llu)
     {
         impl_->make_call( llu );
+    }
+
+    void protocol_layer::make_call(protocol_layer::lowlevel_unit_sptr llu,
+                                   closure_type done)
+    {
+        impl_->make_call( llu, done );
     }
 
     message_queue_type &protocol_layer::message_queue( )

@@ -199,12 +199,16 @@ namespace vtrc { namespace server {
             //llu->mutable_error( )->set_code(  );
         }
 
+        void call_done( const boost::system::error_code & /*err*/ )
+        {
+            --current_calls_;
+        }
 
         void push_call( lowlevel_unit_sptr llu,
                         common::connection_iface_sptr /*conn*/ )
         {
-            parent_->make_call( llu );
-            --current_calls_;
+            parent_->make_call( llu,
+                vtrc::bind(&this_type::call_done, this, _1 ));
         }
 
         void process_call( lowlevel_unit_sptr &llu )

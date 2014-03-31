@@ -62,7 +62,7 @@ namespace vtrc { namespace client {
 
         void on_connect( const boost::system::error_code &err,
                          common::closure_type closure,
-                         common::connection_iface_sptr parent)
+                         common::connection_iface_sptr /*parent*/)
         {
             if( !err ) {
                 init( );
