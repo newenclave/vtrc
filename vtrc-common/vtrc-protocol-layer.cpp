@@ -138,7 +138,7 @@ namespace vtrc { namespace common {
             rd.generate( &s2[0], &s2[0] + 4 );
 
             res.set_request( s1 );
-            res.set_response( s1 );
+            res.set_response( s2 );
 
             return res;
         }
