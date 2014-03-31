@@ -91,10 +91,14 @@ namespace vtrc { namespace common {
         struct closure_holder_type {
             closure_holder_type( )
                 :made_(false)
+                ,proto_closure_(NULL)
             {}
 
             ~closure_holder_type( ) try
             {
+                if( proto_closure_ )
+                    delete proto_closure_;
+
                 boost::system::error_code err( 0,
                         boost::system::get_system_category( ) );
                 if(internal_closure_) internal_closure_( err );
@@ -107,6 +111,7 @@ namespace vtrc { namespace common {
             rpc_controller_sptr                     controller_;
             lowlevel_unit_sptr                      llu_;
             common::closure_type                    internal_closure_;
+            gpb::Closure                           *proto_closure_;
 
         };
 
@@ -390,11 +395,7 @@ namespace vtrc { namespace common {
         {
             if( !working_ )
                 throw vtrc::common::exception( vtrc_errors::ERR_COMM );
-
-            //if( llu.has_id( ) && llu.info( ).has_message_type( ) )
-                send_message( llu );
-//            else
-//                throw vtrc::common::exception( vtrc_errors::ERR_INVALID_VALUE );
+            send_message( llu );
         }
 
         void wait_call_slot( uint64_t slot_id, uint32_t millisec)
@@ -479,17 +480,28 @@ namespace vtrc { namespace common {
         }
 
 
-        void closure_fake( closure_type done )
+        void closure_fake( closure_holder_sptr holder )
         {
-            boost::system::error_code err( 0,
-                    boost::system::get_system_category( ) );
+            connection_iface_sptr lck(holder->connection_.lock( ));
+            if( !lck ) return;
 
-            if( done ) done( err );
+            if( holder->internal_closure_ ) {
+                boost::system::error_code err( 0,
+                        boost::system::get_system_category( ) );
+                holder->internal_closure_( err );
+            }
             //send_message( fake_ );
         }
 
         void closure_done( closure_holder_sptr holder )
         {
+            if( holder->proto_closure_ ) {
+                delete holder->proto_closure_;
+                holder->proto_closure_ = NULL;
+            } else {
+                return;
+            }
+
             if( std::uncaught_exception( ) ) {
 //                std::cerr << "Uncaught exception at done handler for "
 //                          << holder->llu_->call( ).service_id( )
@@ -532,7 +544,6 @@ namespace vtrc { namespace common {
                 llu->set_response( holder->res_->SerializeAsString( ) );
             }
             send_message( *llu );
-
         }
 
         common::rpc_service_wrapper_sptr get_service(const std::string &name)
@@ -577,34 +588,33 @@ namespace vtrc { namespace common {
             rpc_controller_sptr controller
                                 (vtrc::make_shared<common::rpc_controller>( ));
 
+            closure_holder_sptr closure_hold
+                                (vtrc::make_shared<closure_holder_type>( ));
+
+            closure_hold->connection_ = connection_->shared_from_this( );
+            closure_hold->req_        = req;
+            closure_hold->res_        = res;
+            closure_hold->controller_ = controller;
+            closure_hold->llu_        = llu;
+
+            closure_hold->internal_closure_ = done;
 
             if( llu->opt( ).wait( ) ) {
 
-                closure_holder_sptr closure_hold
-                                    (vtrc::make_shared<closure_holder_type>( ));
-
-                closure_hold->connection_ = connection_->shared_from_this( );
-                closure_hold->req_        = req;
-                closure_hold->res_        = res;
-                closure_hold->controller_ = controller;
-                closure_hold->llu_        = llu;
-
-                closure_hold->internal_closure_ = done;
-
                 gpb::Closure* clos
-                        (gpb::NewCallback( this, &this_type::closure_done,
+                     (gpb::NewPermanentCallback( this, &this_type::closure_done,
                                                              closure_hold ));
-
-                service->service( )
-                   ->CallMethod( meth, controller.get( ),
-                                 req.get( ), res.get( ), clos );
-            } else {
-                vtrc::shared_ptr<gpb::Closure> clos
-                   (gpb::NewPermanentCallback(this, &this_type::closure_fake,
-                                              done ));
-
+                closure_hold->proto_closure_ = clos;
                 service->service( )->CallMethod( meth, controller.get( ),
-                                   req.get( ), res.get( ), clos.get( ) );
+                                                req.get( ), res.get( ), clos );
+            } else {
+
+                gpb::Closure  *clos
+                   (gpb::NewCallback(this, &this_type::closure_fake,
+                                                              closure_hold ));
+                closure_hold->proto_closure_ = clos;
+                service->service( )->CallMethod( meth, controller.get( ),
+                                                req.get( ), res.get( ), clos );
             }
 
 //            if( controller->Failed( ) ) {

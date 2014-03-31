@@ -72,7 +72,8 @@ void test_send( common::connection_iface *connection,
                 ::channels::unicast
                 ::create_event_channel( s, true));
 
-    const vtrc_rpc_lowlevel::lowlevel_unit *pllu =
+    if(common::call_context::get( s ))
+        const vtrc_rpc_lowlevel::lowlevel_unit *pllu =
             common::call_context::get( s )->get_lowlevel_message( );
 
 //    vtrc_rpc_lowlevel::lowlevel_unit llu;
@@ -132,14 +133,16 @@ public:
               ::google::protobuf::Closure* done)
     {
 
-        app_.get_rpc_service( ).post( boost::bind( call_delayed_test,
-                                      controller, request, response, done,
-                                                   ++id_,
-                                                   c_, vtrc::ref(app_)) );
+        common::closure_holder ch(done);
 
-//        response->set_message_type( id_++ );
-//        if( (id_ % 100) == 0 )
-//            throw std::runtime_error( "oops 10 =)" );
+//        app_.get_rpc_service( ).post( boost::bind( call_delayed_test,
+//                                      controller, request, response, done,
+//                                                   ++id_,
+//                                                   c_, vtrc::ref(app_)) );
+
+        response->set_message_type( id_++ );
+        if( (id_ % 100) == 0 )
+            throw std::runtime_error( "oops 10 =)" );
 
 //        connection_->get_io_service( ).dispatch(
 //                    vtrc::bind(test_send, connection_));
