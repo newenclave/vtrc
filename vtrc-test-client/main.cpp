@@ -113,8 +113,11 @@ void run_client( vtrc::shared_ptr<client::vtrc_client> cl, bool wait)
     vtrc_service::test_rpc::Stub s( ch.get( ) );
 
     vtrc_service::test_message mi;
+    vtrc_service::test_message mir;
 
     size_t last = 0;
+
+    std::string ts(1024 * 800, 0);
 
     std::cout << "this thread: "
               << vtrc::this_thread::get_id( ) << " "
@@ -126,9 +129,9 @@ void run_client( vtrc::shared_ptr<client::vtrc_client> cl, bool wait)
             if( wait )
                 vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(1) );
             work_time wt;
-            s.test( NULL, &mi, &mi, NULL );
-            mi.set_b( std::string( 1024 * 512, 0 ) );
-            last = mi.id( );
+            mi.set_b( ts );
+            s.test( NULL, &mi, &mir, NULL );
+            last = mir.id( );
             std::cout << "response: " << last << "\n";
             //cl.reset( );
         } catch( const vtrc::common::exception &ex ) {

@@ -169,10 +169,10 @@ namespace vtrc { namespace common {
             void async_write(  )
             {
                 async_write( write_queue_.front( )->message_.c_str( ),
-                             write_queue_.front( )->message_.size( ) );
+                             write_queue_.front( )->message_.size( ), 0);
             }
 
-            void async_write( const char *data, size_t length )
+            void async_write( const char *data, size_t length, size_t total )
             {
                 try {
                     stream_->async_write_some(
@@ -181,7 +181,7 @@ namespace vtrc { namespace common {
                                     vtrc::bind( &this_type::write_handler, this,
                                          basio::placeholders::error,
                                          basio::placeholders::bytes_transferred,
-                                         length,
+                                         length, total,
                                          1, parent_->shared_from_this( )))
                             );
                 } catch( const std::exception & ) {
@@ -205,6 +205,7 @@ namespace vtrc { namespace common {
             void write_handler( const bsys::error_code &error,
                                 size_t bytes,
                                 size_t length,
+                                size_t total,
                                 size_t /*messages*/,
                                 common::connection_iface_sptr /*inst*/)
             {
@@ -213,9 +214,11 @@ namespace vtrc { namespace common {
 
                     if( bytes < length ) {
 
+                        total += bytes;
+
                         const std::string &top(write_queue_.front( )->message_);
-                        async_write(top.c_str( ) + bytes,
-                                    top.size( )  - bytes);
+                        async_write(top.c_str( ) + total,
+                                    top.size( )  - total, total);
 
                     } else {
 

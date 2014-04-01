@@ -150,8 +150,9 @@ namespace vtrc { namespace common { namespace data_queue {
 
                 plain_data_type &data(plain_data( ));
 
-                if( data.size( ) > get_maximum_length( ) )
+                if( data.size( ) > get_maximum_length( ) ) {
                     throw std::length_error( "Message is too long" );
+                }
 
                 std::string new_data( SSP::pack( data.size( ) ) );
 
@@ -192,8 +193,10 @@ namespace vtrc { namespace common { namespace data_queue {
 
                     size_t len = SPP::unpack(data.begin( ), data.end( ));
 
-                    if( len > get_maximum_length( ) )
+                    if( len > get_maximum_length( ) ) {
+                        std::cout << "Message is too long " << len << "\n";
                         throw std::length_error( "Message is too long" );
+                    }
 
                     if( (len + next) <= data.size( ) ) {
 
