@@ -92,14 +92,6 @@ namespace vtrc { namespace common {
                     closed_ = true;
                     stream_->close( );
                 }
-
-//                if( !closed_ ) {
-//                    try {
-//                        stream_.reset( );
-//                        std::cout << "\n\nClose\n";
-//                        //stream_->close( );
-//                    } catch ( ... ) { ;;; }
-//                }
             }
 
             bool active( ) const
@@ -174,15 +166,22 @@ namespace vtrc { namespace common {
 
 #ifdef TRANSPORT_USE_ASYNC_WRITE
 
-            void async_write( )
+            void async_write(  )
+            {
+                async_write( write_queue_.front( )->message_.c_str( ),
+                             write_queue_.front( )->message_.size( ) );
+            }
+
+            void async_write( const char *data, size_t length )
             {
                 try {
-                    stream_->async_send(
-                            basio::buffer( write_queue_.front( )->message_ ),
+                    stream_->async_write_some(
+                            basio::buffer( data, length ),
                             write_dispatcher_.wrap(
                                     vtrc::bind( &this_type::write_handler, this,
                                          basio::placeholders::error,
                                          basio::placeholders::bytes_transferred,
+                                         length,
                                          1, parent_->shared_from_this( )))
                             );
                 } catch( const std::exception & ) {
@@ -204,27 +203,33 @@ namespace vtrc { namespace common {
             }
 
             void write_handler( const bsys::error_code &error,
-                                size_t /*bytes*/,
-                                size_t messages,
+                                size_t bytes,
+                                size_t length,
+                                size_t /*messages*/,
                                 common::connection_iface_sptr /*inst*/)
             {
 
                 if( !error ) {
-                    while( messages-- ) {
+
+                    if( bytes < length ) {
+
+                        const std::string &top(write_queue_.front( )->message_);
+                        async_write(top.c_str( ) + bytes,
+                                    top.size( )  - bytes);
+
+                    } else {
                         if( write_queue_.front( )->closure_ ) {
                             (*write_queue_.front( )->closure_)( error );
                         }
 
                         write_queue_.pop_front( );
-                    }
-                    if( !write_queue_.empty( ) )
-                        async_write( );
 
+                        if( !write_queue_.empty( ) )
+                            async_write(  );
+                    }
                 } else {
-                    while( messages-- ) {
-                        if( write_queue_.front( )->closure_ ) {
-                            (*write_queue_.front( )->closure_)( error );
-                        }
+                    if( write_queue_.front( )->closure_ ) {
+                        (*write_queue_.front( )->closure_)( error );
                     }
                     parent_->on_write_error( error );
                 }
