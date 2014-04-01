@@ -126,10 +126,10 @@ void run_client( vtrc::shared_ptr<client::vtrc_client> cl, bool wait)
     for( int i=0; i<29999999999; ++i ) {
         try {
 
-            if( wait )
-                vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(1) );
+//            if( wait )
+//                vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(1) );
             work_time wt;
-            mi.set_b( ts );
+            //mi.set_b( ts );
             s.test( NULL, &mi, &mir, NULL );
             last = mir.id( );
             std::cout << "response: " << last << "\n";
