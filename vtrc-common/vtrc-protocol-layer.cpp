@@ -142,7 +142,7 @@ namespace vtrc { namespace common {
         mutable vtrc::shared_mutex   options_map_lock_;
 
         bool                         working_;
-        const protocol_layer::lowlevel_unit_type fake_;
+        const protocol_layer::lowlevel_unit_type empty_done_;
 
         impl( transport_iface *c, bool oddside )
             :connection_(c)
@@ -155,7 +155,7 @@ namespace vtrc { namespace common {
             ,queue_(data_queue::varint::create_parser(maximum_message_length))
             ,rpc_index_(oddside ? 101 : 100)
             ,working_(true)
-            ,fake_(make_fake_mess( ))
+            ,empty_done_(make_fake_mess( ))
         {}
 
         static protocol_layer::lowlevel_unit_type make_fake_mess( )
@@ -651,7 +651,7 @@ namespace vtrc { namespace common {
                     send_message( *llu );
                 }
             } else {
-                send_message( fake_ );
+                send_message( empty_done_ );
             }
 
 //            if( request_wait ) {

@@ -67,7 +67,7 @@ public:
                   //<< vtrc::chrono::high_resolution_clock::now( )
                   << "\n";
 
-        //return;
+        return;
 
         const vtrc::common::call_context *cc =
                     vtrc::common::call_context::get( c_->connection( ) );
@@ -155,7 +155,7 @@ int main( )
 
     cl->connect( "/tmp/test" );
     //cl->connect( "192.168.56.101", "44667" );
-    cl->connect( "127.0.0.1", "44667" );
+    //cl->connect( "127.0.0.1", "44667" );
     //cl->connect( "::1", "44668" );
     ///cl->async_connect( "127.0.0.1", "44667", on_connect );
 
