@@ -16,7 +16,7 @@ namespace vtrc { namespace client {
         typedef impl this_type;
 
         impl( boost::asio::io_service &ios, vtrc_client *client )
-            :super_type(ios, client)
+            :super_type(ios, client, 4096)
         { }
 
         void connect( const std::string &address,

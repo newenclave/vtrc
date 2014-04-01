@@ -25,27 +25,29 @@ namespace {
         typedef client_stream_impl<parent_type, stream_type>    this_type;
 
         boost::asio::io_service &ios_;
-        parent_type             *parent_;
-        std::vector<char>        read_buff_;
 
+        parent_type             *parent_;
         vtrc_client             *client_;
+
+        std::vector<char>        read_buff_;
 
         vtrc::shared_ptr<protocol_layer_c> protocol_;
 
-        client_stream_impl( boost::asio::io_service &ios, vtrc_client *client )
+        client_stream_impl( boost::asio::io_service &ios,
+                            vtrc_client *client, size_t read_buffer_size )
             :ios_(ios)
-            ,read_buff_(4096)
             ,client_(client)
+            ,read_buff_(read_buffer_size)
         {
 
         }
+
+        virtual ~client_stream_impl( ) { }
 
         void set_parent( parent_type *parent )
         {
             parent_ = parent;
         }
-
-        virtual ~client_stream_impl( ) { }
 
         stream_type &sock( )
         {
@@ -54,7 +56,7 @@ namespace {
 
         void init(  )
         {
-            protocol_.reset(new client::protocol_layer_c( parent_, client_ ));
+            protocol_.reset(new protocol_layer_c( parent_, client_ ));
             start_reading( );
         }
 
