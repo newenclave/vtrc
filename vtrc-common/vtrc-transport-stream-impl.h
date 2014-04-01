@@ -62,7 +62,9 @@ namespace vtrc { namespace common {
                             const std::string &n )
                 :stream_(s)
                 ,ios_(stream_->get_io_service( ))
+#ifdef TRANSPORT_USE_ASYNC_WRITE
                 ,write_dispatcher_(ios_)
+#endif
                 ,closed_(false)
                 ,name_(n)
             { }
@@ -133,8 +135,8 @@ namespace vtrc { namespace common {
 
 #ifndef TRANSPORT_USE_ASYNC_WRITE
 
-                vtrc::unique_lock<vtrc::mutex> l(write_lock_);
-                basio::write( *sock_, basio::buffer( mh->message_ ) );
+                vtrc::unique_lock<vtrc::mutex> lck(write_lock_);
+                basio::write( *stream_, basio::buffer( mh->message_ ) );
 #else
                 write_dispatcher_.post(
                        vtrc::bind( &this_type::write_impl, this, mh,
@@ -149,9 +151,9 @@ namespace vtrc { namespace common {
 #ifndef TRANSPORT_USE_ASYNC_WRITE
                 message_holder_sptr mh(make_holder(data, length));
 
-                vtrc::unique_lock<vtrc::mutex> l(write_lock_);
+                vtrc::unique_lock<vtrc::mutex> lck(write_lock_);
                 bsys::error_code ec;
-                basio::write( *sock_, basio::buffer( mh->message_ ), ec );
+                basio::write( *stream_, basio::buffer( mh->message_ ), ec );
                 success( ec );
 #else
                 vtrc::shared_ptr<closure_type>
@@ -250,10 +252,12 @@ namespace vtrc { namespace common {
                 return *stream_;
             }
 
+#ifdef TRANSPORT_USE_ASYNC_WRITE
             boost::asio::io_service::strand &get_dispatcher( )
             {
                 return write_dispatcher_;
             }
+#endif
         };
     }
 
