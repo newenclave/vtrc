@@ -218,6 +218,7 @@ namespace vtrc { namespace common {
                                     top.size( )  - bytes);
 
                     } else {
+
                         if( write_queue_.front( )->closure_ ) {
                             (*write_queue_.front( )->closure_)( error );
                         }
@@ -228,6 +229,7 @@ namespace vtrc { namespace common {
                             async_write(  );
                     }
                 } else {
+
                     if( write_queue_.front( )->closure_ ) {
                         (*write_queue_.front( )->closure_)( error );
                     }

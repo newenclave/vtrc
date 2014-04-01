@@ -187,18 +187,6 @@ namespace vtrc { namespace server {
             return true;
         }
 
-        void send_busy( lowlevel_unit_type &llu )
-        {
-            if( llu.opt( ).wait( ) ) {
-                llu.clear_call( );
-                llu.clear_request( );
-                llu.clear_response( );
-                llu.mutable_error( )->set_code( vtrc_errors::ERR_BUSY );
-                parent_->call_rpc_method( llu );
-            }
-            //llu->mutable_error( )->set_code(  );
-        }
-
         void call_done( const boost::system::error_code & /*err*/ )
         {
             --current_calls_;
@@ -209,6 +197,17 @@ namespace vtrc { namespace server {
         {
             parent_->make_call( llu,
                 vtrc::bind(&this_type::call_done, this, _1 ));
+        }
+
+        void send_busy( lowlevel_unit_type &llu )
+        {
+            if( llu.opt( ).wait( ) ) {
+                llu.clear_call( );
+                llu.clear_request( );
+                llu.clear_response( );
+                llu.mutable_error( )->set_code( vtrc_errors::ERR_BUSY );
+                parent_->call_rpc_method( llu );
+            }
         }
 
         void process_call( lowlevel_unit_sptr &llu )
@@ -232,9 +231,6 @@ namespace vtrc { namespace server {
         void process_event_cb( lowlevel_unit_sptr &llu )
         {
             parent_->push_rpc_message( llu->id( ), llu );
-//            app_.get_io_service( ).post(
-//                        vtrc::bind( &this_type::push_event_answer, this,
-//                                llu, connection_->shared_from_this( )));
         }
 
         void on_rcp_call_ready_( )

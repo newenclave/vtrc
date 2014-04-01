@@ -132,8 +132,8 @@ public:
     { }
 
     void test(::google::protobuf::RpcController* controller,
-              const ::vtrc_rpc_lowlevel::message_info* request,
-              ::vtrc_rpc_lowlevel::message_info* response,
+              const ::vtrc_service::test_message* request,
+              ::vtrc_service::test_message* response,
               ::google::protobuf::Closure* done)
     {
 
@@ -158,7 +158,7 @@ public:
 
             if( (id_++ % 100) == 0 )
                 throw std::runtime_error( "oops 10 =)" );
-
+            response->set_id( id_ );
 //        connection_->get_io_service( ).dispatch(
 //                    vtrc::bind(test_send, connection_));
 //        boost::thread(test_send, connection_).detach( );
@@ -167,8 +167,8 @@ public:
     }
 
     virtual void test2(::google::protobuf::RpcController* controller,
-                         const ::vtrc_rpc_lowlevel::message_info* request,
-                         ::vtrc_rpc_lowlevel::message_info* response,
+                         const ::vtrc_service::test_message* request,
+                         ::vtrc_service::test_message* response,
                          ::google::protobuf::Closure* done)
     {
         common::closure_holder ch(done);

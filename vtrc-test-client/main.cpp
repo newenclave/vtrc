@@ -75,7 +75,7 @@ public:
         vtrc::shared_ptr<google::protobuf::RpcChannel>
                             ch(c_->create_channel( false, true ));
 
-        vtrc_rpc_lowlevel::message_info mi;
+        vtrc_service::test_message      mi;
         vtrc_service::test_rpc::Stub s( ch.get( ) );
 
         s.test2( NULL, &mi, &mi, NULL );
@@ -93,8 +93,8 @@ public:
     {}
 
     void test(::google::protobuf::RpcController* controller,
-                         const ::vtrc_rpc_lowlevel::message_info* request,
-                         ::vtrc_rpc_lowlevel::message_info* response,
+                         const ::vtrc_service::test_message* request,
+                         ::vtrc_service::test_message* response,
                          ::google::protobuf::Closure* done)
     {
         common::closure_holder ch(done);
@@ -112,7 +112,7 @@ void run_client( vtrc::shared_ptr<client::vtrc_client> cl, bool wait)
             ch(cl->create_channel( wait, false ));
     vtrc_service::test_rpc::Stub s( ch.get( ) );
 
-    vtrc_rpc_lowlevel::message_info mi;
+    vtrc_service::test_message mi;
 
     size_t last = 0;
 
@@ -127,7 +127,8 @@ void run_client( vtrc::shared_ptr<client::vtrc_client> cl, bool wait)
                 vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(1) );
             work_time wt;
             s.test( NULL, &mi, &mi, NULL );
-            last = mi.message_type( );
+            mi.set_b( std::string( 1024 * 512, 0 ) );
+            last = mi.id( );
             std::cout << "response: " << last << "\n";
             //cl.reset( );
         } catch( const vtrc::common::exception &ex ) {
@@ -155,7 +156,7 @@ int main( )
 
     cl->connect( "/tmp/test" );
     //cl->connect( "192.168.56.101", "44667" );
-    cl->connect( "127.0.0.1", "44667" );
+    //cl->connect( "127.0.0.1", "44667" );
     //cl->connect( "::1", "44668" );
     ///cl->async_connect( "127.0.0.1", "44667", on_connect );
 
