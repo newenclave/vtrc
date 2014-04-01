@@ -115,7 +115,7 @@ void call_delayed_test( const boost::system::error_code &err,
     test_send(c_, app_);
 }
 
-class teat_impl: public vtrc_service::test_rpc {
+class test_impl: public vtrc_service::test_rpc {
 
     common::connection_iface *c_;
     vtrc::server::application &app_;
@@ -124,7 +124,7 @@ class teat_impl: public vtrc_service::test_rpc {
 
 public:
 
-    teat_impl( common::connection_iface *c, vtrc::server::application &app )
+    test_impl( common::connection_iface *c, vtrc::server::application &app )
         :c_(c)
         ,app_(app)
         ,id_(0)
@@ -225,10 +225,10 @@ private:
                                     vtrc::common::connection_iface *connection,
                                     const std::string &service_name)
     {
-        if( service_name == teat_impl::descriptor( )->full_name( ) ) {
+        if( service_name == test_impl::descriptor( )->full_name( ) ) {
             return common::rpc_service_wrapper_sptr(
                         new common::rpc_service_wrapper(
-                                new teat_impl(connection, *this) ) );
+                                new test_impl(connection, *this) ) );
         }
 
         return common::rpc_service_wrapper_sptr( );
@@ -238,8 +238,6 @@ private:
 
 int main( ) try {
 
-//    ::unlink("/tmp/test");
-//    return 0;
     common::pool_pair pp(4, 8);
     main_app app(pp);
 
@@ -252,6 +250,8 @@ int main( ) try {
 #ifndef _WIN32
 
     std::string file_name("/tmp/test");
+
+    ::unlink(file_name.c_str( ));
 
     ::unlink( file_name.c_str( ) );
     vtrc::shared_ptr<vtrc::server::endpoint_iface> tcp_ul
