@@ -172,23 +172,6 @@ namespace vtrc { namespace common {
                              write_queue_.front( )->message_.size( ), 0);
             }
 
-            void async_write( const char *data, size_t length, size_t total )
-            {
-                try {
-                    stream_->async_write_some(
-                            basio::buffer( data, length ),
-                            write_dispatcher_.wrap(
-                                    vtrc::bind( &this_type::write_handler, this,
-                                         basio::placeholders::error,
-                                         basio::placeholders::bytes_transferred,
-                                         length, total,
-                                         1, parent_->shared_from_this( )))
-                            );
-                } catch( const std::exception & ) {
-                    this->close( );
-                }
-
-            }
             void write_impl( message_holder_sptr data,
                              vtrc::shared_ptr<closure_type> closure,
                              common::connection_iface_sptr inst)
@@ -202,11 +185,28 @@ namespace vtrc { namespace common {
                 }
             }
 
+            void async_write( const char *data, size_t length, size_t total )
+            {
+                try {
+                    stream_->async_write_some(
+                            basio::buffer( data, length ),
+                            write_dispatcher_.wrap(
+                                    vtrc::bind( &this_type::write_handler, this,
+                                         basio::placeholders::error,
+                                         basio::placeholders::bytes_transferred,
+                                         length, total,
+                                         parent_->shared_from_this( )))
+                            );
+                } catch( const std::exception & ) {
+                    this->close( );
+                }
+
+            }
+
             void write_handler( const bsys::error_code &error,
                                 size_t bytes,
                                 size_t length,
                                 size_t total,
-                                size_t /*messages*/,
                                 common::connection_iface_sptr /*inst*/)
             {
 
