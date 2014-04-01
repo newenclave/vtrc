@@ -209,8 +209,8 @@ namespace vtrc { namespace client {
 
             if( check ) {
                 parent_->parse_message( mess, init_proto );
-                std::cout << "Message is: "
-                          << init_proto.DebugString( ) << "\n";
+//                std::cout << "Message is: "
+//                          << init_proto.DebugString( ) << "\n";
             }
 
             pop_message( );
