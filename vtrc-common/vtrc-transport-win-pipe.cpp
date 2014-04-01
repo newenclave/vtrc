@@ -1,7 +1,7 @@
 
 #include "vtrc-transport-win-pipe.h"
 
-#if 0
+#if 1
 #ifdef _WIN32
 
 #include "vtrc-transport-stream-impl.h"
