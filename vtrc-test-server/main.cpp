@@ -238,7 +238,7 @@ private:
 
 int main( ) try {
 
-    common::pool_pair pp(4, 8);
+    common::pool_pair pp(1, 1);
     main_app app(pp);
 
     vtrc::shared_ptr<vtrc::server::endpoint_iface> tcp4_ep
@@ -251,11 +251,11 @@ int main( ) try {
 
     std::string file_name("/tmp/test");
 
-    ::unlink(file_name.c_str( ));
-
     ::unlink( file_name.c_str( ) );
+
     vtrc::shared_ptr<vtrc::server::endpoint_iface> tcp_ul
             (vtrc::server::endpoints::unix_local::create(app, file_name));
+
     ::chmod(file_name.c_str( ), 0xFFFFFF );
 
     tcp_ul->start( );

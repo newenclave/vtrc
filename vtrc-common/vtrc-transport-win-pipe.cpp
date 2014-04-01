@@ -71,7 +71,8 @@ namespace vtrc { namespace common {
         impl_->write( data, length, success );
     }
 
-    std::string transport_win_pipe::prepare_for_write(const char *data, size_t len)
+    std::string transport_win_pipe::prepare_for_write(const char *data,
+                                                                    size_t len)
     {
         return impl_->prepare_for_write( data, len );
     }
