@@ -10,6 +10,9 @@ namespace vtrc { namespace server {
     class application;
 
     namespace endpoints { namespace tcp {
+
+        endpoint_options default_options( );
+
         endpoint_iface *create( application &app,
                                 const std::string &address,
                                 unsigned short service );
