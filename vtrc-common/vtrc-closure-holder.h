@@ -2,6 +2,7 @@
 #define VTRC_CLOSURE_HOLDER_H
 
 #include <google/protobuf/stubs/common.h>
+#include "vtrc-memory.h"
 
 namespace vtrc { namespace common {
 
@@ -14,16 +15,22 @@ namespace vtrc { namespace common {
 
     public:
 
+        static
+        vtrc::shared_ptr<closure_holder> create(google::protobuf::Closure *done)
+        {
+            return vtrc::make_shared<closure_holder>( done );
+        }
+
+        closure_holder( google::protobuf::Closure *done )
+            :done_(done)
+        { }
+
         google::protobuf::Closure *release( )
         {
             google::protobuf::Closure *old = done_;
             done_ =  NULL;
             return old;
         }
-
-        closure_holder( google::protobuf::Closure *done )
-            :done_(done)
-        { }
 
         ~closure_holder( ) try
         {

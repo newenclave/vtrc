@@ -554,11 +554,11 @@ namespace vtrc { namespace common {
 
         gpb::Closure *make_closure(closure_holder_sptr &closure_hold, bool wait)
         {
-            gpb::Closure *clos(gpb::NewPermanentCallback( this,
-                            &this_type::closure_runner, closure_hold, wait ));
-            closure_hold->proto_closure_ = clos;
+            closure_hold->proto_closure_ =
+                    gpb::NewPermanentCallback( this,
+                            &this_type::closure_runner, closure_hold, wait );
 
-            return clos;
+            return closure_hold->proto_closure_;
         }
 
         void make_call_impl( lowlevel_unit_sptr llu, closure_type done )
