@@ -75,9 +75,7 @@ namespace vtrc { namespace client {
 
     void client_tcp::async_connect( const std::string &address,
                                     const std::string &service,
-                                    vtrc::function <
-                                        void (const boost::system::error_code &)
-                                    >   closure )
+                                    common::closure_type closure )
     {
         impl_->async_connect( address, service, closure );
     }
