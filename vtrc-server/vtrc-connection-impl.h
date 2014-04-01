@@ -42,9 +42,11 @@ namespace vtrc { namespace server { namespace endpoints {
                 ,env_(endpoint_.get_enviroment( ))
                 ,read_buff_(endpoint_.get_options( ).read_buffer_size)
             {
-                protocol_ = vtrc::make_shared<server::protocol_layer_s>
-                            (vtrc::ref(app_), this,
-                                 endpoint_.get_options( ).maximum_active_calls);
+                protocol_ = vtrc::make_shared<server::protocol_layer_s> (
+                            vtrc::ref(app_), this,
+                            endpoint_.get_options( ).maximum_active_calls,
+                            endpoint_.get_options( ).maximum_message_length
+                            );
             }
 
 //            static vtrc::shared_ptr<this_type> create(endpoint_iface &endpoint,

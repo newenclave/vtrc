@@ -25,7 +25,9 @@ namespace server {
 
         protocol_layer_s( application &app,
                           common::transport_iface *connection,
-                          unsigned maximum_allow_call);
+                          unsigned maximum_active_calls,
+                          size_t maximum_message_length);
+
         ~protocol_layer_s( );
 
     public:

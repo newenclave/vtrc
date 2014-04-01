@@ -57,6 +57,8 @@ namespace vtrc { namespace common {
         typedef std::deque<std::string> message_queue_type;
 
         protocol_layer( transport_iface *connection, bool oddside );
+        protocol_layer( transport_iface *connection, bool oddside,
+                        size_t maximum_message_len);
         virtual ~protocol_layer( );
 
     public:
@@ -73,12 +75,10 @@ namespace vtrc { namespace common {
         //void send_message( const google::protobuf::Message &message );
 
         void make_call( lowlevel_unit_sptr llu );
-        void make_call(protocol_layer::lowlevel_unit_sptr llu,
-                       common::closure_type done);
+        void make_call( lowlevel_unit_sptr llu, common::closure_type done);
 
-        void call_rpc_method( const vtrc_rpc_lowlevel::lowlevel_unit &llu );
-        void call_rpc_method( uint64_t slot_id,
-                              const vtrc_rpc_lowlevel::lowlevel_unit &llu );
+        void call_rpc_method(                   const lowlevel_unit_type &llu );
+        void call_rpc_method( uint64_t slot_id, const lowlevel_unit_type &llu );
 
         // refactor names here!
         void wait_slot_for( uint64_t slot_id, uint32_t millisec );

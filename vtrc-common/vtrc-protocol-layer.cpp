@@ -144,7 +144,7 @@ namespace vtrc { namespace common {
         bool                         working_;
         const protocol_layer::lowlevel_unit_type empty_done_;
 
-        impl( transport_iface *c, bool oddside )
+        impl( transport_iface *c, bool oddside, size_t mess_len )
             :connection_(c)
             ,hash_maker_(common::hash::create_default( ))
             ,hash_checker_(common::hash::create_default( ))
@@ -152,7 +152,7 @@ namespace vtrc { namespace common {
 //            ,reverter_(common::transformers::erseefor::create( "1234", 4 ))
             ,transformer_(common::transformers::none::create( ))
             ,reverter_(common::transformers::none::create( ))
-            ,queue_(data_queue::varint::create_parser(maximum_message_length))
+            ,queue_(data_queue::varint::create_parser(mess_len))
             ,rpc_index_(oddside ? 101 : 100)
             ,working_(true)
             ,empty_done_(make_fake_mess( ))
@@ -689,10 +689,18 @@ namespace vtrc { namespace common {
     };
 
     protocol_layer::protocol_layer( transport_iface *connection, bool oddside )
-        :impl_(new impl(connection, oddside))
+        :impl_(new impl(connection, oddside, maximum_message_length))
     {
         impl_->parent_ = this;
     }
+
+     protocol_layer::protocol_layer(transport_iface *connection,
+                                    bool oddside,
+                                    size_t maximum_mess_len)
+         :impl_(new impl(connection, oddside, maximum_mess_len))
+     {
+         impl_->parent_ = this;
+     }
 
     protocol_layer::~protocol_layer( )
     {
