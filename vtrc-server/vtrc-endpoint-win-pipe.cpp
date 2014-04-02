@@ -76,7 +76,7 @@ namespace {
 
         pipe_ep_impl( application &app,
                 const endpoint_options &opts,
-                const std::string pipe_name, 
+                const std::string pipe_name,
                 size_t max_inst,
                 size_t in_buf_size,
                 size_t out_buf_size)
@@ -117,8 +117,8 @@ namespace {
             SetSecurityDescriptorDacl(&secdesc, TRUE,
                                       static_cast<PACL>(NULL), FALSE);
 
-            secarttr.nLength = sizeof(SECURITY_ATTRIBUTES);
-            secarttr.bInheritHandle = FALSE;
+            secarttr.nLength              = sizeof(SECURITY_ATTRIBUTES);
+            secarttr.bInheritHandle       = FALSE;
             secarttr.lpSecurityDescriptor = &secdesc;
 
             HANDLE pipe_hdl = CreateNamedPipeA( endpoint_.c_str( ),
@@ -207,8 +207,8 @@ namespace {
         endpoint_iface *create( application &app, const std::string &name )
         {
             endpoint_options def_opts(default_options( ));
-            return new pipe_ep_impl( app, default_options( ), name, 
-                                     PIPE_UNLIMITED_INSTANCES, 
+            return new pipe_ep_impl( app, default_options( ), name,
+                                     PIPE_UNLIMITED_INSTANCES,
                                      def_opts.read_buffer_size,
                                      def_opts.read_buffer_size );
         }
@@ -222,7 +222,7 @@ namespace {
                                 const std::string &name )
         {
             return new pipe_ep_impl( app, opts, name,
-                                     PIPE_UNLIMITED_INSTANCES, 
+                                     PIPE_UNLIMITED_INSTANCES,
                                      opts.read_buffer_size,
                                      opts.read_buffer_size );
         }
