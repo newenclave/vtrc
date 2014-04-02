@@ -29,6 +29,17 @@ namespace vtrc { namespace client {
 
         }
 
+        void connect( const std::wstring &address )
+        {
+            init( );
+        }
+
+        void async_connect( const std::wstring &address,
+                            common::closure_type closure )
+        {
+
+        }
+
     };
 
     static vtrc::shared_ptr<socket_type> create_socket( basio::io_service &ios )
@@ -62,8 +73,19 @@ namespace vtrc { namespace client {
         impl_->connect( address );
     }
 
+    void client_win_pipe::connect( const std::wstring &address )
+    {
+        impl_->connect( address );
+    }
+
     void client_win_pipe::async_connect( const std::string &address,
                                            common::closure_type  closure )
+    {
+        impl_->async_connect( address, closure );
+    }
+
+    void client_win_pipe::async_connect( const std::wstring &address,
+                                         common::closure_type  closure )
     {
         impl_->async_connect( address, closure );
     }

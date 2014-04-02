@@ -37,7 +37,10 @@ namespace client {
         void init( );
 
         void connect( const std::string &address );
+        void connect( const std::wstring &address );
         void async_connect( const std::string &address,
+                            common::closure_type closure );
+        void async_connect( const std::wstring &address,
                             common::closure_type closure );
 
         void on_write_error( const boost::system::error_code &err );
