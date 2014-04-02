@@ -27,7 +27,6 @@ namespace vtrc { namespace server { namespace endpoints {
             endpoint_iface                     &endpoint_;
             application                        &app_;
             basio::io_service                  &ios_;
-            common::enviroment                  env_;
 
             std::vector<char>                   read_buff_;
 
@@ -39,7 +38,6 @@ namespace vtrc { namespace server { namespace endpoints {
                 ,endpoint_(endpoint)
                 ,app_(endpoint_.get_application( ))
                 ,ios_(app_.get_io_service( ))
-                ,env_(endpoint_.get_enviroment( ))
                 ,read_buff_(endpoint_.get_options( ).read_buffer_size)
             {
                 protocol_ = vtrc::make_shared<server::protocol_layer_s> (

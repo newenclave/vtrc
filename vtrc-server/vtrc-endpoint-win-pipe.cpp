@@ -64,7 +64,6 @@ namespace {
 
         application             &app_;
         basio::io_service       &ios_;
-        common::enviroment       env_;
 
         endpoint_options         opts_;
         std::string              endpoint_;
@@ -82,7 +81,6 @@ namespace {
                 size_t out_buf_size)
             :app_(app)
             ,ios_(app_.get_io_service( ))
-            ,env_(app_.get_enviroment())
             ,opts_(opts)
             ,endpoint_(pipe_name)
             ,pipe_max_inst_(max_inst)
@@ -99,7 +97,7 @@ namespace {
 
         common::enviroment &get_enviroment( )
         {
-            return env_;
+            return app_.get_enviroment( );
         }
 
         std::string string( ) const
