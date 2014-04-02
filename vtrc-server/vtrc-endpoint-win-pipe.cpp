@@ -128,14 +128,13 @@ namespace {
             if( INVALID_HANDLE_VALUE != pipe_hdl ) {
 
                 socket_type *new_sock = new socket_type(ios_);
+                new_sock->assign( pipe_hdl );
 
                 overlapped_.reset( ios_,
                         vtrc::bind( &this_type::on_accept, this,
                             basio::placeholders::error, new_sock) );
 
                 BOOL res = ConnectNamedPipe( pipe_hdl, overlapped_.get( ) );
-
-                new_sock->assign( pipe_hdl );
 
                 DWORD last_error(GetLastError());
                 if( res || ( last_error ==  ERROR_IO_PENDING ) ) {
