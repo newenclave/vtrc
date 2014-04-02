@@ -29,16 +29,6 @@ namespace vtrc { namespace common {
             return get_parent( )->prepare_for_write( data, len );
         }
 
-        bool impersonate( )
-        {
-            return false;
-        }
-
-        void revert( )
-        {
-
-        }
-
     };
 
     transport_win_pipe::transport_win_pipe( vtrc::shared_ptr<socket_type> sock )
