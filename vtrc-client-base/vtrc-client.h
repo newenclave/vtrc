@@ -70,7 +70,6 @@ namespace client {
             return vtrc::weak_ptr<vtrc_client const>( shared_from_this( ) );
         }
 
-
         boost::asio::io_service       &get_io_service( );
         const boost::asio::io_service &get_io_service( ) const;
 
