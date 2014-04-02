@@ -21,7 +21,7 @@ namespace vtrc { namespace server { namespace endpoints {
         typedef bstream::endpoint       endpoint_type;
         typedef bstream::acceptor       acceptor_type;
 
-
+#if 0
         struct local_connenction_impl: public connection_type {
 
             typedef local_connenction_impl this_type;
@@ -53,7 +53,7 @@ namespace vtrc { namespace server { namespace endpoints {
                 return new_inst;
             }
         };
-
+#endif
         typedef endpoint_impl<
             acceptor_type,
             endpoint_type,
