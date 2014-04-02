@@ -70,7 +70,6 @@ namespace client {
             return vtrc::weak_ptr<vtrc_client const>( shared_from_this( ) );
         }
 
-
         boost::asio::io_service       &get_io_service( );
         const boost::asio::io_service &get_io_service( ) const;
 
@@ -95,8 +94,8 @@ namespace client {
                             common::closure_type closure);
 #endif
 
-        void advise_handler( vtrc::shared_ptr<google::protobuf::Service> serv);
-        void advise_weak_handler(vtrc::weak_ptr<google::protobuf::Service> ser);
+        void advise_handler(   vtrc::shared_ptr<google::protobuf::Service> srv);
+        void advise_weak_handler(vtrc::weak_ptr<google::protobuf::Service> srv);
 
         vtrc::shared_ptr<google::protobuf::Service> get_handler(
                                                     const std::string &name );
