@@ -3,9 +3,13 @@
 #ifdef _WIN32
 
 #include <boost/asio.hpp>
+#include <boost/asio/windows/stream_handle.hpp>
 
 #include "vtrc-application.h"
 #include "vtrc-common/vtrc-enviroment.h"
+#include "vtrc-common/vtrc-transport-win-pipe.h"
+#include "vtrc-common/vtrc-connection-list.h"
+
 #include "vtrc-endpoint-iface.h"
 #include "vtrc-connection-impl.h"
 
@@ -13,15 +17,24 @@ namespace vtrc { namespace server { namespace endpoints {
 
 namespace {
 
-    namespace basio   = boost::asio;
+    namespace basio = boost::asio;
+    typedef basio::windows::stream_handle    socket_type;
+    typedef common::transport_win_pipe       connection_type;
+    typedef connection_impl<connection_type> transport_type;
 
     struct pipe_ep_impl: public endpoint_iface {
+
+        typedef pipe_ep_impl this_type;
 
         application             &app_;
         basio::io_service       &ios_;
         common::enviroment       env_;
 
         endpoint_options         opts_;
+        std::string              endpoint_;
+        size_t                   pipe_max_inst_;
+
+        basio::windows::overlapped_ptr ovl_;
 
         pipe_ep_impl( application &app,
                 const endpoint_options &opts, 
@@ -30,6 +43,8 @@ namespace {
             ,ios_(app_.get_io_service( ))
             ,env_(app_.get_enviroment())
             ,opts_(opts)
+            ,endpoint_(pipe_name)
+            ,pipe_max_inst_(10)
         {}
 
         virtual ~pipe_ep_impl( ) { }
@@ -44,14 +59,56 @@ namespace {
             return env_;
         }
 
-        virtual std::string string( ) const
+        std::string string( ) const
         {
-            return "unknown://";
+            return std::string("pipe://") + endpoint_;
         }
 
         void start_accept(  )
         {
+            SECURITY_DESCRIPTOR secdesc;
+            SECURITY_ATTRIBUTES secarttr;
+            InitializeSecurityDescriptor(&secdesc, SECURITY_DESCRIPTOR_REVISION);
+            SetSecurityDescriptorDacl(&secdesc, TRUE, static_cast<PACL>(NULL), FALSE);
 
+            secarttr.nLength = sizeof(SECURITY_ATTRIBUTES);
+            secarttr.bInheritHandle = FALSE;
+            secarttr.lpSecurityDescriptor = &secdesc;
+
+            HANDLE pipe_hdl = CreateNamedPipeA( endpoint_.c_str( ),
+                PIPE_ACCESS_DUPLEX | FILE_FLAG_OVERLAPPED, 
+                PIPE_TYPE_BYTE | PIPE_READMODE_BYTE,  
+                pipe_max_inst_, 4096, 
+                4096, 0, &secarttr);
+
+            if( INVALID_HANDLE_VALUE != pipe_hdl ) {
+
+                socket_type *new_sock = new socket_type(ios_);
+                
+                //ba::windows::overlapped_ptr ovl;
+                ovl_.reset( ios_, 
+                    vtrc::bind( &this_type::on_accept, this, 
+                        basio::placeholders::error, new_sock) );
+
+                BOOL res = ConnectNamedPipe( pipe_hdl, ovl_.get( ) );
+
+                new_sock->assign( pipe_hdl );
+
+                DWORD last_error(GetLastError());
+                if( res || ( last_error ==  ERROR_IO_PENDING ) ) {
+                    ovl_.release();
+                } else if( last_error == ERROR_PIPE_CONNECTED ) {
+                    bsys::error_code ec(0, 
+                            basio::error::get_system_category());
+                    ovl_.complete(ec, 0);
+                } else {
+                    bsys::error_code ec(GetLastError( ), 
+                                basio::error::get_system_category());
+                    ovl_.complete(ec, 0);            
+                }
+			} else {
+                //std::cout << "Error on_pipe_connect\n"; 				
+			}
         }
 
         void start( )
@@ -70,26 +127,51 @@ namespace {
             return opts_;
         }
 
-        //void on_accept( const bsys::error_code &error,
-        //                socket_type* sock )
-        //{
-        //    if( !error ) {
-        //        try {
-        //            vtrc::shared_ptr<transport_type> new_conn
-        //                     (transport_type::create( *this, sock ));
-        //            app_.get_clients( )->store( new_conn );
-        //        } catch( ... ) {
-        //            ;;;
-        //        }
-        //        start_accept( );
-        //    } else {
-        //        delete sock;
-        //    }
-        //}
+        void on_accept( const bsys::error_code &error,
+                        socket_type* sock )
+        {
+            if( !error ) {
+                try {
+                    vtrc::shared_ptr<transport_type> new_conn
+                             (transport_type::create( *this, sock ));
+                    app_.get_clients( )->store( new_conn );
+                } catch( ... ) {
+                    ;;;
+                }
+                start_accept( );
+            } else {
+                delete sock;
+            }
+        }
 
     };
-
 }
+
+    namespace win_pipe {
+
+        endpoint_options default_options( )
+        {
+            endpoint_options def_opts = { 5, 1024 * 1024, 20, 4096 };
+            return def_opts;
+        }
+
+
+        endpoint_iface *create( application &app, const std::string &name )
+        {
+            return new pipe_ep_impl( app, default_options( ), name );
+        }
+
+        //endpoint_iface *create( application &app, const std::wstring &name )
+        //{
+
+        //}
+
+        endpoint_iface *create( application &app, const endpoint_options &opts,
+                                const std::string &name )
+        {
+            return new pipe_ep_impl( app, opts, name );        
+        }
+    }
 
 }}}
 

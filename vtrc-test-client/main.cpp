@@ -129,7 +129,7 @@ void run_client( vtrc::shared_ptr<client::vtrc_client> cl, bool wait)
 //            if( wait )
 //                vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(1) );
             work_time wt;
-            //mi.set_b( ts );
+            mi.set_b( ts );
             s.test( NULL, &mi, &mir, NULL );
             last = mir.id( );
             std::cout << "response: " << last << "\n";
@@ -157,9 +157,10 @@ int main( )
     common::pool_pair pp(2, 2);
     vtrc::shared_ptr<client::vtrc_client> cl(client::vtrc_client::create(pp));
 
-    cl->connect( "/tmp/test" );
+    //cl->connect( "/tmp/test" );
     //cl->connect( "192.168.56.101", "44667" );
-    //cl->connect( "127.0.0.1", "44667" );
+    //cl->connect( "\\\\.\\pipe\\test_pipe");
+    cl->connect( "127.0.0.1", "44667" );
     //cl->connect( "::1", "44668" );
     ///cl->async_connect( "127.0.0.1", "44667", on_connect );
 

@@ -19,6 +19,7 @@
 #include "vtrc-server/vtrc-endpoint-iface.h"
 #include "vtrc-server/vtrc-endpoint-tcp.h"
 #include "vtrc-server/vtrc-endpoint-unix-local.h"
+#include "vtrc-server/vtrc-endpoint-win-pipe.h"
 
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-pool-pair.h"
@@ -258,10 +259,16 @@ int main( ) try {
 
     ::chmod(file_name.c_str( ), 0xFFFFFF );
 
-    tcp_ul->start( );
+#else
+
+    std::string file_name("\\\\.\\pipe\\test_pipe");
+
+    vtrc::shared_ptr<vtrc::server::endpoint_iface> tcp_ul
+            (vtrc::server::endpoints::win_pipe::create(app, file_name));
 
 #endif
 
+    tcp_ul->start( );
     tcp4_ep->start( );
     tcp6_ep->start( );
 
@@ -269,9 +276,7 @@ int main( ) try {
 
     std::cout << "Stoppped. Wait ... \n";
 
-#ifndef _WIN32
     tcp_ul->stop( );
-#endif
 
     tcp4_ep->stop( );
     tcp6_ep->stop( );

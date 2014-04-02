@@ -33,6 +33,8 @@ namespace vtrc { namespace client {
             if(INVALID_HANDLE_VALUE == pipe) {
                 throw vtrc::common::exception( GetLastError( ),
                         vtrc_errors::CATEGORY_SYSTEM );
+            } else {
+                sock( ).assign( pipe );
             }
             init( );
         }
@@ -57,7 +59,10 @@ namespace vtrc { namespace client {
             if(INVALID_HANDLE_VALUE == pipe) {
                 throw vtrc::common::exception( GetLastError( ),
                         vtrc_errors::CATEGORY_SYSTEM );
+            } else {
+                sock( ).assign( pipe );
             }
+
             init( );
         }
 
