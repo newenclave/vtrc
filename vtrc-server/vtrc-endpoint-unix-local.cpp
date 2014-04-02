@@ -21,7 +21,7 @@ namespace vtrc { namespace server { namespace endpoints {
         typedef bstream::endpoint       endpoint_type;
         typedef bstream::acceptor       acceptor_type;
 
-#if 1
+#if 0
         struct local_connenction_impl: public connection_type {
 
             typedef local_connenction_impl this_type;
@@ -34,6 +34,13 @@ namespace vtrc { namespace server { namespace endpoints {
 
             bool impersonate( )
             {
+                ucred cred = { 0 };
+                unsigned len = sizeof(cred);
+                if (getsockopt(get_socket( ).native_handle( ),
+                               SOL_SOCKET, SO_PEERCRED, &cred, &len) == -1)
+                {
+                } else {
+                }
                 return false;
             }
 
