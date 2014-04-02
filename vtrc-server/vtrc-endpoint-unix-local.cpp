@@ -22,11 +22,11 @@ namespace vtrc { namespace server { namespace endpoints {
         typedef bstream::acceptor       acceptor_type;
 
 #if 0
-        struct local_connenction_impl: public connection_type {
+        struct unix_local_connenction_impl: public connection_type {
 
-            typedef local_connenction_impl this_type;
+            typedef unix_local_connenction_impl this_type;
 
-            local_connenction_impl( endpoint_iface &endpoint,
+            unix_local_connenction_impl( endpoint_iface &endpoint,
                                     vtrc::shared_ptr<socket_type> sock )
                 :connection_type(endpoint, sock)
             { }
@@ -60,13 +60,20 @@ namespace vtrc { namespace server { namespace endpoints {
                 return new_inst;
             }
         };
-#endif
+
+        typedef endpoint_impl<
+            acceptor_type,
+            endpoint_type,
+            unix_local_connenction_impl
+        > super_type;
+
+#else
         typedef endpoint_impl<
             acceptor_type,
             endpoint_type,
             connection_type
-//            local_connenction_impl
         > super_type;
+#endif
 
         struct endpoint_unix: public super_type {
 
