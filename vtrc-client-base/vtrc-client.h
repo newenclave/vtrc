@@ -38,6 +38,8 @@ namespace client {
         vtrc_client( const vtrc_client &other );
         vtrc_client & operator = ( const vtrc_client &other );
 
+    protected:
+
         vtrc_client( boost::asio::io_service &ios,
                      boost::asio::io_service &rpc_ios );
 

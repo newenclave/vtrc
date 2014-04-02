@@ -130,8 +130,8 @@ namespace vtrc { namespace server { namespace endpoints {
             void read_handler( const bsys::error_code &error, size_t bytes,
                                common::connection_iface_wptr parent)
             {
-                common::connection_iface_sptr lk(parent.lock( ));
-                if( !lk ) return;
+                common::connection_iface_sptr lck(parent.lock( ));
+                if( !lck ) return;
 
                 if( !error ) {
                     try {
