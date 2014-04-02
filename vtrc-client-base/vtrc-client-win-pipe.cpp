@@ -25,13 +25,13 @@ namespace vtrc { namespace client {
         {
             HANDLE pipe = CreateFileA( address.c_str( ),
                                  GENERIC_WRITE | GENERIC_READ,
-                                 0, 
+                                 0,
                                  NULL, OPEN_EXISTING,
                                  FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED,
                                  NULL);
 
             if(INVALID_HANDLE_VALUE == pipe) {
-                throw vtrc::common::exception( GetLastError( ), 
+                throw vtrc::common::exception( GetLastError( ),
                         vtrc_errors::CATEGORY_SYSTEM );
             }
             init( );
@@ -49,13 +49,13 @@ namespace vtrc { namespace client {
         {
             HANDLE pipe = CreateFileW( address.c_str( ),
                                  GENERIC_WRITE | GENERIC_READ,
-                                 0, 
+                                 0,
                                  NULL, OPEN_EXISTING,
                                  FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED,
                                  NULL);
 
             if(INVALID_HANDLE_VALUE == pipe) {
-                throw vtrc::common::exception( GetLastError( ), 
+                throw vtrc::common::exception( GetLastError( ),
                         vtrc_errors::CATEGORY_SYSTEM );
             }
             init( );
