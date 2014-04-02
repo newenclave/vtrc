@@ -37,7 +37,7 @@ namespace {
         basio::windows::overlapped_ptr ovl_;
 
         pipe_ep_impl( application &app,
-                const endpoint_options &opts, 
+                const endpoint_options &opts,
                 const std::string pipe_name)
             :app_(app)
             ,ios_(app_.get_io_service( ))
@@ -68,26 +68,29 @@ namespace {
         {
             SECURITY_DESCRIPTOR secdesc;
             SECURITY_ATTRIBUTES secarttr;
-            InitializeSecurityDescriptor(&secdesc, SECURITY_DESCRIPTOR_REVISION);
-            SetSecurityDescriptorDacl(&secdesc, TRUE, static_cast<PACL>(NULL), FALSE);
+            InitializeSecurityDescriptor(&secdesc,
+                                         SECURITY_DESCRIPTOR_REVISION);
+
+            SetSecurityDescriptorDacl(&secdesc, TRUE,
+                                      static_cast<PACL>(NULL), FALSE);
 
             secarttr.nLength = sizeof(SECURITY_ATTRIBUTES);
             secarttr.bInheritHandle = FALSE;
             secarttr.lpSecurityDescriptor = &secdesc;
 
             HANDLE pipe_hdl = CreateNamedPipeA( endpoint_.c_str( ),
-                PIPE_ACCESS_DUPLEX | FILE_FLAG_OVERLAPPED, 
-                PIPE_TYPE_BYTE | PIPE_READMODE_BYTE,  
-                pipe_max_inst_, 4096, 
+                PIPE_ACCESS_DUPLEX | FILE_FLAG_OVERLAPPED,
+                PIPE_TYPE_BYTE | PIPE_READMODE_BYTE,
+                pipe_max_inst_, 4096,
                 4096, 0, &secarttr);
 
             if( INVALID_HANDLE_VALUE != pipe_hdl ) {
 
                 socket_type *new_sock = new socket_type(ios_);
-                
+
                 //ba::windows::overlapped_ptr ovl;
-                ovl_.reset( ios_, 
-                    vtrc::bind( &this_type::on_accept, this, 
+                ovl_.reset( ios_,
+                    vtrc::bind( &this_type::on_accept, this,
                         basio::placeholders::error, new_sock) );
 
                 BOOL res = ConnectNamedPipe( pipe_hdl, ovl_.get( ) );
@@ -98,17 +101,17 @@ namespace {
                 if( res || ( last_error ==  ERROR_IO_PENDING ) ) {
                     ovl_.release();
                 } else if( last_error == ERROR_PIPE_CONNECTED ) {
-                    bsys::error_code ec(0, 
-                            basio::error::get_system_category());
+                    bsys::error_code ec(0,
+                            basio::error::get_system_category( ));
                     ovl_.complete(ec, 0);
                 } else {
-                    bsys::error_code ec(GetLastError( ), 
-                                basio::error::get_system_category());
-                    ovl_.complete(ec, 0);            
+                    bsys::error_code ec(GetLastError( ),
+                                basio::error::get_system_category( ));
+                    ovl_.complete(ec, 0);
                 }
-			} else {
-                //std::cout << "Error on_pipe_connect\n"; 				
-			}
+            } else {
+                //std::cout << "Error on_pipe_connect\n";
+            }
         }
 
         void start( )
@@ -169,7 +172,7 @@ namespace {
         endpoint_iface *create( application &app, const endpoint_options &opts,
                                 const std::string &name )
         {
-            return new pipe_ep_impl( app, opts, name );        
+            return new pipe_ep_impl( app, opts, name );
         }
     }
 
