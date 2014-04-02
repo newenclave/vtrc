@@ -50,10 +50,11 @@ namespace vtrc { namespace common {
 
             std::string                          name_;
 
+            basio::io_service::strand            write_dispatcher_;
+
 #ifndef TRANSPORT_USE_ASYNC_WRITE
             vtrc::mutex                          write_lock_;
 #else
-            basio::io_service::strand            write_dispatcher_;
             std::deque<message_holder_sptr>      write_queue_;
 
 #endif
@@ -62,9 +63,7 @@ namespace vtrc { namespace common {
                             const std::string &n )
                 :stream_(s)
                 ,ios_(stream_->get_io_service( ))
-#ifdef TRANSPORT_USE_ASYNC_WRITE
                 ,write_dispatcher_(ios_)
-#endif
                 ,closed_(false)
                 ,name_(n)
             { }
@@ -252,12 +251,10 @@ namespace vtrc { namespace common {
                 return *stream_;
             }
 
-#ifdef TRANSPORT_USE_ASYNC_WRITE
             boost::asio::io_service::strand &get_dispatcher( )
             {
                 return write_dispatcher_;
             }
-#endif
         };
     }
 
