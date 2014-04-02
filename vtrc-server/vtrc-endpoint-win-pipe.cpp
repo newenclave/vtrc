@@ -74,11 +74,8 @@ namespace {
         basio::windows::overlapped_ptr ovl_;
 
         pipe_ep_impl( application &app,
-                const endpoint_options &opts,
-                const std::string pipe_name,
-                size_t max_inst,
-                size_t in_buf_size,
-                size_t out_buf_size)
+                const endpoint_options &opts, const std::string pipe_name,
+                size_t max_inst, size_t out_buf_size, size_t in_buf_size)
             :app_(app)
             ,ios_(app_.get_io_service( ))
             ,opts_(opts)
@@ -121,9 +118,10 @@ namespace {
 
             HANDLE pipe_hdl = CreateNamedPipeA( endpoint_.c_str( ),
                 PIPE_ACCESS_DUPLEX | FILE_FLAG_OVERLAPPED,
-                PIPE_TYPE_BYTE | PIPE_READMODE_BYTE,
-                pipe_max_inst_, out_buf_size_,
-                in_buf_size_, 0, &secarttr );
+                PIPE_TYPE_BYTE     | PIPE_READMODE_BYTE,
+                pipe_max_inst_,
+                out_buf_size_, in_buf_size_,
+                0, &secarttr );
 
             if( INVALID_HANDLE_VALUE != pipe_hdl ) {
 
