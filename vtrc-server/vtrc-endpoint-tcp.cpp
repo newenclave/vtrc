@@ -49,6 +49,7 @@ namespace vtrc { namespace server { namespace endpoints {
 
         };
     }
+
     namespace tcp {
 
         endpoint_options default_options( )
