@@ -137,7 +137,8 @@ public:
               ::vtrc_service::test_message* response,
               ::google::protobuf::Closure* done)
     {
-
+        c_->impersonate( );
+        c_->revert( );
 //        boost::system::error_code ec(0, boost::system::get_system_category( ));
 
 //        boost::function<void ()> f(boost::bind(call_delayed_test,

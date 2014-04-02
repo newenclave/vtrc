@@ -21,10 +21,44 @@ namespace vtrc { namespace server { namespace endpoints {
         typedef bstream::endpoint       endpoint_type;
         typedef bstream::acceptor       acceptor_type;
 
+
+        struct local_connenction_impl: public connection_type {
+
+            typedef local_connenction_impl this_type;
+
+            local_connenction_impl( endpoint_iface &endpoint,
+                                    vtrc::shared_ptr<socket_type> sock )
+                :connection_type(endpoint, sock)
+            { }
+
+
+            bool impersonate( )
+            {
+                return false;
+            }
+
+            void revert( )
+            {
+
+            }
+
+            static vtrc::shared_ptr<this_type> create(endpoint_iface &endpoint,
+                                                        socket_type *sock )
+            {
+                vtrc::shared_ptr<this_type> new_inst
+                     (vtrc::make_shared<this_type>(vtrc::ref(endpoint),
+                                        vtrc::shared_ptr<socket_type>(sock) ));
+
+                new_inst->init( );
+                return new_inst;
+            }
+        };
+
         typedef endpoint_impl<
             acceptor_type,
             endpoint_type,
             connection_type
+//            local_connenction_impl
         > super_type;
 
         struct endpoint_unix: public super_type {
