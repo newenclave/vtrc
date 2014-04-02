@@ -69,18 +69,25 @@ namespace {
         endpoint_options         opts_;
         std::string              endpoint_;
         size_t                   pipe_max_inst_;
+        size_t                   in_buf_size_;
+        size_t                   out_buf_size_;
 
         basio::windows::overlapped_ptr ovl_;
 
         pipe_ep_impl( application &app,
                 const endpoint_options &opts,
-                const std::string pipe_name)
+                const std::string pipe_name, 
+                size_t max_inst,
+                size_t in_buf_size,
+                size_t out_buf_size)
             :app_(app)
             ,ios_(app_.get_io_service( ))
             ,env_(app_.get_enviroment())
             ,opts_(opts)
             ,endpoint_(pipe_name)
-            ,pipe_max_inst_(10)
+            ,pipe_max_inst_(max_inst)
+            ,in_buf_size_(in_buf_size)
+            ,out_buf_size_(out_buf_size)
         {}
 
         virtual ~pipe_ep_impl( ) { }
@@ -117,17 +124,16 @@ namespace {
             HANDLE pipe_hdl = CreateNamedPipeA( endpoint_.c_str( ),
                 PIPE_ACCESS_DUPLEX | FILE_FLAG_OVERLAPPED,
                 PIPE_TYPE_BYTE | PIPE_READMODE_BYTE,
-                pipe_max_inst_, 4096,
-                4096, 0, &secarttr);
+                pipe_max_inst_, out_buf_size_,
+                in_buf_size_, 0, &secarttr );
 
             if( INVALID_HANDLE_VALUE != pipe_hdl ) {
 
                 socket_type *new_sock = new socket_type(ios_);
 
-                //ba::windows::overlapped_ptr ovl;
                 ovl_.reset( ios_,
-                    vtrc::bind( &this_type::on_accept, this,
-                        basio::placeholders::error, new_sock) );
+                        vtrc::bind( &this_type::on_accept, this,
+                            basio::placeholders::error, new_sock) );
 
                 BOOL res = ConnectNamedPipe( pipe_hdl, ovl_.get( ) );
 
@@ -137,15 +143,19 @@ namespace {
                 if( res || ( last_error ==  ERROR_IO_PENDING ) ) {
                     ovl_.release();
                 } else if( last_error == ERROR_PIPE_CONNECTED ) {
-                    bsys::error_code ec(0,
+                    bsys::error_code ec( 0,
                             basio::error::get_system_category( ));
-                    ovl_.complete(ec, 0);
+                    ovl_.complete( ec, 0 );
                 } else {
                     bsys::error_code ec(GetLastError( ),
                                 basio::error::get_system_category( ));
-                    ovl_.complete(ec, 0);
+                    ovl_.complete( ec, 0 );
                 }
             } else {
+                DWORD last_error(GetLastError( ));
+                bsys::error_code ec(GetLastError( ),
+                            basio::error::get_system_category( ));
+                ovl_.complete( ec, 0 );
                 //std::cout << "Error on_pipe_connect\n";
             }
         }
@@ -194,10 +204,13 @@ namespace {
             return def_opts;
         }
 
-
         endpoint_iface *create( application &app, const std::string &name )
         {
-            return new pipe_ep_impl( app, default_options( ), name );
+            endpoint_options def_opts(default_options( ));
+            return new pipe_ep_impl( app, default_options( ), name, 
+                                     PIPE_UNLIMITED_INSTANCES, 
+                                     def_opts.read_buffer_size,
+                                     def_opts.read_buffer_size );
         }
 
         //endpoint_iface *create( application &app, const std::wstring &name )
@@ -208,7 +221,10 @@ namespace {
         endpoint_iface *create( application &app, const endpoint_options &opts,
                                 const std::string &name )
         {
-            return new pipe_ep_impl( app, opts, name );
+            return new pipe_ep_impl( app, opts, name,
+                                     PIPE_UNLIMITED_INSTANCES, 
+                                     opts.read_buffer_size,
+                                     opts.read_buffer_size );
         }
     }
 
