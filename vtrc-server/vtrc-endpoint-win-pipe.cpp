@@ -71,7 +71,7 @@ namespace {
         size_t                   in_buf_size_;
         size_t                   out_buf_size_;
 
-        basio::windows::overlapped_ptr ovl_;
+        basio::windows::overlapped_ptr overlapped_;
 
         pipe_ep_impl( application &app,
                 const endpoint_options &opts, const std::string pipe_name,
@@ -127,32 +127,33 @@ namespace {
 
                 socket_type *new_sock = new socket_type(ios_);
 
-                ovl_.reset( ios_,
+                overlapped_.reset( ios_,
                         vtrc::bind( &this_type::on_accept, this,
                             basio::placeholders::error, new_sock) );
 
-                BOOL res = ConnectNamedPipe( pipe_hdl, ovl_.get( ) );
+                BOOL res = ConnectNamedPipe( pipe_hdl, overlapped_.get( ) );
 
                 new_sock->assign( pipe_hdl );
 
                 DWORD last_error(GetLastError());
                 if( res || ( last_error ==  ERROR_IO_PENDING ) ) {
-                    ovl_.release();
+                    overlapped_.release();
+
                 } else if( last_error == ERROR_PIPE_CONNECTED ) {
                     bsys::error_code ec( 0,
                             basio::error::get_system_category( ));
-                    ovl_.complete( ec, 0 );
+                    overlapped_.complete( ec, 0 );
+
                 } else {
                     bsys::error_code ec(GetLastError( ),
                                 basio::error::get_system_category( ));
-                    ovl_.complete( ec, 0 );
+                    overlapped_.complete( ec, 0 );
+
                 }
             } else {
-                DWORD last_error(GetLastError( ));
                 bsys::error_code ec(GetLastError( ),
                             basio::error::get_system_category( ));
-                ovl_.complete( ec, 0 );
-                //std::cout << "Error on_pipe_connect\n";
+                overlapped_.complete( ec, 0 );
             }
         }
 
