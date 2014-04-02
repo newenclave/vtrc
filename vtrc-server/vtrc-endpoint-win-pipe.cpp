@@ -33,7 +33,7 @@ namespace {
 
         bool impersonate( )
         {
-            BOOL imp = ImpersonateNamedPipeClient( 
+            BOOL imp = ImpersonateNamedPipeClient(
                                     get_socket( ).native_handle( ) );
             return !!imp;
         }
