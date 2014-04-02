@@ -145,7 +145,7 @@ namespace {
                     overlapped_.complete( ec, 0 );
 
                 } else {
-                    bsys::error_code ec(GetLastError( ),
+                    bsys::error_code ec(last_error,
                                 basio::error::get_system_category( ));
                     overlapped_.complete( ec, 0 );
 
