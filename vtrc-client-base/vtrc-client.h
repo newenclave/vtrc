@@ -82,11 +82,17 @@ namespace client {
                             create_channel( bool disable_wait, bool insertion );
 
         void connect( const std::string &local_name );
+#ifdef _WIN32
+        void connect( const std::wstring &local_name );
+#endif
         void connect( const std::string &address, const std::string &service );
 
         void async_connect( const std::string &local_name,
                             common::closure_type closure);
-
+#ifdef _WIN32
+        void async_connect( const std::wstring &local_name,
+                            common::closure_type closure);
+#endif
         void async_connect( const std::string &address,
                             const std::string &service,
                             common::closure_type closure);

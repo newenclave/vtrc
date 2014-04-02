@@ -8,6 +8,7 @@
 #include "vtrc-client.h"
 #include "vtrc-client-tcp.h"
 #include "vtrc-client-unix-local.h"
+#include "vtrc-client-win-pipe.h"
 
 #include "vtrc-rpc-channel-c.h"
 #include "vtrc-bind.h"
@@ -65,7 +66,10 @@ namespace vtrc { namespace client {
             new_client->connect( local_name );
             connection_ = new_client;
 #else
-            throw std::runtime_error( "Not implemented yet" );
+            vtrc::shared_ptr<client_win_pipe>
+                         new_client(client_win_pipe::create( ios_, parent_ ));
+            new_client->connect( local_name );
+            connection_ = new_client;    
 #endif
         }
 
@@ -80,6 +84,28 @@ namespace vtrc { namespace client {
             closure(err);
         }
 
+#ifdef _WIN32
+        void connect(const std::wstring &local_name)
+        {
+            vtrc::shared_ptr<client_win_pipe>
+                         new_client(client_win_pipe::create( ios_, parent_ ));
+            new_client->connect( local_name );
+            connection_ = new_client;    
+        }
+
+        void async_connect(const std::wstring &local_name,
+                           common::closure_type closure)
+        {
+            vtrc::shared_ptr<client_win_pipe>
+                         new_client(client_win_pipe::create( ios_ , parent_));
+
+            new_client->async_connect( local_name,
+                        vtrc::bind( &this_type::async_connect_success, this,
+                                     basio::placeholders::error,
+                                     closure ));
+            connection_ = new_client;
+        }
+#endif
         void async_connect(const std::string &local_name,
                            common::closure_type closure)
         {
@@ -93,9 +119,15 @@ namespace vtrc { namespace client {
                                      closure ));
             connection_ = new_client;
 #else
-            throw std::runtime_error( "Not implemented yet" );
-#endif
+            vtrc::shared_ptr<client_win_pipe>
+                         new_client(client_win_pipe::create( ios_ , parent_));
 
+            new_client->async_connect( local_name,
+                        vtrc::bind( &this_type::async_connect_success, this,
+                                     basio::placeholders::error,
+                                     closure ));
+            connection_ = new_client;
+#endif
         }
 
         void async_connect( const std::string &address,
@@ -257,6 +289,13 @@ namespace vtrc { namespace client {
         impl_->connect( local_name );
     }
 
+#ifdef _WIN32
+    void vtrc_client::connect(const std::wstring &local_name)
+    {
+        impl_->connect( local_name );
+    }
+#endif
+
     void vtrc_client::connect( const std::string &address,
                                const std::string &service )
     {
@@ -268,6 +307,16 @@ namespace vtrc { namespace client {
     {
         impl_->async_connect( local_name, closure );
     }
+
+#ifdef _WIN32
+
+    void vtrc_client::async_connect(const std::wstring &local_name,
+                                    common::closure_type closure)
+    {
+        impl_->async_connect( local_name, closure );
+    }
+
+#endif
 
     void vtrc_client::async_connect( const std::string &address,
                             const std::string &service,

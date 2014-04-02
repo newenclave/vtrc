@@ -2,8 +2,11 @@
 
 #ifdef _WIN32
 
+#include <windows.h>
 #include <boost/asio/windows/stream_handle.hpp>
 #include "vtrc-client-stream-impl.h"
+#include "vtrc-common/vtrc-exception.h"
+#include "protocol/vtrc-errors.pb.h"
 
 namespace vtrc { namespace client {
 
@@ -20,24 +23,50 @@ namespace vtrc { namespace client {
 
         void connect( const std::string &address )
         {
+            HANDLE pipe = CreateFileA( address.c_str( ),
+                                 GENERIC_WRITE | GENERIC_READ,
+                                 0, 
+                                 NULL, OPEN_EXISTING,
+                                 FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED,
+                                 NULL);
+
+            if(INVALID_HANDLE_VALUE == pipe) {
+                throw vtrc::common::exception( GetLastError( ), 
+                        vtrc_errors::CATEGORY_SYSTEM );
+            }
             init( );
         }
 
         void async_connect( const std::string &address,
                             common::closure_type closure )
         {
-
+            connect( address );
+            bsys::error_code ec(0, bsys::get_system_category( ));
+            closure(ec);
         }
 
         void connect( const std::wstring &address )
         {
+            HANDLE pipe = CreateFileW( address.c_str( ),
+                                 GENERIC_WRITE | GENERIC_READ,
+                                 0, 
+                                 NULL, OPEN_EXISTING,
+                                 FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED,
+                                 NULL);
+
+            if(INVALID_HANDLE_VALUE == pipe) {
+                throw vtrc::common::exception( GetLastError( ), 
+                        vtrc_errors::CATEGORY_SYSTEM );
+            }
             init( );
         }
 
         void async_connect( const std::wstring &address,
                             common::closure_type closure )
         {
-
+            connect( address );
+            bsys::error_code ec(0, bsys::get_system_category( ));
+            closure(ec);
         }
 
     };
