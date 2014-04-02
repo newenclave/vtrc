@@ -20,7 +20,43 @@ namespace {
     namespace basio = boost::asio;
     typedef basio::windows::stream_handle    socket_type;
     typedef common::transport_win_pipe       connection_type;
-    typedef connection_impl<connection_type> transport_type;
+    typedef connection_impl<connection_type> connection_impl_type;
+
+    struct commection_pipe_impl: public connection_impl_type {
+
+        typedef commection_pipe_impl this_type;
+
+        commection_pipe_impl( endpoint_iface &endpoint,
+                            vtrc::shared_ptr<socket_type> sock )
+            :connection_impl_type(endpoint, sock)
+        { }
+
+        bool impersonate( )
+        {
+            BOOL imp = ImpersonateNamedPipeClient( 
+                                    get_socket( ).native_handle( ) );
+            return !!imp;
+        }
+
+        void revert( )
+        {
+            RevertToSelf( );
+        }
+
+        static vtrc::shared_ptr<this_type> create(endpoint_iface &endpoint,
+                                                    socket_type *sock )
+        {
+            vtrc::shared_ptr<this_type> new_inst
+                    (vtrc::make_shared<this_type>(vtrc::ref(endpoint),
+                                    vtrc::shared_ptr<socket_type>(sock) ));
+
+            new_inst->init( );
+            return new_inst;
+        }
+
+    };
+
+    typedef commection_pipe_impl transport_type;
 
     struct pipe_ep_impl: public endpoint_iface {
 

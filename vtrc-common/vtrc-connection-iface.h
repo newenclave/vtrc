@@ -35,7 +35,6 @@ namespace vtrc { namespace common {
         virtual protocol_layer          &get_protocol( )   = 0;
 
         virtual bool impersonate( )         { return false; }
-        virtual bool impersonated( ) const  { return false; }
         virtual void revert( )              { }
 
         vtrc::weak_ptr<connection_iface> weak_from_this( )

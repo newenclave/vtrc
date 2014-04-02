@@ -4,6 +4,7 @@
 #if 1
 #ifdef _WIN32
 
+#include <windows.h>
 #include "vtrc-transport-stream-impl.h"
 
 namespace vtrc { namespace common {
@@ -27,6 +28,17 @@ namespace vtrc { namespace common {
         {
             return get_parent( )->prepare_for_write( data, len );
         }
+
+        bool impersonate( )
+        {
+            return false;
+        }
+
+        void revert( )
+        {
+
+        }
+
     };
 
     transport_win_pipe::transport_win_pipe( vtrc::shared_ptr<socket_type> sock )
@@ -86,6 +98,7 @@ namespace vtrc { namespace common {
     {
         return impl_->get_socket( );
     }
+
 
 }}
 
