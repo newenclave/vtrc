@@ -164,7 +164,7 @@ public:
 //        connection_->get_io_service( ).dispatch(
 //                    vtrc::bind(test_send, connection_));
 //        boost::thread(test_send, connection_).detach( );
-            //test_send(c_, app_);
+            test_send(c_, app_);
         }
     }
 
