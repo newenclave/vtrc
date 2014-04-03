@@ -502,7 +502,7 @@ namespace vtrc { namespace common {
         {
             lowlevel_unit_sptr &llu = holder->llu_;
 
-            bool failed = false;
+            bool failed        = false;
             unsigned errorcode = 0;
 
             if( holder->controller_->IsCanceled( ) ) {
