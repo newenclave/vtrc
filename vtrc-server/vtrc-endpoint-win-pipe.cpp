@@ -35,12 +35,20 @@ namespace {
         {
             BOOL imp = ImpersonateNamedPipeClient(
                                     get_socket( ).native_handle( ) );
+            if( imp ) {
+                common::call_context *c
+                                    (get_protocol( ).mutable_call_context( ));
+                if( c ) c->set_impersonated( true );
+            }
+
             return !!imp;
         }
 
         void revert( )
         {
-            RevertToSelf( );
+            common::call_context *c
+                                (get_protocol( ).mutable_call_context( ));
+            if( c && c->get_impersonated( ) ) RevertToSelf( );
         }
 
         static vtrc::shared_ptr<this_type> create(endpoint_iface &endpoint,

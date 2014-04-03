@@ -19,7 +19,6 @@ namespace vtrc { namespace common {
         struct impl;
         impl  *impl_;
 
-
     public:
 
         call_context( vtrc_rpc_lowlevel::lowlevel_unit *lowlevel );
