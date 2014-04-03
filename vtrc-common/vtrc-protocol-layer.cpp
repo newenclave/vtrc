@@ -426,7 +426,8 @@ namespace vtrc { namespace common {
         }
 
         void read_slot_for(uint64_t slot_id,
-                        std::deque<lowlevel_unit_sptr> &data_list, uint32_t millisec )
+                           std::deque<lowlevel_unit_sptr> &data_list,
+                           uint32_t millisec )
         {
             wait_result_codes qwr = rpc_queue_.read_queue(
                         slot_id, data_list,
@@ -869,8 +870,8 @@ namespace vtrc { namespace common {
     }
 
     void protocol_layer::read_slot_for( uint64_t slot_id,
-                                        std::deque<lowlevel_unit_sptr> &mess_list,
-                                        uint32_t millisec )
+                                      std::deque<lowlevel_unit_sptr> &mess_list,
+                                      uint32_t millisec )
     {
         impl_->read_slot_for( slot_id, mess_list, millisec);
     }
@@ -900,7 +901,8 @@ namespace vtrc { namespace common {
         impl_->erase_all_slots( );
     }
 
-    void protocol_layer::push_rpc_message(uint64_t slot_id, lowlevel_unit_sptr mess)
+    void protocol_layer::push_rpc_message(uint64_t slot_id,
+                                          lowlevel_unit_sptr mess)
     {
         impl_->push_rpc_message(slot_id, mess);
     }
