@@ -2,6 +2,7 @@
 
 #ifndef  _WIN32
 
+#include "vtrc-protocol-layer.h"
 #include "vtrc-transport-stream-impl.h"
 
 namespace vtrc { namespace common {
@@ -24,6 +25,7 @@ namespace vtrc { namespace common {
         {
             return get_parent( )->prepare_for_write( data, len );
         }
+
     };
 
     transport_unix_local::transport_unix_local(vtrc::shared_ptr<socket_type> s )
@@ -45,11 +47,6 @@ namespace vtrc { namespace common {
     void transport_unix_local::close( )
     {
         impl_->close( );
-    }
-
-    bool transport_unix_local::active( ) const
-    {
-        return impl_->active( );
     }
 
     common::enviroment &transport_unix_local::get_enviroment( )

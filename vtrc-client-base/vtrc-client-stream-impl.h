@@ -49,7 +49,7 @@ namespace {
             parent_ = parent;
         }
 
-        stream_type &sock( )
+        stream_type &get_socket( )
         {
             return parent_->get_socket( );
         }
@@ -58,6 +58,11 @@ namespace {
         {
             protocol_.reset(new protocol_layer_c( parent_, client_ ));
             start_reading( );
+        }
+
+        bool active( ) const
+        {
+            protocol_->ready( );
         }
 
         void on_connect( const boost::system::error_code &err,
@@ -83,7 +88,7 @@ namespace {
                          parent_->weak_from_this( ) ))
                 );
 #else
-            sock( ).async_read_some(
+            get_socket( ).async_read_some(
                     basio::buffer( &read_buff_[0], read_buff_.size( ) ),
                         vtrc::bind( &this_type::read_handler, this,
                              basio::placeholders::error,

@@ -64,7 +64,13 @@ namespace vtrc { namespace common {
 
     public:
 
-        virtual bool ready( ) const     = 0;
+        bool ready( ) const;
+        void wait_for_ready(  );
+        bool wait_for_ready_for_millisec( uint64_t millisec ) const;
+        bool wait_for_ready_for_microsec( uint64_t microsec ) const;
+
+        //bool wait_for_ready( )
+
         uint64_t next_index( );
 
         void process_data( const char *data, size_t length );

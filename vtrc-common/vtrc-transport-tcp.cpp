@@ -1,6 +1,7 @@
 
 #include "vtrc-transport-tcp.h"
 
+#include "vtrc-protocol-layer.h"
 #include "vtrc-transport-stream-impl.h"
 
 namespace vtrc { namespace common {
@@ -25,6 +26,7 @@ namespace vtrc { namespace common {
         {
             return get_parent( )->prepare_for_write( data, len );
         }
+
     };
 
     transport_tcp::transport_tcp( vtrc::shared_ptr<socket_type> sock )
@@ -46,11 +48,6 @@ namespace vtrc { namespace common {
     void transport_tcp::close( )
     {
         impl_->close( );
-    }
-
-    bool transport_tcp::active( ) const
-    {
-        return impl_->active( );
     }
 
     common::enviroment &transport_tcp::get_enviroment( )

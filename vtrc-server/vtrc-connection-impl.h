@@ -80,6 +80,11 @@ namespace vtrc { namespace server { namespace endpoints {
                 protocol_->erase_all_slots( );
             }
 
+            bool active( ) const
+            {
+                return protocol_->ready( );
+            }
+
             endpoint_iface &endpoint( )
             {
                 return endpoint_;

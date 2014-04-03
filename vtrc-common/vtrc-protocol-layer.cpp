@@ -11,6 +11,7 @@
 #include "vtrc-atomic.h"
 #include "vtrc-mutex.h"
 #include "vtrc-mutex-typedefs.h"
+#include "vtrc-condition-variable.h"
 
 #include "vtrc-protocol-layer.h"
 
@@ -145,6 +146,10 @@ namespace vtrc { namespace common {
         bool                         working_;
         const lowlevel_unit_type     empty_done_;
 
+        mutable vtrc::mutex          ready_lock_;
+        bool                         ready_;
+        vtrc::condition_variable     ready_var_;
+
         impl( transport_iface *c, bool oddside, size_t mess_len )
             :connection_(c)
             ,hash_maker_(common::hash::create_default( ))
@@ -231,7 +236,27 @@ namespace vtrc { namespace common {
 
         void set_ready(bool ready)
         {
+            vtrc::unique_lock<vtrc::mutex> lck( ready_lock_ );
+            ready_ = ready;
+            ready_var_.notify_all( );
+        }
 
+        bool ready( ) const
+        {
+            return ready_;
+        }
+
+        void wait_for_ready(  )
+        {
+            vtrc::unique_lock<vtrc::mutex> lck( ready_lock_ );
+            ready_var_.wait( lck );
+        }
+
+        template <typename DurationType>
+        bool wait_for_ready_for( const DurationType &duration )
+        {
+            vtrc::unique_lock<vtrc::mutex> lck( ready_lock_ );
+            return ready_var_.wait_for( lck, duration );
         }
 
         void drop_first( )
@@ -728,6 +753,26 @@ namespace vtrc { namespace common {
     protocol_layer::~protocol_layer( )
     {
         delete impl_;
+    }
+
+    bool protocol_layer::ready( ) const
+    {
+        return impl_->ready( );
+    }
+
+    void protocol_layer::wait_for_ready( )
+    {
+
+    }
+
+    bool protocol_layer::wait_for_ready_for_millisec(uint64_t millisec) const
+    {
+        return impl_->wait_for_ready_for( vtrc::chrono::milliseconds(millisec));
+    }
+
+    bool protocol_layer::wait_for_ready_for_microsec(uint64_t microsec) const
+    {
+        return impl_->wait_for_ready_for( vtrc::chrono::microseconds(microsec));
     }
 
     void protocol_layer::process_data( const char *data, size_t length )

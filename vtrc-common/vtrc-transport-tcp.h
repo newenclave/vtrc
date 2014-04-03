@@ -17,6 +17,8 @@ namespace system {
 
 namespace vtrc { namespace common {
 
+    class protocol_layer;
+
     class transport_tcp: public transport_iface {
 
         struct impl;
@@ -35,7 +37,6 @@ namespace vtrc { namespace common {
 
         const char *name( ) const                     ;
         void close( )                                 ;
-        bool active( ) const                          ;
 
         common::enviroment      &get_enviroment( )    ;
 

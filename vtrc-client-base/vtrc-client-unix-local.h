@@ -23,6 +23,7 @@ namespace client {
     class client_unix_local: public common::transport_unix_local {
 
         struct impl;
+        friend struct impl;
         impl  *impl_;
 
         client_unix_local( boost::asio::io_service &ios, vtrc_client *client );
@@ -36,6 +37,7 @@ namespace client {
 
         ~client_unix_local( );
         void init( );
+        bool active( ) const;
 
         void connect( const std::string &address );
         void async_connect( const std::string &address,

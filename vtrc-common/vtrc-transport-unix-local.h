@@ -36,7 +36,6 @@ namespace vtrc { namespace common {
 
         const char *name( ) const                     ;
         void close( )                                 ;
-        bool active( ) const                          ;
 
         common::enviroment      &get_enviroment( )    ;
 

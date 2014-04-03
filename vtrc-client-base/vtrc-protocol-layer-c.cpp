@@ -236,11 +236,6 @@ namespace vtrc { namespace client {
             stage_call_( );
         }
 
-        bool ready( ) const
-        {
-            return true;
-        }
-
         void on_ready( )
         {
             ;;;
@@ -269,11 +264,6 @@ namespace vtrc { namespace client {
     void protocol_layer_c::on_data_ready( )
     {
         impl_->data_ready( );
-    }
-
-    bool protocol_layer_c::ready( ) const
-    {
-        return impl_->ready( );
     }
 
     common::rpc_service_wrapper_sptr protocol_layer_c::get_service_by_name(

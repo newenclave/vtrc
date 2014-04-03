@@ -78,6 +78,11 @@ namespace vtrc { namespace common {
                 return parent_;
             }
 
+            const parent_type *get_parent( ) const
+            {
+                return parent_;
+            }
+
             virtual ~transport_impl( )
             { }
 
@@ -95,9 +100,9 @@ namespace vtrc { namespace common {
                 }
             }
 
-            bool active( ) const
+            bool closed( ) const
             {
-                return !closed_;
+                return closed_;
             }
 
             common::enviroment &get_enviroment( )

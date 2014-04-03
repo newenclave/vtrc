@@ -25,7 +25,7 @@ namespace vtrc { namespace client {
             basio::ip::tcp::endpoint ep
                     (basio::ip::address::from_string(address),
                      boost::lexical_cast<unsigned short>(service) );
-            sock( ).connect( ep );
+            get_socket( ).connect( ep );
             init( );
         }
 
@@ -36,7 +36,7 @@ namespace vtrc { namespace client {
             basio::ip::tcp::endpoint ep
                     (basio::ip::address::from_string(address),
                      boost::lexical_cast<unsigned short>(service) );
-            sock( ).async_connect( ep,
+            get_socket( ).async_connect( ep,
                     vtrc::bind( &this_type::on_connect, this,
                                  basio::placeholders::error, closure,
                                  parent_->shared_from_this( )) );
@@ -104,6 +104,11 @@ namespace vtrc { namespace client {
     void client_tcp::init( )
     {
 
+    }
+
+    bool client_tcp::active( ) const
+    {
+        return impl_->active( );
     }
 
 }}

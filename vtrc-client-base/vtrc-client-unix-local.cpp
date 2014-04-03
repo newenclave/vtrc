@@ -22,7 +22,7 @@ namespace vtrc { namespace client {
         void connect( const std::string &address )
         {
             basio::local::stream_protocol::endpoint ep (address);
-            sock( ).connect( ep );
+            get_socket( ).connect( ep );
             init( );
         }
 
@@ -30,12 +30,11 @@ namespace vtrc { namespace client {
                             common::closure_type closure )
         {
             basio::local::stream_protocol::endpoint ep (address);
-            sock( ).async_connect( ep,
+            get_socket( ).async_connect( ep,
                     vtrc::bind( &this_type::on_connect, this,
                                  basio::placeholders::error, closure,
                                  parent_->shared_from_this( )) );
         }
-
     };
 
     static vtrc::shared_ptr<socket_type> create_socket( basio::io_service &ios )
@@ -100,6 +99,11 @@ namespace vtrc { namespace client {
     void client_unix_local::init( )
     {
 
+    }
+
+    bool client_unix_local::active( ) const
+    {
+        return impl_->active( );
     }
 
 }}

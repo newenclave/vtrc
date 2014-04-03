@@ -300,11 +300,6 @@ namespace vtrc { namespace server {
             stage_function_( );
         }
 
-        bool ready( ) const
-        {
-            return true;
-        }
-
     };
 
     protocol_layer_s::protocol_layer_s( application &a,
@@ -330,11 +325,6 @@ namespace vtrc { namespace server {
     void protocol_layer_s::on_data_ready( )
     {
         impl_->data_ready( );
-    }
-
-    bool protocol_layer_s::ready( ) const
-    {
-        return impl_->ready( );
     }
 
     common::rpc_service_wrapper_sptr protocol_layer_s::get_service_by_name(
