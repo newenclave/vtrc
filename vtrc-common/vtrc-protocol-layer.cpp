@@ -62,8 +62,8 @@ namespace vtrc { namespace common {
         static const size_t maximum_message_length = 1024 * 1024;
 
         struct rpc_unit_index {
-            gpb::uint64     id_;
-            rpc_unit_index( gpb::uint64 id )
+            uint64_t     id_;
+            rpc_unit_index( uint64_t id )
                 :id_(id)
             { }
         };
@@ -78,7 +78,7 @@ namespace vtrc { namespace common {
         typedef vtrc::shared_ptr<lowlevel_unit_type>   lowlevel_unit_sptr;
 
         typedef condition_queues<
-                gpb::uint64,
+                uint64_t,
                 lowlevel_unit_sptr
         > rpc_queue_type;
 
@@ -91,7 +91,7 @@ namespace vtrc { namespace common {
         struct closure_holder_type {
             closure_holder_type( )
                 :proto_closure_(NULL)
-            {}
+            { }
 
             ~closure_holder_type( ) try
             {
