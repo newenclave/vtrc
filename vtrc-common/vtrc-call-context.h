@@ -34,10 +34,12 @@ namespace vtrc { namespace common {
         const call_context *next( ) const;
 
         void set_next(call_context *next);
-        void set_done_handler( google::protobuf::Closure *closure );
 
         vtrc_rpc_lowlevel::lowlevel_unit       *get_lowlevel_message( );
         const vtrc_rpc_lowlevel::lowlevel_unit *get_lowlevel_message( ) const;
+
+        void set_impersonated( bool value );
+        bool get_impersonated( ) const;
 
         const vtrc_rpc_lowlevel::options *get_call_options( ) const;
         void set_call_options(const vtrc_rpc_lowlevel::options &opts);
