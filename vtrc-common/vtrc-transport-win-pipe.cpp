@@ -32,7 +32,7 @@ namespace vtrc { namespace common {
     };
 
     transport_win_pipe::transport_win_pipe( vtrc::shared_ptr<socket_type> sock )
-        :impl_(new impl(sock, "tcp"))
+        :impl_(new impl(sock, "win-pipe"))
     {
         impl_->set_parent( this );
     }
