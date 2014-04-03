@@ -17,12 +17,12 @@ namespace vtrc { namespace server { namespace endpoints {
         namespace basio = boost::asio;
         namespace bsys  = boost::system;
 
-        template <typename ParentType>
-        struct connection_impl: public ParentType {
+        template <typename SuperType>
+        struct connection_impl: public SuperType {
 
-            typedef ParentType                       super_type;
-            typedef connection_impl<ParentType>      this_type;
-            typedef typename ParentType::socket_type socket_type;
+            typedef SuperType                        super_type;
+            typedef connection_impl<super_type>      this_type;
+            typedef typename super_type::socket_type socket_type;
 
             endpoint_iface                     &endpoint_;
             application                        &app_;
