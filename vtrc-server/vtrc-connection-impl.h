@@ -85,6 +85,11 @@ namespace vtrc { namespace server { namespace endpoints {
                 return endpoint_;
             }
 
+            const common::call_context *get_call_context( ) const
+            {
+                return protocol_->get_call_context( );
+            }
+
             std::string prepare_for_write( const char *data, size_t length )
             {
                 return protocol_->prepare_data( data, length );

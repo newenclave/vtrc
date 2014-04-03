@@ -61,7 +61,7 @@ namespace vtrc { namespace server {
                 }
 
                 const vtrc_rpc_lowlevel::options &call_opt
-                            ( clk->get_protocol( ).get_method_options(method) );
+                            ( get_protocol( *clk ).get_method_options(method) );
 
                 configure_message( clk, message_type_, llu );
 
@@ -74,14 +74,14 @@ namespace vtrc { namespace server {
 
                 if( llu.opt( ).wait( ) ) { /// WAITABLE CALL
 
-                    rpc_channel::context_holder ch(&clk->get_protocol( ), &llu);
+                    rpc_channel::context_holder ch( &get_protocol(*clk), &llu);
                     ch.ctx_->set_call_options( call_opt );
 
                     process_waitable_call( call_id, llu, response,
                                            clk, call_opt );
 
                 } else {                  /// NOT WAITABLE CALL
-                    clk->get_protocol( ).call_rpc_method( llu );
+                    get_protocol( *clk ).call_rpc_method( llu );
                 }
             }
         };
@@ -120,7 +120,7 @@ namespace vtrc { namespace server {
             {
                 if( sender != next ) {
                     configure_message( next, mess_type, mess );
-                    next->get_protocol( ).call_rpc_method( mess );
+                    get_protocol( *next ).call_rpc_method( mess );
                 }
                 return true;
             }
@@ -132,7 +132,7 @@ namespace vtrc { namespace server {
                                   unsigned mess_type)
             {
                 configure_message( next, mess_type, mess );
-                next->get_protocol( ).call_rpc_method( mess );
+                get_protocol( *next ).call_rpc_method( mess );
                 return true;
             }
 

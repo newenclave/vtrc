@@ -86,6 +86,11 @@ namespace vtrc { namespace client {
         close( );
     }
 
+    const common::call_context *client_tcp::get_call_context( ) const
+    {
+        return impl_->get_call_context( );
+    }
+
     common::protocol_layer &client_tcp::get_protocol( )
     {
         return impl_->get_protocol( );
@@ -98,6 +103,7 @@ namespace vtrc { namespace client {
 
     void client_tcp::init( )
     {
+
     }
 
 }}

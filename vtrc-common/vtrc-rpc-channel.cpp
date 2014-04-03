@@ -97,6 +97,11 @@ namespace vtrc { namespace common  {
         cl->get_protocol( ).erase_slot( call_id );
     }
 
+    protocol_layer &rpc_channel::get_protocol(connection_iface &cl)
+    {
+        return cl.get_protocol( );
+    }
+
     void rpc_channel::CallMethod( const gpb::MethodDescriptor *method,
                                         gpb::RpcController *controller,
                                   const gpb::Message *request,

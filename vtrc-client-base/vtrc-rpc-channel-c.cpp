@@ -43,6 +43,11 @@ namespace vtrc { namespace client {
             ,disable_wait_(dw)
         { }
 
+        common::protocol_layer &get_protocol(common::connection_iface_sptr &clk)
+        {
+            return parent_->get_protocol( *clk );
+        }
+
         void send_message( lowlevel_unit_type &llu,
                      const gpb::MethodDescriptor *method,
                            gpb::RpcController * /* controller*/,
@@ -58,7 +63,7 @@ namespace vtrc { namespace client {
             }
 
             const vtrc_rpc_lowlevel::options &call_opt
-                            ( clk->get_protocol( ).get_method_options(method) );
+                            ( get_protocol( clk ).get_method_options(method) );
 
             if( disable_wait_ )
                 llu.mutable_opt( )->set_wait( false );
@@ -70,14 +75,14 @@ namespace vtrc { namespace client {
 
             if( llu.opt( ).wait( ) ) {  /// WAITABLE CALL
 
-                rpc_channel::context_holder ch( &clk->get_protocol( ), &llu );
+                rpc_channel::context_holder ch( &get_protocol( clk ), &llu );
                 ch.ctx_->set_call_options( call_opt );
 
                 parent_->process_waitable_call( call_id, llu, response,
                                                 clk, call_opt );
 
             } else {                    /// NOT WAITABLE CALL
-                clk->get_protocol( ).call_rpc_method( llu );
+                get_protocol( clk ).call_rpc_method( llu );
             }
 
         }

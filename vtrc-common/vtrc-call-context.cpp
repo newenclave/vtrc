@@ -25,7 +25,7 @@ namespace vtrc { namespace common {
 
     const call_context *call_context::get( connection_iface *iface )
     {
-        return iface->get_protocol( ).get_call_context( );
+        return iface->get_call_context( );
     }
 
     const call_context *call_context::get(connection_iface_sptr iface)

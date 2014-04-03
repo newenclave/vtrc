@@ -61,7 +61,7 @@ public:
         common::closure_holder chold(done);
         std::cout << "ping event rcvd "
                   << c_->connection( )
-                     ->get_protocol( ).get_call_context( )
+                     ->get_call_context( )
                      ->get_lowlevel_message( )->id( )
                   << " " << vtrc::this_thread::get_id( ) << " "
                   //<< vtrc::chrono::high_resolution_clock::now( )
@@ -99,7 +99,7 @@ public:
     {
         common::closure_holder ch(done);
         std::cout << "test event rcvd "
-                  << c_->get_protocol( ).get_call_context( )->get_lowlevel_message( )->id( )
+                  << c_->get_call_context( )->get_lowlevel_message( )->id( )
                   << " " << vtrc::this_thread::get_id( ) << " "
                   << "\n";
     }

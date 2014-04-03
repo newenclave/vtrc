@@ -44,11 +44,11 @@ namespace client {
                             common::closure_type closure );
 
         void on_write_error( const boost::system::error_code &err );
-
-        common::protocol_layer &get_protocol( );
+        const call_context *get_call_context( );
 
     private:
 
+        common::protocol_layer &get_protocol( );
         std::string prepare_for_write( const char *data, size_t len );
 
     };

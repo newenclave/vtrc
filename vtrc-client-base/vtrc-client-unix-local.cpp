@@ -81,6 +81,11 @@ namespace vtrc { namespace client {
         this->close( );
     }
 
+    const common::call_context *client_unix_local::get_call_context( ) const
+    {
+        return impl_->get_call_context( );
+    }
+
     common::protocol_layer &client_unix_local::get_protocol( )
     {
         return impl_->get_protocol( );
