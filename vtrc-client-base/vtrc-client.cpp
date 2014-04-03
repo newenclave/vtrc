@@ -69,7 +69,7 @@ namespace vtrc { namespace client {
             vtrc::shared_ptr<client_win_pipe>
                          new_client(client_win_pipe::create( ios_, parent_ ));
             new_client->connect( local_name );
-            connection_ = new_client;    
+            connection_ = new_client;
 #endif
         }
 
@@ -90,7 +90,7 @@ namespace vtrc { namespace client {
             vtrc::shared_ptr<client_win_pipe>
                          new_client(client_win_pipe::create( ios_, parent_ ));
             new_client->connect( local_name );
-            connection_ = new_client;    
+            connection_ = new_client;
         }
 
         void async_connect(const std::wstring &local_name,

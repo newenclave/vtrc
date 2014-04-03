@@ -234,10 +234,10 @@ namespace vtrc { namespace common {
                                    mess.size( )  - hash_length );
         }
 
-        void set_ready(bool ready)
+        void set_ready( )
         {
             vtrc::unique_lock<vtrc::mutex> lck( ready_lock_ );
-            ready_ = ready;
+            ready_ = true;
             ready_var_.notify_all( );
         }
 
@@ -249,14 +249,18 @@ namespace vtrc { namespace common {
         void wait_for_ready(  )
         {
             vtrc::unique_lock<vtrc::mutex> lck( ready_lock_ );
-            ready_var_.wait( lck );
+            if( !ready_ )
+                ready_var_.wait( lck );
         }
 
         template <typename DurationType>
         bool wait_for_ready_for( const DurationType &duration )
         {
             vtrc::unique_lock<vtrc::mutex> lck( ready_lock_ );
-            return ready_var_.wait_for( lck, duration );
+            if( !ready_ )
+                return ready_var_.wait_for( lck, duration );
+            else
+                return true;
         }
 
         void drop_first( )
@@ -762,17 +766,17 @@ namespace vtrc { namespace common {
 
     void protocol_layer::wait_for_ready( )
     {
-
+        return impl_->wait_for_ready( );
     }
 
     bool protocol_layer::wait_for_ready_for_millisec(uint64_t millisec) const
     {
-        return impl_->wait_for_ready_for( vtrc::chrono::milliseconds(millisec));
+        return impl_->wait_for_ready_for(vtrc::chrono::milliseconds(millisec));
     }
 
     bool protocol_layer::wait_for_ready_for_microsec(uint64_t microsec) const
     {
-        return impl_->wait_for_ready_for( vtrc::chrono::microseconds(microsec));
+        return impl_->wait_for_ready_for(vtrc::chrono::microseconds(microsec));
     }
 
     void protocol_layer::process_data( const char *data, size_t length )
@@ -841,9 +845,9 @@ namespace vtrc { namespace common {
 
     // ===============
 
-    void protocol_layer::set_ready(bool ready)
+    void protocol_layer::set_ready( )
     {
-        return impl_->set_ready( ready );
+        return impl_->set_ready( );
     }
 
     bool protocol_layer::check_message( const std::string &mess )

@@ -172,6 +172,8 @@ namespace vtrc { namespace server {
 
             send_proto_message( ts );
 
+            parent_->set_ready( );
+
         }
 
         bool get_pop_message( gpb::Message &capsule )

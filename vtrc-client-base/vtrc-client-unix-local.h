@@ -46,9 +46,10 @@ namespace client {
         void on_write_error( const boost::system::error_code &err );
 
         const common::call_context *get_call_context( ) const;
+        common::protocol_layer &get_protocol( );
 
     private:
-        common::protocol_layer &get_protocol( );
+
         std::string prepare_for_write( const char *data, size_t len );
 
     };
