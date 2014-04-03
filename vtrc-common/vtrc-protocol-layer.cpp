@@ -321,13 +321,30 @@ namespace vtrc { namespace common {
             std::swap( *context_, other );
         }
 
+        static vtrc::shared_ptr<call_context> clone_context( call_context &src )
+        {
+            return vtrc::make_shared<call_context>(src.get_lowlevel_message( ));
+        }
+
+        static void clone_stack( call_stack_type &src, call_stack_type &res )
+        {
+            call_stack_type tmp;
+            typedef call_stack_type::const_iterator iter;
+            for( iter b(src.begin( )), e(src.end( )); b!=e; ++b ) {
+                tmp.push_back( clone_context( *(*b) ) );
+            }
+            res.swap( tmp );
+        }
+
         void copy_call_stack( call_stack_type &other ) const
         {
             if( NULL == context_.get( ) ) {
                 call_stack_type tmp;
                 other.swap( tmp );
             } else {
-                call_stack_type tmp(*context_);
+
+                call_stack_type tmp;
+                clone_stack( *context_, tmp );
 
                 typedef call_stack_type::const_iterator iter;
 
