@@ -34,7 +34,7 @@ namespace vtrc { namespace client {
                 throw vtrc::common::exception( GetLastError( ),
                         vtrc_errors::CATEGORY_SYSTEM );
             } else {
-                sock( ).assign( pipe );
+                get_socket( ).assign( pipe );
             }
             init( );
         }
@@ -60,7 +60,7 @@ namespace vtrc { namespace client {
                 throw vtrc::common::exception( GetLastError( ),
                         vtrc_errors::CATEGORY_SYSTEM );
             } else {
-                sock( ).assign( pipe );
+                get_socket( ).assign( pipe );
             }
 
             init( );
@@ -124,13 +124,18 @@ namespace vtrc { namespace client {
         impl_->async_connect( address, closure );
     }
 
+    const common::call_context *client_win_pipe::get_call_context( ) const
+    {
+        return impl_->get_call_context( );
+    }
+
     void client_win_pipe::on_write_error( const bsys::error_code &err )
     {
         impl_->on_write_error( err );
         this->close( );
     }
 
-    common::protocol_layer &client_win_pipe::get_protocol( )
+    common::protocol_layer &client_win_pipe::get_protocol( ) 
     {
         return impl_->get_protocol( );
     }
@@ -139,6 +144,11 @@ namespace vtrc { namespace client {
                                                   const char *data, size_t len)
     {
         return impl_->prepare_for_write( data, len );
+    }
+
+    bool client_win_pipe::active( ) const
+    {
+        return impl_->active( );
     }
 
     void client_win_pipe::init( )

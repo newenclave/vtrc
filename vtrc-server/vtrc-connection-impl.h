@@ -68,6 +68,16 @@ namespace vtrc { namespace server { namespace endpoints {
                 start_reading( );
                 protocol_ ->init( );
             }
+            
+            protocol_layer_s &get_protocol( )
+            {
+                return *protocol_;
+            }
+
+            const protocol_layer_s &get_protocol( ) const
+            {
+                return *protocol_;
+            }
 
             bool ready( ) const
             {
@@ -151,10 +161,6 @@ namespace vtrc { namespace server { namespace endpoints {
                 }
             }
 
-            protocol_layer_s &get_protocol( )
-            {
-                return *protocol_;
-            }
         };
 
     } // namespace

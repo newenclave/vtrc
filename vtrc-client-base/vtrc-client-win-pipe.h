@@ -13,6 +13,7 @@ namespace vtrc {
 
 namespace common {
     class protocol_layer;
+    class call_context;
 }
 
 namespace client {
@@ -45,7 +46,7 @@ namespace client {
                             common::closure_type closure );
 
         void on_write_error( const boost::system::error_code &err );
-        const call_context *get_call_context( );
+        const common::call_context *get_call_context( ) const;
 
     private:
 

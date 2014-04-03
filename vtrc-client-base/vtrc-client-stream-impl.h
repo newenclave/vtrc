@@ -62,7 +62,7 @@ namespace {
 
         bool active( ) const
         {
-            protocol_->ready( );
+            return protocol_->ready( );
         }
 
         void on_connect( const boost::system::error_code &err,

@@ -52,11 +52,6 @@ namespace vtrc { namespace common {
         impl_->close( );
     }
 
-    bool transport_win_pipe::active( ) const
-    {
-        return impl_->active( );
-    }
-
     common::enviroment &transport_win_pipe::get_enviroment( )
     {
         return impl_->get_enviroment( );
