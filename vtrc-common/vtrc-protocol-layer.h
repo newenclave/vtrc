@@ -73,8 +73,6 @@ namespace vtrc { namespace common {
         virtual void on_write_error( const boost::system::error_code &err );
         virtual void on_read_error( const boost::system::error_code &err );
 
-        //void send_message( const google::protobuf::Message &message );
-
         void make_call( lowlevel_unit_sptr llu );
         void make_call( lowlevel_unit_sptr llu, common::closure_type done);
 
