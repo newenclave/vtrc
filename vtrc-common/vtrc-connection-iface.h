@@ -54,7 +54,6 @@ namespace vtrc { namespace common {
     protected:
 
         friend class rpc_channel;
-
         virtual protocol_layer &get_protocol( )   = 0;
 
     };
