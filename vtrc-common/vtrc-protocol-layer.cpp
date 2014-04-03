@@ -514,6 +514,7 @@ namespace vtrc { namespace common {
 
                 errorcode = vtrc_errors::ERR_INTERNAL;
                 failed = true;
+
             }
 
             llu->clear_request( );
