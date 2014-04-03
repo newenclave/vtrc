@@ -407,7 +407,7 @@ namespace vtrc { namespace common {
             send_message( llu );
         }
 
-        void wait_call_slot( uint64_t slot_id, uint32_t millisec)
+        void wait_call_slot( uint64_t slot_id, uint64_t millisec)
         {
             wait_result_codes qwr = rpc_queue_.wait_queue( slot_id,
                              vtrc::chrono::milliseconds(millisec) );
@@ -415,7 +415,7 @@ namespace vtrc { namespace common {
         }
 
         void read_slot_for(uint64_t slot_id, lowlevel_unit_sptr &mess,
-                                             uint32_t millisec)
+                                             uint64_t millisec)
         {
             wait_result_codes qwr =
                     rpc_queue_.read(
@@ -427,7 +427,7 @@ namespace vtrc { namespace common {
 
         void read_slot_for(uint64_t slot_id,
                            std::deque<lowlevel_unit_sptr> &data_list,
-                           uint32_t millisec )
+                           uint64_t millisec )
         {
             wait_result_codes qwr = rpc_queue_.read_queue(
                         slot_id, data_list,
@@ -857,21 +857,21 @@ namespace vtrc { namespace common {
         impl_->call_rpc_method( slot_id, llu );
     }
 
-    void protocol_layer::wait_slot_for( uint64_t slot_id, uint32_t millisec)
+    void protocol_layer::wait_slot_for( uint64_t slot_id, uint64_t millisec)
     {
         impl_->wait_call_slot( slot_id, millisec);
     }
 
     void protocol_layer::read_slot_for( uint64_t slot_id,
                                         lowlevel_unit_sptr &mess,
-                                        uint32_t millisec)
+                                        uint64_t millisec)
     {
         impl_->read_slot_for( slot_id, mess, millisec);
     }
 
     void protocol_layer::read_slot_for( uint64_t slot_id,
                                       std::deque<lowlevel_unit_sptr> &mess_list,
-                                      uint32_t millisec )
+                                      uint64_t millisec )
     {
         impl_->read_slot_for( slot_id, mess_list, millisec);
     }

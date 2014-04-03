@@ -1,6 +1,6 @@
 #include <stdexcept>
-#include <stdint.h>
 
+#include "vtrc-stdint.h"
 #include "vtrc-data-queue.h"
 #include "vtrc-sizepack-policy.h"
 

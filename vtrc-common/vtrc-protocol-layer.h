@@ -2,10 +2,11 @@
 #define VTRC_PROTOCOL_LAYER_H
 
 #include <stdlib.h>
-#include <stdint.h>
 #include <string>
 #include <deque>
+
 #include "vtrc-memory.h"
+#include "vtrc-stdint.h"
 
 #include "vtrc-call-context.h"
 #include "vtrc-rpc-service-wrapper.h"
@@ -81,15 +82,15 @@ namespace vtrc { namespace common {
         void call_rpc_method( uint64_t slot_id, const lowlevel_unit_type &llu );
 
         // refactor names here!
-        void wait_slot_for( uint64_t slot_id, uint32_t millisec );
+        void wait_slot_for( uint64_t slot_id, uint64_t millisec );
 
         void read_slot_for( uint64_t slot_id,
                             lowlevel_unit_sptr &mess,
-                            uint32_t millisec );
+                            uint64_t millisec );
 
         void read_slot_for( uint64_t slot_id,
                             std::deque<lowlevel_unit_sptr> &mess_list,
-                            uint32_t millisec );
+                            uint64_t millisec );
 
         void erase_slot ( uint64_t slot_id );
         void cancel_slot( uint64_t slot_id );
