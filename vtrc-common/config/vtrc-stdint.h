@@ -27,4 +27,4 @@ typedef unsigned __int64 uint64_t;
 
 #endif
 
-#endif // VTRCSTDINT_H
+#endif // VTRC_STDINT_H
