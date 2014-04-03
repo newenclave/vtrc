@@ -251,7 +251,7 @@ int main( ) try {
 
 #ifndef _WIN32
 
-    std::string file_name("/tmp/test");
+    std::string file_name("/tmp/test.socket");
 
     ::unlink( file_name.c_str( ) );
 
@@ -278,7 +278,6 @@ int main( ) try {
     std::cout << "Stoppped. Wait ... \n";
 
     tcp_ul->stop( );
-
     tcp4_ep->stop( );
     tcp6_ep->stop( );
 
