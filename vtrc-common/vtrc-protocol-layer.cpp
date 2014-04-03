@@ -101,6 +101,7 @@ namespace vtrc { namespace common {
                 boost::system::error_code err( 0,
                         boost::system::get_system_category( ) );
                 if(internal_closure_) internal_closure_( err );
+
             } catch( ... ) { ;;; }
 
             connection_iface_wptr                   connection_;
@@ -142,7 +143,7 @@ namespace vtrc { namespace common {
         mutable vtrc::shared_mutex   options_map_lock_;
 
         bool                         working_;
-        const protocol_layer::lowlevel_unit_type empty_done_;
+        const lowlevel_unit_type     empty_done_;
 
         impl( transport_iface *c, bool oddside, size_t mess_len )
             :connection_(c)
@@ -226,6 +227,11 @@ namespace vtrc { namespace common {
             const size_t hash_length = hash_checker_->hash_size( );
             result.ParseFromArray( mess.c_str( ) + hash_length,
                                    mess.size( )  - hash_length );
+        }
+
+        void set_ready(bool ready)
+        {
+
         }
 
         void drop_first( )
@@ -487,13 +493,8 @@ namespace vtrc { namespace common {
             return parent_->get_service_by_name( name );
         }
 
-        void closure_fake( closure_holder_sptr holder )
+        void closure_fake( closure_holder_sptr /*holder*/ )
         {
-            if( holder->internal_closure_ ) {
-                boost::system::error_code err( 0,
-                        boost::system::get_system_category( ) );
-                holder->internal_closure_( err );
-            }
             //send_message( fake_ );
         }
 
@@ -504,26 +505,29 @@ namespace vtrc { namespace common {
             bool failed = false;
             unsigned errorcode = 0;
 
-            if( holder->controller_->Failed( ) ) {
-
-                errorcode = vtrc_errors::ERR_INTERNAL;
-                llu->mutable_error( )
-                        ->set_additional( holder->controller_->ErrorText( ));
-                failed = true;
-
-            } else if( holder->controller_->IsCanceled( ) ) {
+            if( holder->controller_->IsCanceled( ) ) {
 
                 errorcode = vtrc_errors::ERR_CANCELED;
                 failed = true;
 
+             } else if( holder->controller_->Failed( ) ) {
+
+                errorcode = vtrc_errors::ERR_INTERNAL;
+                failed = true;
             }
 
             llu->clear_request( );
             llu->clear_call( );
 
             if( failed ) {
+
                 llu->mutable_error( )->set_code( errorcode );
                 llu->clear_response( );
+
+                if( !holder->controller_->ErrorText( ).empty( ) )
+                    llu->mutable_error( )
+                          ->set_additional( holder->controller_->ErrorText( ));
+
             } else {
                 llu->set_response( holder->res_->SerializeAsString( ) );
             }
@@ -601,11 +605,11 @@ namespace vtrc { namespace common {
             closure_holder_sptr closure_hold
                                 (vtrc::make_shared<closure_holder_type>( ));
 
-            closure_hold->connection_       = connection_->weak_from_this( );
-            closure_hold->req_              = req;
-            closure_hold->res_              = res;
-            closure_hold->controller_       = controller;
-            closure_hold->llu_              = llu;
+            closure_hold->      connection_ = connection_->weak_from_this( );
+            closure_hold->             req_ = req;
+            closure_hold->             res_ = res;
+            closure_hold->      controller_ = controller;
+            closure_hold->             llu_ = llu;
             closure_hold->internal_closure_ = done;
 
             gpb::Closure* clos(make_closure(closure_hold, llu->opt( ).wait( )));
@@ -772,6 +776,11 @@ namespace vtrc { namespace common {
     }
 
     // ===============
+
+    void protocol_layer::set_ready(bool ready)
+    {
+        return impl_->set_ready( ready );
+    }
 
     bool protocol_layer::check_message( const std::string &mess )
     {

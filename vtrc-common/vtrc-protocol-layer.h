@@ -150,6 +150,8 @@ namespace vtrc { namespace common {
 
     protected:
 
+        void set_ready( bool ready );
+
         void push_rpc_message( uint64_t slot_id, lowlevel_unit_sptr mess);
 
         void push_rpc_message_all( lowlevel_unit_sptr mess );
