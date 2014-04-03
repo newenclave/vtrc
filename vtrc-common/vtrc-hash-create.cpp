@@ -2,6 +2,7 @@
 #include <memory.h>
 
 #include "vtrc-hash-iface.h"
+#include "vtrc-stdint.h"
 #include "protocol/vtrc-auth.pb.h"
 
 namespace vtrc { namespace common {  namespace hash {
@@ -33,7 +34,7 @@ namespace vtrc { namespace common {  namespace hash {
 
     hash_iface *create_default( )
     {
-        static const gpb::uint32 def_hasher =
+        static const unsigned def_hasher =
                     vtrc_auth::client_selection::default_instance( ).hash( );
         return create_by_index( def_hasher );
     }
