@@ -91,6 +91,7 @@ namespace vtrc { namespace common {
         > options_map_type;
 
         struct closure_holder_type {
+
             closure_holder_type( )
                 :proto_closure_(NULL)
             { }
