@@ -39,6 +39,8 @@ namespace client {
 
     protected:
 
+        vtrc_client( boost::asio::io_service &ios );
+
         vtrc_client( boost::asio::io_service &ios,
                      boost::asio::io_service &rpc_ios );
 

@@ -219,10 +219,15 @@ namespace vtrc { namespace client {
         impl_->parent_ = this;
     }
 
+    vtrc_client::vtrc_client( boost::asio::io_service &ios )
+        :impl_(new impl(ios, ios))
+    {
+        impl_->parent_ = this;
+    }
+
     vtrc::shared_ptr<vtrc_client> vtrc_client::create(basio::io_service &ios)
     {
-        vtrc::shared_ptr<vtrc_client> new_inst( new vtrc_client( ios, ios ) );
-
+        vtrc::shared_ptr<vtrc_client> new_inst( new vtrc_client( ios ) );
         return new_inst;
     }
 
@@ -230,7 +235,6 @@ namespace vtrc { namespace client {
                                                   basio::io_service &rpc_ios)
     {
         vtrc::shared_ptr<vtrc_client> new_inst( new vtrc_client( ios, rpc_ios));
-
         return new_inst;
     }
 
