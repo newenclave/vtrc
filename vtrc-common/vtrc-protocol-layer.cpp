@@ -168,13 +168,13 @@ namespace vtrc { namespace common {
         {
             random_device rd(true);
             std::string s1( 4, 4 );
-            std::string s2( 4, 4 );
+            //std::string s2( 4, 4 );
             protocol_layer::lowlevel_unit_type res;
             rd.generate( &s1[0], &s1[0] + 4 );
-            rd.generate( &s2[0], &s2[0] + 4 );
+            //rd.generate( &s2[0], &s2[0] + 4 );
 
             res.set_request( s1 );
-            res.set_response( s2 );
+            //res.set_response( s2 );
 
             return res;
         }
@@ -200,8 +200,9 @@ namespace vtrc { namespace common {
             llu.ParseFromArray(data, length);
 
             transformer_->transform(
-                            result.empty( ) ? NULL : &result[0],
-                                            result.size( ) );
+                        result.empty( ) ? NULL : &result[0],
+                        result.size( ) );
+
             return result;
         }
 
