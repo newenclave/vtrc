@@ -241,6 +241,11 @@ namespace vtrc { namespace common {
             ready_var_.notify_all( );
         }
 
+        bool state_predic( bool state ) const
+        {
+            return ready_ == state;
+        }
+
         bool ready( ) const
         {
             return ready_;
@@ -257,10 +262,8 @@ namespace vtrc { namespace common {
         bool wait_for_ready_for( bool state, const DurationType &duration )
         {
             vtrc::unique_lock<vtrc::mutex> lck( ready_lock_ );
-            if( state != ready_ )
-                return ready_var_.wait_for( lck, duration );
-            else
-                return state;
+            return ready_var_.wait_for( lck, duration,
+                     vtrc::bind( &this_type::state_predic, this, state ) );
         }
 
         void drop_first( )
