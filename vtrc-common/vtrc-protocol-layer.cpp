@@ -369,8 +369,13 @@ namespace vtrc { namespace common {
         {
             call_stack_type tmp;
             typedef call_stack_type::const_iterator iter;
+            vtrc::shared_ptr<call_context> last;
             for( iter b(src.begin( )), e(src.end( )); b!=e; ++b ) {
                 tmp.push_back( clone_context( *(*b) ) );
+                if( last ) {
+                    last->set_next( b->get( ) );
+                }
+                last = *b;
             }
             res.swap( tmp );
         }
@@ -381,21 +386,7 @@ namespace vtrc { namespace common {
                 call_stack_type tmp;
                 other.swap( tmp );
             } else {
-
-                call_stack_type tmp;
-                clone_stack( *context_, tmp );
-
-                typedef call_stack_type::const_iterator iter;
-
-                for( iter b(tmp.begin( )), e(tmp.end( )); b!=e; ++b ) {
-                    iter next( b );
-                    ++next;
-                    if( next == e )
-                        (*b)->set_next( NULL );
-                    else
-                        (*b)->set_next( next->get( ) );
-                }
-                other.swap(tmp);
+                clone_stack( *context_, other );
             }
         }
 
