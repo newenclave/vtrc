@@ -5,7 +5,6 @@
 #include "vtrc-common/vtrc-closure-holder.h"
 #include "vtrc-memory.h"
 
-
 namespace boost {
 
 namespace system {
