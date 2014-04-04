@@ -709,18 +709,6 @@ namespace vtrc { namespace common {
                 send_message( empty_done_ );
             }
 
-//            if( request_wait ) {
-//                llu->clear_request( );
-//                llu->clear_call( );
-//                if( failed ) {
-//                    llu->mutable_error( )->set_code( errorcode );
-//                    llu->clear_response( );
-//                }
-//                send_message( *llu );
-//            } else {
-//                send_message( fake_ );
-//                //;;;
-//            }
         }
 
         void on_system_error(const boost::system::error_code &err,
