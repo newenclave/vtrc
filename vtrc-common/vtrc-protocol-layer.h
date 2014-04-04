@@ -65,9 +65,14 @@ namespace vtrc { namespace common {
     public:
 
         bool ready( ) const;
-        void wait_for_ready(  );
-        bool wait_for_ready_for_millisec( uint64_t millisec ) const;
-        bool wait_for_ready_for_microsec( uint64_t microsec ) const;
+        void wait_for_ready( bool ready );
+        bool wait_for_ready_for_millisec( bool ready, uint64_t millisec ) const;
+        bool wait_for_ready_for_microsec( bool ready, uint64_t microsec ) const;
+
+    protected:
+        void set_ready( bool ready );
+
+    public:
 
         //bool wait_for_ready( )
 

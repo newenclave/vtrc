@@ -118,7 +118,7 @@ namespace vtrc { namespace server {
                                  lowlevel_unit_type &mess,
                                  unsigned mess_type)
             {
-                if( sender != next ) {
+                if( sender != next && next->active( ) ) {
                     configure_message( next, mess_type, mess );
                     get_protocol( *next ).call_rpc_method( mess );
                 }
@@ -131,8 +131,10 @@ namespace vtrc { namespace server {
                                   lowlevel_unit_type &mess,
                                   unsigned mess_type)
             {
-                configure_message( next, mess_type, mess );
-                get_protocol( *next ).call_rpc_method( mess );
+                if( next->active( ) ) {
+                    configure_message( next, mess_type, mess );
+                    get_protocol( *next ).call_rpc_method( mess );
+                }
                 return true;
             }
 
