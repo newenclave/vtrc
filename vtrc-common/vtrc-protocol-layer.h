@@ -74,8 +74,6 @@ namespace vtrc { namespace common {
 
     public:
 
-        //bool wait_for_ready( )
-
         uint64_t next_index( );
 
         void process_data( const char *data, size_t length );
@@ -113,8 +111,6 @@ namespace vtrc { namespace common {
 
     protected:
 
-        friend class rpc_channel;
-
         struct context_holder {
             protocol_layer *p_;
             call_context   *ctx_;
@@ -137,6 +133,7 @@ namespace vtrc { namespace common {
             context_holder &operator = ( context_holder const & );
         };
 
+        friend class  rpc_channel;
         friend struct context_holder;
 
     protected:
@@ -159,8 +156,6 @@ namespace vtrc { namespace common {
         const call_context *get_call_context( ) const;
 
     protected:
-
-        void set_ready( );
 
         void push_rpc_message( uint64_t slot_id, lowlevel_unit_sptr mess);
 

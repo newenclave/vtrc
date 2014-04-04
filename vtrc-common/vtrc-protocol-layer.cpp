@@ -143,7 +143,6 @@ namespace vtrc { namespace common {
         options_map_type             options_map_;
         mutable vtrc::shared_mutex   options_map_lock_;
 
-        bool                         working_;
         const lowlevel_unit_type     empty_done_;
 
         mutable vtrc::mutex          ready_lock_;
@@ -160,7 +159,6 @@ namespace vtrc { namespace common {
             ,reverter_(common::transformers::none::create( ))
             ,queue_(data_queue::varint::create_parser(mess_len))
             ,rpc_index_(oddside ? 101 : 100)
-            ,working_(true)
             ,empty_done_(make_fake_mess( ))
         {}
 
@@ -235,16 +233,16 @@ namespace vtrc { namespace common {
                                    mess.size( )  - hash_length );
         }
 
-        void set_ready( )
+        void set_ready( bool ready )
         {
             vtrc::unique_lock<vtrc::mutex> lck( ready_lock_ );
-            ready_ = true;
+            ready_ = ready;
             ready_var_.notify_all( );
         }
 
         bool state_predic( bool state ) const
         {
-            return working_ && (ready_ == state);
+            return (ready_ == state);
         }
 
         bool ready( ) const
@@ -445,7 +443,7 @@ namespace vtrc { namespace common {
 
         void call_rpc_method( uint64_t slot_id, const lowlevel_unit_type &llu )
         {
-            if( !working_ )
+            if( !ready_ )
                 throw vtrc::common::exception( vtrc_errors::ERR_COMM );
             rpc_queue_.add_queue( slot_id );
             send_message( llu );
@@ -453,7 +451,7 @@ namespace vtrc { namespace common {
 
         void call_rpc_method( const lowlevel_unit_type &llu )
         {
-            if( !working_ )
+            if( !ready_ )
                 throw vtrc::common::exception( vtrc_errors::ERR_COMM );
             send_message( llu );
         }
@@ -728,7 +726,7 @@ namespace vtrc { namespace common {
         void on_system_error(const boost::system::error_code &err,
                              const std::string &add)
         {
-            working_ = false;
+            set_ready( false );
 
             vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
                             llu( new  vtrc_rpc_lowlevel::lowlevel_unit );
@@ -785,7 +783,12 @@ namespace vtrc { namespace common {
                                                      uint64_t microsec) const
     {
         return impl_->wait_for_ready_for( ready,
-                    vtrc::chrono::microseconds(microsec));
+                                          vtrc::chrono::microseconds(microsec));
+    }
+
+    void protocol_layer::set_ready( bool ready )
+    {
+        impl_->set_ready( ready );
     }
 
     void protocol_layer::process_data( const char *data, size_t length )
@@ -853,11 +856,6 @@ namespace vtrc { namespace common {
     }
 
     // ===============
-
-    void protocol_layer::set_ready( )
-    {
-        return impl_->set_ready( );
-    }
 
     bool protocol_layer::check_message( const std::string &mess )
     {

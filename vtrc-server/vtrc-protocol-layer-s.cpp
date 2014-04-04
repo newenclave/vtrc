@@ -172,7 +172,7 @@ namespace vtrc { namespace server {
 
             send_proto_message( ts );
 
-            parent_->set_ready( );
+            parent_->set_ready( true );
 
         }
 

@@ -190,7 +190,7 @@ namespace vtrc { namespace client {
 
             pop_message( );
             stage_call_ = vtrc::bind( &this_type::on_rpc_process, this );
-            parent_->set_ready( );
+            parent_->set_ready( true );
         }
 
         void set_options( const boost::system::error_code &err )
