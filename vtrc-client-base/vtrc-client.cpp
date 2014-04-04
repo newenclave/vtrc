@@ -47,7 +47,7 @@ namespace vtrc { namespace client {
         impl( basio::io_service &ios, basio::io_service &rpc_ios )
             :ios_(ios)
             ,rpc_ios_(rpc_ios)
-        {}
+        { }
 
         void connect( const std::string &address,
                       const std::string &service )

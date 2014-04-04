@@ -30,7 +30,7 @@ namespace vtrc { namespace server { namespace endpoints {
 
             std::vector<char>                   read_buff_;
 
-            vtrc::shared_ptr<protocol_layer_s>  protocol_;
+            vtrc::scoped_ptr<protocol_layer_s>  protocol_;
 
             connection_impl(endpoint_iface &endpoint,
                             vtrc::shared_ptr<socket_type> sock )
@@ -40,11 +40,9 @@ namespace vtrc { namespace server { namespace endpoints {
                 ,ios_(app_.get_io_service( ))
                 ,read_buff_(endpoint_.get_options( ).read_buffer_size)
             {
-                protocol_ = vtrc::make_shared<server::protocol_layer_s> (
-                            vtrc::ref(app_), this,
+                protocol_.reset(new protocol_layer_s( vtrc::ref(app_), this,
                             endpoint_.get_options( ).maximum_active_calls,
-                            endpoint_.get_options( ).maximum_message_length
-                            );
+                            endpoint_.get_options( ).maximum_message_length));
             }
 
             static vtrc::shared_ptr<this_type> create(endpoint_iface &endpoint,
@@ -68,7 +66,7 @@ namespace vtrc { namespace server { namespace endpoints {
                 start_reading( );
                 protocol_ ->init( );
             }
-            
+
             protocol_layer_s &get_protocol( )
             {
                 return *protocol_;

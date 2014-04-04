@@ -45,12 +45,10 @@ namespace vtrc { namespace client {
         protocol_layer_c            *parent_;
         stage_funcion_type           stage_call_;
         vtrc_client                 *client_;
-        vtrc::shared_ptr<int>        track_;
 
         impl( common::transport_iface *c, vtrc_client *client )
             :connection_(c)
             ,client_(client)
-            ,track_(vtrc::make_shared<int>(1))
         {
             stage_call_ = vtrc::bind( &this_type::on_hello_call, this );
         }
