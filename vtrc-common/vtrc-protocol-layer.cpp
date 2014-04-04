@@ -130,12 +130,12 @@ namespace vtrc { namespace common {
         transport_iface             *connection_;
         protocol_layer              *parent_;
 
-        vtrc::scoped_ptr<hash_iface>        hash_maker_;
-        vtrc::scoped_ptr<hash_iface>        hash_checker_;
-        vtrc::scoped_ptr<transformer_iface> transformer_;
-        vtrc::scoped_ptr<transformer_iface> reverter_;
+        vtrc::scoped_ptr<hash_iface>             hash_maker_;
+        vtrc::scoped_ptr<hash_iface>             hash_checker_;
+        vtrc::scoped_ptr<transformer_iface>      transformer_;
+        vtrc::scoped_ptr<transformer_iface>      reverter_;
 
-        data_queue::queue_base      *queue_;
+        vtrc::scoped_ptr<data_queue::queue_base> queue_;
 
         rpc_queue_type               rpc_queue_;
         vtrc::atomic<uint64_t>       rpc_index_;
