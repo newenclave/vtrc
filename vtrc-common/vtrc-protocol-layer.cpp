@@ -10,6 +10,7 @@
 
 #include "vtrc-atomic.h"
 #include "vtrc-mutex.h"
+#include "vtrc-memory.h"
 #include "vtrc-mutex-typedefs.h"
 #include "vtrc-condition-variable.h"
 
@@ -128,10 +129,11 @@ namespace vtrc { namespace common {
 
         transport_iface             *connection_;
         protocol_layer              *parent_;
-        hash_iface                  *hash_maker_;
-        hash_iface                  *hash_checker_;
-        transformer_iface           *transformer_;
-        transformer_iface           *reverter_;
+
+        vtrc::scoped_ptr<hash_iface>        hash_maker_;
+        vtrc::scoped_ptr<hash_iface>        hash_checker_;
+        vtrc::scoped_ptr<transformer_iface> transformer_;
+        vtrc::scoped_ptr<transformer_iface> reverter_;
 
         data_queue::queue_base      *queue_;
 
@@ -163,18 +165,10 @@ namespace vtrc { namespace common {
         {}
 
         ~impl( )
-        {
-            delete queue_;
-            delete hash_maker_;
-            delete hash_checker_;
-            delete transformer_;
-            delete reverter_;
-        }
+        { }
 
         static protocol_layer::lowlevel_unit_type make_fake_mess( )
         {
-
-            std::cout << sizeof( impl ) << "\n";
 
             random_device rd(true);
             std::string s1( 4, 4 );
@@ -420,26 +414,23 @@ namespace vtrc { namespace common {
 
         void change_sign_checker( hash_iface *new_signer )
         {
-            delete hash_checker_;
-            hash_checker_ = new_signer;
+            hash_checker_.reset(new_signer);
         }
 
         void change_sign_maker( hash_iface *new_signer )
         {
-            delete hash_maker_;
-            hash_maker_ = new_signer;
+
+            hash_maker_.reset(new_signer);
         }
 
         void change_transformer( transformer_iface *new_transformer )
         {
-            delete transformer_;
-            transformer_ = new_transformer;
+            transformer_.reset(new_transformer);
         }
 
         void change_reverter( transformer_iface *new_reverter)
         {
-            delete reverter_;
-            reverter_ = new_reverter;
+            reverter_.reset(new_reverter);
         }
 
         void pop_message( )
