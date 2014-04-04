@@ -9,7 +9,6 @@
 #include "vtrc-enviroment.h"
 #include "vtrc-memory.h"
 #include "vtrc-bind.h"
-#include "vtrc-atomic.h"
 #include "vtrc-mutex.h"
 
 #include "vtrc-chrono.h"
