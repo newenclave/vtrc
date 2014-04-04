@@ -17,7 +17,7 @@ namespace vtrc { namespace common {
                                       const void *hash) const = 0;
     };
 
-    typedef vtrc::shared_ptr<hash_iface> hasher_iface_sptr;
+    typedef vtrc::shared_ptr<hash_iface> hash_iface_sptr;
 
     namespace hash {
 
