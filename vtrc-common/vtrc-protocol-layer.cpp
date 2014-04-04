@@ -243,7 +243,7 @@ namespace vtrc { namespace common {
 
         bool state_predic( bool state ) const
         {
-            return ready_ == state;
+            return working_ && (ready_ == state);
         }
 
         bool ready( ) const
@@ -255,7 +255,8 @@ namespace vtrc { namespace common {
         {
             vtrc::unique_lock<vtrc::mutex> lck( ready_lock_ );
             if( state != ready_ )
-                ready_var_.wait( lck );
+                ready_var_.wait( lck,
+                         vtrc::bind( &this_type::state_predic, this, state ));
         }
 
         template <typename DurationType>
