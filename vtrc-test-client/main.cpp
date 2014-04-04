@@ -169,7 +169,7 @@ int main( )
 
     vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(2000) );
 
-    vtrc::thread( run_client, cl, true ).detach( );
+    //vtrc::thread( run_client, cl, true ).detach( );
     //vtrc::thread( run_client, cl, false ).detach( );
     vtrc::thread( run_client, cl, false ).join( );
 

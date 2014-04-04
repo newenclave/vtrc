@@ -108,9 +108,9 @@ namespace vtrc { namespace common {
             } catch( ... ) { ;;; }
 
             connection_iface_wptr                   connection_;
-            vtrc::shared_ptr<gpb::Message>          req_;
-            vtrc::shared_ptr<gpb::Message>          res_;
-            rpc_controller_sptr                     controller_;
+            vtrc::scoped_ptr<gpb::Message>          req_;
+            vtrc::scoped_ptr<gpb::Message>          res_;
+            vtrc::scoped_ptr<rpc_controller>        controller_;
             lowlevel_unit_sptr                      llu_;
             common::closure_type                    internal_closure_;
             gpb::Closure                           *proto_closure_;
@@ -640,33 +640,30 @@ namespace vtrc { namespace common {
 
             ch.ctx_->set_call_options( call_opts );
 
-            vtrc::shared_ptr<gpb::Message> req
-                (service->service( )->GetRequestPrototype( meth ).New( ));
-
-            vtrc::shared_ptr<gpb::Message> res
-                (service->service( )->GetResponsePrototype( meth ).New( ));
-
-            req->ParseFromString( llu->request( ) );
-            res->ParseFromString( llu->response( ));
-
-            rpc_controller_sptr controller
-                                (vtrc::make_shared<common::rpc_controller>( ));
-
             closure_holder_sptr closure_hold
                                 (vtrc::make_shared<closure_holder_type>( ));
 
+            closure_hold->req_.reset
+                (service->service( )->GetRequestPrototype( meth ).New( ));
+
+            closure_hold->res_.reset
+                (service->service( )->GetResponsePrototype( meth ).New( ));
+
+            closure_hold->req_->ParseFromString( llu->request( ) );
+            closure_hold->res_->ParseFromString( llu->response( ));
+
+            closure_hold->controller_.reset(new common::rpc_controller);
+
             closure_hold->      connection_ = connection_->weak_from_this( );
-            closure_hold->             req_ = req;
-            closure_hold->             res_ = res;
-            closure_hold->      controller_ = controller;
             closure_hold->             llu_ = llu;
             closure_hold->internal_closure_ = done;
 
             gpb::Closure* clos(make_closure(closure_hold, llu->opt( ).wait( )));
 
-            service->service( )->CallMethod( meth, controller.get( ),
-                                            req.get( ), res.get( ), clos );
-
+            service->service( )->CallMethod( meth,
+                                     closure_hold->controller_.get( ),
+                                     closure_hold->req_.get( ),
+                                     closure_hold->res_.get( ), clos );
         }
 
         void make_call(protocol_layer::lowlevel_unit_sptr llu)
