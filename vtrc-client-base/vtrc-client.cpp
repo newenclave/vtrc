@@ -44,12 +44,32 @@ namespace vtrc { namespace client {
         service_weak_map                weak_services_;
         service_shared_map              hold_services_;
         vtrc::shared_mutex              services_lock_;
+        std::string                     session_key_;
+        bool                            key_set_;
 
         impl( basio::io_service &ios, basio::io_service &rpc_ios )
             :ios_(ios)
             ,rpc_ios_(rpc_ios)
             ,protocol_(NULL)
+            ,key_set_(false)
         { }
+
+
+        void set_session_key( const std::string &key )
+        {
+            key_set_     = true;
+            session_key_ = key;
+        }
+
+        const std::string &get_session_key(  ) const
+        {
+            return session_key_;
+        }
+
+        bool is_key_set( ) const
+        {
+            return key_set_;
+        }
 
         template<typename ClientType>
         vtrc::shared_ptr<ClientType> create_client(  )
@@ -151,6 +171,11 @@ namespace vtrc { namespace client {
                                 this,
                                 basio::placeholders::error,
                                 closure ));
+        }
+
+        bool ready( ) const
+        {
+            return (protocol_ && protocol_->ready( ));
         }
 
         void disconnect( )
@@ -306,6 +331,21 @@ namespace vtrc { namespace client {
         return impl_->create_channel( dont_wait, insertion );
     }
 
+    void vtrc_client::set_session_key( const std::string &key )
+    {
+        impl_->set_session_key( key );
+    }
+
+    const std::string &vtrc_client::get_session_key( ) const
+    {
+        return impl_->get_session_key( );
+    }
+
+    bool vtrc_client::is_key_set(  ) const
+    {
+        return impl_->is_key_set( );
+    }
+
     void vtrc_client::connect(const std::string &local_name)
     {
         impl_->connect( local_name );
@@ -345,6 +385,11 @@ namespace vtrc { namespace client {
                             common::closure_type closure )
     {
         impl_->async_connect( address, service, closure );
+    }
+
+    bool vtrc_client::ready( ) const
+    {
+        return impl_->ready( );
     }
 
     void vtrc_client::disconnect( )

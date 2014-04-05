@@ -16,6 +16,10 @@ namespace asio {
     class io_service;
 }}
 
+namespace vtrc_errors {
+    class container;
+}
+
 namespace google { namespace protobuf {
     class RpcChannel;
     class Service;
@@ -45,6 +49,7 @@ namespace client {
 
         VTRC_DECLARE_SIGNAL( on_connect,    void( ) );
         VTRC_DECLARE_SIGNAL( on_disconnect, void( ) );
+        VTRC_DECLARE_SIGNAL( on_error,      void( const char * ) );
         VTRC_DECLARE_SIGNAL( on_ready,      void( ) );
 
     protected:
@@ -91,6 +96,15 @@ namespace client {
         vtrc::shared_ptr<google::protobuf::RpcChannel>
                             create_channel( bool disable_wait, bool insertion );
 
+        void set_session_key( const std::string &key );
+
+    private:
+
+        const std::string &get_session_key(  ) const;
+        bool is_key_set( ) const;
+
+    public:
+
         void connect( const std::string &local_name );
         void connect( const std::string &address, const std::string &service );
 
@@ -104,6 +118,8 @@ namespace client {
         void async_connect( const std::wstring &local_name,
                             common::closure_type closure);
 #endif
+
+        bool ready( ) const;
 
         void disconnect( );
 

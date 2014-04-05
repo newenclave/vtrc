@@ -156,14 +156,13 @@ namespace vtrc { namespace common {
             :connection_(c)
             ,hash_maker_(common::hash::create_default( ))
             ,hash_checker_(common::hash::create_default( ))
-//            ,transformer_(common::transformers::erseefor::create( "1234", 4 ))
-//            ,reverter_(common::transformers::erseefor::create( "1234", 4 ))
             ,transformer_(common::transformers::none::create( ))
             ,reverter_(common::transformers::none::create( ))
             ,queue_(data_queue::varint::create_parser(mess_len))
             ,rpc_index_(oddside ? 101 : 100)
             ,empty_done_(make_fake_mess( ))
-        {}
+            ,ready_(false)
+        { }
 
         ~impl( )
         { }
@@ -715,7 +714,7 @@ namespace vtrc { namespace common {
             vtrc::shared_ptr<vtrc_rpc_lowlevel::lowlevel_unit>
                             llu( new  vtrc_rpc_lowlevel::lowlevel_unit );
 
-            vtrc_errors::error_container *err_cont = llu->mutable_error( );
+            vtrc_errors::container *err_cont = llu->mutable_error( );
 
             err_cont->set_code(err.value( ));
             err_cont->set_category(vtrc_errors::CATEGORY_SYSTEM);

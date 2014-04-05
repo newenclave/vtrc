@@ -89,7 +89,6 @@ namespace vtrc { namespace server { namespace endpoints {
                 oss << "unix://" << endpoint_.path( );
                 return oss.str( );
             }
-
         };
     }
 

@@ -95,20 +95,20 @@ namespace vtrc { namespace server {
         :impl_(new impl)
     {}
 
-     application::application(common::pool_pair &pools)
-         :impl_(new impl(&pools.get_io_service( ), &pools.get_rpc_service( )))
-     {
+    application::application(common::pool_pair &pools)
+     :impl_(new impl(&pools.get_io_service( ), &pools.get_rpc_service( )))
+    {
 
-     }
+    }
 
     application::application( boost::asio::io_service &ios )
         :impl_(new impl(&ios))
     {}
 
-     application::application( boost::asio::io_service &ios,
-                               boost::asio::io_service &rpc_ios)
-         :impl_(new impl(&ios, &rpc_ios))
-     {}
+    application::application( boost::asio::io_service &ios,
+                           boost::asio::io_service &rpc_ios)
+     :impl_(new impl(&ios, &rpc_ios))
+    {}
 
     application::~application( )
     {
@@ -130,10 +130,10 @@ namespace vtrc { namespace server {
         return impl_->get_io_service( );
     }
 
-     boost::asio::io_service &application::get_rpc_service( )
-     {
-         return impl_->get_rpc_service( );
-     }
+    boost::asio::io_service &application::get_rpc_service( )
+    {
+        return impl_->get_rpc_service( );
+    }
 
     vtrc::shared_ptr<common::connection_list> application::get_clients()
     {
@@ -145,6 +145,11 @@ namespace vtrc { namespace server {
                                     const std::string &        /*service_name*/)
     {
         return common::rpc_service_wrapper_sptr( );
+    }
+
+    std::string application::get_session_key(common::connection_iface *conn)
+    {
+        return std::string( );
     }
 
 }}

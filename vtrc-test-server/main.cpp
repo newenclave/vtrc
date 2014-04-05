@@ -223,6 +223,11 @@ private:
         }
     }
 
+    std::string get_session_key( vtrc::common::connection_iface *connection )
+    {
+        return "1234";
+    }
+
     vtrc::common::rpc_service_wrapper_sptr get_service_by_name(
                                     vtrc::common::connection_iface *connection,
                                     const std::string &service_name)

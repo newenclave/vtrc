@@ -27,10 +27,12 @@
 
 #include "vtrc-chrono.h"
 #include "vtrc-atomic.h"
+#include "vtrc-common/vtrc-random-device.h"
 
 namespace vtrc { namespace server {
 
-    namespace gpb = google::protobuf;
+    namespace gpb  = google::protobuf;
+    namespace bsys = boost::system;
 
     namespace {
         enum init_stage_enum {
@@ -114,6 +116,12 @@ namespace vtrc { namespace server {
             return result;
         }
 
+
+        bool pop_chek_init_message( )
+        {
+
+        }
+
         void pop_message( )
         {
             parent_->pop_message( );
@@ -129,50 +137,185 @@ namespace vtrc { namespace server {
             return parent_->check_message( mess );
         }
 
-        void write( const char *data, size_t length )
-        {
-            connection_->write( data, length );
-        }
-
-        void write( const char *data, size_t length ) const
-        {
-            connection_->write( data, length );
-        }
-
-        void send_proto_message( const gpb::Message &mess ) const
+        void send_proto_message( const gpb::Message &mess )
         {
             std::string s(mess.SerializeAsString( ));
-            write( s.c_str( ), s.size( ) );
+            connection_->write( s.c_str( ), s.size( ) );
         }
 
-        void on_client_selection( )
+        void send_proto_message( const gpb::Message &mess,
+                                 common::closure_type closure)
         {
-            std::string &mess(parent_->message_queue( ).front( ));
-            bool check = check_message_hash(mess);
+            std::string s(mess.SerializeAsString( ));
+            connection_->write( s.c_str( ), s.size( ), closure );
+        }
+
+        void send_and_close( const gpb::Message &mess )
+        {
+            send_proto_message( mess, vtrc::bind(
+                                &this_type::close_client, this, _1,
+                                    connection_->shared_from_this( )) );
+        }
+
+        void close_client( const bsys::error_code & /*err*/,
+                           common::connection_iface_sptr /*inst*/)
+        {
+            connection_->close( );
+        }
+
+        void on_client_transformer( )
+        {
+            vtrc_auth::init_capsule capsule;
+            bool check = get_pop_message( capsule );
+
             if( !check ) {
                 connection_->close( );
                 return;
             }
-            vtrc_auth::client_selection cs;
-            parse_message( mess, cs );
 
-            pop_message( );
+            if( !capsule.ready( ) ) {
+                connection_->close( );
+                return;
+            }
 
-            parent_->change_hash_checker(
-                        common::hash::create_by_index( cs.hash( ) ));
-            parent_->change_hash_maker(
-                        common::hash::create_by_index( cs.hash( ) ));
+            vtrc_auth::transformer_setup tsetup;
 
-            vtrc_auth::transformer_setup ts;
+            tsetup.ParseFromString( capsule.body( ) );
 
-            ts.set_ready( true );
+            std::string s1(tsetup.salt1( ));
+            std::string s2(tsetup.salt2( ));
+
+            std::string key(app_.get_session_key( connection_ ));
+
+            vtrc::shared_ptr<common::hash_iface> sha256
+                                        (common::hash::sha2::create256( ));
+
+            s1.append( key.begin( ), key.end( ) );
+            s1 = sha256->get_data_hash( s1.c_str( ), s1.size( ) );
+            s2.append( s1.begin( ), s1.end( ) );
+            key = sha256->get_data_hash( s2.c_str( ), s2.size( ) );
+
+            common::transformer_iface *new_transformer =
+                    common::transformers::erseefor::create( key.c_str( ),
+                                                            key.size( ) );
+            parent_->change_transformer( new_transformer );
+
+            capsule.Clear( );
+            capsule.set_ready( true );
+            capsule.set_text( "Kiva katso sinut!" );
 
             stage_function_ =
                     vtrc::bind( &this_type::on_rcp_call_ready, this );
 
-            send_proto_message( ts );
-
             parent_->set_ready( true );
+            send_proto_message( capsule );
+
+        }
+
+        void sended_me( const bsys::error_code &err )
+        {
+            std::cout << "ready send\n";
+        }
+
+        void setup_transformer( unsigned id )
+        {
+            vtrc_auth::transformer_setup ts;
+            vtrc_auth::init_capsule capsule;
+
+            if( id == vtrc_auth::TRANSFORM_NONE ) {
+
+                capsule.set_ready( true );
+                capsule.set_text( "Kiva katso sinut!" );
+
+                stage_function_ =
+                        vtrc::bind( &this_type::on_rcp_call_ready, this );
+
+                parent_->set_ready( true );
+
+                send_proto_message( capsule );
+
+            } else if( id == vtrc_auth::TRANSFORM_ERSEEFOR ) {
+
+                std::string key(app_.get_session_key( connection_ ));
+
+                common::random_device rd( false );
+                std::string s1( 256, 0 );
+                std::string s2( 256, 0 );
+                rd.generate( &s1[0], &s1[0] + s1.size( ));
+                rd.generate( &s2[0], &s2[0] + s2.size( ));
+
+                ts.set_salt1( s1 );
+                ts.set_salt2( s2 );
+
+                vtrc::shared_ptr<common::hash_iface> sha256
+                                            (common::hash::sha2::create256( ));
+
+                s1.append( key.begin( ), key.end( ) );
+                s1 = sha256->get_data_hash( s1.c_str( ), s1.size( ) );
+                s2.append( s1.begin( ), s1.end( ) );
+                key = sha256->get_data_hash( s2.c_str( ), s2.size( ) );
+
+                common::transformer_iface *new_reverter =
+                        common::transformers::erseefor::create( key.c_str( ),
+                                                                key.size( ) );
+
+                parent_->change_reverter( new_reverter );
+                capsule.set_ready( true );
+                capsule.set_body( ts.SerializeAsString( ) );
+
+                stage_function_ =
+                        vtrc::bind( &this_type::on_client_transformer, this );
+
+                send_proto_message( capsule );
+
+            } else {
+                capsule.set_ready( false );
+                vtrc_errors::container *er(capsule.mutable_error( ));
+                er->set_code( vtrc_errors::ERR_INVALID_VALUE );
+                er->set_category(vtrc_errors::CATEGORY_INTERNAL);
+                er->set_additional( "Invalid transformer" );
+                send_and_close( capsule );
+                return;
+            }
+        }
+
+        void on_client_selection( )
+        {
+            vtrc_auth::init_capsule capsule;
+            bool check = get_pop_message( capsule );
+
+            if( !check ) {
+                connection_->close( );
+                return;
+            }
+
+            if( !capsule.ready( ) ) {
+                connection_->close( );
+                return;
+            }
+
+            vtrc_auth::client_selection cs;
+            cs.ParseFromString( capsule.body( ) );
+
+            common::hash_iface *new_checker(
+                        common::hash::create_by_index( cs.hash( ) ) );
+
+            common::hash_iface *new_maker(
+                        common::hash::create_by_index( cs.hash( ) ) );
+
+            if( !new_maker ) {
+                delete new_checker;
+            }
+
+            if( !new_maker || !new_checker ) {
+                connection_->close( );
+                return;
+            }
+
+            parent_->change_hash_checker( new_checker );
+            parent_->change_hash_maker( new_maker );
+
+            setup_transformer( cs.transform( ) );
 
         }
 
@@ -244,7 +387,6 @@ namespace vtrc { namespace server {
         void on_rcp_call_ready( )
         {
             typedef vtrc_rpc_lowlevel::message_info message_info;
-            //std::cout << "call from client\n";
             while( !parent_->message_queue( ).empty( ) ) {
 
                 lowlevel_unit_sptr llu(vtrc::make_shared<lowlevel_unit_type>());
@@ -277,8 +419,10 @@ namespace vtrc { namespace server {
 
         std::string first_message( )
         {
+            vtrc_auth::init_capsule cap;
             vtrc_auth::init_protocol hello_mess;
-            hello_mess.set_hello_message( "Tervetuloa!" );
+            cap.set_text( "Tervetuloa!" );
+            cap.set_ready( true );
 
             hello_mess.add_hash_supported( vtrc_auth::HASH_NONE     );
             hello_mess.add_hash_supported( vtrc_auth::HASH_CRC_16   );
@@ -288,13 +432,16 @@ namespace vtrc { namespace server {
 
             hello_mess.add_transform_supported( vtrc_auth::TRANSFORM_NONE );
             hello_mess.add_transform_supported( vtrc_auth::TRANSFORM_ERSEEFOR );
-            return hello_mess.SerializeAsString( );
+
+            cap.set_body( hello_mess.SerializeAsString( ) );
+
+            return cap.SerializeAsString( );
         }
 
         void init( )
         {
             static const std::string data(first_message( ));
-            write(data.c_str( ), data.size( ));
+            connection_->write(data.c_str( ), data.size( ));
         }
 
         void data_ready( )

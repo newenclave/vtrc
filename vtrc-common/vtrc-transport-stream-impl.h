@@ -185,6 +185,10 @@ namespace vtrc { namespace common {
                 bool empty = write_queue_.empty( );
 
                 write_queue_.push_back( data );
+                if( closure ) {
+                    const bsys::error_code err(0, bsys::get_system_category( ));
+                    (*closure)(err);
+                }
 
                 if( empty ) {
                     async_write( );
@@ -228,9 +232,9 @@ namespace vtrc { namespace common {
 
                     } else {
 
-                        if( write_queue_.front( )->closure_ ) {
-                            (*write_queue_.front( )->closure_)( error );
-                        }
+//                        if( write_queue_.front( )->closure_ ) {
+//                            (*write_queue_.front( )->closure_)( error );
+//                        }
 
                         write_queue_.pop_front( );
 
@@ -239,9 +243,9 @@ namespace vtrc { namespace common {
                     }
                 } else {
 
-                    if( write_queue_.front( )->closure_ ) {
-                        (*write_queue_.front( )->closure_)( error );
-                    }
+//                    if( write_queue_.front( )->closure_ ) {
+//                        (*write_queue_.front( )->closure_)( error );
+//                    }
                     parent_->on_write_error( error );
                 }
             }

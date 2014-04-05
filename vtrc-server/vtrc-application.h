@@ -35,6 +35,8 @@ namespace server {
         application( const application & );
         application& operator = ( const application & );
 
+        friend class endpoint_iface;
+
     public:
 
         application( );
@@ -55,6 +57,8 @@ namespace server {
         virtual vtrc::shared_ptr<common::rpc_service_wrapper>
                  get_service_by_name( common::connection_iface* connection,
                                       const std::string &service_name );
+
+        virtual std::string get_session_key( common::connection_iface* conn );
 
         /** TODO: fix it **/
 

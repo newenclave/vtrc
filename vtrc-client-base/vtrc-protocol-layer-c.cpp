@@ -11,6 +11,7 @@
 #include "vtrc-common/vtrc-transformer-iface.h"
 #include "vtrc-common/vtrc-call-context.h"
 #include "vtrc-common/vtrc-rpc-controller.h"
+#include "vtrc-common/vtrc-random-device.h"
 
 #include "vtrc-protocol-layer-c.h"
 #include "vtrc-transport-iface.h"
@@ -20,6 +21,7 @@
 
 #include "protocol/vtrc-auth.pb.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
+
 
 namespace vtrc { namespace client {
 
@@ -143,7 +145,7 @@ namespace vtrc { namespace client {
 
                 if( !check ) {
 
-                    vtrc_errors::error_container *err = llu->mutable_error( );
+                    vtrc_errors::container *err = llu->mutable_error( );
                     err->set_code(vtrc_errors::ERR_PROTOCOL);
                     err->set_additional("Bad message was received");
                     err->set_fatal( true );
@@ -184,17 +186,100 @@ namespace vtrc { namespace client {
 
         void on_server_ready( )
         {
+
             std::string &mess = parent_->message_queue( ).front( );
             bool check = parent_->check_message( mess );
-            vtrc_auth::transformer_setup transformer_proto;
+
+            vtrc_auth::init_capsule capsule;
 
             if( check ) {
-                parent_->parse_message( mess, transformer_proto );
+                parent_->parse_message( mess, capsule );
+            } else {
+                connection_->close( );
+                return;
             }
 
             pop_message( );
+
             stage_call_ = vtrc::bind( &this_type::on_rpc_process, this );
+
             on_ready( true );
+        }
+
+        void on_transform_setup( )
+        {
+            std::string &mess = parent_->message_queue( ).front( );
+            bool check = parent_->check_message( mess );
+
+            if( !check ) {
+                connection_->close( );
+                return;
+            }
+
+            parent_->pop_message( );
+
+            vtrc_auth::init_capsule capsule;
+            parent_->parse_message( mess, capsule );
+
+            if( !capsule.ready( ) ) {
+                connection_->close( );
+                return;
+            }
+
+            vtrc_auth::transformer_setup tsetup;
+
+            tsetup.ParseFromString( capsule.body( ) );
+
+            std::string key(client_->get_session_key( ));
+
+            vtrc::shared_ptr<common::hash_iface> sha256
+                                        (common::hash::sha2::create256( ));
+
+            std::string s1(tsetup.salt1( ));
+            std::string s2(tsetup.salt2( ));
+
+            s1.append( key.begin( ), key.end( ) );
+            s1 = sha256->get_data_hash( s1.c_str( ), s1.size( ) );
+            s2.append( s1.begin( ), s1.end( ) );
+            key = sha256->get_data_hash( s2.c_str( ), s2.size( ) );
+
+            common::transformer_iface *new_transformer =
+                    common::transformers::erseefor::create( key.c_str( ),
+                                                            key.size( ) );
+
+            parent_->change_transformer( new_transformer );
+
+            common::random_device rd( false );
+
+            s1.resize( 256 );
+            s2.resize( 256 );
+
+            rd.generate( &s1[0], &s1[0] + s1.size( ));
+            rd.generate( &s2[0], &s2[0] + s2.size( ));
+
+            tsetup.set_salt1( s1 );
+            tsetup.set_salt2( s2 );
+
+            key = client_->get_session_key( );
+
+            s1.append( key.begin( ), key.end( ) );
+            s1 = sha256->get_data_hash( s1.c_str( ), s1.size( ) );
+            s2.append( s1.begin( ), s1.end( ) );
+            key = sha256->get_data_hash( s2.c_str( ), s2.size( ) );
+
+            common::transformer_iface *new_reverter =
+                    common::transformers::erseefor::create( key.c_str( ),
+                                                            key.size( ) );
+
+            parent_->change_reverter( new_reverter );
+
+            capsule.set_ready( true );
+            capsule.set_body( tsetup.SerializeAsString( ) );
+
+            stage_call_ = vtrc::bind( &this_type::on_server_ready, this );
+
+            send_proto_message( capsule );
+
         }
 
         void set_options( const boost::system::error_code &err )
@@ -210,29 +295,49 @@ namespace vtrc { namespace client {
             std::string &mess = parent_->message_queue( ).front( );
             bool check = parent_->check_message( mess );
 
-            vtrc_auth::init_protocol init_proto;
+            if( !check ) {
+                connection_->close( );
+                return;
+            }
 
-            if( check ) {
-                parent_->parse_message( mess, init_proto );
-//                std::cout << "Message is: "
-//                          << init_proto.DebugString( ) << "\n";
+            vtrc_auth::init_capsule capsule;
+
+            parent_->parse_message( mess, capsule );
+
+            if( !capsule.ready( ) ) {
+                connection_->close( );
+                return;
             }
 
             pop_message( );
 
-            vtrc_auth::client_selection select;
-            select.set_hash( vtrc_auth::HASH_CRC_64 );
-            select.set_transform( vtrc_auth::TRANSFORM_NONE );
-            select.set_ready( true );
-            select.set_hello_message( "Miten menee?" );
+            vtrc_auth::client_selection init;
+
+            capsule.set_ready( true );
+            capsule.set_text( "Miten menee?" );
+
+            bool key_set = client_->is_key_set( );
+
+            if( !key_set ) {
+                init.set_transform( vtrc_auth::TRANSFORM_NONE );
+            } else {
+                init.set_transform( vtrc_auth::TRANSFORM_ERSEEFOR );
+            }
+
+            init.set_hash( vtrc_auth::HASH_CRC_64 );
+
+            capsule.set_body( init.SerializeAsString( ) );
 
             parent_->change_hash_checker(
                common::hash::create_by_index( vtrc_auth::HASH_CRC_64 ));
 
-            send_proto_message( select,
-                    vtrc::bind( &this_type::set_options, this, _1 ) );
+            stage_call_ = vtrc::bind(
+                        key_set
+                        ? &this_type::on_transform_setup
+                        : &this_type::on_server_ready, this );
 
-            stage_call_ = vtrc::bind( &this_type::on_server_ready, this );
+            send_proto_message( capsule,
+                    vtrc::bind( &this_type::set_options, this, _1 ) );
 
         }
 
