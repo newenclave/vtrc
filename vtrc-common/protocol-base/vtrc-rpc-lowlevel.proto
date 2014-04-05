@@ -33,7 +33,7 @@ message message_info {
 
     enum message_type_enum {
 
-        MESSAGE_NONE            = 0; // invalid value for internal usage
+        MESSAGE_NONE            = 0; // value for internal usage only
 
         MESSAGE_CALL            = 1; // from client
         MESSAGE_EVENT           = 2; // from server
