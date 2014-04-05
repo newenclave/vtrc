@@ -44,8 +44,8 @@ message message_info {
         MESSAGE_SERVICE         = 5; // intervals
         MESSAGE_INTERNAL        = 6; // intervals
     }
-    optional uint32 message_type                = 1 [default = 0];
-                                                // @message_type_enum
+
+    optional uint32 message_type    = 1 [default = 0]; // @message_type_enum
 }
 
 message call_info {
