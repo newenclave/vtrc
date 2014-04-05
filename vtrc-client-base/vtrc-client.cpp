@@ -55,7 +55,8 @@ namespace vtrc { namespace client {
         vtrc::shared_ptr<ClientType> create_client(  )
         {
             vtrc::shared_ptr<ClientType> c(ClientType::create( ios_, parent_ ));
-            connection_ =  c;
+            connection_ =   c;
+            protocol_   =  &c->get_protocol( );
             return c;
         }
 
@@ -76,8 +77,6 @@ namespace vtrc { namespace client {
                     client(create_client<client_win_pipe>( ));
             client->connect( local_name );
 #endif
-            protocol_   = &client->get_protocol( );
-
         }
 
         common::connection_iface_sptr connection( )
@@ -85,13 +84,9 @@ namespace vtrc { namespace client {
             return connection_;
         }
 
-        template<typename ClientType>
         void async_connect_success( const bsys::error_code &err,
-                                    vtrc::shared_ptr<ClientType> client,
                                     common::closure_type closure )
         {
-            if( !err )
-                protocol_ = &client->get_protocol( );
             closure(err);
         }
 
@@ -101,7 +96,6 @@ namespace vtrc { namespace client {
             vtrc::shared_ptr<client_win_pipe>
                          new_client(create_client<client_win_pipe>( ));
             new_client->connect( local_name );
-            protocol_   = &c->get_protocol( );
         }
 
         void async_connect(const std::wstring &local_name,
@@ -111,10 +105,9 @@ namespace vtrc { namespace client {
                          new_client(create_client<client_win_pipe>( ));
 
             new_client->async_connect( local_name,
-                vtrc::bind( &this_type::async_connect_success<client_win_pipe>,
+                vtrc::bind( &this_type::async_connect_success,
                             this,
                             basio::placeholders::error,
-                            new_client,
                             closure ));
         }
 #endif
@@ -126,20 +119,18 @@ namespace vtrc { namespace client {
                          new_client(create_client<client_unix_local>( ));
 
             new_client->async_connect( local_name,
-            vtrc::bind( &this_type::async_connect_success<client_unix_local>,
+            vtrc::bind( &this_type::async_connect_success,
                          this,
                          basio::placeholders::error,
-                         new_client,
                          closure ));
 #else
             vtrc::shared_ptr<client_win_pipe>
                          new_client(create_client<client_win_pipe>( ));
 
             new_client->async_connect( local_name,
-                vtrc::bind( &this_type::async_connect_success<client_win_pipe>,
+                vtrc::bind( &this_type::async_connect_success,
                             this,
                             basio::placeholders::error,
-                            new_client,
                             closure ));
 #endif
         }
@@ -152,10 +143,9 @@ namespace vtrc { namespace client {
                                new_client(create_client<client_tcp>( ));
 
             new_client->async_connect( address, service,
-                    vtrc::bind( &this_type::async_connect_success<client_tcp>,
+                    vtrc::bind( &this_type::async_connect_success,
                                 this,
                                 basio::placeholders::error,
-                                new_client,
                                 closure ));
         }
 
