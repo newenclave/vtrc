@@ -45,6 +45,7 @@ namespace vtrc { namespace client {
         service_shared_map              hold_services_;
         vtrc::shared_mutex              services_lock_;
         std::string                     session_key_;
+        std::string                     session_id_;
         bool                            key_set_;
 
         impl( basio::io_service &ios, basio::io_service &rpc_ios )
@@ -55,13 +56,19 @@ namespace vtrc { namespace client {
         { }
 
 
-        void set_session_key( const std::string &key )
+        void set_session_key( const std::string &id, const std::string &key )
         {
             key_set_     = true;
-            session_key_ = key;
+            session_id_.assign( id );
+            session_key_.assign( key );
         }
 
         const std::string &get_session_key(  ) const
+        {
+            return session_key_;
+        }
+
+        const std::string &get_session_id(  ) const
         {
             return session_key_;
         }
@@ -331,14 +338,26 @@ namespace vtrc { namespace client {
         return impl_->create_channel( dont_wait, insertion );
     }
 
+    void vtrc_client::set_session_key(const std::string &id,
+                                      const std::string &key )
+    {
+        impl_->set_session_key( id, key );
+    }
+
     void vtrc_client::set_session_key( const std::string &key )
     {
-        impl_->set_session_key( key );
+        static const std::string empty_id;
+        set_session_key( empty_id, key );
     }
 
     const std::string &vtrc_client::get_session_key( ) const
     {
         return impl_->get_session_key( );
+    }
+
+    const std::string &vtrc_client::get_session_id( ) const
+    {
+        return impl_->get_session_id( );
     }
 
     bool vtrc_client::is_key_set(  ) const

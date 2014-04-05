@@ -147,7 +147,8 @@ namespace vtrc { namespace server {
         return common::rpc_service_wrapper_sptr( );
     }
 
-    std::string application::get_session_key(common::connection_iface *conn)
+    std::string application::get_session_key(common::connection_iface *conn,
+                                             const std::string &id)
     {
         return std::string( );
     }

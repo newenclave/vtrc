@@ -31,12 +31,12 @@ message init_protocol {
 message client_selection {
     optional uint32     hash                   = 1 [default = 1]; // CRC_32
     optional uint32     transform              = 2; // default TRANSFORM_NONE
+    optional bytes      id                     = 3;
 }
 
 message transformer_setup {
     optional bytes  salt1                      = 1;
     optional bytes  salt2                      = 2;
-    optional bytes  realm_key                  = 3;
 }
 
 message init_capsule {

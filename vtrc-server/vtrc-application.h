@@ -58,7 +58,8 @@ namespace server {
                  get_service_by_name( common::connection_iface* connection,
                                       const std::string &service_name );
 
-        virtual std::string get_session_key( common::connection_iface* conn );
+        virtual std::string get_session_key( common::connection_iface* conn,
+                                             const std::string &id);
 
         /** TODO: fix it **/
 

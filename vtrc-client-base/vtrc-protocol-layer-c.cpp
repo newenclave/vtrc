@@ -325,6 +325,7 @@ namespace vtrc { namespace client {
                 init.set_transform( vtrc_auth::TRANSFORM_NONE );
             } else {
                 init.set_transform( vtrc_auth::TRANSFORM_ERSEEFOR );
+                init.set_id( client_->get_session_id( ) );
             }
 
             init.set_hash( vtrc_auth::HASH_CRC_64 );

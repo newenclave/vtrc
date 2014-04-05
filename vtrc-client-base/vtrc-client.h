@@ -96,11 +96,13 @@ namespace client {
         vtrc::shared_ptr<google::protobuf::RpcChannel>
                             create_channel( bool disable_wait, bool insertion );
 
+        void set_session_key( const std::string &id, const std::string &key );
         void set_session_key( const std::string &key );
 
     private:
 
         const std::string &get_session_key(  ) const;
+        const std::string &get_session_id (  ) const;
         bool is_key_set( ) const;
 
     public:

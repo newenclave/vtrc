@@ -79,6 +79,8 @@ namespace vtrc { namespace server {
         service_map              services_;
         shared_mutex             services_lock_;
 
+        std::string              client_id_;
+
         typedef vtrc::function<void (void)> stage_function_type;
         stage_function_type  stage_function_;
 
@@ -186,7 +188,7 @@ namespace vtrc { namespace server {
             std::string s1(tsetup.salt1( ));
             std::string s2(tsetup.salt2( ));
 
-            std::string key(app_.get_session_key( connection_ ));
+            std::string key(app_.get_session_key( connection_, client_id_ ));
 
             vtrc::shared_ptr<common::hash_iface> sha256
                                         (common::hash::sha2::create256( ));
@@ -232,7 +234,7 @@ namespace vtrc { namespace server {
 
             } else if( id == vtrc_auth::TRANSFORM_ERSEEFOR ) {
 
-                std::string key(app_.get_session_key( connection_ ));
+                std::string key(app_.get_session_key(connection_, client_id_));
 
                 common::random_device rd( false );
                 std::string s1( 256, 0 );
@@ -309,6 +311,7 @@ namespace vtrc { namespace server {
                 return;
             }
 
+            client_id_.assign( cs.id( ) );
             parent_->change_hash_checker( new_checker );
             parent_->change_hash_maker( new_maker );
 

@@ -223,7 +223,8 @@ private:
         }
     }
 
-    std::string get_session_key( vtrc::common::connection_iface *connection )
+    std::string get_session_key( vtrc::common::connection_iface *connection,
+                                 const std::string &id)
     {
         return "1234";
     }
