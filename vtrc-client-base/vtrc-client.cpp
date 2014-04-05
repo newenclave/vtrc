@@ -57,6 +57,7 @@ namespace vtrc { namespace client {
             vtrc::shared_ptr<ClientType> c(ClientType::create( ios_, parent_ ));
             protocol_   = &c->get_protocol( );
             connection_ =  c;
+            return c;
         }
 
         void connect( const std::string &address,
