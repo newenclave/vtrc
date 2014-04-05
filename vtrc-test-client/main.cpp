@@ -164,6 +164,12 @@ void on_ready( vtrc::condition_variable &cond )
     cond.notify_all( );
 }
 
+void on_disconnect( vtrc::condition_variable &cond )
+{
+    std::cout << "on_disconnect\n";
+    cond.notify_all( );
+}
+
 int main( )
 {
     common::pool_pair pp(2, 2);
@@ -173,7 +179,10 @@ int main( )
     vtrc::condition_variable cond;
 
     cl->get_on_connect( ).connect( boost::bind( on_connect ) );
-    cl->get_on_ready( ).connect( boost::bind( on_ready, vtrc::ref(cond) ));
+    cl->get_on_ready( ).connect( boost::bind( on_ready,
+                                              vtrc::ref(cond) ));
+    cl->get_on_disconnect( ).connect( boost::bind( on_disconnect,
+                                                   vtrc::ref(cond) ));
 
 //    cl->connect( "/tmp/test" );
     //cl->connect( "192.168.56.101", "44667" );
@@ -187,11 +196,13 @@ int main( )
 
     vtrc::unique_lock<vtrc::mutex>  lck(mut);
     cond.wait( lck );
-    lck.unlock( );
 
     //vtrc::thread( run_client, cl, true ).detach( );
     //vtrc::thread( run_client, cl, false ).detach( );
-    vtrc::thread( run_client, cl, false ).join( );
+    vtrc::thread r( run_client, cl, false );
+
+    cond.wait( lck );
+    r.join( );
 
     pp.stop_all( );
     pp.join_all( );

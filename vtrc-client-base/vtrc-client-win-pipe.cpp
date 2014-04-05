@@ -157,6 +157,11 @@ namespace vtrc { namespace client {
         impl_->init( );
     }
 
+    void client_win_pipe::on_close( )
+    {
+        impl_->on_close( );
+    }
+
 }}
 
 

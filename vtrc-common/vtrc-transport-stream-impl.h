@@ -96,6 +96,7 @@ namespace vtrc { namespace common {
                 if( !closed_ ) {
                     closed_ = true;
                     stream_->close( );
+                    parent_->on_close( );
                 }
             }
 

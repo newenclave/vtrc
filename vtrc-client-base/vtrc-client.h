@@ -43,8 +43,9 @@ namespace client {
         vtrc_client( const vtrc_client &other );
         vtrc_client & operator = ( const vtrc_client &other );
 
-        VTRC_DECLARE_SIGNAL( on_connect,  void( ) );
-        VTRC_DECLARE_SIGNAL( on_ready,    void( ) );
+        VTRC_DECLARE_SIGNAL( on_connect,    void( ) );
+        VTRC_DECLARE_SIGNAL( on_disconnect, void( ) );
+        VTRC_DECLARE_SIGNAL( on_ready,      void( ) );
 
     protected:
 

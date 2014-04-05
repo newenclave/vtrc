@@ -63,7 +63,7 @@ namespace vtrc { namespace client {
         {
             return common::rpc_service_wrapper_sptr
                         (new common::rpc_service_wrapper(
-                                                client_->get_rpc_handler( name )));
+                                             client_->get_rpc_handler( name )));
         }
 
         void pop_message( )
@@ -264,6 +264,11 @@ namespace vtrc { namespace client {
     void protocol_layer_c::init( )
     {
         impl_->init( );
+    }
+
+    void protocol_layer_c::close( )
+    {
+        impl_->client_->on_disconnect_( );
     }
 
     void protocol_layer_c::on_data_ready( )

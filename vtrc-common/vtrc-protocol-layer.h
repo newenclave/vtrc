@@ -139,6 +139,7 @@ namespace vtrc { namespace common {
     protected:
 
         virtual void init( )            = 0;
+        virtual void close( )           = 0;
         virtual void on_data_ready( )   = 0;
 
         typedef std::deque< vtrc::shared_ptr<call_context> > call_stack_type;

@@ -59,6 +59,11 @@ namespace {
             protocol_.reset(new protocol_layer_c( parent_, client_ ));
         }
 
+        void on_close( )
+        {
+            protocol_->close( );
+        }
+
         bool active( ) const
         {
             return protocol_->ready( );

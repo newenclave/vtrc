@@ -50,6 +50,7 @@ namespace client {
         common::protocol_layer &get_protocol( );
 
     private:
+        void on_close( );
         std::string prepare_for_write( const char *data, size_t len );
 
     };

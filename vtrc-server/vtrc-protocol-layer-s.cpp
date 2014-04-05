@@ -324,6 +324,11 @@ namespace vtrc { namespace server {
         impl_->init( );
     }
 
+    void protocol_layer_s::close( )
+    {
+
+    }
+
     void protocol_layer_s::on_data_ready( )
     {
         impl_->data_ready( );

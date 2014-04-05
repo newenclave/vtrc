@@ -97,6 +97,11 @@ namespace vtrc { namespace client {
         return impl_->get_protocol( );
     }
 
+    void client_tcp::on_close( )
+    {
+        impl_->on_close( );
+    }
+
     std::string client_tcp::prepare_for_write(const char *data, size_t len)
     {
         return impl_->prepare_for_write( data, len );
