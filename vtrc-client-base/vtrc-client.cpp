@@ -161,11 +161,6 @@ namespace vtrc { namespace client {
             return new_ch;
         }
 
-        void clean_dead_handlers( )
-        {
-            ;;;
-        }
-
         void assign_handler( vtrc::shared_ptr<gpb::Service> serv )
         {
             const std::string serv_name(serv->GetDescriptor( )->full_name( ));
