@@ -2,6 +2,7 @@
 #define VTRC_APPLICATION_IFACE_H
 
 #include "vtrc-memory.h"
+#include "vtrc-common/vtrc-signal-declaration.h"
 
 namespace boost { namespace asio {
     class io_service;
@@ -34,6 +35,8 @@ namespace server {
 
         application( const application & );
         application& operator = ( const application & );
+
+        VTRC_DECLARE_SIGNAL( on_start, void( ) );
 
     public:
 
