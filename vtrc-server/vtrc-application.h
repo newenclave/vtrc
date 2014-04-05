@@ -35,7 +35,7 @@ namespace server {
         application( const application & );
         application& operator = ( const application & );
 
-        friend class endpoint_iface;
+        friend struct endpoint_iface;
 
     public:
 
