@@ -216,7 +216,6 @@ namespace vtrc { namespace client {
                 return;
             }
 
-
             vtrc_auth::init_capsule capsule;
             parent_->parse_message( mess, capsule );
 
