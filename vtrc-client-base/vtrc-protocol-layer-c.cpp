@@ -206,15 +206,12 @@ namespace vtrc { namespace client {
             on_ready( true );
         }
 
-        void on_transform_setup( ) try
+        void on_transform_setup( )
         {
-            std::cout << "client transform !\n";
-
             std::string &mess = parent_->message_queue( ).front( );
             bool check = parent_->check_message( mess );
 
             if( !check ) {
-                std::cout << "client transform bad hash!\n";
                 connection_->close( );
                 return;
             }
@@ -226,7 +223,6 @@ namespace vtrc { namespace client {
             parent_->pop_message( );
 
             if( !capsule.ready( ) ) {
-                std::cout << "client transform !ready\n";
                 connection_->close( );
                 return;
             }
@@ -286,10 +282,7 @@ namespace vtrc { namespace client {
             stage_call_ = vtrc::bind( &this_type::on_server_ready, this );
 
             send_proto_message( capsule );
-            std::cout << "client transform sent!\n";
 
-        } catch( const std::exception &ex ) {
-            std::cout << "client transform ex! " << ex.what( ) << "\n";
         }
 
         void set_options( const boost::system::error_code &err )
