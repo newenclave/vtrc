@@ -20,7 +20,7 @@ namespace vtrc { namespace client {
 
     namespace basio = boost::asio;
     namespace bsys  = boost::system;
-    namespace gpb = google::protobuf;
+    namespace gpb   = google::protobuf;
 
     namespace {
 
