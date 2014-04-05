@@ -346,11 +346,6 @@ namespace vtrc { namespace client {
             stage_call_( );
         }
 
-        void on_ready( )
-        {
-            ;;;
-        }
-
     };
 
     protocol_layer_c::protocol_layer_c( common::transport_iface *connection,

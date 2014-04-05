@@ -183,7 +183,6 @@ namespace vtrc { namespace common {
             return res;
         }
 
-
         std::string prepare_data( const char *data, size_t length)
         {
             /* here is:
