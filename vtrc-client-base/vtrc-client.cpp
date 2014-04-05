@@ -206,7 +206,7 @@ namespace vtrc { namespace client {
             return result;
         }
 
-        void erase_rpc_handler(const std::string &name)
+        void erase_rpc_handler( const std::string &name )
         {
             vtrc::unique_shared_lock lk(services_lock_);
 
