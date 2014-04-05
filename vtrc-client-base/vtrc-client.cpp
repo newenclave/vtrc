@@ -165,7 +165,7 @@ namespace vtrc { namespace client {
             ;;;
         }
 
-        void advise_handler( vtrc::shared_ptr<gpb::Service> serv )
+        void assign_handler( vtrc::shared_ptr<gpb::Service> serv )
         {
             const std::string serv_name(serv->GetDescriptor( )->full_name( ));
             vtrc::upgradable_lock lk(services_lock_);
@@ -179,7 +179,7 @@ namespace vtrc { namespace client {
             }
         }
 
-        void advise_weak_handler( vtrc::weak_ptr<gpb::Service> serv )
+        void assign_weak_handler( vtrc::weak_ptr<gpb::Service> serv )
         {
             service_sptr lock(serv.lock( ));
             if( lock ) {
@@ -331,12 +331,12 @@ namespace vtrc { namespace client {
 
     void vtrc_client::assign_rpc_handler(vtrc::shared_ptr<gpb::Service> serv)
     {
-        impl_->advise_handler( serv );
+        impl_->assign_handler( serv );
     }
 
     void vtrc_client::assign_weak_rpc_handler(vtrc::weak_ptr<gpb::Service> serv)
     {
-        impl_->advise_weak_handler( serv );
+        impl_->assign_weak_handler( serv );
     }
 
     service_sptr vtrc_client::get_rpc_handler(const std::string &name)
