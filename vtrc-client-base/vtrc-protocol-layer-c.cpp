@@ -206,12 +206,15 @@ namespace vtrc { namespace client {
             on_ready( true );
         }
 
-        void on_transform_setup( )
+        void on_transform_setup( ) try
         {
+            std::cout << "client transform !\n";
+
             std::string &mess = parent_->message_queue( ).front( );
             bool check = parent_->check_message( mess );
 
             if( !check ) {
+                std::cout << "client transform bad hash!\n";
                 connection_->close( );
                 return;
             }
@@ -222,6 +225,7 @@ namespace vtrc { namespace client {
             parent_->parse_message( mess, capsule );
 
             if( !capsule.ready( ) ) {
+                std::cout << "client transform !ready\n";
                 connection_->close( );
                 return;
             }
@@ -238,9 +242,10 @@ namespace vtrc { namespace client {
             std::string s1(tsetup.salt1( ));
             std::string s2(tsetup.salt2( ));
 
-            s1.append( key.begin( ), key.end( ) );
+            s1.insert( s1.end( ), key.begin( ), key.end( ) );
             s1 = sha256->get_data_hash( s1.c_str( ), s1.size( ) );
-            s2.append( s1.begin( ), s1.end( ) );
+
+            s2.insert( s2.end( ), s1.begin( ), s1.end( ) );
             key = sha256->get_data_hash( s2.c_str( ), s2.size( ) );
 
             common::transformer_iface *new_transformer =
@@ -262,9 +267,10 @@ namespace vtrc { namespace client {
 
             key = client_->get_session_key( );
 
-            s1.append( key.begin( ), key.end( ) );
+            s1.insert( s1.end( ), key.begin( ), key.end( ) );
             s1 = sha256->get_data_hash( s1.c_str( ), s1.size( ) );
-            s2.append( s1.begin( ), s1.end( ) );
+
+            s2.insert( s2.end( ), s1.begin( ), s1.end( ) );
             key = sha256->get_data_hash( s2.c_str( ), s2.size( ) );
 
             common::transformer_iface *new_reverter =
@@ -279,12 +285,16 @@ namespace vtrc { namespace client {
             stage_call_ = vtrc::bind( &this_type::on_server_ready, this );
 
             send_proto_message( capsule );
+            std::cout << "client transform sent!\n";
 
+        } catch( const std::exception &ex ) {
+            std::cout << "client transform ex! " << ex.what( ) << "\n";
         }
 
         void set_options( const boost::system::error_code &err )
         {
             if( !err ) {
+                std::cout << "set opts\n";
                 parent_->change_hash_maker(
                    common::hash::create_by_index( vtrc_auth::HASH_CRC_64 ));
             }

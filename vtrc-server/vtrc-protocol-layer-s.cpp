@@ -165,15 +165,19 @@ namespace vtrc { namespace server {
 
         void on_client_transformer( )
         {
+            std::cout << "client transform sent!\n";
+
             vtrc_auth::init_capsule capsule;
             bool check = get_pop_message( capsule );
 
             if( !check ) {
+                std::cout << "client transform bad hash!\n";
                 connection_->close( );
                 return;
             }
 
             if( !capsule.ready( ) ) {
+                std::cout << "client transform no ready!\n";
                 connection_->close( );
                 return;
             }
@@ -210,11 +214,8 @@ namespace vtrc { namespace server {
             parent_->set_ready( true );
             send_proto_message( capsule );
 
-        }
+            std::cout << "ready!\n";
 
-        void sended_me( const bsys::error_code &err )
-        {
-            std::cout << "ready send\n";
         }
 
         void setup_transformer( unsigned id )
@@ -223,6 +224,8 @@ namespace vtrc { namespace server {
             vtrc_auth::init_capsule capsule;
 
             if( id == vtrc_auth::TRANSFORM_NONE ) {
+
+                std::cout << "None!\n";
 
                 capsule.set_ready( true );
                 capsule.set_text( "Kiva katso sinut!" );
@@ -237,6 +240,7 @@ namespace vtrc { namespace server {
             } else if( id == vtrc_auth::TRANSFORM_ERSEEFOR ) {
 
                 std::string key(app_.get_session_key( connection_ ));
+                std::cout << "transformer!\n";
 
                 common::random_device rd( false );
                 std::string s1( 256, 0 );
@@ -267,6 +271,9 @@ namespace vtrc { namespace server {
                         vtrc::bind( &this_type::on_client_transformer, this );
 
                 send_proto_message( capsule );
+
+                std::cout << "trans form sent!\n";
+
 
             } else {
                 capsule.set_ready( false );
