@@ -13,10 +13,13 @@ message options {
     optional bool       wait            = 3 [default = true];
 };
 
+message unit_options {
+    optional bool       wait            = 3 [default = true];
+}
+
 message rpc_options_type {
     optional options opt = 1;
 };
-
 
 extend google.protobuf.ServiceOptions {
     optional rpc_options_type service_options = 53001;
@@ -57,7 +60,7 @@ message lowlevel_unit {
     optional message_info                 info =  2;
     optional call_info                    call =  3;
     optional vtrc_errors.error_container error =  4;
-    optional options                       opt =  5;
+    optional unit_options                  opt =  5;
 
     // --- //
     optional bytes  request = 20;
