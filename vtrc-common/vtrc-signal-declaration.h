@@ -21,7 +21,7 @@
               BOOST_PP_CAT( name, _group_type );                               \
       BOOST_PP_CAT( name, _type )&  BOOST_PP_CAT( get_, name )( )              \
       { return BOOST_PP_CAT( name, _ ); }                                      \
-    private:                                                                   \
+    protected:                                                                 \
       BOOST_PP_CAT( name, _type ) BOOST_PP_CAT( name, _ )
 
 // ====== UNSAFE
@@ -39,7 +39,7 @@
               BOOST_PP_CAT( name, _group_type );                               \
       BOOST_PP_CAT( name, _type )&  BOOST_PP_CAT( get_, name )( )              \
       { return BOOST_PP_CAT( name, _ ); }                                      \
-    private:                                                                   \
+    protected:                                                                 \
       BOOST_PP_CAT( name, _type ) BOOST_PP_CAT( name, _ )
 
 #define VTRC_DECLARE_SIGNAL VTRC_DECLARE_SIGNAL_SAFE

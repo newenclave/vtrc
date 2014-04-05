@@ -273,7 +273,7 @@ int main( ) try {
     tcp4_ep->start( );
     tcp6_ep->start( );
 
-    boost::this_thread::sleep_for( vtrc::chrono::milliseconds(12000) );
+    boost::this_thread::sleep_for( vtrc::chrono::milliseconds(10000) );
 
     std::cout << "Stoppped. Wait ... \n";
 

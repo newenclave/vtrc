@@ -19,6 +19,8 @@
 #include <boost/random/random_device.hpp>
 
 #include "vtrc-thread.h"
+#include "vtrc-ref.h"
+#include "vtrc-condition-variable.h"
 #include "vtrc-chrono.h"
 
 using namespace vtrc;
@@ -156,9 +158,10 @@ void on_connect( )
     std::cout << "on_connect\n";
 }
 
-void on_ready( vtrc::shared_ptr<client::vtrc_client> cl )
+void on_ready( vtrc::condition_variable &cond )
 {
     std::cout << "on_ready\n";
+    cond.notify_all( );
 }
 
 int main( )
@@ -166,8 +169,11 @@ int main( )
     common::pool_pair pp(2, 2);
     vtrc::shared_ptr<client::vtrc_client> cl(client::vtrc_client::create(pp));
 
+    vtrc::mutex              mut;
+    vtrc::condition_variable cond;
+
     cl->get_on_connect( ).connect( boost::bind( on_connect ) );
-    cl->get_on_ready( ).connect( boost::bind( on_ready, cl ));
+    cl->get_on_ready( ).connect( boost::bind( on_ready, vtrc::ref(cond) ));
 
 //    cl->connect( "/tmp/test" );
     //cl->connect( "192.168.56.101", "44667" );
@@ -179,7 +185,9 @@ int main( )
     cl->assign_rpc_handler( vtrc::shared_ptr<test_ev>(new test_ev(cl->connection( ).get( ))) );
     cl->assign_rpc_handler( vtrc::shared_ptr<ping_impl>(new ping_impl(cl.get( ))) );
 
-    vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(2000) );
+    vtrc::unique_lock<vtrc::mutex>  lck(mut);
+    cond.wait( lck );
+    lck.unlock( );
 
     //vtrc::thread( run_client, cl, true ).detach( );
     //vtrc::thread( run_client, cl, false ).detach( );
