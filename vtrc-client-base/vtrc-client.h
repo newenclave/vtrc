@@ -43,6 +43,9 @@ namespace client {
         vtrc_client( const vtrc_client &other );
         vtrc_client & operator = ( const vtrc_client &other );
 
+        VTRC_DECLARE_SIGNAL( on_connect,  void( ) );
+        VTRC_DECLARE_SIGNAL( on_ready,    void( ) );
+
     protected:
 
         vtrc_client( boost::asio::io_service &ios );
@@ -100,6 +103,8 @@ namespace client {
         void async_connect( const std::wstring &local_name,
                             common::closure_type closure);
 #endif
+
+        void disconnect( );
 
         void assign_rpc_handler(
                           vtrc::shared_ptr<google::protobuf::Service> handler);

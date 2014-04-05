@@ -151,11 +151,23 @@ void run_client( vtrc::shared_ptr<client::vtrc_client> cl, bool wait)
     }
 }
 
+void on_connect( )
+{
+    std::cout << "on_connect\n";
+}
+
+void on_ready( vtrc::shared_ptr<client::vtrc_client> cl )
+{
+    std::cout << "on_ready\n";
+}
+
 int main( )
 {
-
     common::pool_pair pp(2, 2);
     vtrc::shared_ptr<client::vtrc_client> cl(client::vtrc_client::create(pp));
+
+    cl->get_on_connect( ).connect( boost::bind( on_connect ) );
+    cl->get_on_ready( ).connect( boost::bind( on_ready, cl ));
 
 //    cl->connect( "/tmp/test" );
     //cl->connect( "192.168.56.101", "44667" );

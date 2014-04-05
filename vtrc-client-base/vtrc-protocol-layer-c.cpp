@@ -125,6 +125,12 @@ namespace vtrc { namespace client {
 //            parent_->send_message( *llu );
         }
 
+        void on_ready( bool ready )
+        {
+            parent_->set_ready( ready );
+            client_->on_ready_( );
+        }
+
         void on_rpc_process( )
         {
             while( !parent_->message_queue( ).empty( ) ) {
@@ -188,7 +194,7 @@ namespace vtrc { namespace client {
 
             pop_message( );
             stage_call_ = vtrc::bind( &this_type::on_rpc_process, this );
-            parent_->set_ready( true );
+            on_ready( true );
         }
 
         void set_options( const boost::system::error_code &err )

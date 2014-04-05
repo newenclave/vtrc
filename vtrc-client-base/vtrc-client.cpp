@@ -64,6 +64,7 @@ namespace vtrc { namespace client {
         {
             vtrc::shared_ptr<client_tcp> client(create_client<client_tcp>( ));
             client->connect( address, service );
+            parent_->on_connect_( );
         }
 
         void connect(const std::string &local_name)
@@ -77,6 +78,7 @@ namespace vtrc { namespace client {
                     client(create_client<client_win_pipe>( ));
             client->connect( local_name );
 #endif
+            parent_->on_connect_( );
         }
 
         common::connection_iface_sptr connection( )
@@ -87,6 +89,8 @@ namespace vtrc { namespace client {
         void async_connect_success( const bsys::error_code &err,
                                     common::closure_type closure )
         {
+            if( !err )
+                parent_->on_connect_( );
             closure(err);
         }
 
@@ -147,6 +151,13 @@ namespace vtrc { namespace client {
                                 this,
                                 basio::placeholders::error,
                                 closure ));
+        }
+
+        void disconnect( )
+        {
+            try {
+                connection_->close( );
+            } catch( ... ) { };
         }
 
         vtrc::shared_ptr<gpb::RpcChannel> create_channel( )
@@ -334,6 +345,11 @@ namespace vtrc { namespace client {
                             common::closure_type closure )
     {
         impl_->async_connect( address, service, closure );
+    }
+
+    void vtrc_client::disconnect( )
+    {
+        impl_->disconnect( );
     }
 
     void vtrc_client::assign_rpc_handler(vtrc::shared_ptr<gpb::Service> serv)

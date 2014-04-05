@@ -18,7 +18,7 @@ namespace {
     namespace bsys = boost::system;
 
     template <typename ParentType, typename StreamType>
-    struct client_stream_impl  {
+    struct client_stream_impl {
 
         typedef ParentType                                      parent_type;
         typedef StreamType                                      stream_type;
