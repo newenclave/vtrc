@@ -15,7 +15,7 @@ namespace vtrc { namespace client {
 namespace {
 
     namespace basio = boost::asio;
-    namespace bsys = boost::system;
+    namespace bsys  = boost::system;
 
     template <typename ParentType, typename StreamType>
     struct client_stream_impl {
