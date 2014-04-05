@@ -50,7 +50,6 @@ namespace vtrc { namespace common {
     void transport_win_pipe::close( )
     {
         impl_->close( );
-        on_close( );
     }
 
     common::enviroment &transport_win_pipe::get_enviroment( )
