@@ -206,6 +206,17 @@ namespace vtrc { namespace client {
             return result;
         }
 
+        void erase_rpc_handler(const std::string &name)
+        {
+            vtrc::unique_shared_lock lk(services_lock_);
+
+            service_shared_map::iterator sf( hold_services_.find( name ) );
+            service_weak_map::iterator   wf( weak_services_.find( name ) );
+
+            if( sf != hold_services_.end( ) ) hold_services_.erase( sf );
+            if( wf != weak_services_.end( ) ) weak_services_.erase( wf );
+        }
+
     };
 
     vtrc_client::vtrc_client( boost::asio::io_service &ios,
@@ -338,6 +349,16 @@ namespace vtrc { namespace client {
     service_sptr vtrc_client::get_rpc_handler(const std::string &name)
     {
         return impl_->get_handler( name );
+    }
+
+    void vtrc_client::erase_rpc_handler(vtrc::shared_ptr<gpb::Service> handler)
+    {
+        impl_->erase_rpc_handler( handler->GetDescriptor( )->full_name( ) );
+    }
+
+    void vtrc_client::erase_rpc_handler(const std::string &name)
+    {
+        impl_->erase_rpc_handler( name );
     }
 
 }}
