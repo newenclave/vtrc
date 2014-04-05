@@ -26,7 +26,7 @@ namespace vtrc { namespace client {
                     (basio::ip::address::from_string(address),
                      boost::lexical_cast<unsigned short>(service) );
             get_socket( ).connect( ep );
-            init( );
+            start_reading( );
         }
 
         void async_connect( const std::string &address,
@@ -59,6 +59,7 @@ namespace vtrc { namespace client {
                                                         vtrc_client *client)
     {
         vtrc::shared_ptr<client_tcp> new_inst (new client_tcp( ios, client ));
+        new_inst->init( );
         return new_inst;
     }
 
@@ -103,7 +104,7 @@ namespace vtrc { namespace client {
 
     void client_tcp::init( )
     {
-
+        impl_->init( );
     }
 
     bool client_tcp::active( ) const

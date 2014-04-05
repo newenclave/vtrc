@@ -71,13 +71,13 @@ namespace vtrc { namespace client {
             vtrc::shared_ptr<client_unix_local>
                                    client(create_client<client_unix_local>( ));
             client->connect( local_name );
-            protocol_   = &client->get_protocol( );
-
 #else
             vtrc::shared_ptr<client_win_pipe>
                     client(create_client<client_win_pipe>( ));
             client->connect( local_name );
 #endif
+            protocol_   = &client->get_protocol( );
+
         }
 
         common::connection_iface_sptr connection( )

@@ -57,7 +57,6 @@ namespace {
         void init(  )
         {
             protocol_.reset(new protocol_layer_c( parent_, client_ ));
-            start_reading( );
         }
 
         bool active( ) const
@@ -70,7 +69,7 @@ namespace {
                          common::connection_iface_sptr /*parent*/)
         {
             if( !err ) {
-                init( );
+                start_reading( );
             }
             closure( err );
         }

@@ -36,7 +36,7 @@ namespace vtrc { namespace client {
             } else {
                 get_socket( ).assign( pipe );
             }
-            init( );
+            start_reading( );
         }
 
         void async_connect( const std::string &address,
@@ -63,7 +63,7 @@ namespace vtrc { namespace client {
                 get_socket( ).assign( pipe );
             }
 
-            init( );
+            start_reading( );
         }
 
         void async_connect( const std::wstring &address,
@@ -94,6 +94,7 @@ namespace vtrc { namespace client {
     {
         vtrc::shared_ptr<client_win_pipe> new_inst
                                         (new client_win_pipe( ios, client ));
+        new_inst->init( );
         return new_inst;
     }
 
@@ -135,7 +136,7 @@ namespace vtrc { namespace client {
         this->close( );
     }
 
-    common::protocol_layer &client_win_pipe::get_protocol( ) 
+    common::protocol_layer &client_win_pipe::get_protocol( )
     {
         return impl_->get_protocol( );
     }
@@ -153,7 +154,7 @@ namespace vtrc { namespace client {
 
     void client_win_pipe::init( )
     {
-
+        impl_->init( );
     }
 
 }}

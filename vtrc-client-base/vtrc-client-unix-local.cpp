@@ -23,7 +23,7 @@ namespace vtrc { namespace client {
         {
             basio::local::stream_protocol::endpoint ep (address);
             get_socket( ).connect( ep );
-            init( );
+            start_reading( );
         }
 
         void async_connect( const std::string &address,
@@ -55,6 +55,7 @@ namespace vtrc { namespace client {
     {
         vtrc::shared_ptr<client_unix_local> new_inst
                                         (new client_unix_local( ios, client ));
+        new_inst->init( );
         return new_inst;
     }
 
@@ -98,7 +99,7 @@ namespace vtrc { namespace client {
 
     void client_unix_local::init( )
     {
-
+        impl_->init( );
     }
 
     bool client_unix_local::active( ) const
