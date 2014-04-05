@@ -19,7 +19,7 @@
               BOOST_PP_CAT( name, _slot_type );                                \
       typedef BOOST_PP_CAT( name, _type )::group_type                          \
               BOOST_PP_CAT( name, _group_type );                               \
-      BOOST_PP_CAT( name, _type )&  BOOST_PP_CAT( get_, name )()               \
+      BOOST_PP_CAT( name, _type )&  BOOST_PP_CAT( get_, name )( )              \
       { return BOOST_PP_CAT( name, _ ); }                                      \
     private:                                                                   \
       BOOST_PP_CAT( name, _type ) BOOST_PP_CAT( name, _ );
@@ -37,7 +37,7 @@
               BOOST_PP_CAT( name, _slot_type );                                \
       typedef BOOST_PP_CAT( name, _type )::group_type                          \
               BOOST_PP_CAT( name, _group_type );                               \
-      BOOST_PP_CAT( name, _type )&  BOOST_PP_CAT( get_, name )()               \
+      BOOST_PP_CAT( name, _type )&  BOOST_PP_CAT( get_, name )( )              \
       { return BOOST_PP_CAT( name, _ ); }                                      \
     private:                                                                   \
       BOOST_PP_CAT( name, _type ) BOOST_PP_CAT( name, _ );

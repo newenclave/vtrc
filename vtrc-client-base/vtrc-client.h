@@ -1,6 +1,7 @@
 #ifndef VTRC_CLIENT_H
 #define VTRC_CLIENT_H
 
+#include "vtrc-common/vtrc-signal-declaration.h"
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-closure-holder.h"
 #include "vtrc-memory.h"
