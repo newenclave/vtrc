@@ -100,10 +100,12 @@ namespace client {
                             common::closure_type closure);
 #endif
 
-        void advise_handler(   vtrc::shared_ptr<google::protobuf::Service> srv);
-        void advise_weak_handler(vtrc::weak_ptr<google::protobuf::Service> srv);
+        void assign_rpc_handler(
+                          vtrc::shared_ptr<google::protobuf::Service> handler);
+        void assign_weak_rpc_handler(
+                          vtrc::weak_ptr<google::protobuf::Service> handler);
 
-        vtrc::shared_ptr<google::protobuf::Service> get_handler(
+        vtrc::shared_ptr<google::protobuf::Service> get_rpc_handler(
                                                     const std::string &name );
 
 

@@ -329,17 +329,17 @@ namespace vtrc { namespace client {
         impl_->async_connect( address, service, closure );
     }
 
-    void vtrc_client::advise_handler(vtrc::shared_ptr<gpb::Service> serv)
+    void vtrc_client::assign_rpc_handler(vtrc::shared_ptr<gpb::Service> serv)
     {
         impl_->advise_handler( serv );
     }
 
-    void vtrc_client::advise_weak_handler(vtrc::weak_ptr<gpb::Service> serv)
+    void vtrc_client::assign_weak_rpc_handler(vtrc::weak_ptr<gpb::Service> serv)
     {
         impl_->advise_weak_handler( serv );
     }
 
-    service_sptr vtrc_client::get_handler(const std::string &name)
+    service_sptr vtrc_client::get_rpc_handler(const std::string &name)
     {
         return impl_->get_handler( name );
     }

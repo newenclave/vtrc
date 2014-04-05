@@ -63,7 +63,7 @@ namespace vtrc { namespace client {
         {
             return common::rpc_service_wrapper_sptr
                         (new common::rpc_service_wrapper(
-                                                client_->get_handler( name )));
+                                                client_->get_rpc_handler( name )));
         }
 
         void pop_message( )

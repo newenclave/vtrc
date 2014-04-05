@@ -164,8 +164,8 @@ int main( )
     //cl->connect( "::1", "44668" );
     ///cl->async_connect( "127.0.0.1", "44667", on_connect );
 
-    cl->advise_handler( vtrc::shared_ptr<test_ev>(new test_ev(cl->connection( ).get( ))) );
-    cl->advise_handler( vtrc::shared_ptr<ping_impl>(new ping_impl(cl.get( ))) );
+    cl->assign_rpc_handler( vtrc::shared_ptr<test_ev>(new test_ev(cl->connection( ).get( ))) );
+    cl->assign_rpc_handler( vtrc::shared_ptr<ping_impl>(new ping_impl(cl.get( ))) );
 
     vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(2000) );
 
