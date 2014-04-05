@@ -172,6 +172,8 @@ namespace vtrc { namespace client {
             service_shared_map::iterator f( hold_services_.find( serv_name ) );
             if( f != hold_services_.end( ) ) {
                 f->second = serv;
+                upgrade_to_unique ulk(lk);
+                weak_services_[serv_name] = service_wptr(serv);
             } else {
                 upgrade_to_unique ulk(lk);
                 hold_services_.insert( std::make_pair(serv_name, serv) );
@@ -184,14 +186,8 @@ namespace vtrc { namespace client {
             service_sptr lock(serv.lock( ));
             if( lock ) {
                 const std::string s_name(lock->GetDescriptor( )->full_name( ));
-                vtrc::upgradable_lock lk(services_lock_);
-                service_weak_map::iterator f( weak_services_.find( s_name ) );
-                if( f != weak_services_.end( ) ) {
-                    f->second = serv;
-                } else {
-                    vtrc::upgrade_to_unique ulk(lk);
-                    weak_services_.insert( std::make_pair( s_name, serv) );
-                }
+                vtrc::unique_shared_lock lk(services_lock_);
+                weak_services_[s_name] = serv;
             }
         }
 
