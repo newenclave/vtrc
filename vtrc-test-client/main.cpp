@@ -134,7 +134,7 @@ void run_client( vtrc::shared_ptr<client::vtrc_client> cl, bool wait)
             work_time wt;
             //mi.set_b( ts );
             s.test( NULL, &mi, &mir, NULL );
-            last = mir.id( );
+            last = i; //mir.id( );
             std::cout << "response: " << last << "\n";
             //cl.reset( );
         } catch( const vtrc::common::exception &ex ) {
@@ -176,7 +176,7 @@ int main( )
     common::pool_pair pp(2, 2);
     vtrc::shared_ptr<client::vtrc_client> cl(client::vtrc_client::create(pp));
 
-    cl->set_session_key( "1234" );
+    //cl->set_session_key( "1234" );
 
     vtrc::mutex              mut;
     vtrc::condition_variable cond;
