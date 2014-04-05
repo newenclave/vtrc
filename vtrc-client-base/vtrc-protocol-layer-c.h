@@ -15,8 +15,6 @@ namespace common {
     struct transport_iface;
 }
 
-
-
 namespace client {
 
     class protocol_layer_c: public common::protocol_layer {

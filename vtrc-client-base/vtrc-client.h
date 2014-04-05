@@ -29,10 +29,15 @@ namespace vtrc {
 
 namespace client {
 
+    class protocol_layer_c;
+
     class vtrc_client: public vtrc::enable_shared_from_this<vtrc_client> {
 
-        struct impl;
-        impl *impl_;
+        struct        impl;
+        friend struct impl;
+        impl         *impl_;
+
+        friend class protocol_layer_c;
 
         vtrc_client( const vtrc_client &other );
         vtrc_client & operator = ( const vtrc_client &other );
