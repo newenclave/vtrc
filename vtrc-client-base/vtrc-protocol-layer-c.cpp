@@ -219,10 +219,11 @@ namespace vtrc { namespace client {
                 return;
             }
 
-            parent_->pop_message( );
 
             vtrc_auth::init_capsule capsule;
             parent_->parse_message( mess, capsule );
+
+            parent_->pop_message( );
 
             if( !capsule.ready( ) ) {
                 std::cout << "client transform !ready\n";
