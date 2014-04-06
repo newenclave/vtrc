@@ -34,15 +34,16 @@ void on_connect( const boost::system::error_code &err )
 }
 
 struct work_time {
-    typedef boost::chrono::high_resolution_clock::time_point time_point;
+    typedef vtrc::chrono::high_resolution_clock::time_point time_point;
     time_point start_;
     work_time( )
-        :start_(boost::chrono::high_resolution_clock::now( ))
+        :start_(vtrc::chrono::high_resolution_clock::now( ))
     {}
     ~work_time( )
     {
-        time_point stop(boost::chrono::high_resolution_clock::now( ));
-        std::cout << "call time: " << stop - start_ << "\n";
+        time_point::duration stop(
+                    vtrc::chrono::high_resolution_clock::now( ) - start_);
+        std::cout << "call time: " << stop << "\n";
     }
 };
 
