@@ -138,6 +138,9 @@ namespace vtrc { namespace common {
 
     protected:
 
+        void set_level( unsigned level );
+        unsigned get_level(  ) const;
+
         virtual void init( )            = 0;
         virtual void close( )           = 0;
         virtual void on_data_ready( )   = 0;

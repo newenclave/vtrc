@@ -152,6 +152,8 @@ namespace vtrc { namespace common {
         bool                         ready_;
         vtrc::condition_variable     ready_var_;
 
+        unsigned                     level_;
+
         impl( transport_iface *c, bool oddside, size_t mess_len )
             :connection_(c)
             ,hash_maker_(common::hash::create_default( ))
@@ -162,6 +164,7 @@ namespace vtrc { namespace common {
             ,rpc_index_(oddside ? 101 : 100)
             ,empty_done_(make_fake_mess( ))
             ,ready_(false)
+            ,level_(0)
         { }
 
         ~impl( )
@@ -489,6 +492,16 @@ namespace vtrc { namespace common {
         void cancel_slot( uint64_t slot_id )
         {
             rpc_queue_.cancel( slot_id );
+        }
+
+        void set_level( unsigned level )
+        {
+            level_ = level;
+        }
+
+        unsigned get_level( ) const
+        {
+            return level_;
         }
 
         const vtrc_rpc_lowlevel::options &get_method_options(
@@ -826,6 +839,15 @@ namespace vtrc { namespace common {
         return impl_->get_method_options( method );
     }
 
+    void protocol_layer::set_level( unsigned level )
+    {
+        impl_->set_level( level );
+    }
+
+    unsigned protocol_layer::get_level( ) const
+    {
+        return impl_->get_level( );
+    }
 
     const call_context *protocol_layer::get_call_context( ) const
     {
