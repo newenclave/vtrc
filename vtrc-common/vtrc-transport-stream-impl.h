@@ -115,13 +115,19 @@ namespace vtrc { namespace common {
                 return ios_;
             }
 
+            void prepare_for_write(std::string &in_out)
+            {
+                in_out.assign( prepare_for_write( in_out.c_str( ),
+                                                  in_out.size( ) ) );
+            }
+
             virtual std::string prepare_for_write(const char *data,
                                                   size_t len) = 0;
 
             message_holder_sptr make_holder( const char *data, size_t length,
                                          vtrc::shared_ptr<closure_type> closure)
             {
-//// FIX IT!!!!!
+                /// TODO: FIX IT
                 message_holder_sptr mh(vtrc::make_shared<message_holder>());
                 mh->message_ = std::string( data, data + length );
                 mh->closure_ = closure;
@@ -141,6 +147,7 @@ namespace vtrc { namespace common {
 #ifndef TRANSPORT_USE_ASYNC_WRITE
 
                 vtrc::unique_lock<vtrc::mutex> lck(write_lock_);
+                prepare_for_write( data->message_ );
                 basio::write( *stream_, basio::buffer( mh->message_ ) );
 #else
                 write_dispatcher_.post(
@@ -155,14 +162,15 @@ namespace vtrc { namespace common {
 
 #ifndef TRANSPORT_USE_ASYNC_WRITE
                 message_holder_sptr mh(make_holder(data, length));
-
                 vtrc::unique_lock<vtrc::mutex> lck(write_lock_);
+                prepare_for_write( data->message_ );
                 bsys::error_code ec;
                 basio::write( *stream_, basio::buffer( mh->message_ ), ec );
                 success( ec );
 #else
                 vtrc::shared_ptr<closure_type>
                         closure(vtrc::make_shared<closure_type>(success));
+
                 message_holder_sptr mh(make_holder(data, length, closure));
 
                 write_dispatcher_.post(
@@ -179,15 +187,14 @@ namespace vtrc { namespace common {
                              write_queue_.front( )->message_.size( ), 0);
             }
 
-            /// only one thread calls this
+            /// non concurrence call.
             void write_impl( message_holder_sptr data,
                              vtrc::shared_ptr<closure_type> closure,
                              common::connection_iface_sptr /*inst*/)
             {
                 bool empty = write_queue_.empty( );
 
-                data->message_ = prepare_for_write( data->message_.c_str( ),
-                                                    data->message_.size( ));
+                prepare_for_write( data->message_ );
 
                 write_queue_.push_back( data );
                 if( closure ) {
