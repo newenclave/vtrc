@@ -28,11 +28,14 @@
 #include "vtrc-chrono.h"
 #include "vtrc-atomic.h"
 #include "vtrc-common/vtrc-random-device.h"
+#include "vtrc-common/vtrc-delayed-call.h"
+
 
 namespace vtrc { namespace server {
 
-    namespace gpb  = google::protobuf;
-    namespace bsys = boost::system;
+    namespace gpb   = google::protobuf;
+    namespace bsys  = boost::system;
+    namespace basio = boost::asio;
 
     namespace {
         enum init_stage_enum {
@@ -52,20 +55,6 @@ namespace vtrc { namespace server {
 
     namespace data_queue = common::data_queue;
 
-    struct atomic_counter_keeper {
-        vtrc::atomic<unsigned> &value_;
-        atomic_counter_keeper( vtrc::atomic<unsigned> &value )
-            :value_(value)
-        {
-            ++value_;
-        }
-
-        ~atomic_counter_keeper( )
-        {
-            --value_;
-        }
-    };
-
     struct protocol_layer_s::impl {
 
         typedef impl             this_type;
@@ -81,6 +70,8 @@ namespace vtrc { namespace server {
 
         std::string              client_id_;
 
+        common::delayed_call     keepalive_calls_;
+
         typedef vtrc::function<void (void)> stage_function_type;
         stage_function_type  stage_function_;
 
@@ -94,9 +85,16 @@ namespace vtrc { namespace server {
             ,ready_(false)
             ,current_calls_(0)
             ,maximum_calls_(maximum_calls)
+            ,keepalive_calls_(a.get_io_service( ))
         {
             stage_function_ =
                     vtrc::bind( &this_type::on_client_selection, this );
+
+            /// client has only 10 seconds for init connection
+            /// todo: think about setting  for this timeout value
+            keepalive_calls_.call_from_now(
+                        vtrc::bind( &this_type::on_keepavive, this, _1 ),
+                        boost::posix_time::seconds( 10 ));
         }
 
         common::rpc_service_wrapper_sptr get_service( const std::string &name )
@@ -129,9 +127,15 @@ namespace vtrc { namespace server {
             parent_->pop_message( );
         }
 
-        void on_timer( boost::system::error_code const &error )
+        void on_keepavive( const boost::system::error_code &error )
         {
-
+            if( !error ) {
+                /// timeout for client init
+                vtrc_auth::init_capsule cap;
+                cap.mutable_error( )->set_code( vtrc_errors::ERR_TIMEOUT );
+                cap.set_ready( false );
+                send_and_close( cap );
+            }
         }
 
         bool check_message_hash( const std::string &mess )
@@ -157,6 +161,14 @@ namespace vtrc { namespace server {
             send_proto_message( mess, vtrc::bind(
                                 &this_type::close_client, this, _1,
                                     connection_->shared_from_this( )) );
+        }
+
+        void set_client_ready(  )
+        {
+            keepalive_calls_.cancel( );
+            stage_function_ =
+                    vtrc::bind( &this_type::on_rcp_call_ready, this );
+            parent_->set_ready( true );
         }
 
         void close_client( const bsys::error_code & /*err*/,
@@ -207,10 +219,7 @@ namespace vtrc { namespace server {
             capsule.set_ready( true );
             capsule.set_text( "Kiva nahda sinut!" );
 
-            stage_function_ =
-                    vtrc::bind( &this_type::on_rcp_call_ready, this );
-
-            parent_->set_ready( true );
+            set_client_ready(  );
 
             send_proto_message( capsule );
 
@@ -226,10 +235,7 @@ namespace vtrc { namespace server {
                 capsule.set_ready( true );
                 capsule.set_text( "Kiva nahda sinut!" );
 
-                stage_function_ =
-                        vtrc::bind( &this_type::on_rcp_call_ready, this );
-
-                parent_->set_ready( true );
+                set_client_ready(  );
 
                 send_proto_message( capsule );
 
@@ -410,7 +416,6 @@ namespace vtrc { namespace server {
                 }
             }
 
-            //connection_->close( );
         }
 
         void parse_message( const std::string &block, gpb::Message &mess )
