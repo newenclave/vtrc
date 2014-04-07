@@ -32,7 +32,6 @@ namespace vtrc { namespace common {
 
         virtual void on_close( ) { }
 
-        //virtual void write_raw( const char *data, size_t length ) = 0;
     };
 
 }}
