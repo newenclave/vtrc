@@ -42,13 +42,13 @@ namespace  vtrc { namespace  common {
     };
 
     struct random_device::impl {
-        vtrc::shared_ptr<random_impl> random_dev_;
+        vtrc::scoped_ptr<random_impl> random_dev_;
         impl( bool use_mt19937 )
         {
             if( !use_mt19937 ) {
-                random_dev_ = vtrc::make_shared<device_impl>( );
+                random_dev_.reset( new device_impl );
             } else {
-                random_dev_ = vtrc::make_shared<mt19937_impl>( );
+                random_dev_.reset( new mt19937_impl );
             }
         }
         void generate(char *b, char *e)
