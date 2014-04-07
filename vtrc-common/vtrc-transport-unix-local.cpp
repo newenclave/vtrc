@@ -60,9 +60,9 @@ namespace vtrc { namespace common {
     }
 
     void transport_unix_local::write(const char *data, size_t length,
-                              closure_type &success)
+                              closure_type &success, bool on_send_success)
     {
-        impl_->write( data, length, success );
+        impl_->write( data, length, success, on_send_success );
     }
 
     std::string transport_unix_local::prepare_for_write(const char *data,

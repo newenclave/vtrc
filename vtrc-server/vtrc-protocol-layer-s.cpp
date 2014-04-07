@@ -150,17 +150,18 @@ namespace vtrc { namespace server {
         }
 
         void send_proto_message( const gpb::Message &mess,
-                                 common::closure_type closure)
+                                 common::closure_type closure, bool on_send)
         {
             std::string s(mess.SerializeAsString( ));
-            connection_->write( s.c_str( ), s.size( ), closure );
+            connection_->write( s.c_str( ), s.size( ), closure, on_send );
         }
 
         void send_and_close( const gpb::Message &mess )
         {
             send_proto_message( mess, vtrc::bind(
-                                &this_type::close_client, this, _1,
-                                    connection_->shared_from_this( )) );
+                                    &this_type::close_client, this, _1,
+                                     connection_->shared_from_this( )),
+                                true );
         }
 
         void set_client_ready(  )

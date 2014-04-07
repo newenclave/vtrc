@@ -33,6 +33,7 @@ namespace vtrc { namespace common {
             struct message_holder {
                 std::string message_;
                 vtrc::shared_ptr<closure_type> closure_;
+                bool on_send_;
                 message_holder( )
                 { }
             };
@@ -125,19 +126,21 @@ namespace vtrc { namespace common {
                                                   size_t len) = 0;
 
             message_holder_sptr make_holder( const char *data, size_t length,
-                                         vtrc::shared_ptr<closure_type> closure)
+                                         vtrc::shared_ptr<closure_type> closure,
+                                         bool on_send)
             {
                 /// TODO: FIX IT
                 message_holder_sptr mh(vtrc::make_shared<message_holder>());
                 mh->message_ = std::string( data, data + length );
                 mh->closure_ = closure;
+                mh->on_send_ = on_send;
                 return mh;
             }
 
             message_holder_sptr make_holder( const char *data, size_t length)
             {
                 return make_holder(data, length,
-                                            vtrc::shared_ptr<closure_type>( ));
+                                   vtrc::shared_ptr<closure_type>( ), false );
             }
 
             void write( const char *data, size_t length )
@@ -157,7 +160,8 @@ namespace vtrc { namespace common {
 #endif
             }
 
-            void write(const char *data, size_t length, closure_type &success)
+            void write(const char *data, size_t length,
+                       closure_type &success, bool on_send)
             {
 
 #ifndef TRANSPORT_USE_ASYNC_WRITE
@@ -171,7 +175,8 @@ namespace vtrc { namespace common {
                 vtrc::shared_ptr<closure_type>
                         closure(vtrc::make_shared<closure_type>(success));
 
-                message_holder_sptr mh(make_holder(data, length, closure));
+                message_holder_sptr mh(make_holder(data, length,
+                                                   closure, on_send));
 
                 write_dispatcher_.post(
                        vtrc::bind( &this_type::write_impl, this, mh,
@@ -197,7 +202,7 @@ namespace vtrc { namespace common {
                 prepare_for_write( data->message_ );
 
                 write_queue_.push_back( data );
-                if( closure ) {
+                if( closure && !data->on_send_ ) {
                     const bsys::error_code err(0, bsys::get_system_category( ));
                     (*closure)(err);
                 }
@@ -244,9 +249,11 @@ namespace vtrc { namespace common {
 
                     } else {
 
-//                        if( write_queue_.front( )->closure_ ) {
-//                            (*write_queue_.front( )->closure_)( error );
-//                        }
+                        message_holder_sptr &top(write_queue_.front( ));
+
+                        if( top->closure_ && top->on_send_) {
+                            (*top->closure_)( error );
+                        }
 
                         write_queue_.pop_front( );
 
@@ -255,9 +262,12 @@ namespace vtrc { namespace common {
                     }
                 } else {
 
-//                    if( write_queue_.front( )->closure_ ) {
-//                        (*write_queue_.front( )->closure_)( error );
-//                    }
+                    message_holder_sptr &top(write_queue_.front( ));
+
+                    if( top->closure_ && top->on_send_ ) {
+                        (*top->closure_)( error );
+                    }
+
                     parent_->on_write_error( error );
                 }
             }

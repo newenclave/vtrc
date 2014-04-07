@@ -80,10 +80,11 @@ namespace vtrc { namespace client {
         }
 
         void send_proto_message( const gpb::Message &mess,
-                                 common::closure_type closure ) const
+                                 common::closure_type closure,
+                                 bool on_send ) const
         {
             std::string s(mess.SerializeAsString( ));
-            connection_->write(s.c_str( ), s.size( ), closure );
+            connection_->write(s.c_str( ), s.size( ), closure, on_send );
         }
 
         void process_event_impl( vtrc_client_wptr client,
@@ -341,7 +342,8 @@ namespace vtrc { namespace client {
                         : &this_type::on_server_ready, this );
 
             send_proto_message( capsule,
-                    vtrc::bind( &this_type::set_options, this, _1 ) );
+                                vtrc::bind( &this_type::set_options, this, _1 ),
+                                false );
 
         }
 
