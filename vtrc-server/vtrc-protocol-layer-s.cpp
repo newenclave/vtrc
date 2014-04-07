@@ -211,7 +211,6 @@ namespace vtrc { namespace server {
                     vtrc::bind( &this_type::on_rcp_call_ready, this );
 
             parent_->set_ready( true );
-            std::cout << "set  ready\n";
 
             send_proto_message( capsule );
 

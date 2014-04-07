@@ -131,7 +131,8 @@ void run_client( vtrc::shared_ptr<client::vtrc_client> cl, bool wait)
         try {
 
             if( wait )
-                vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds(1) );
+                vtrc::this_thread::sleep_for(
+                            vtrc::chrono::microseconds(500) );
             work_time wt;
             //mi.set_b( ts );
             s.test( NULL, &mi, &mir, NULL );
@@ -203,11 +204,11 @@ int main( )
 
     std::cout << "start program\n";
 
+    vtrc::thread( run_client, cl, true ).detach( );
     //vtrc::thread( run_client, cl, false ).detach( );
 
     vtrc::thread r( run_client, cl, false );
 
-    vtrc::thread( run_client, cl, true ).detach( );
 
     //cond.wait( lck );
     r.join( );
