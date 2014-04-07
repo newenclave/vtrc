@@ -26,7 +26,7 @@ namespace vtrc { namespace common {
         virtual void write( const char *data, size_t length ) = 0;
 
         virtual void write( const char *data, size_t length,
-                                        closure_type &success,
+                                        const closure_type &success,
                                         bool success_on_send ) = 0;
 
         virtual void on_close( ) { }

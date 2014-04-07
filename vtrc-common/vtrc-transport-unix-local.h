@@ -43,8 +43,8 @@ namespace vtrc { namespace common {
         const socket_type       &get_socket( ) const  ;
 
         void write( const char *data, size_t length ) ;
-        void write(const char *data, size_t length,
-                   closure_type &success , bool on_send_success) ;
+        void write( const char *data, size_t length,
+                    const closure_type &success, bool on_send_success) ;
 
         virtual void on_write_error( const boost::system::error_code &err ) = 0;
 

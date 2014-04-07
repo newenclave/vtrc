@@ -61,7 +61,7 @@ namespace vtrc { namespace common {
     }
 
     void transport_tcp::write(const char *data, size_t length,
-                              closure_type &success, bool on_send_success)
+                              const closure_type &success, bool on_send_success)
     {
         impl_->write( data, length, success, on_send_success );
     }

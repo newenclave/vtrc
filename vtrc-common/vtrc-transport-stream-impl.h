@@ -161,7 +161,7 @@ namespace vtrc { namespace common {
             }
 
             void write(const char *data, size_t length,
-                       closure_type &success, bool on_send)
+                       const closure_type &success, bool on_send)
             {
 
 #ifndef TRANSPORT_USE_ASYNC_WRITE
