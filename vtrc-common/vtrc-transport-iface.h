@@ -17,7 +17,6 @@ namespace vtrc { namespace common {
     struct transport_iface: public connection_iface {
 
         virtual ~transport_iface( ) { }
-        //
 
         virtual const char *name( ) const   = 0;
         virtual void close( )               = 0;
