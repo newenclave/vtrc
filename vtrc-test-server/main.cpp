@@ -246,7 +246,7 @@ private:
 
 int main( ) try {
 
-    common::pool_pair pp(4, 8);
+    common::pool_pair pp(1, 1);
     main_app app(pp);
 
     vtrc::shared_ptr<vtrc::server::endpoint_iface> tcp4_ep
