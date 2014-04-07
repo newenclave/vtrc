@@ -1,6 +1,8 @@
 #ifndef VTRC_RANDOM_DEVICE_H
 #define VTRC_RANDOM_DEVICE_H
 
+#include <string>
+
 namespace vtrc { namespace common {
 
     class random_device {
@@ -17,6 +19,8 @@ namespace vtrc { namespace common {
         ~random_device( );
 
         void generate( char *b, char *e );
+
+        std::string generate_block( size_t length );
 
     };
 

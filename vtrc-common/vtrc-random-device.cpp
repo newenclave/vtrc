@@ -55,6 +55,13 @@ namespace  vtrc { namespace  common {
         {
             random_dev_->generate( b, e );
         }
+
+        void geterate_block( size_t length, std::string &out )
+        {
+            std::string tmp(length, 0);
+            generate( &tmp[0], &tmp[0] + length );
+            out.swap( tmp );
+        }
     };
 
     random_device::random_device( bool use_device )
@@ -69,6 +76,13 @@ namespace  vtrc { namespace  common {
     void random_device::generate(char *b, char *e)
     {
         impl_->generate( b, e );
+    }
+
+    std::string random_device::generate_block( size_t length )
+    {
+        std::string result;
+        impl_->geterate_block( length, result );
+        return result;
     }
 
 }}
