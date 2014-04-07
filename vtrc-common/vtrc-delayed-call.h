@@ -17,7 +17,7 @@ namespace vtrc { namespace common {
 
         delayed_call( boost::asio::io_service &ios )
             :timer_(ios)
-        {}
+        { }
 
         timer::monotonic &timer( )
         {
