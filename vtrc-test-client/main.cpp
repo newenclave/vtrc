@@ -189,10 +189,10 @@ int main( )
     cl->get_on_disconnect( ).connect( boost::bind( on_disconnect,
                                                    vtrc::ref(cond) ));
 
-//    cl->connect( "/tmp/test" );
+    cl->connect( "/tmp/test.socket" );
     //cl->connect( "192.168.56.101", "44667" );
     //cl->connect( "\\\\.\\pipe\\test_pipe");
-    cl->connect( "127.0.0.1", "44667" );
+    //cl->connect( "127.0.0.1", "44667" );
     //cl->connect( "::1", "44668" );
     ///cl->async_connect( "127.0.0.1", "44667", on_connect );
 
@@ -204,7 +204,7 @@ int main( )
 
     std::cout << "start program\n";
 
-    vtrc::thread( run_client, cl, true ).detach( );
+    //vtrc::thread( run_client, cl, true ).detach( );
     //vtrc::thread( run_client, cl, false ).detach( );
 
     vtrc::thread r( run_client, cl, false );
