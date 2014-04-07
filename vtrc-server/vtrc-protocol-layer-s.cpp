@@ -117,7 +117,7 @@ namespace vtrc { namespace server {
         }
 
 
-        bool pop_chek_init_message( )
+        bool pop_check_init_message(  )
         {
 
         }
