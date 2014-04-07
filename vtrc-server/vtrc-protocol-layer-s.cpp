@@ -205,7 +205,7 @@ namespace vtrc { namespace server {
 
             capsule.Clear( );
             capsule.set_ready( true );
-            capsule.set_text( "Kiva katso sinut!" );
+            capsule.set_text( "Kiva nahda sinut!" );
 
             stage_function_ =
                     vtrc::bind( &this_type::on_rcp_call_ready, this );
@@ -224,7 +224,7 @@ namespace vtrc { namespace server {
             if( id == vtrc_auth::TRANSFORM_NONE ) {
 
                 capsule.set_ready( true );
-                capsule.set_text( "Kiva katso sinut!" );
+                capsule.set_text( "Kiva nahda sinut!" );
 
                 stage_function_ =
                         vtrc::bind( &this_type::on_rcp_call_ready, this );
