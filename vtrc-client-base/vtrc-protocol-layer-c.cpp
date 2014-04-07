@@ -289,7 +289,7 @@ namespace vtrc { namespace client {
             if( !err ) {
                 std::cout << "set opts\n";
                 parent_->change_hash_maker(
-                   common::hash::create_by_index( vtrc_auth::HASH_CRC_64 ));
+                   common::hash::create_by_index( vtrc_auth::HASH_CRC_32 ));
             }
         }
 
@@ -328,12 +328,12 @@ namespace vtrc { namespace client {
                 init.set_id( client_->get_session_id( ) );
             }
 
-            init.set_hash( vtrc_auth::HASH_CRC_64 );
+            init.set_hash( vtrc_auth::HASH_CRC_32 );
 
             capsule.set_body( init.SerializeAsString( ) );
 
             parent_->change_hash_checker(
-               common::hash::create_by_index( vtrc_auth::HASH_CRC_64 ));
+               common::hash::create_by_index( vtrc_auth::HASH_CRC_32 ));
 
             stage_call_ = vtrc::bind(
                         key_set

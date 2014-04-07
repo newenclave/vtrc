@@ -121,8 +121,9 @@ namespace vtrc { namespace common {
             message_holder_sptr make_holder( const char *data, size_t length,
                                          vtrc::shared_ptr<closure_type> closure)
             {
+//// FIX IT!!!!!
                 message_holder_sptr mh(vtrc::make_shared<message_holder>());
-                mh->message_ = prepare_for_write( data, length );
+                mh->message_ = std::string( data, data + length );
                 mh->closure_ = closure;
                 return mh;
             }
@@ -178,11 +179,15 @@ namespace vtrc { namespace common {
                              write_queue_.front( )->message_.size( ), 0);
             }
 
+            /// only one thread calls this
             void write_impl( message_holder_sptr data,
                              vtrc::shared_ptr<closure_type> closure,
-                             common::connection_iface_sptr inst)
+                             common::connection_iface_sptr /*inst*/)
             {
                 bool empty = write_queue_.empty( );
+
+                data->message_ = prepare_for_write( data->message_.c_str( ),
+                                                    data->message_.size( ));
 
                 write_queue_.push_back( data );
                 if( closure ) {

@@ -203,12 +203,13 @@ int main( )
 
     std::cout << "start program\n";
 
-    //vtrc::thread( run_client, cl, true ).detach( );
     //vtrc::thread( run_client, cl, false ).detach( );
 
     vtrc::thread r( run_client, cl, false );
 
-    cond.wait( lck );
+    vtrc::thread( run_client, cl, true ).detach( );
+
+    //cond.wait( lck );
     r.join( );
 
     pp.stop_all( );

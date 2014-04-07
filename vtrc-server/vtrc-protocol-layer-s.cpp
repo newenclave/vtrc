@@ -211,6 +211,8 @@ namespace vtrc { namespace server {
                     vtrc::bind( &this_type::on_rcp_call_ready, this );
 
             parent_->set_ready( true );
+            std::cout << "set  ready\n";
+
             send_proto_message( capsule );
 
         }
@@ -324,6 +326,9 @@ namespace vtrc { namespace server {
             std::string &mess(parent_->message_queue( ).front( ));
             bool check = check_message_hash(mess);
             if( !check ) {
+                std::cout << "message bad hash "
+                          << parent_->message_queue( ).size( )
+                          << "...";
                 connection_->close( );
                 return false;
             }
@@ -378,12 +383,6 @@ namespace vtrc { namespace server {
             parent_->push_rpc_message( llu->id( ), llu );
         }
 
-        void on_rcp_call_ready_( )
-        {
-            app_.get_io_service( ).post(
-                        vtrc::bind(&this_type::on_rcp_call_ready, this));
-        }
-
         void on_rcp_call_ready( )
         {
             typedef vtrc_rpc_lowlevel::message_info message_info;
@@ -391,7 +390,10 @@ namespace vtrc { namespace server {
 
                 lowlevel_unit_sptr llu(vtrc::make_shared<lowlevel_unit_type>());
 
-                if(!get_pop_message( *llu )) return;
+                if(!get_pop_message( *llu )) {
+                    std::cout << "bad hash message!\n";
+                    return;
+                }
 
                 if( llu->has_info( ) ) {
                     switch (llu->info( ).message_type( )) {
