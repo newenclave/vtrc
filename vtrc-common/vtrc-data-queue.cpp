@@ -225,15 +225,24 @@ namespace vtrc { namespace common { namespace data_queue {
     }
 
     namespace varint {
+
         typedef vtrc::common::policies::varint_policy<size_t> policy_type;
+
         queue_base *create_parser( size_t max_valid_length )
         {
             return new parser_impl<policy_type>(max_valid_length);
         }
+
         queue_base *create_serializer( size_t max_valid_length )
         {
             return new serializer_impl<policy_type>(max_valid_length);
         }
+
+        std::string pack_size(size_t size)
+        {
+            return policy_type::pack( size );
+        }
+
     }
 
     namespace fixint {
@@ -246,6 +255,12 @@ namespace vtrc { namespace common { namespace data_queue {
         {
             return new serializer_impl<policy_type>(max_valid_length);
         }
+
+        std::string pack_size(size_t size)
+        {
+            return policy_type::pack( size );
+        }
+
     }
 
 }}}

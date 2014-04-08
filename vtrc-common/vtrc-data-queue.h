@@ -36,19 +36,18 @@ namespace vtrc { namespace common { namespace data_queue {
 
         virtual void process( ) = 0;
         virtual std::string *process_one( ) = 0;
-
-        /// TODO: fix it!
-        virtual std::string pack_size( size_t size ) const = 0;
     };
 
     typedef vtrc::shared_ptr<queue_base> queue_base_sptr;
 
     namespace varint {
+        std::string pack_size( size_t size );
         queue_base *create_parser    ( size_t max_valid_length );
         queue_base *create_serializer( size_t max_valid_length );
     }
 
     namespace fixint {
+        std::string pack_size( size_t size );
         queue_base *create_parser    ( size_t max_valid_length );
         queue_base *create_serializer( size_t max_valid_length );
     }

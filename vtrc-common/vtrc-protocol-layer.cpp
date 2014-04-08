@@ -119,6 +119,8 @@ namespace vtrc { namespace common {
 
         typedef vtrc::shared_ptr<closure_holder_type> closure_holder_sptr;
 
+        namespace size_policy_ns = data_queue::varint;
+
     }
 
     struct protocol_layer::impl {
@@ -160,7 +162,7 @@ namespace vtrc { namespace common {
             ,hash_checker_(common::hash::create_default( ))
             ,transformer_(common::transformers::none::create( ))
             ,revertor_(common::transformers::none::create( ))
-            ,queue_(data_queue::varint::create_parser(mess_len))
+            ,queue_(size_policy_ns::create_parser(mess_len))
             ,rpc_index_(oddside ? 101 : 100)
             ,empty_done_(make_fake_mess( ))
             ,ready_(false)
@@ -190,7 +192,7 @@ namespace vtrc { namespace common {
              *  message =
              *  <packed_size(data_length+hash_length)><hash(data)><data>
             */
-            std::string result(queue_->pack_size(
+            std::string result(size_policy_ns::pack_size(
                                 length + hash_maker_->hash_size( )));
 
             result.append( hash_maker_->get_data_hash(data, length ));
