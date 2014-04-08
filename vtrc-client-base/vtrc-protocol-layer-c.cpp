@@ -119,6 +119,7 @@ namespace vtrc { namespace client {
             cont.set_code( code );
             cont.set_category( vtrc_errors::CATEGORY_INTERNAL );
             cont.set_additional( add );
+            return cont;
         }
 
         const std::string &client_id( ) const
