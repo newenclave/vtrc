@@ -103,7 +103,7 @@ namespace client {
 
         const std::string &get_session_key(  ) const;
         const std::string &get_session_id (  ) const;
-        bool is_key_set( ) const;
+        bool  is_key_set( ) const;
 
     public:
 
