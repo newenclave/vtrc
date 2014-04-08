@@ -313,9 +313,6 @@ namespace vtrc { namespace server {
             std::string &mess(parent_->message_queue( ).front( ));
             bool check = check_message_hash(mess);
             if( !check ) {
-                std::cout << "message bad hash "
-                          << parent_->message_queue( ).size( )
-                          << "...";
                 connection_->close( );
                 return false;
             }

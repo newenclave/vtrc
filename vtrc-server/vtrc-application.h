@@ -1,6 +1,7 @@
 #ifndef VTRC_APPLICATION_IFACE_H
 #define VTRC_APPLICATION_IFACE_H
 
+//#include "vtrc-common/vtrc-signal-declaration.h"
 #include "vtrc-memory.h"
 
 namespace boost { namespace asio {
@@ -10,6 +11,10 @@ namespace boost { namespace asio {
 namespace google { namespace protobuf {
     class Service;
 }}
+
+namespace vtrc_errors {
+    class container;
+}
 
 namespace vtrc {
 
