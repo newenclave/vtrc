@@ -142,8 +142,9 @@ namespace vtrc { namespace common {
         unsigned get_level(  ) const;
 
         virtual void init( )             = 0;
-        virtual void close( )            = 0;
         virtual void on_data_ready( )    = 0;
+
+        //virtual void close( )            = 0;
 
         virtual const std::string &client_id( ) const = 0;
 
