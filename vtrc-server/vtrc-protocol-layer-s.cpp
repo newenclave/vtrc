@@ -199,12 +199,9 @@ namespace vtrc { namespace server {
 
             tsetup.ParseFromString( capsule.body( ) );
 
-            std::string s1(tsetup.salt1( ));
-            std::string s2(tsetup.salt2( ));
-
             std::string key(app_.get_session_key( connection_, client_id_ ));
 
-            create_key( key, s1, s2, key );
+            create_key( key, tsetup.salt1( ), tsetup.salt2( ), key );
 
             common::transformer_iface *new_transformer =
                                 erseefor::create( key.c_str( ), key.size( ) );
@@ -240,13 +237,10 @@ namespace vtrc { namespace server {
 
                 std::string key(app_.get_session_key(connection_, client_id_));
 
-                std::string s1;
-                std::string s2;
-
-                generate_key_infos( key, s1, s2, key );
-
-                ts.set_salt1( s1 );
-                ts.set_salt2( s2 );
+                generate_key_infos( key,                  // input
+                                    *ts.mutable_salt1( ), // output
+                                    *ts.mutable_salt2( ), // output
+                                    key );                // output
 
                 common::transformer_iface *new_reverter =
                         erseefor::create( key.c_str( ), key.size( ) );
