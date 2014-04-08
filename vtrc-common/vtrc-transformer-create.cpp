@@ -12,20 +12,19 @@ namespace vtrc { namespace common {
                          const std::string &s1, const std::string &s2,
                                std::string &result )
         {
-            std::string tmpkey(key);
+            std::string tkey(key);
+            std::string ts1 (s1 );
+            std::string ts2 (s2 );
 
-            std::string tmps1(s1);
-            std::string tmps2(s2);
+            vtrc::scoped_ptr<hash_iface> sha256( hash::sha2::create256( ) );
 
-            vtrc::scoped_ptr<hash_iface> sha256(hash::sha2::create256( ));
+            ts1.append( tkey.begin( ), tkey.end( ) );
+            ts1.assign( sha256->get_data_hash( ts1.c_str( ), ts1.size( ) ) );
 
-            tmps1.append( tmpkey.begin( ), tmpkey.end( ) );
-            tmps1.assign( sha256->get_data_hash(tmps1.c_str( ), tmps1.size( )));
+            ts2.append( ts1.begin( ), ts1.end( ) );
+            ts2.assign( sha256->get_data_hash( ts2.c_str( ), ts2.size( ) ) );
 
-            tmps2.append( tmps1.begin( ), tmps1.end( ) );
-            tmps2.assign( sha256->get_data_hash(tmps2.c_str( ), tmps2.size( )));
-
-            result.swap( tmps2 );
+            result.swap( ts2 );
 
         }
 
@@ -35,8 +34,8 @@ namespace vtrc { namespace common {
         {
             random_device rd( false );
 
-            std::string tmps1(rd.generate_block( 256 ));
-            std::string tmps2(rd.generate_block( 256 ));
+            std::string tmps1( rd.generate_block( 256 ) );
+            std::string tmps2( rd.generate_block( 256 ) );
 
             create_key( key, tmps1, tmps2, result );
 
