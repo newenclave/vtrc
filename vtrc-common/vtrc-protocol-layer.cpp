@@ -134,7 +134,7 @@ namespace vtrc { namespace common {
         vtrc::scoped_ptr<hash_iface>             hash_maker_;
         vtrc::scoped_ptr<hash_iface>             hash_checker_;
         vtrc::scoped_ptr<transformer_iface>      transformer_;
-        vtrc::scoped_ptr<transformer_iface>      reverter_;
+        vtrc::scoped_ptr<transformer_iface>      revertor_;
 
         vtrc::scoped_ptr<data_queue::queue_base> queue_;
 
@@ -159,7 +159,7 @@ namespace vtrc { namespace common {
             ,hash_maker_(common::hash::create_default( ))
             ,hash_checker_(common::hash::create_default( ))
             ,transformer_(common::transformers::none::create( ))
-            ,reverter_(common::transformers::none::create( ))
+            ,revertor_(common::transformers::none::create( ))
             ,queue_(data_queue::varint::create_parser(mess_len))
             ,rpc_index_(oddside ? 101 : 100)
             ,empty_done_(make_fake_mess( ))
@@ -222,7 +222,7 @@ namespace vtrc { namespace common {
                 /*
                  * message = revert( message )
                 */
-                reverter_->transform( &next_data[0], next_data.size( ) );
+                revertor_->transform( &next_data[0], next_data.size( ) );
                 queue_->append( &next_data[0], next_data.size( ));
 
                 queue_->process( );
@@ -421,9 +421,9 @@ namespace vtrc { namespace common {
             transformer_.reset(new_transformer);
         }
 
-        void change_reverter( transformer_iface *new_reverter)
+        void change_revertor( transformer_iface *new_reverter)
         {
-            reverter_.reset(new_reverter);
+            revertor_.reset(new_reverter);
         }
 
         void pop_message( )
@@ -908,9 +908,9 @@ namespace vtrc { namespace common {
         impl_->change_transformer( new_transformer );
     }
 
-    void protocol_layer::change_reverter( transformer_iface *new_reverter)
+    void protocol_layer::change_revertor( transformer_iface *new_reverter)
     {
-        impl_->change_reverter( new_reverter );
+        impl_->change_revertor( new_reverter );
     }
 
     void protocol_layer::pop_message( )

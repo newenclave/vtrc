@@ -253,7 +253,7 @@ namespace vtrc { namespace client {
             common::transformer_iface *new_reverter =
                                 erseefor::create( key.c_str( ), key.size( ) );
 
-            parent_->change_reverter( new_reverter );
+            parent_->change_revertor( new_reverter );
 
             capsule.set_ready( true );
             capsule.set_body( tsetup.SerializeAsString( ) );

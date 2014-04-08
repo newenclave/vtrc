@@ -251,7 +251,7 @@ namespace vtrc { namespace server {
                                 erseefor::create( key.c_str( ), key.size( ) );
 
                 // client transformer is my reverter
-                parent_->change_reverter( new_reverter );
+                parent_->change_revertor( new_reverter );
 
                 capsule.set_ready( true );
                 capsule.set_body( ts.SerializeAsString( ) );

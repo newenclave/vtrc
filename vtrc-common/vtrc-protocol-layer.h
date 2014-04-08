@@ -185,7 +185,7 @@ namespace vtrc { namespace common {
         void change_hash_checker( hash_iface *new_hasher );
 
         void change_transformer( transformer_iface *new_transformer);
-        void change_reverter( transformer_iface *new_reverter);
+        void change_revertor( transformer_iface *new_reverter);
 
     };
 }}
