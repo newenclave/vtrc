@@ -478,9 +478,8 @@ namespace vtrc { namespace common {
                            std::deque<lowlevel_unit_sptr> &data_list,
                            uint64_t millisec )
         {
-            wait_result_codes qwr = rpc_queue_.read_queue(
-                        slot_id, data_list,
-                        vtrc::chrono::milliseconds(millisec)) ;
+            wait_result_codes qwr = rpc_queue_.read_queue( slot_id, data_list,
+                                         vtrc::chrono::milliseconds(millisec));
             raise_wait_error( qwr );
         }
 
