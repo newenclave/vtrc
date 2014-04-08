@@ -65,7 +65,7 @@ namespace vtrc { namespace common  {
                             const lowlevel_unit_type &llu,
                             google::protobuf::Message *response,
                             connection_iface_sptr &cl,
-                            const vtrc_rpc_options::options &call_opt) const
+                            const vtrc_rpc::options &call_opt) const
     {
         cl->get_protocol( ).call_rpc_method( call_id, llu );
 

@@ -5,11 +5,8 @@
 #include "vtrc-connection-iface.h"
 #include "vtrc-protocol-layer.h"
 
-namespace vtrc_rpc_lowlevel {
+namespace vtrc_rpc {
     class lowlevel_unit;
-}
-
-namespace vtrc_rpc_options {
     class options;
 }
 
@@ -31,7 +28,7 @@ namespace vtrc { namespace common  {
             ,USE_CONTEXT_CALL   = 1 << 1
         };
 
-        typedef vtrc_rpc_lowlevel::lowlevel_unit     lowlevel_unit_type;
+        typedef vtrc_rpc::lowlevel_unit     lowlevel_unit_type;
         typedef vtrc::shared_ptr<lowlevel_unit_type> lowlevel_unit_sptr;
 
         rpc_channel(unsigned direct_call_type, unsigned callback_type);
@@ -48,7 +45,7 @@ namespace vtrc { namespace common  {
                             const lowlevel_unit_type &llu,
                             google::protobuf::Message* response,
                             common::connection_iface_sptr &cl,
-                            const vtrc_rpc_options::options &call_opt ) const;
+                            const vtrc_rpc::options &call_opt ) const;
     protected:
 
         typedef protocol_layer::context_holder context_holder;

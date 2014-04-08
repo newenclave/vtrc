@@ -75,7 +75,7 @@ void test_send( common::connection_iface *connection,
                 ::create_event_channel( s, true));
 
     if(common::call_context::get( s ))
-        const vtrc_rpc_lowlevel::lowlevel_unit *pllu =
+        const vtrc_rpc::lowlevel_unit *pllu =
             common::call_context::get( s )->get_lowlevel_message( );
 
 //    vtrc_rpc_lowlevel::lowlevel_unit llu;
@@ -102,8 +102,8 @@ void test_send( common::connection_iface *connection,
 
 void call_delayed_test( const boost::system::error_code &err,
                         ::google::protobuf::RpcController* controller,
-                        const ::vtrc_rpc_lowlevel::message_info* request,
-                        ::vtrc_rpc_lowlevel::message_info* response,
+                        const ::vtrc_rpc::message_info* request,
+                        ::vtrc_rpc::message_info* response,
                         ::google::protobuf::Closure* done,
                         unsigned id,
                         common::connection_iface *c_,

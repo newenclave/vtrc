@@ -11,7 +11,7 @@ namespace google { namespace protobuf {
     class MethodDescriptor;
 }}
 
-namespace vtrc_rpc_lowlevel {
+namespace vtrc_rpc {
     class lowlevel_unit;
 }
 

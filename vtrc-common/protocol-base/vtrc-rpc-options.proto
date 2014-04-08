@@ -1,6 +1,9 @@
-package vtrc_rpc_options;
 
 import "google/protobuf/descriptor.proto";
+
+// index 56000
+
+package vtrc_rpc;
 
 message options {
     optional uint32     secure_level    = 1 ;
@@ -19,5 +22,3 @@ extend google.protobuf.ServiceOptions {
 extend google.protobuf.MethodOptions {
     optional rpc_options_type  method_options = 53002;
 }
-
-// index 56000

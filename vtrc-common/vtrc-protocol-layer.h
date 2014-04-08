@@ -19,13 +19,11 @@ namespace google { namespace protobuf {
     class MethodDescriptor;
 }}
 
-namespace vtrc_rpc_lowlevel {
+namespace vtrc_rpc {
     class lowlevel_unit;
-}
-
-namespace vtrc_rpc_options {
     class options;
 }
+
 
 namespace boost { namespace system {
     class error_code;
@@ -56,7 +54,7 @@ namespace vtrc { namespace common {
 
     public:
 
-        typedef vtrc_rpc_lowlevel::lowlevel_unit     lowlevel_unit_type;
+        typedef vtrc_rpc::lowlevel_unit     lowlevel_unit_type;
         typedef vtrc::shared_ptr<lowlevel_unit_type> lowlevel_unit_sptr;
 
         typedef std::deque<std::string> message_queue_type;
@@ -110,7 +108,7 @@ namespace vtrc { namespace common {
         void cancel_all_slots( );
         //void close_queue( );
 
-        const vtrc_rpc_options::options &get_method_options(
+        const vtrc_rpc::options &get_method_options(
                             const google::protobuf::MethodDescriptor* method );
 
     protected:

@@ -3,11 +3,8 @@
 
 #include "vtrc-connection-iface.h"
 
-namespace vtrc_rpc_lowlevel {
+namespace vtrc_rpc {
     class lowlevel_unit;
-}
-
-namespace vtrc_rpc_options {
     class options;
 }
 
@@ -24,7 +21,7 @@ namespace vtrc { namespace common {
 
     public:
 
-        call_context( vtrc_rpc_lowlevel::lowlevel_unit *lowlevel );
+        call_context( vtrc_rpc::lowlevel_unit *lowlevel );
 
         static const call_context *get( connection_iface *iface );
         static const call_context *get( connection_iface_sptr iface );
@@ -37,14 +34,14 @@ namespace vtrc { namespace common {
 
         void set_next(call_context *next);
 
-        vtrc_rpc_lowlevel::lowlevel_unit       *get_lowlevel_message( );
-        const vtrc_rpc_lowlevel::lowlevel_unit *get_lowlevel_message( ) const;
+        vtrc_rpc::lowlevel_unit       *get_lowlevel_message( );
+        const vtrc_rpc::lowlevel_unit *get_lowlevel_message( ) const;
 
         void set_impersonated( bool value );
         bool get_impersonated( ) const;
 
-        const vtrc_rpc_options::options *get_call_options( ) const;
-        void set_call_options(const vtrc_rpc_options::options &opts);
+        const vtrc_rpc::options *get_call_options( ) const;
+        void set_call_options(const vtrc_rpc::options &opts);
 
         virtual ~call_context( );
 

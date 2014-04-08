@@ -20,9 +20,9 @@ namespace vtrc { namespace client {
 
     namespace {
         typedef vtrc::shared_ptr <
-            vtrc_rpc_lowlevel::lowlevel_unit
+            vtrc_rpc::lowlevel_unit
         > lowlevel_unit_sptr;
-        typedef vtrc_rpc_lowlevel::message_info message_info;
+        typedef vtrc_rpc::message_info message_info;
 
         const unsigned direct_call_type = message_info::MESSAGE_CALL;
         const unsigned callback_type    = message_info::MESSAGE_INSERTION_CALL;
@@ -75,7 +75,7 @@ namespace vtrc { namespace client {
                                                "Connection lost");
             }
 
-            const vtrc_rpc_options::options &call_opt
+            const vtrc_rpc::options &call_opt
                             ( get_protocol( clk ).get_method_options(method) );
 
             if( disable_wait_ )

@@ -49,7 +49,7 @@ namespace vtrc { namespace server {
             common::rpc_service_wrapper_sptr
         > service_map;
 
-        typedef vtrc_rpc_lowlevel::lowlevel_unit     lowlevel_unit_type;
+        typedef vtrc_rpc::lowlevel_unit     lowlevel_unit_type;
         typedef vtrc::shared_ptr<lowlevel_unit_type> lowlevel_unit_sptr;
     }
 
@@ -184,6 +184,7 @@ namespace vtrc { namespace server {
             bool check = get_pop_message( capsule );
 
             if( !check ) {
+                std::cout << "Close\n";
                 capsule.Clear( );
                 capsule.mutable_error( )->set_code( vtrc_errors::ERR_INTERNAL );
                 send_and_close( capsule );
@@ -209,7 +210,7 @@ namespace vtrc { namespace server {
             common::transformer_iface *new_transformer =
                                 erseefor::create( key.c_str( ), key.size( ) );
 
-            // client reverter is my transformer
+            // client revertor is my transformer
             parent_->change_transformer( new_transformer );
 
             capsule.Clear( );
@@ -250,7 +251,7 @@ namespace vtrc { namespace server {
                 common::transformer_iface *new_reverter =
                                 erseefor::create( key.c_str( ), key.size( ) );
 
-                // client transformer is my reverter
+                // client transformer is my revertor
                 parent_->change_revertor( new_reverter );
 
                 capsule.set_ready( true );
@@ -374,7 +375,7 @@ namespace vtrc { namespace server {
 
         void on_rcp_call_ready( )
         {
-            typedef vtrc_rpc_lowlevel::message_info message_info;
+            typedef vtrc_rpc::message_info message_info;
             while( !parent_->message_queue( ).empty( ) ) {
 
                 lowlevel_unit_sptr llu(vtrc::make_shared<lowlevel_unit_type>());

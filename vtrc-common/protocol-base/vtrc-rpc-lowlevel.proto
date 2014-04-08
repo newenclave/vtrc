@@ -1,7 +1,7 @@
-import "google/protobuf/descriptor.proto";
+
 import "vtrc-errors.proto";
 
-package vtrc_rpc_lowlevel;
+package vtrc_rpc;
 
 // index 53000
 

@@ -29,7 +29,7 @@ namespace vtrc { namespace client {
 
     namespace {
         typedef vtrc::shared_ptr <
-            vtrc_rpc_lowlevel::lowlevel_unit
+            vtrc_rpc::lowlevel_unit
         > lowlevel_unit_sptr;
 
         typedef vtrc::shared_ptr<gpb::Service> service_str;
@@ -228,20 +228,20 @@ namespace vtrc { namespace client {
 
                 switch( llu->info( ).message_type( ) ) {
 
-                case vtrc_rpc_lowlevel::message_info::MESSAGE_EVENT:
+                case vtrc_rpc::message_info::MESSAGE_EVENT:
                     process_event( llu );
                     break;
-                case vtrc_rpc_lowlevel::message_info::MESSAGE_CALLBACK:
+                case vtrc_rpc::message_info::MESSAGE_CALLBACK:
                     process_callback( llu );
                     break;
-                case vtrc_rpc_lowlevel::message_info::MESSAGE_SERVICE:
+                case vtrc_rpc::message_info::MESSAGE_SERVICE:
                     process_service( llu );
                     break;
-                case vtrc_rpc_lowlevel::message_info::MESSAGE_INTERNAL:
+                case vtrc_rpc::message_info::MESSAGE_INTERNAL:
                     process_internal( llu );
                     break;
-                case vtrc_rpc_lowlevel::message_info::MESSAGE_CALL:
-                case vtrc_rpc_lowlevel::message_info::MESSAGE_INSERTION_CALL:
+                case vtrc_rpc::message_info::MESSAGE_CALL:
+                case vtrc_rpc::message_info::MESSAGE_INSERTION_CALL:
                     process_call( llu );
                     break;
                 default:
@@ -347,7 +347,6 @@ namespace vtrc { namespace client {
         void set_options( const boost::system::error_code &err )
         {
             if( !err ) {
-                std::cout << "set opts\n";
                 parent_->change_hash_maker(
                    common::hash::create_by_index( vtrc_auth::HASH_CRC_32 ));
             }
@@ -398,7 +397,7 @@ namespace vtrc { namespace client {
             capsule.set_body( init.SerializeAsString( ) );
 
             parent_->change_hash_checker(
-               common::hash::create_by_index( vtrc_auth::HASH_CRC_32 ));
+                    common::hash::create_by_index( vtrc_auth::HASH_CRC_32 ));
 
             change_stage( key_set ? STAGE_SETUP : STAGE_READY );
 
