@@ -184,7 +184,7 @@ int main( )
     common::pool_pair pp(2, 2);
     vtrc::shared_ptr<client::vtrc_client> cl(client::vtrc_client::create(pp));
 
-    cl->set_session_key( "!1234" );
+    cl->set_session_key( "1234" );
 
     vtrc::mutex              mut;
     vtrc::condition_variable cond;
@@ -209,7 +209,7 @@ int main( )
 
     std::cout << "start program\n";
 
-    //vtrc::thread( run_client, cl, true ).detach( );
+    vtrc::thread( run_client, cl, true ).detach( );
     //vtrc::thread( run_client, cl, false ).detach( );
 
     vtrc::thread r( run_client, cl, false );

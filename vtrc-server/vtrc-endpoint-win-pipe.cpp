@@ -52,11 +52,10 @@ namespace {
         }
 
         static vtrc::shared_ptr<this_type> create(endpoint_iface &endpoint,
-                                                    socket_type *sock )
+                                         vtrc::shared_ptr<socket_type> sock )
         {
             vtrc::shared_ptr<this_type> new_inst
-                    (vtrc::make_shared<this_type>(vtrc::ref(endpoint),
-                                    vtrc::shared_ptr<socket_type>(sock) ));
+                    (vtrc::make_shared<this_type>(vtrc::ref(endpoint), sock));
 
             new_inst->init( );
             return new_inst;
@@ -134,7 +133,8 @@ namespace {
 
             if( INVALID_HANDLE_VALUE != pipe_hdl ) {
 
-                socket_type *new_sock = new socket_type(ios_);
+                vtrc::shared_ptr<socket_type> new_sock
+                        (vtrc::make_shared<socket_type>(vtrc::ref(ios_)));
                 new_sock->assign( pipe_hdl );
 
                 overlapped_.reset( ios_,
@@ -182,7 +182,7 @@ namespace {
         }
 
         void on_accept( const bsys::error_code &error,
-                        socket_type* sock )
+                        vtrc::shared_ptr<socket_type> sock )
         {
             if( !error ) {
                 try {

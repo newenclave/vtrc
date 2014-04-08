@@ -45,6 +45,11 @@ namespace vtrc { namespace server { namespace endpoints {
                             endpoint_.get_options( ).maximum_message_length));
             }
 
+            const std::string &id( ) const
+            {
+                return protocol_->client_id( );
+            }
+
             static vtrc::shared_ptr<this_type> create(endpoint_iface &endpoint,
                                             vtrc::shared_ptr<socket_type> sock )
             {
@@ -53,11 +58,6 @@ namespace vtrc { namespace server { namespace endpoints {
 
                 new_inst->init( );
                 return new_inst;
-            }
-
-            const std::string &id( ) const
-            {
-                return protocol_->client_id( );
             }
 
             static vtrc::shared_ptr<this_type> create(endpoint_iface &endpoint,

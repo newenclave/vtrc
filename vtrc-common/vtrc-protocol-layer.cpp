@@ -189,22 +189,21 @@ namespace vtrc { namespace common {
 
         std::string prepare_data( const char *data, size_t length )
         {
-            /* here is:
-             *  message = <hash(data)><data>
+            /*
+             * message_header = <packed_size(data_length + hash_length)>
             */
-
-
             std::string result(size_policy_ns::pack_size(
                                 length + hash_maker_->hash_size( )));
 
+            /* here is:
+             *  message_body = <hash(data)> + <data>
+            */
             std::string body( hash_maker_->get_data_hash(data, length ) );
             body.append( data, data + length );
 
             /*
-             * message =   <packed_size(data_length+hash_length)>
-             *           + <transform( message )>
+             * message =  message_header + <transform( message )>
             */
-
             transformer_->transform(
                         body.empty( ) ? NULL : &body[0],
                         body.size( ) );
@@ -224,7 +223,6 @@ namespace vtrc { namespace common {
                 /*
                  * message = <size>revert( data )
                 */
-
                 queue_->append( &next_data[0], next_data.size( ));
                 queue_->process( );
 
@@ -527,12 +525,12 @@ namespace vtrc { namespace common {
             if( f == options_map_.end( ) ) {
 
                 const vtrc_rpc::rpc_options_type &serv (
-                    method->service( )->options( )
-                        .GetExtension( vtrc_rpc::service_options ));
+                        method->service( )->options( )
+                            .GetExtension( vtrc_rpc::service_options ));
 
                 const vtrc_rpc::rpc_options_type &meth (
-                    method->options( )
-                        .GetExtension( vtrc_rpc::method_options ));
+                        method->options( )
+                            .GetExtension( vtrc_rpc::method_options ));
 
                 result = vtrc::make_shared<vtrc_rpc::options>( serv.opt( ) );
                 if( meth.has_opt( ) )

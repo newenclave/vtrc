@@ -246,7 +246,7 @@ private:
 
 int main( ) try {
 
-    common::pool_pair pp(1, 1);
+    common::pool_pair pp(2, 2);
     main_app app(pp);
 
     vtrc::shared_ptr<vtrc::server::endpoint_iface> tcp4_ep
@@ -279,7 +279,7 @@ int main( ) try {
     tcp4_ep->start( );
     tcp6_ep->start( );
 
-    boost::this_thread::sleep_for( vtrc::chrono::milliseconds(1000099999) );
+    boost::this_thread::sleep_for( vtrc::chrono::seconds(10 ) );
 
     std::cout << "Stoppped. Wait ... \n";
 

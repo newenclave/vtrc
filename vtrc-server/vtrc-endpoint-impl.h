@@ -72,7 +72,8 @@ namespace {
 
         void start_accept(  )
         {
-            socket_type * new_sock(new socket_type(ios_));
+            vtrc::shared_ptr<socket_type> new_sock
+                    ( vtrc::make_shared<socket_type>(vtrc::ref(ios_) ) );
 
             acceptor_.async_accept( *new_sock,
                 vtrc::bind( &this_type::on_accept, this,
@@ -97,7 +98,7 @@ namespace {
         }
 
         void on_accept( const bsys::error_code &error,
-                        socket_type* sock )
+                        vtrc::shared_ptr<socket_type> sock )
         {
             if( !error ) {
                 try {
@@ -109,7 +110,7 @@ namespace {
                 }
                 start_accept( );
             } else {
-                delete sock;
+                //delete sock;
             }
         }
 
