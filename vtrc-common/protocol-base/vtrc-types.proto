@@ -3,3 +3,4 @@ package vtrc_types;
 
 // index 55000
 
+message empty { }

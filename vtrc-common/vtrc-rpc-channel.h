@@ -22,6 +22,11 @@ namespace vtrc { namespace common  {
 
     public:
 
+        enum options {
+             DISABLE_WAIT       = 1
+            ,USE_CONTEXT_CALL   = 1 << 1
+        };
+
         typedef vtrc_rpc_lowlevel::lowlevel_unit     lowlevel_unit_type;
         typedef vtrc::shared_ptr<lowlevel_unit_type> lowlevel_unit_sptr;
 

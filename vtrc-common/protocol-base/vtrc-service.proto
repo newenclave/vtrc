@@ -1,6 +1,7 @@
 import "google/protobuf/descriptor.proto";
 import "vtrc-errors.proto";
 import "vtrc-rpc-lowlevel.proto";
+import "vtrc-types.proto";
 
 package vtrc_service;
 
@@ -46,7 +47,24 @@ service test_events {
 message ping_req { }
 message pong_res { }
 
+message sync_env_req {
+
+    optional bytes name     = 1;
+    optional bytes value    = 2;
+    optional bool  replace  = 3;
+
+    message list {
+        optional sync_env_req value = 1;
+    }
+}
+
+message sync_env_res {
+    optional bool success   = 1;
+    optional bool replaced  = 2;
+}
+
 service internal {
     rpc ping(ping_req) returns (pong_res);
+    rpc sync_env(sync_env_req) returns (sync_env_res);
 }
 
