@@ -34,13 +34,13 @@ namespace vtrc { namespace common {
         {
             random_device rd( false );
 
-            std::string tmps1( rd.generate_block( 256 ) );
-            std::string tmps2( rd.generate_block( 256 ) );
+            std::string ts1( rd.generate_block( 256 ) );
+            std::string ts2( rd.generate_block( 256 ) );
 
-            create_key( key, tmps1, tmps2, result );
+            create_key( key, ts1, ts2, result );
 
-            s1.swap( tmps1 );
-            s2.swap( tmps2 );
+            s1.swap( ts1 );
+            s2.swap( ts2 );
         }
 
         transformer_iface *create( unsigned id,

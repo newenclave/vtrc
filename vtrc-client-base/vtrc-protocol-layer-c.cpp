@@ -233,17 +233,10 @@ namespace vtrc { namespace client {
 
             std::string key(client_->get_session_key( ));
 
-            vtrc::shared_ptr<common::hash_iface> sha256
-                                        (common::hash::sha2::create256( ));
-
             std::string s1(tsetup.salt1( ));
             std::string s2(tsetup.salt2( ));
 
-            s1.insert( s1.end( ), key.begin( ), key.end( ) );
-            s1 = sha256->get_data_hash( s1.c_str( ), s1.size( ) );
-
-            s2.insert( s2.end( ), s1.begin( ), s1.end( ) );
-            key = sha256->get_data_hash( s2.c_str( ), s2.size( ) );
+            common::transformers::create_key( key, s1, s2, key );
 
             common::transformer_iface *new_transformer =
                     common::transformers::erseefor::create( key.c_str( ),
@@ -251,24 +244,11 @@ namespace vtrc { namespace client {
 
             parent_->change_transformer( new_transformer );
 
-            common::random_device rd( false );
-
-            s1.resize( 256 );
-            s2.resize( 256 );
-
-            rd.generate( &s1[0], &s1[0] + s1.size( ));
-            rd.generate( &s2[0], &s2[0] + s2.size( ));
+            key.assign( client_->get_session_key( ) );
+            common::transformers::generate_key_infos( key, s1, s2, key );
 
             tsetup.set_salt1( s1 );
             tsetup.set_salt2( s2 );
-
-            key = client_->get_session_key( );
-
-            s1.insert( s1.end( ), key.begin( ), key.end( ) );
-            s1 = sha256->get_data_hash( s1.c_str( ), s1.size( ) );
-
-            s2.insert( s2.end( ), s1.begin( ), s1.end( ) );
-            key = sha256->get_data_hash( s2.c_str( ), s2.size( ) );
 
             common::transformer_iface *new_reverter =
                     common::transformers::erseefor::create( key.c_str( ),
