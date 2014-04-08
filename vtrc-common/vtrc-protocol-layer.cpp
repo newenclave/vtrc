@@ -186,28 +186,29 @@ namespace vtrc { namespace common {
             return res;
         }
 
-        std::string prepare_data( const char *data, size_t length)
+        std::string prepare_data( const char *data, size_t length )
         {
             /* here is:
-             *  message =
-             *  <packed_size(data_length+hash_length)><hash(data)><data>
+             *  message = <hash(data)><data>
             */
+
+
             std::string result(size_policy_ns::pack_size(
                                 length + hash_maker_->hash_size( )));
 
-            result.append( hash_maker_->get_data_hash(data, length ));
-            result.append( data, data + length );
+            std::string body( hash_maker_->get_data_hash(data, length ) );
+            body.append( data, data + length );
 
             /*
-             * message = transform( message )
+             * message =   <packed_size(data_length+hash_length)>
+             *           + <transform( message )>
             */
 
-            lowlevel_unit_type llu;
-            llu.ParseFromArray(data, length);
-
             transformer_->transform(
-                        result.empty( ) ? NULL : &result[0],
-                        result.size( ) );
+                        body.empty( ) ? NULL : &body[0],
+                        body.size( ) );
+
+            result.append( body.begin( ), body.end( ) );
 
             return result;
         }
@@ -220,14 +221,24 @@ namespace vtrc { namespace common {
                 const size_t old_size = queue_->messages( ).size( );
 
                 /*
-                 * message = revert( message )
+                 * message = <size>revert( message )
                 */
-                revertor_->transform( &next_data[0], next_data.size( ) );
+                //revertor_->transform( &next_data[0], next_data.size( ) );
                 queue_->append( &next_data[0], next_data.size( ));
 
                 queue_->process( );
 
                 if( queue_->messages( ).size( ) > old_size ) {
+
+                    message_queue_type::iterator b(queue_->messages( ).begin());
+                    message_queue_type::iterator e(queue_->messages( ).end( ));
+                    std::advance( b, old_size );
+
+                    for( ; b!=e; ++b ) {
+                        revertor_->transform( b->empty( ) ? NULL : &(*b)[0],
+                                              b->size( ));
+                    }
+
                     parent_->on_data_ready( );
                 }
             }
