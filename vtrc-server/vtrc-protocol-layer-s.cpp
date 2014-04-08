@@ -159,8 +159,8 @@ namespace vtrc { namespace server {
         void send_and_close( const gpb::Message &mess )
         {
             send_proto_message( mess, vtrc::bind(
-                                    &this_type::close_client, this, _1,
-                                     connection_->shared_from_this( )),
+                                        &this_type::close_client, this, _1,
+                                         connection_->shared_from_this( )),
                                 true );
         }
 
