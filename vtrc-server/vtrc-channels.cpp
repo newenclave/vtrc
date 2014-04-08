@@ -43,17 +43,17 @@ namespace vtrc { namespace server {
                 ,client_(c)
                 ,message_type_(mess_type)
                 ,disable_wait_(disable_wait)
-            {}
+            { }
 
             void send_message(lowlevel_unit_type &llu,
                         const google::protobuf::MethodDescriptor* method,
                               google::protobuf::RpcController*  /*controller*/,
                         const google::protobuf::Message*        /*request   */,
-                              google::protobuf::Message* response,
-                              google::protobuf::Closure* done )
+                              google::protobuf::Message*          response,
+                              google::protobuf::Closure*          done )
             {
-                common::closure_holder clhl(done);
-                common::connection_iface_sptr clk(client_.lock( ));
+                common::closure_holder        clhl(done);
+                common::connection_iface_sptr clk (client_.lock( ));
 
                 if( clk.get( ) == NULL ) {
                     throw vtrc::common::exception( vtrc_errors::ERR_CHANNEL,
