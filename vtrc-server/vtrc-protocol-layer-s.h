@@ -8,6 +8,7 @@ namespace vtrc {
 
 namespace common {
     struct transport_iface;
+    class call_context;
 }
 
 namespace server {
@@ -37,6 +38,8 @@ namespace server {
         const std::string &client_id( ) const;
 
         void close( );
+        
+        common::call_context *get_top_call_context( );
 
         common::rpc_service_wrapper_sptr get_service_by_name(
                                                     const std::string &name );
