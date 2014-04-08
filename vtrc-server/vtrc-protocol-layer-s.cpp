@@ -237,10 +237,10 @@ namespace vtrc { namespace server {
 
                 std::string key(app_.get_session_key(connection_, client_id_));
 
-                generate_key_infos( key,                  // input
-                                    *ts.mutable_salt1( ), // output
-                                    *ts.mutable_salt2( ), // output
-                                    key );                // output
+                generate_key_infos( key,                 // input
+                                   *ts.mutable_salt1( ), // output
+                                   *ts.mutable_salt2( ), // output
+                                    key );               // output
 
                 common::transformer_iface *new_reverter =
                         erseefor::create( key.c_str( ), key.size( ) );
