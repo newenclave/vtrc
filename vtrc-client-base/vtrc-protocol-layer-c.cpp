@@ -209,6 +209,7 @@ namespace vtrc { namespace client {
 
         void on_transform_setup( )
         {
+            using namespace common::transformers;
             std::string &mess = parent_->message_queue( ).front( );
             bool check = parent_->check_message( mess );
 
@@ -236,23 +237,21 @@ namespace vtrc { namespace client {
             std::string s1(tsetup.salt1( ));
             std::string s2(tsetup.salt2( ));
 
-            common::transformers::create_key( key, s1, s2, key );
+            create_key( key, s1, s2, key );
 
             common::transformer_iface *new_transformer =
-                    common::transformers::erseefor::create( key.c_str( ),
-                                                            key.size( ) );
+                                erseefor::create( key.c_str( ), key.size( ) );
 
             parent_->change_transformer( new_transformer );
 
             key.assign( client_->get_session_key( ) );
-            common::transformers::generate_key_infos( key, s1, s2, key );
+            generate_key_infos( key, s1, s2, key );
 
             tsetup.set_salt1( s1 );
             tsetup.set_salt2( s2 );
 
             common::transformer_iface *new_reverter =
-                    common::transformers::erseefor::create( key.c_str( ),
-                                                            key.size( ) );
+                                erseefor::create( key.c_str( ), key.size( ) );
 
             parent_->change_reverter( new_reverter );
 
