@@ -6,9 +6,9 @@ import "google/protobuf/descriptor.proto";
 package vtrc_rpc;
 
 message options {
-    optional uint32     secure_level    = 1 ;
-    optional uint64     call_timeout    = 2 [default = 60000]; // milliseconds
-    optional bool       wait            = 3 [default = true];
+    optional uint32     level        = 1 ; // client level "at least"
+    optional uint64     call_timeout = 2 [default = 60000]; // milliseconds
+    optional bool       wait         = 3 [default = true];  // wait answer
 };
 
 message rpc_options_type {
@@ -16,9 +16,9 @@ message rpc_options_type {
 };
 
 extend google.protobuf.ServiceOptions {
-    optional rpc_options_type service_options = 53001;
+    optional rpc_options_type service_options = 56001;
 }
 
 extend google.protobuf.MethodOptions {
-    optional rpc_options_type  method_options = 53002;
+    optional rpc_options_type  method_options = 56002;
 }
