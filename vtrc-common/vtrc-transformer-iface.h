@@ -20,12 +20,17 @@ namespace vtrc { namespace common {
 
         namespace erseefor {
             transformer_iface *create( const char *key, size_t length);
-//            void create_session_key( const std::string &key,
-//                                     std::string &result,
-//                                     std::string &s1,
-//                                     std::string &s2 );
         }
         transformer_iface *create( unsigned id, const char *key, size_t length);
+
+        void generate_key_infos( const std::string &key,
+                                 std::string &s1, std::string &s2,
+                                 std::string &result );
+
+        void create_key( const std::string &key,
+                         const std::string &s1, const std::string &s2,
+                               std::string &result );
+
     }
 }}
 
