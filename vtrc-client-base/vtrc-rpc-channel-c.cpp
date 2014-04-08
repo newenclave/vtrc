@@ -43,7 +43,7 @@ namespace vtrc { namespace client {
             ,disable_wait_(select_message_wait(opts))
         { }
 
-        bool select_message_type (common::rpc_channel::options opts) const
+        unsigned select_message_type (common::rpc_channel::options opts) const
         {
             return (opts & common::rpc_channel::USE_CONTEXT_CALL)
                    ? message_info::MESSAGE_INSERTION_CALL
