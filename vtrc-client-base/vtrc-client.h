@@ -50,7 +50,6 @@ namespace client {
 
         VTRC_DECLARE_SIGNAL( on_connect,    void( ) );
         VTRC_DECLARE_SIGNAL( on_disconnect, void( ) );
-        VTRC_DECLARE_SIGNAL( on_error,      void( const char * ) );
         VTRC_DECLARE_SIGNAL( on_ready,      void( ) );
 
     protected:

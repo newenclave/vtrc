@@ -190,10 +190,10 @@ int main( )
     cl->get_on_disconnect( ).connect( boost::bind( on_disconnect,
                                                    vtrc::ref(cond) ));
 
-    cl->connect( "/tmp/test.socket" );
+    //cl->connect( "/tmp/test.socket" );
     //cl->connect( "192.168.56.101", "44667" );
     //cl->connect( "\\\\.\\pipe\\test_pipe");
-    //cl->connect( "127.0.0.1", "44667" );
+    cl->connect( "127.0.0.1", "44667" );
     //cl->connect( "::1", "44668" );
     ///cl->async_connect( "127.0.0.1", "44667", on_connect );
 
