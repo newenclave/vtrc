@@ -869,7 +869,7 @@ namespace vtrc { namespace common {
     bool protocol_layer::parse_message( const std::string &mess,
                                         google::protobuf::Message &result )
     {
-        impl_->parse_message(mess, result);
+        return impl_->parse_message(mess, result);
     }
 
     void protocol_layer::make_call(protocol_layer::lowlevel_unit_sptr llu)
