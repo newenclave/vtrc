@@ -169,7 +169,7 @@ namespace vtrc { namespace common {
                                                 const std::string &name ) = 0;
 
         bool check_message( const std::string &mess );
-        void parse_message( const std::string &mess,
+        bool parse_message( const std::string &mess,
                             google::protobuf::Message &result );
 
         void pop_message( );

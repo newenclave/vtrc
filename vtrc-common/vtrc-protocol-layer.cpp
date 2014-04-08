@@ -234,11 +234,11 @@ namespace vtrc { namespace common {
 
         }
 
-        void parse_message( const std::string &mess, gpb::Message &result )
+        bool parse_message( const std::string &mess, gpb::Message &result )
         {
             const size_t hash_length = hash_checker_->hash_size( );
-            result.ParseFromArray( mess.c_str( ) + hash_length,
-                                   mess.size( )  - hash_length );
+            return result.ParseFromArray( mess.c_str( ) + hash_length,
+                                          mess.size( )  - hash_length );
         }
 
         void set_ready( bool ready )
@@ -866,7 +866,7 @@ namespace vtrc { namespace common {
         return impl_->check_message( mess );
     }
 
-    void protocol_layer::parse_message( const std::string &mess,
+    bool protocol_layer::parse_message( const std::string &mess,
                                         google::protobuf::Message &result )
     {
         impl_->parse_message(mess, result);

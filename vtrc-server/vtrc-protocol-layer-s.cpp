@@ -122,11 +122,6 @@ namespace vtrc { namespace server {
 
         }
 
-        void pop_message( )
-        {
-            parent_->pop_message( );
-        }
-
         void on_keepavive( const boost::system::error_code &error )
         {
             if( !error ) {
@@ -324,9 +319,9 @@ namespace vtrc { namespace server {
                 connection_->close( );
                 return false;
             }
-            parse_message( mess, capsule );
-            pop_message( );
-            return true;
+            bool parsed = parse_message( mess, capsule );
+            parent_->pop_message( );
+            return parsed;
         }
 
         void call_done( const boost::system::error_code & /*err*/ )
@@ -405,9 +400,9 @@ namespace vtrc { namespace server {
 
         }
 
-        void parse_message( const std::string &block, gpb::Message &mess )
+        bool parse_message( const std::string &block, gpb::Message &mess )
         {
-            parent_->parse_message( block, mess );
+            return parent_->parse_message( block, mess );
         }
 
         std::string first_message( )
