@@ -61,7 +61,6 @@ namespace {
             new_inst->init( );
             return new_inst;
         }
-
     };
 
     typedef commection_pipe_impl transport_type;
