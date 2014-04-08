@@ -62,11 +62,8 @@ namespace vtrc { namespace client {
 
         const std::string &client_id( ) const
         {
-            return client_->is_key_set( )
-                    ? client_->get_session_id( )
-                    : "";
+            return client_->get_session_id( );
         }
-
 
         common::rpc_service_wrapper_sptr get_service_by_name(
                                                       const std::string &name )

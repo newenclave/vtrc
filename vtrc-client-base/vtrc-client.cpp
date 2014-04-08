@@ -58,6 +58,10 @@ namespace vtrc { namespace client {
             ,key_set_(false)
         { }
 
+        const common::call_context *get_call_context( ) const
+        {
+            return (connection_ ? connection_->get_call_context( ) : NULL);
+        }
 
         void set_session_key( const std::string &id, const std::string &key )
         {
@@ -365,6 +369,11 @@ namespace vtrc { namespace client {
     bool vtrc_client::is_key_set(  ) const
     {
         return impl_->is_key_set( );
+    }
+
+    const common::call_context *vtrc_client::get_call_context( ) const
+    {
+        return impl_->get_call_context( );
     }
 
     void vtrc_client::connect(const std::string &local_name)

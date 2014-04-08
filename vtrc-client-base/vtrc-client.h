@@ -31,6 +31,7 @@ namespace vtrc {
     namespace common {
         class pool_pair;
         class rpc_channel;
+        class call_context;
     }
 
 namespace client {
@@ -107,6 +108,9 @@ namespace client {
 
     public:
 
+        const common::call_context *get_call_context( ) const;
+
+    public:
         void connect( const std::string &local_name );
         void connect( const std::string &address, const std::string &service );
 
