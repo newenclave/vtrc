@@ -77,7 +77,7 @@ public:
                     vtrc::common::call_context::get( c_->connection( ) );
 
         vtrc::shared_ptr<google::protobuf::RpcChannel>
-                            ch(c_->create_channel( false, true ));
+                ch(c_->create_channel( common::rpc_channel::USE_CONTEXT_CALL ));
 
         vtrc_service::test_message      mi;
         vtrc_service::test_rpc::Stub s( ch.get( ) );
@@ -113,7 +113,8 @@ public:
 void run_client( vtrc::shared_ptr<client::vtrc_client> cl, bool wait)
 {
     vtrc::shared_ptr<google::protobuf::RpcChannel>
-            ch(cl->create_channel( wait, false ));
+            ch(cl->create_channel( wait ? common::rpc_channel::DISABLE_WAIT
+                                        : common::rpc_channel::DEFAULT ));
     vtrc_service::test_rpc::Stub s( ch.get( ) );
 
     vtrc_service::test_message mi;

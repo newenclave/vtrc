@@ -23,7 +23,8 @@ namespace vtrc { namespace common  {
     public:
 
         enum options {
-             DISABLE_WAIT       = 1
+             DEFAULT            = 0
+            ,DISABLE_WAIT       = 1
             ,USE_CONTEXT_CALL   = 1 << 1
         };
 

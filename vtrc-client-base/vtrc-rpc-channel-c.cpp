@@ -36,12 +36,24 @@ namespace vtrc { namespace client {
         const unsigned mess_type_;
         const bool     disable_wait_;
 
-        impl(vtrc::shared_ptr<common::connection_iface> c, bool dw, bool insert)
+        impl(vtrc::shared_ptr<common::connection_iface> c,
+                              common::rpc_channel::options opts)
             :connection_(c)
-            ,mess_type_(insert ? message_info::MESSAGE_INSERTION_CALL
-                               : message_info::MESSAGE_CALL)
-            ,disable_wait_(dw)
+            ,mess_type_(select_message_type(opts))
+            ,disable_wait_(select_message_wait(opts))
         { }
+
+        bool select_message_type (common::rpc_channel::options opts) const
+        {
+            return (opts & common::rpc_channel::USE_CONTEXT_CALL)
+                   ? message_info::MESSAGE_INSERTION_CALL
+                   : message_info::MESSAGE_CALL;
+        }
+
+        bool select_message_wait (common::rpc_channel::options opts) const
+        {
+            return (opts & common::rpc_channel::DISABLE_WAIT);
+        }
 
         common::protocol_layer &get_protocol(common::connection_iface_sptr &clk)
         {
@@ -91,22 +103,15 @@ namespace vtrc { namespace client {
 
     rpc_channel_c::rpc_channel_c( common::connection_iface_sptr c )
         :common::rpc_channel(direct_call_type, callback_type)
-        ,impl_(new impl(c, false, false))
-    {
-        impl_->parent_ = this;
-    }
-
-    rpc_channel_c::rpc_channel_c( common::connection_iface_sptr c, bool dw )
-        :common::rpc_channel(direct_call_type, callback_type)
-        ,impl_(new impl(c, dw, false))
+        ,impl_(new impl(c, common::rpc_channel::DEFAULT))
     {
         impl_->parent_ = this;
     }
 
     rpc_channel_c::rpc_channel_c( common::connection_iface_sptr c,
-                                  bool disable_wait, bool ins)
+                                  common::rpc_channel::options opts )
         :common::rpc_channel(direct_call_type, callback_type)
-        ,impl_(new impl(c, disable_wait, ins))
+        ,impl_(new impl(c, opts))
     {
         impl_->parent_ = this;
     }

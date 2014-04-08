@@ -24,11 +24,14 @@ namespace vtrc { namespace client {
 
     namespace {
 
-        typedef vtrc::weak_ptr<gpb::Service> service_wptr;
-        typedef vtrc::shared_ptr<gpb::Service> service_sptr;
+        typedef vtrc::weak_ptr<gpb::Service>    service_wptr;
+        typedef vtrc::shared_ptr<gpb::Service>  service_sptr;
+
+        typedef vtrc::shared_ptr<gpb::RpcChannel>  channel_sptr;
 
         typedef std::map< std::string, service_wptr> service_weak_map;
         typedef std::map< std::string, service_sptr> service_shared_map;
+
     }
 
     struct vtrc_client::impl {
@@ -192,7 +195,7 @@ namespace vtrc { namespace client {
             } catch( ... ) { };
         }
 
-        vtrc::shared_ptr<gpb::RpcChannel> create_channel( )
+        channel_sptr create_channel( )
         {
             vtrc::shared_ptr<rpc_channel_c>
                new_ch(vtrc::make_shared<rpc_channel_c>( connection_ ));
@@ -200,10 +203,10 @@ namespace vtrc { namespace client {
             return new_ch;
         }
 
-        vtrc::shared_ptr<gpb::RpcChannel> create_channel( bool dw, bool ins )
+        channel_sptr create_channel( common::rpc_channel::options opts )
         {
             vtrc::shared_ptr<rpc_channel_c>
-               new_ch(vtrc::make_shared<rpc_channel_c>( connection_, dw, ins ));
+               new_ch(vtrc::make_shared<rpc_channel_c>( connection_, opts ));
 
             return new_ch;
         }
@@ -327,15 +330,14 @@ namespace vtrc { namespace client {
         return impl_->rpc_ios_;
     }
 
-    vtrc::shared_ptr<gpb::RpcChannel> vtrc_client::create_channel( )
+    channel_sptr vtrc_client::create_channel( )
     {
         return impl_->create_channel( );
     }
 
-    vtrc::shared_ptr<google::protobuf::RpcChannel>
-                    vtrc_client::create_channel(bool dont_wait, bool insertion)
+    channel_sptr vtrc_client::create_channel(common::rpc_channel::options opts)
     {
-        return impl_->create_channel( dont_wait, insertion );
+        return impl_->create_channel( opts );
     }
 
     void vtrc_client::set_session_key(const std::string &id,

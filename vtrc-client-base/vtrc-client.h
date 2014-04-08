@@ -4,6 +4,7 @@
 #include "vtrc-common/vtrc-signal-declaration.h"
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-closure-holder.h"
+#include "vtrc-common/vtrc-rpc-channel.h"
 #include "vtrc-memory.h"
 
 namespace boost {
@@ -94,7 +95,7 @@ namespace client {
 
         vtrc::shared_ptr<google::protobuf::RpcChannel> create_channel( );
         vtrc::shared_ptr<google::protobuf::RpcChannel>
-                            create_channel( bool disable_wait, bool insertion );
+                            create_channel( common::rpc_channel::options opts );
 
         void set_session_key( const std::string &id, const std::string &key );
         void set_session_key( const std::string &key );
