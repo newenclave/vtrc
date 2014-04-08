@@ -142,20 +142,20 @@ namespace vtrc { namespace server {
             return parent_->check_message( mess );
         }
 
-        void send_proto_message( const gpb::Message &mess )
+        void send_proto_message( const gpb::MessageLite &mess )
         {
             std::string s(mess.SerializeAsString( ));
             connection_->write( s.c_str( ), s.size( ) );
         }
 
-        void send_proto_message( const gpb::Message &mess,
+        void send_proto_message( const gpb::MessageLite &mess,
                                  common::closure_type closure, bool on_send)
         {
             std::string s(mess.SerializeAsString( ));
             connection_->write( s.c_str( ), s.size( ), closure, on_send );
         }
 
-        void send_and_close( const gpb::Message &mess )
+        void send_and_close( const gpb::MessageLite &mess )
         {
             send_proto_message( mess,
                                 vtrc::bind( &this_type::close_client, this, _1,
@@ -313,7 +313,7 @@ namespace vtrc { namespace server {
 
         }
 
-        bool get_pop_message( gpb::Message &capsule )
+        bool get_pop_message( gpb::MessageLite &capsule )
         {
             std::string &mess(parent_->message_queue( ).front( ));
             bool check = check_message_hash(mess);
@@ -402,7 +402,7 @@ namespace vtrc { namespace server {
 
         }
 
-        bool parse_message( const std::string &block, gpb::Message &mess )
+        bool parse_message( const std::string &block, gpb::MessageLite &mess )
         {
             return parent_->parse_message( block, mess );
         }

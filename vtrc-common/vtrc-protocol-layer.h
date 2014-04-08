@@ -13,6 +13,7 @@
 
 namespace google { namespace protobuf {
     class Message;
+    class MessageLite;
     class RpcController;
     class Closure;
     class MethodDescriptor;
@@ -176,7 +177,7 @@ namespace vtrc { namespace common {
 
         bool check_message( const std::string &mess );
         bool parse_message( const std::string &mess,
-                            google::protobuf::Message &result );
+                            google::protobuf::MessageLite &result );
 
         void pop_message( );
 

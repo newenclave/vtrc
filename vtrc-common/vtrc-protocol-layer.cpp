@@ -246,7 +246,7 @@ namespace vtrc { namespace common {
 
         }
 
-        bool parse_message( const std::string &mess, gpb::Message &result )
+        bool parse_message( const std::string &mess, gpb::MessageLite &result )
         {
             const size_t hash_length = hash_checker_->hash_size( );
             return result.ParseFromArray( mess.c_str( ) + hash_length,
@@ -296,7 +296,7 @@ namespace vtrc { namespace common {
             connection_->write( data, length );
         }
 
-        void send_message( const gpb::Message &message )
+        void send_message( const gpb::MessageLite &message )
         {
             std::string ser(message.SerializeAsString( ));
             send_data( ser.c_str( ), ser.size( ) );
@@ -876,7 +876,7 @@ namespace vtrc { namespace common {
     }
 
     bool protocol_layer::parse_message( const std::string &mess,
-                                        google::protobuf::Message &result )
+                                        google::protobuf::MessageLite &result )
     {
         return impl_->parse_message(mess, result);
     }

@@ -140,13 +140,13 @@ namespace vtrc { namespace client {
             parent_->pop_message( );
         }
 
-        void send_proto_message( const gpb::Message &mess ) const
+        void send_proto_message( const gpb::MessageLite &mess ) const
         {
             std::string s(mess.SerializeAsString( ));
             connection_->write(s.c_str( ), s.size( ) );
         }
 
-        void send_proto_message( const gpb::Message &mess,
+        void send_proto_message( const gpb::MessageLite &mess,
                                  common::closure_type closure,
                                  bool on_send ) const
         {

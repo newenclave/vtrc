@@ -1,6 +1,7 @@
 import "google/protobuf/descriptor.proto";
 import "vtrc-errors.proto";
 import "vtrc-rpc-lowlevel.proto";
+import "vtrc-rpc-options.proto";
 import "vtrc-types.proto";
 
 package vtrc_service;
@@ -16,27 +17,27 @@ message test_message {
 
 service test_rpc {
 
-    option (vtrc_rpc_lowlevel.service_options ) = {
+    option (vtrc_rpc_options.service_options ) = {
         opt: { secure_level: 1, call_timeout: 13000, wait: true }
     };
 
     rpc test( test_message ) returns ( test_message )
     {
-        option (vtrc_rpc_lowlevel.method_options) = {
+        option (vtrc_rpc_options.method_options) = {
             opt: { secure_level: 2, wait: true }
         };
     };
 
     rpc test2( test_message ) returns ( test_message )
     {
-        option (vtrc_rpc_lowlevel.method_options) = {
+        option (vtrc_rpc_options.method_options) = {
             opt: { secure_level: 2, wait: true }
         };
     };
 }
 
 service test_events {
-    option (vtrc_rpc_lowlevel.service_options ) = {
+    option ( vtrc_rpc_options.service_options ) = {
         opt: { secure_level: 1, call_timeout: 1000, wait: true }
     };
     rpc test(vtrc_rpc_lowlevel.message_info)

@@ -1,6 +1,8 @@
 
 import "vtrc-errors.proto";
 
+//option optimize_for = LITE_RUNTIME;
+
 package vtrc_auth;
 
 // index 51000
