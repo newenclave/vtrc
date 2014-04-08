@@ -80,7 +80,7 @@ namespace vtrc { namespace common {
         std::string prepare_data( const char *data, size_t length );
 
         virtual void on_write_error( const boost::system::error_code &err );
-        virtual void on_read_error( const boost::system::error_code &err );
+        virtual void on_read_error ( const boost::system::error_code &err );
 
         void make_call( lowlevel_unit_sptr llu );
         void make_call( lowlevel_unit_sptr llu, common::closure_type done);

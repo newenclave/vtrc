@@ -34,6 +34,13 @@ namespace vtrc { namespace client {
 
         typedef vtrc::shared_ptr<gpb::Service> service_str;
 
+        enum protocol_stage {
+             STAGE_HELLO = 1
+            ,STAGE_SETUP = 2
+            ,STAGE_READY = 3
+            ,STAGE_RPC   = 4
+        };
+
     }
 
     struct protocol_layer_c::impl {
@@ -47,17 +54,71 @@ namespace vtrc { namespace client {
         protocol_layer_c            *parent_;
         stage_funcion_type           stage_call_;
         vtrc_client                 *client_;
+        protocol_stage               stage_;
 
         impl( common::transport_iface *c, vtrc_client *client )
             :connection_(c)
             ,client_(client)
+            ,stage_(STAGE_HELLO)
         {
             stage_call_ = vtrc::bind( &this_type::on_hello_call, this );
+        }
+
+        void change_stage( protocol_stage stage )
+        {
+            stage_ = stage;
+            switch ( stage_ ) {
+            case STAGE_HELLO:
+                stage_call_ = vtrc::bind( &this_type::on_hello_call, this );
+                break;
+            case STAGE_SETUP:
+                stage_call_ = vtrc::bind( &this_type::on_trans_setup, this );
+                break;
+            case STAGE_READY:
+                stage_call_ = vtrc::bind( &this_type::on_server_ready, this );
+                break;
+            case STAGE_RPC:
+                stage_call_ = vtrc::bind( &this_type::on_rpc_process, this );
+                break;
+            }
         }
 
         void init( )
         {
 
+        }
+
+        void check_disconnect_stage( )
+        {
+            switch ( stage_ ) {
+            case STAGE_HELLO:
+                parent_->on_init_error(
+                            create_error( vtrc_errors::ERR_INTERNAL, "" ),
+                            "Server in not ready");
+                break;
+            case STAGE_SETUP:
+                parent_->on_init_error(
+                            create_error( vtrc_errors::ERR_INVALID_VALUE, "" ),
+                            "Bad setup info.");
+                break;
+            case STAGE_READY:
+                parent_->on_init_error(
+                            create_error( vtrc_errors::ERR_INTERNAL, "" ),
+                            "Bad session key.");
+                break;
+            case STAGE_RPC:
+            default:
+                break;
+            }
+        }
+
+        vtrc_errors::container create_error( unsigned code,
+                                             const std::string &add )
+        {
+            vtrc_errors::container cont;
+            cont.set_code( code );
+            cont.set_category( vtrc_errors::CATEGORY_INTERNAL );
+            cont.set_additional( add );
         }
 
         const std::string &client_id( ) const
@@ -201,24 +262,35 @@ namespace vtrc { namespace client {
             if( check ) {
                 parent_->parse_message( mess, capsule );
             } else {
+                parent_->on_init_error(
+                            create_error( vtrc_errors::ERR_INTERNAL, "" ),
+                            "Server's 'Ready' has bad hash. Bad session key." );
                 connection_->close( );
                 return;
             }
 
+            if( !capsule.ready( ) ) {
+                parent_->on_init_error(capsule.error( ),
+                                       "Server is not ready; stage: 'Ready'");
+            }
+
             pop_message( );
 
-            stage_call_ = vtrc::bind( &this_type::on_rpc_process, this );
+            change_stage( STAGE_RPC );
 
             on_ready( true );
         }
 
-        void on_transform_setup( )
+        void on_trans_setup( )
         {
             using namespace common::transformers;
             std::string &mess = parent_->message_queue( ).front( );
             bool check = parent_->check_message( mess );
 
             if( !check ) {
+                parent_->on_init_error(
+                            create_error( vtrc_errors::ERR_INTERNAL, "" ),
+                            "Server's 'Setup' has bad hash." );
                 connection_->close( );
                 return;
             }
@@ -229,6 +301,8 @@ namespace vtrc { namespace client {
             parent_->pop_message( );
 
             if( !capsule.ready( ) ) {
+                parent_->on_init_error( capsule.error( ),
+                                        "Server is not ready; stage: 'Setup'" );
                 connection_->close( );
                 return;
             }
@@ -263,7 +337,7 @@ namespace vtrc { namespace client {
             capsule.set_ready( true );
             capsule.set_body( tsetup.SerializeAsString( ) );
 
-            stage_call_ = vtrc::bind( &this_type::on_server_ready, this );
+            change_stage( STAGE_READY );
 
             send_proto_message( capsule );
 
@@ -284,6 +358,9 @@ namespace vtrc { namespace client {
             bool check = parent_->check_message( mess );
 
             if( !check ) {
+                parent_->on_init_error(
+                            create_error( vtrc_errors::ERR_INTERNAL, "" ),
+                            "Server's 'Hello' has bad hash." );
                 connection_->close( );
                 return;
             }
@@ -293,6 +370,8 @@ namespace vtrc { namespace client {
             parent_->parse_message( mess, capsule );
 
             if( !capsule.ready( ) ) {
+                parent_->on_init_error(capsule.error( ),
+                                       "Server is not ready; stage: 'Hello'");
                 connection_->close( );
                 return;
             }
@@ -320,10 +399,7 @@ namespace vtrc { namespace client {
             parent_->change_hash_checker(
                common::hash::create_by_index( vtrc_auth::HASH_CRC_32 ));
 
-            stage_call_ = vtrc::bind(
-                        key_set
-                        ? &this_type::on_transform_setup
-                        : &this_type::on_server_ready, this );
+            change_stage( key_set ? STAGE_SETUP : STAGE_READY );
 
             send_proto_message( capsule,
                                 vtrc::bind( &this_type::set_options, this, _1 ),
@@ -358,6 +434,7 @@ namespace vtrc { namespace client {
 
     void protocol_layer_c::close( )
     {
+        impl_->check_disconnect_stage( );
         impl_->client_->on_disconnect_( );
     }
 
@@ -369,6 +446,12 @@ namespace vtrc { namespace client {
     void protocol_layer_c::on_data_ready( )
     {
         impl_->data_ready( );
+    }
+
+    void protocol_layer_c::on_init_error(const vtrc_errors::container &error,
+                                         const char *message)
+    {
+        impl_->client_->on_init_error_( error, message );
     }
 
     common::rpc_service_wrapper_sptr protocol_layer_c::get_service_by_name(

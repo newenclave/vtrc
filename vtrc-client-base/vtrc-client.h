@@ -49,7 +49,12 @@ namespace client {
         vtrc_client( const vtrc_client &other );
         vtrc_client & operator = ( const vtrc_client &other );
 
+        VTRC_DECLARE_SIGNAL( on_init_error,
+                             void(const vtrc_errors::container &,
+                                  const char *message ) );
+
         VTRC_DECLARE_SIGNAL( on_connect,    void( ) );
+
         VTRC_DECLARE_SIGNAL( on_disconnect, void( ) );
         VTRC_DECLARE_SIGNAL( on_ready,      void( ) );
 
@@ -110,6 +115,7 @@ namespace client {
         const common::call_context *get_call_context( ) const;
 
     public:
+
         void connect( const std::string &local_name );
         void connect( const std::string &address, const std::string &service );
 

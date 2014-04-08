@@ -157,9 +157,9 @@ namespace vtrc { namespace server {
 
         void send_and_close( const gpb::Message &mess )
         {
-            send_proto_message( mess, vtrc::bind(
-                                        &this_type::close_client, this, _1,
-                                         connection_->shared_from_this( )),
+            send_proto_message( mess,
+                                vtrc::bind( &this_type::close_client, this, _1,
+                                            connection_->shared_from_this( )),
                                 true );
         }
 
@@ -179,13 +179,14 @@ namespace vtrc { namespace server {
 
         void on_client_transformer( )
         {
-
             using namespace common::transformers;
             vtrc_auth::init_capsule capsule;
             bool check = get_pop_message( capsule );
 
             if( !check ) {
-                connection_->close( );
+                capsule.Clear( );
+                capsule.mutable_error( )->set_code( vtrc_errors::ERR_INTERNAL );
+                send_and_close( capsule );
                 return;
             }
 

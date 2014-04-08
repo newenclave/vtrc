@@ -5,6 +5,10 @@
 
 #include "vtrc-common/vtrc-protocol-layer.h"
 
+namespace vtrc_errors {
+    class container;
+}
+
 namespace vtrc {
 
 namespace client {
@@ -19,8 +23,9 @@ namespace client {
 
     class protocol_layer_c: public common::protocol_layer {
 
-        struct impl;
-        impl *impl_;
+        struct        impl;
+        friend struct impl;
+        impl         *impl_;
 
         protocol_layer_c( const protocol_layer_c& other );
         protocol_layer_c &operator = ( const protocol_layer_c& other );
@@ -43,6 +48,8 @@ namespace client {
     private:
 
         void on_data_ready( );
+        void on_init_error( const vtrc_errors::container &error,
+                            const char *message );
 
     };
 
