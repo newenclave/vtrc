@@ -261,7 +261,6 @@ namespace vtrc { namespace server {
 
                 send_proto_message( capsule );
 
-
             } else {
                 capsule.set_ready( false );
                 vtrc_errors::container *er(capsule.mutable_error( ));
