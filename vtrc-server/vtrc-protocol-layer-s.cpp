@@ -181,6 +181,7 @@ namespace vtrc { namespace server {
         void on_client_transformer( )
         {
 
+            using namespace common::transformers;
             vtrc_auth::init_capsule capsule;
             bool check = get_pop_message( capsule );
 
@@ -203,17 +204,10 @@ namespace vtrc { namespace server {
 
             std::string key(app_.get_session_key( connection_, client_id_ ));
 
-            vtrc::shared_ptr<common::hash_iface> sha256
-                                        (common::hash::sha2::create256( ));
-
-            s1.append( key.begin( ), key.end( ) );
-            s1 = sha256->get_data_hash( s1.c_str( ), s1.size( ) );
-            s2.append( s1.begin( ), s1.end( ) );
-            key = sha256->get_data_hash( s2.c_str( ), s2.size( ) );
+            create_key( key, s1, s2, key );
 
             common::transformer_iface *new_transformer =
-                    common::transformers::erseefor::create( key.c_str( ),
-                                                            key.size( ) );
+                                erseefor::create( key.c_str( ), key.size( ) );
             parent_->change_transformer( new_transformer );
 
             capsule.Clear( );
@@ -228,6 +222,8 @@ namespace vtrc { namespace server {
 
         void setup_transformer( unsigned id )
         {
+            using namespace common::transformers;
+
             vtrc_auth::transformer_setup ts;
             vtrc_auth::init_capsule capsule;
 
@@ -244,28 +240,19 @@ namespace vtrc { namespace server {
 
                 std::string key(app_.get_session_key(connection_, client_id_));
 
-                common::random_device rd( false );
-                std::string s1( 256, 0 );
-                std::string s2( 256, 0 );
-                rd.generate( &s1[0], &s1[0] + s1.size( ));
-                rd.generate( &s2[0], &s2[0] + s2.size( ));
+                std::string s1;
+                std::string s2;
+
+                generate_key_infos( key, s1, s2, key );
 
                 ts.set_salt1( s1 );
                 ts.set_salt2( s2 );
 
-                vtrc::shared_ptr<common::hash_iface> sha256
-                                            (common::hash::sha2::create256( ));
-
-                s1.append( key.begin( ), key.end( ) );
-                s1 = sha256->get_data_hash( s1.c_str( ), s1.size( ) );
-                s2.append( s1.begin( ), s1.end( ) );
-                key = sha256->get_data_hash( s2.c_str( ), s2.size( ) );
-
                 common::transformer_iface *new_reverter =
-                        common::transformers::erseefor::create( key.c_str( ),
-                                                                key.size( ) );
+                        erseefor::create( key.c_str( ), key.size( ) );
 
                 parent_->change_reverter( new_reverter );
+
                 capsule.set_ready( true );
                 capsule.set_body( ts.SerializeAsString( ) );
 
