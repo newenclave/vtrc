@@ -3,6 +3,7 @@
 #include "vtrc-connection-iface.h"
 #include "vtrc-protocol-layer.h"
 
+
 namespace vtrc { namespace common {
 
     typedef vtrc_rpc_lowlevel::lowlevel_unit lowlevel_unit;
@@ -10,7 +11,7 @@ namespace vtrc { namespace common {
     struct call_context::impl {
         lowlevel_unit                    *llu_;
         call_context                     *parent_context_;
-        const vtrc_rpc_lowlevel::options *opts_;
+        const vtrc_rpc_options::options  *opts_;
         bool                              impersonated_;
         impl(lowlevel_unit *llu)
             :llu_(llu)
@@ -78,12 +79,12 @@ namespace vtrc { namespace common {
         return impl_->impersonated_;
     }
 
-    const vtrc_rpc_lowlevel::options *call_context::get_call_options( ) const
+    const vtrc_rpc_options::options *call_context::get_call_options( ) const
     {
         return impl_->opts_;
     }
 
-    void call_context::set_call_options(const vtrc_rpc_lowlevel::options &opts)
+    void call_context::set_call_options(const vtrc_rpc_options::options &opts)
     {
         impl_->opts_ = &opts;
     }

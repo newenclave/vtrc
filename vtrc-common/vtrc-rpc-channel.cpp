@@ -3,6 +3,8 @@
 #include <google/protobuf/descriptor.h>
 
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
+#include "protocol/vtrc-rpc-options.pb.h"
+
 #include "vtrc-rpc-channel.h"
 #include "vtrc-protocol-layer.h"
 #include "vtrc-exception.h"
@@ -63,7 +65,7 @@ namespace vtrc { namespace common  {
                             const lowlevel_unit_type &llu,
                             google::protobuf::Message *response,
                             connection_iface_sptr &cl,
-                            const vtrc_rpc_lowlevel::options &call_opt) const
+                            const vtrc_rpc_options::options &call_opt) const
     {
         cl->get_protocol( ).call_rpc_method( call_id, llu );
 

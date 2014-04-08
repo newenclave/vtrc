@@ -5,28 +5,8 @@ package vtrc_rpc_lowlevel;
 
 // index 53000
 
-option cc_generic_services = true;
-
-message options {
-    optional uint32     secure_level    = 1 ;
-    optional uint64     call_timeout    = 2 [default = 60000]; // milliseconds
-    optional bool       wait            = 3 [default = true];
-};
-
 message unit_options {
-    optional bool       wait            = 3 [default = true];
-}
-
-message rpc_options_type {
-    optional options opt = 1;
-};
-
-extend google.protobuf.ServiceOptions {
-    optional rpc_options_type service_options = 53001;
-}
-
-extend google.protobuf.MethodOptions {
-    optional rpc_options_type  method_options = 53002;
+    optional bool  wait = 3 [default = true];
 }
 
 message message_info {

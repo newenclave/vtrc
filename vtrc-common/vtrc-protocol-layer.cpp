@@ -32,6 +32,7 @@
 #include "proto-helper/message-utilities.h"
 
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
+#include "protocol/vtrc-rpc-options.pb.h"
 #include "protocol/vtrc-errors.pb.h"
 
 namespace vtrc { namespace common {
@@ -87,7 +88,7 @@ namespace vtrc { namespace common {
 
         typedef std::map <
              const google::protobuf::MethodDescriptor *
-            ,vtrc::shared_ptr<vtrc_rpc_lowlevel::options>
+            ,vtrc::shared_ptr<vtrc_rpc_options::options>
         > options_map_type;
 
         struct closure_holder_type {
@@ -514,26 +515,26 @@ namespace vtrc { namespace common {
             return level_;
         }
 
-        const vtrc_rpc_lowlevel::options &get_method_options(
+        const vtrc_rpc_options::options &get_method_options(
                               const gpb::MethodDescriptor *method)
         {
             upgradable_lock lck(options_map_lock_);
 
             options_map_type::const_iterator f(options_map_.find(method));
 
-            vtrc::shared_ptr<vtrc_rpc_lowlevel::options> result;
+            vtrc::shared_ptr<vtrc_rpc_options::options> result;
 
             if( f == options_map_.end( ) ) {
 
-                const vtrc_rpc_lowlevel::rpc_options_type &serv (
+                const vtrc_rpc_options::rpc_options_type &serv (
                     method->service( )->options( )
-                        .GetExtension( vtrc_rpc_lowlevel::service_options ));
+                        .GetExtension( vtrc_rpc_options::service_options ));
 
-                const vtrc_rpc_lowlevel::rpc_options_type &meth (
+                const vtrc_rpc_options::rpc_options_type &meth (
                     method->options( )
-                        .GetExtension( vtrc_rpc_lowlevel::method_options ));
+                        .GetExtension( vtrc_rpc_options::method_options ));
 
-                result = vtrc::make_shared<vtrc_rpc_lowlevel::options>
+                result = vtrc::make_shared<vtrc_rpc_options::options>
                                                                 (serv.opt( ));
                 if( meth.has_opt( ) )
                     utilities::merge_messages( *result, meth.opt( ) );
@@ -655,7 +656,7 @@ namespace vtrc { namespace common {
                 throw vtrc::common::exception( vtrc_errors::ERR_NO_FUNC );
             }
 
-            const vtrc_rpc_lowlevel::options &call_opts
+            const vtrc_rpc_options::options &call_opts
                                         ( parent_->get_method_options( meth ) );
 
             ch.ctx_->set_call_options( call_opts );
@@ -841,7 +842,7 @@ namespace vtrc { namespace common {
         impl_->copy_call_stack( other );
     }
 
-    const vtrc_rpc_lowlevel::options &protocol_layer::get_method_options(
+    const vtrc_rpc_options::options &protocol_layer::get_method_options(
                               const gpb::MethodDescriptor *method)
     {
         return impl_->get_method_options( method );

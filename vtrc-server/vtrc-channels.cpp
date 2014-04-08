@@ -8,6 +8,7 @@
 
 #include "protocol/vtrc-errors.pb.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
+#include "protocol/vtrc-rpc-options.pb.h"
 
 //#include "vtrc-chrono.h"
 #include "vtrc-bind.h"
@@ -60,7 +61,7 @@ namespace vtrc { namespace server {
                                                    "Connection lost");
                 }
 
-                const vtrc_rpc_lowlevel::options &call_opt
+                const vtrc_rpc_options::options &call_opt
                             ( get_protocol( *clk ).get_method_options(method) );
 
                 configure_message( clk, message_type_, llu );

@@ -4,6 +4,7 @@
 #include <google/protobuf/descriptor.h>
 
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
+#include "protocol/vtrc-rpc-options.pb.h"
 
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-call-context.h"
@@ -74,7 +75,7 @@ namespace vtrc { namespace client {
                                                "Connection lost");
             }
 
-            const vtrc_rpc_lowlevel::options &call_opt
+            const vtrc_rpc_options::options &call_opt
                             ( get_protocol( clk ).get_method_options(method) );
 
             if( disable_wait_ )

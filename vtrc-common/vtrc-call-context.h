@@ -5,6 +5,9 @@
 
 namespace vtrc_rpc_lowlevel {
     class lowlevel_unit;
+}
+
+namespace vtrc_rpc_options {
     class options;
 }
 
@@ -40,8 +43,8 @@ namespace vtrc { namespace common {
         void set_impersonated( bool value );
         bool get_impersonated( ) const;
 
-        const vtrc_rpc_lowlevel::options *get_call_options( ) const;
-        void set_call_options(const vtrc_rpc_lowlevel::options &opts);
+        const vtrc_rpc_options::options *get_call_options( ) const;
+        void set_call_options(const vtrc_rpc_options::options &opts);
 
         virtual ~call_context( );
 

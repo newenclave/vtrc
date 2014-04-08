@@ -20,6 +20,9 @@ namespace google { namespace protobuf {
 
 namespace vtrc_rpc_lowlevel {
     class lowlevel_unit;
+}
+
+namespace vtrc_rpc_options {
     class options;
 }
 
@@ -106,7 +109,7 @@ namespace vtrc { namespace common {
         void cancel_all_slots( );
         //void close_queue( );
 
-        const vtrc_rpc_lowlevel::options &get_method_options(
+        const vtrc_rpc_options::options &get_method_options(
                             const google::protobuf::MethodDescriptor* method );
 
     protected:
