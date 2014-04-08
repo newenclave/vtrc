@@ -204,12 +204,6 @@ namespace {
 
     namespace win_pipe {
 
-        endpoint_options default_options( )
-        {
-            endpoint_options def_opts = { 5, 1024 * 1024, 20, 4096 };
-            return def_opts;
-        }
-
         endpoint_iface *create( application &app, const std::string &name )
         {
             endpoint_options def_opts(default_options( ));

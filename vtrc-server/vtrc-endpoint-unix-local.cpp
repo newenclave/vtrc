@@ -94,12 +94,6 @@ namespace vtrc { namespace server { namespace endpoints {
 
     namespace unix_local {
 
-        endpoint_options default_options( )
-        {
-            endpoint_options def_opts = { 5, 1024 * 1024, 20, 4096 };
-            return def_opts;
-        }
-
         endpoint_iface *create(application &app,
                                const endpoint_options &opts,
                                const std::string &name)

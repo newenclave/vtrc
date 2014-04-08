@@ -15,7 +15,6 @@ namespace vtrc { namespace server {
         endpoint_iface *create( application &app, const std::string &name );
         endpoint_iface *create( application &app, const endpoint_options &opts,
                                 const std::string &name );
-        endpoint_options default_options( );
     }}
 
 }}
