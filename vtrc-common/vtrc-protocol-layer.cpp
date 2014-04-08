@@ -682,15 +682,14 @@ namespace vtrc { namespace common {
             make_call(llu, closure_type( ));
         }
 
-        void make_call(protocol_layer::lowlevel_unit_sptr llu,
-                       closure_type done)
+        void make_call(protocol_layer::lowlevel_unit_sptr llu, closure_type don)
         {
             bool failed        = true;
             unsigned errorcode = 0;
 
             try {
 
-                make_call_impl( llu, done );
+                make_call_impl( llu, don );
                 failed   = false;
 
             } catch ( const vtrc::common::exception &ex ) {
