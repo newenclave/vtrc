@@ -524,17 +524,16 @@ namespace vtrc { namespace common {
 
             if( f == options_map_.end( ) ) {
 
-                const vtrc_rpc::rpc_options_type &serv (
+                const vtrc_rpc::options &serv (
                         method->service( )->options( )
                             .GetExtension( vtrc_rpc::service_options ));
 
-                const vtrc_rpc::rpc_options_type &meth (
+                const vtrc_rpc::options &meth (
                         method->options( )
                             .GetExtension( vtrc_rpc::method_options ));
 
-                result = vtrc::make_shared<vtrc_rpc::options>( serv.opt( ) );
-                if( meth.has_opt( ) )
-                    utilities::merge_messages( *result, meth.opt( ) );
+                result = vtrc::make_shared<vtrc_rpc::options>( serv );
+                utilities::merge_messages( *result, meth );
 
                 upgrade_to_unique ulck( lck );
                 options_map_.insert( std::make_pair( method, result ) );
