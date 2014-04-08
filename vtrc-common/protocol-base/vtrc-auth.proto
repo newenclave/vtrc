@@ -44,5 +44,5 @@ message init_capsule {
     optional bool                        ready =  2;
     optional vtrc_errors.container       error =  3;
 
-    optional bytes               body          = 10;
+    optional bytes                        body = 10;
 }
