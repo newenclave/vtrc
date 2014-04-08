@@ -99,8 +99,7 @@ namespace client {
 
         void set_session_key( const std::string &id, const std::string &key );
         void set_session_key( const std::string &key );
-
-    private:
+        void set_session_id ( const std::string &id );
 
         const std::string &get_session_key(  ) const;
         const std::string &get_session_id (  ) const;
