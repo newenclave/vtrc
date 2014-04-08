@@ -771,14 +771,14 @@ namespace vtrc { namespace common {
                                                      uint64_t millisec) const
     {
         return impl_->wait_for_ready_for( ready,
-                    vtrc::chrono::milliseconds(millisec));
+                vtrc::chrono::milliseconds(millisec));
     }
 
     bool protocol_layer::wait_for_ready_for_microsec(bool ready,
                                                      uint64_t microsec) const
     {
         return impl_->wait_for_ready_for( ready,
-                                          vtrc::chrono::microseconds(microsec));
+                vtrc::chrono::microseconds(microsec));
     }
 
     void protocol_layer::set_ready( bool ready )

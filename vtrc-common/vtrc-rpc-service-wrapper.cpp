@@ -32,7 +32,7 @@ namespace vtrc { namespace common {
             return service_->GetDescriptor( )->FindMethodByName( name );
         }
 
-        gpb::Service *service( ) { return service_.get( ); }
+        gpb::Service       *service( )       { return service_.get( ); }
         const gpb::Service *service( ) const { return service_.get( ); }
 
     };
