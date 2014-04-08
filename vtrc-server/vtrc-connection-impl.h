@@ -55,6 +55,11 @@ namespace vtrc { namespace server { namespace endpoints {
                 return new_inst;
             }
 
+            const std::string &id( ) const
+            {
+                return protocol_->client_id( );
+            }
+
             static vtrc::shared_ptr<this_type> create(endpoint_iface &endpoint,
                                                         socket_type *sock )
             {

@@ -39,6 +39,8 @@ namespace client {
         void init( );
         bool active( ) const;
 
+        const std::string &id( ) const;
+
         void connect( const std::string &address );
         void async_connect( const std::string &address,
                             common::closure_type closure );

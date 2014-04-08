@@ -33,7 +33,8 @@ namespace vtrc { namespace common {
 
         virtual const char *name( ) const                  = 0;
 
-        //virtual std::string &id( ) const                   = 0;
+        virtual const std::string &id( ) const             = 0;
+
         //virtual unsigned level( ) const                    = 0;
 
         virtual void close( )                              = 0;

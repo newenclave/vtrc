@@ -35,6 +35,7 @@ namespace client {
         ~client_tcp( );
         void init( );
         bool active( ) const;
+        const std::string &id( ) const;
 
         void connect( const std::string &address,
                       const std::string &service );

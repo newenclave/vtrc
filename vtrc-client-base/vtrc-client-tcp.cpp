@@ -117,5 +117,10 @@ namespace vtrc { namespace client {
         return impl_->active( );
     }
 
+    const std::string &client_tcp::id( ) const
+    {
+        return impl_->id( );
+    }
+
 }}
 

@@ -37,6 +37,7 @@ namespace client {
         ~client_win_pipe( );
         void init( );
         bool active( ) const;
+        const std::string &id( ) const;
 
         void connect( const std::string &address );
         void connect( const std::wstring &address );

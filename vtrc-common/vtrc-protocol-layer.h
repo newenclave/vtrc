@@ -141,9 +141,11 @@ namespace vtrc { namespace common {
         void set_level( unsigned level );
         unsigned get_level(  ) const;
 
-        virtual void init( )            = 0;
-        virtual void close( )           = 0;
-        virtual void on_data_ready( )   = 0;
+        virtual void init( )             = 0;
+        virtual void close( )            = 0;
+        virtual void on_data_ready( )    = 0;
+
+        virtual const std::string &client_id( ) const = 0;
 
         typedef std::deque< vtrc::shared_ptr<call_context> > call_stack_type;
 

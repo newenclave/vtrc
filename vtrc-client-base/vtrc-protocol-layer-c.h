@@ -35,6 +35,7 @@ namespace client {
 
         void init( );
         void close( );
+        const std::string &client_id( ) const;
 
         common::rpc_service_wrapper_sptr
                                 get_service_by_name( const std::string &name );

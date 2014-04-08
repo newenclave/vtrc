@@ -49,6 +49,11 @@ namespace {
             parent_ = parent;
         }
 
+        const std::string &id( ) const
+        {
+            return protocol_->client_id( );
+        }
+
         stream_type &get_socket( )
         {
             return parent_->get_socket( );

@@ -116,6 +116,10 @@ namespace vtrc { namespace server {
             return result;
         }
 
+        const std::string &client_id( ) const
+        {
+            return client_id_;
+        }
 
         bool pop_check_init_message(  )
         {
@@ -459,6 +463,11 @@ namespace vtrc { namespace server {
     void protocol_layer_s::close( )
     {
 
+    }
+
+    const std::string &protocol_layer_s::client_id( ) const
+    {
+        return impl_->client_id( );
     }
 
     void protocol_layer_s::on_data_ready( )

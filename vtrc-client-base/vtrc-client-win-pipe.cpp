@@ -162,6 +162,12 @@ namespace vtrc { namespace client {
         impl_->on_close( );
     }
 
+    const std::string &client_win_pipe::id( ) const
+    {
+        return impl_->id( );
+    }
+
+
 }}
 
 

@@ -1,6 +1,7 @@
 #ifndef VTRCP_ROTOCOL_LAYER_S_H
 #define VTRCP_ROTOCOL_LAYER_S_H
 
+#include <string>
 #include "vtrc-common/vtrc-protocol-layer.h"
 
 namespace vtrc {
@@ -34,6 +35,7 @@ namespace server {
 
         void init( );
         void close( );
+        const std::string &client_id( ) const;
 
         common::rpc_service_wrapper_sptr get_service_by_name(
                                                     const std::string &name );

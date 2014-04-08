@@ -60,6 +60,14 @@ namespace vtrc { namespace client {
 
         }
 
+        const std::string &client_id( ) const
+        {
+            return client_->is_key_set( )
+                    ? client_->get_session_id( )
+                    : "";
+        }
+
+
         common::rpc_service_wrapper_sptr get_service_by_name(
                                                       const std::string &name )
         {
@@ -354,6 +362,11 @@ namespace vtrc { namespace client {
     void protocol_layer_c::close( )
     {
         impl_->client_->on_disconnect_( );
+    }
+
+    const std::string &protocol_layer_c::client_id( ) const
+    {
+        return impl_->client_id( );
     }
 
     void protocol_layer_c::on_data_ready( )
