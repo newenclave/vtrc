@@ -208,6 +208,8 @@ namespace vtrc { namespace server {
 
             common::transformer_iface *new_transformer =
                                 erseefor::create( key.c_str( ), key.size( ) );
+
+            // client reverter is my transformer
             parent_->change_transformer( new_transformer );
 
             capsule.Clear( );
@@ -246,8 +248,9 @@ namespace vtrc { namespace server {
                                     key );               // output
 
                 common::transformer_iface *new_reverter =
-                        erseefor::create( key.c_str( ), key.size( ) );
+                                erseefor::create( key.c_str( ), key.size( ) );
 
+                // client transformer is my reverter
                 parent_->change_reverter( new_reverter );
 
                 capsule.set_ready( true );
