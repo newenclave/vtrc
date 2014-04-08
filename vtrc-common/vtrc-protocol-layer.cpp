@@ -221,11 +221,10 @@ namespace vtrc { namespace common {
                 const size_t old_size = queue_->messages( ).size( );
 
                 /*
-                 * message = <size>revert( message )
+                 * message = <size>revert( data )
                 */
-                //revertor_->transform( &next_data[0], next_data.size( ) );
-                queue_->append( &next_data[0], next_data.size( ));
 
+                queue_->append( &next_data[0], next_data.size( ));
                 queue_->process( );
 
                 if( queue_->messages( ).size( ) > old_size ) {
@@ -234,6 +233,7 @@ namespace vtrc { namespace common {
                     message_queue_type::iterator e(queue_->messages( ).end( ));
                     std::advance( b, old_size );
 
+                    /// revert all new messages
                     for( ; b!=e; ++b ) {
                         revertor_->transform( b->empty( ) ? NULL : &(*b)[0],
                                               b->size( ));
