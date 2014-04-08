@@ -37,6 +37,10 @@ namespace server {
         virtual void start( ) = 0;
         virtual void stop ( ) = 0;
     };
+
+    namespace endpoints {
+        endpoint_options default_options( );
+    }
 }}
 
 #endif
