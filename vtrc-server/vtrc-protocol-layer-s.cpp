@@ -482,10 +482,5 @@ namespace vtrc { namespace server {
         return impl_->get_service(name);
     }
 
-    common::call_context *protocol_layer_s::get_top_call_context( )
-    {
-        return top_call_context( );
-    }
-
 }}
 

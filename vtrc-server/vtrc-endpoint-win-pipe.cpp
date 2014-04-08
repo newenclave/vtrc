@@ -33,22 +33,22 @@ namespace {
 
         bool impersonate( )
         {
-            BOOL imp = ImpersonateNamedPipeClient(
-                                    get_socket( ).native_handle( ) );
-            if( imp ) {
-                common::call_context *c
-                                    (get_protocol(  ).get_top_call_context( ));
-                if( c ) c->set_impersonated( true );
-            }
-
-            return !!imp;
+//            BOOL imp = ImpersonateNamedPipeClient(
+//                                    get_socket( ).native_handle( ) );
+//            if( imp ) {
+//                common::call_context *c
+//                                    (get_protocol(  ).get_top_call_context( ));
+//                if( c ) c->set_impersonated( true );
+//            }
+//            return !!imp;
+            return false;
         }
 
         void revert( )
         {
-            common::call_context *c
-                                (get_protocol( ).get_top_call_context( ));
-            if( c && c->get_impersonated( ) ) RevertToSelf( );
+//            common::call_context *c
+//                                (get_protocol( ).get_top_call_context( ));
+//            if( c && c->get_impersonated( ) ) RevertToSelf( );
         }
 
         static vtrc::shared_ptr<this_type> create(endpoint_iface &endpoint,
@@ -215,7 +215,7 @@ namespace {
 
         //endpoint_iface *create( application &app, const std::wstring &name )
         //{
-        //    
+        //
         //}
 
         endpoint_iface *create( application &app, const endpoint_options &opts,
