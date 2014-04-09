@@ -10,7 +10,8 @@ namespace vtrc { namespace common {
 
         /**
           *   keys for basic authentication;
-          *   result key is: sha256( s2 + sha256( s1 + key ) );
+          *   result is: sha256( s2 + sha256( s1 + key ) );
+          *   s1 and s2 are open information
          **/
         void create_key( const std::string &key,
                          const std::string &s1, const std::string &s2,
