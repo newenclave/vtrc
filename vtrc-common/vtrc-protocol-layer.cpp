@@ -43,6 +43,8 @@ namespace vtrc { namespace common {
 
         typedef protocol_layer::message_queue_type message_queue_type;
 
+        namespace bsys = boost::system;
+
         void raise_error( unsigned code )
         {
             throw vtrc::common::exception( code );
@@ -102,9 +104,11 @@ namespace vtrc { namespace common {
                 if( proto_closure_ )
                     delete proto_closure_;
 
-                boost::system::error_code err( 0,
-                        boost::system::get_system_category( ) );
-                if(internal_closure_) internal_closure_( err );
+                if( internal_closure_ ) {
+                    const bsys::error_code error_success(0,
+                                            bsys::get_system_category( ));
+                    internal_closure_( error_success );
+                }
 
             } catch( ... ) { ;;; }
 
@@ -189,21 +193,21 @@ namespace vtrc { namespace common {
 
         std::string prepare_data( const char *data, size_t length )
         {
-            /*
+            /**
              * message_header = <packed_size(data_length + hash_length)>
-            */
+            **/
             std::string result(size_policy_ns::pack_size(
                                 length + hash_maker_->hash_size( )));
 
-            /* here is:
+            /** here is:
              *  message_body = <hash(data)> + <data>
-            */
+            **/
             std::string body( hash_maker_->get_data_hash(data, length ) );
             body.append( data, data + length );
 
-            /*
+            /**
              * message =  message_header + <transform( message )>
-            */
+            **/
             transformer_->transform(
                         body.empty( ) ? NULL : &body[0],
                         body.size( ) );
@@ -220,9 +224,9 @@ namespace vtrc { namespace common {
 
                 const size_t old_size = queue_->messages( ).size( );
 
-                /*
+                /**
                  * message = <size>revert( data )
-                */
+                **/
                 queue_->append( &next_data[0], next_data.size( ));
                 queue_->process( );
 
