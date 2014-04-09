@@ -37,13 +37,12 @@
 
 namespace vtrc { namespace common {
 
-    namespace gpb = google::protobuf;
+    namespace gpb   = google::protobuf;
+    namespace bsys  = boost::system;
 
     namespace {
 
         typedef protocol_layer::message_queue_type message_queue_type;
-
-        namespace bsys = boost::system;
 
         void raise_error( unsigned code )
         {
