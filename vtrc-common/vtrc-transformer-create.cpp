@@ -8,6 +8,10 @@ namespace vtrc { namespace common {
 
     namespace transformers {
 
+        /**
+          *   keys for basic authentication;
+          *   result key is: sha256( s2 + sha256( s1 + key ) );
+         **/
         void create_key( const std::string &key,
                          const std::string &s1, const std::string &s2,
                                std::string &result )
