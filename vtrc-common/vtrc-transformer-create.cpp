@@ -43,8 +43,7 @@ namespace vtrc { namespace common {
             s2.swap( ts2 );
         }
 
-        transformer_iface *create( unsigned id,
-                                   const char *key, size_t length)
+        transformer_iface *create( unsigned id, const char *key, size_t length)
         {
             transformer_iface *trans = NULL;
             switch ( id ) {
