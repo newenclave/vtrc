@@ -17,10 +17,8 @@ namespace boost {
 
 namespace vtrc { namespace common {
 
-
-    typedef vtrc::function <
-                void (const boost::system::error_code &)
-            > closure_type;
+    typedef vtrc::function
+                       <void (const boost::system::error_code &)> closure_type;
 
     class enviroment;
     class protocol_layer;
@@ -34,8 +32,6 @@ namespace vtrc { namespace common {
         virtual const char *name( ) const                  = 0;
 
         virtual const std::string &id( ) const             = 0;
-
-        //virtual unsigned level( ) const                    = 0;
 
         virtual void close( )                              = 0;
         virtual bool active( ) const                       = 0;

@@ -14,6 +14,7 @@ namespace boost {
 
 namespace vtrc { namespace common {
 
+
     struct transport_iface: public connection_iface {
 
         virtual ~transport_iface( ) { }
