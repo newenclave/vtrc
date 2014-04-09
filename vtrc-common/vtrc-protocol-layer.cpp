@@ -64,7 +64,7 @@ namespace vtrc { namespace common {
             }
         }
 
-        static const size_t maximum_message_length = 1024 * 1024;
+        static const size_t default_max_message_length = 1024 * 1024;
 
         struct rpc_unit_index {
             uint64_t     id_;
@@ -748,14 +748,13 @@ namespace vtrc { namespace common {
     };
 
     protocol_layer::protocol_layer( transport_iface *connection, bool oddside )
-        :impl_(new impl(connection, oddside, maximum_message_length))
+        :impl_(new impl(connection, oddside, default_max_message_length))
     {
         impl_->parent_ = this;
     }
 
      protocol_layer::protocol_layer(transport_iface *connection,
-                                    bool oddside,
-                                    size_t maximum_mess_len)
+                                    bool oddside, size_t maximum_mess_len)
          :impl_(new impl(connection, oddside, maximum_mess_len))
      {
          impl_->parent_ = this;
