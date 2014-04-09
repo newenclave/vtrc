@@ -33,8 +33,8 @@ namespace vtrc { namespace common {
         }
 
         void generate_key_infos( const std::string &key,
-                             std::string &s1, std::string &s2,
-                             std::string &result )
+                                 std::string &s1, std::string &s2,
+                                 std::string &result )
         {
             random_device rd( false );
 
