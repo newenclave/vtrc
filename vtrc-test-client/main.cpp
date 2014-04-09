@@ -160,6 +160,7 @@ void run_client( vtrc::shared_ptr<client::vtrc_client> cl, bool wait)
 void on_init_error(const vtrc_errors::container &cont, const char *message )
 {
     std::cout << "Client init error: " << message << "\n";
+    std::cout << cont.DebugString( );
 }
 
 void on_connect( )
@@ -184,7 +185,7 @@ int main( )
     common::pool_pair pp(2, 2);
     vtrc::shared_ptr<client::vtrc_client> cl(client::vtrc_client::create(pp));
 
-    //cl->set_session_key( "1234" );
+    cl->set_session_key( "1234" );
 
     vtrc::mutex              mut;
     vtrc::condition_variable cond;
