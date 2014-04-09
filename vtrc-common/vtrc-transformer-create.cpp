@@ -34,8 +34,7 @@ namespace vtrc { namespace common {
         }
 
         /**
-          *   Generate 2 blocks of open info
-          *   and create secret key.
+          *   Generate 2 blocks of open info and create secret key.
          **/
         void generate_key_infos( const std::string &key,
                                  std::string &s1, std::string &s2,
