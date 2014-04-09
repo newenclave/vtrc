@@ -194,7 +194,7 @@ namespace {
                 }
                 start_accept( );
             } else {
-                delete sock;
+                // delete sock;
             }
         }
 
