@@ -26,3 +26,12 @@ or all togeter:
     apt-get install libboost-system-dev libboost-chrono-dev libboost-thread-dev libboost-date-time-dev libboost-regex-dev libboost-random-dev libboost-atomic-dev libboost-chrono-dev git cmake protobuf-compiler libprotoc-dev g++
 
  
+make folser for progect tree:
+$ mkdir githug
+$ git clone https://github.com/newenclave/vtrc.git
+.....
+$ mkdir vtrc-build
+$ cd vtrc-build
+$ cmake -G "Unix Makefiles" ../vtrc
+...
+$ make -j4
