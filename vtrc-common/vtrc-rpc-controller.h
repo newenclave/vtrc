@@ -1,8 +1,9 @@
 #ifndef VTRC_RCP_CONTROLLER_H
 #define VTRC_RCP_CONTROLLER_H
 
-#include <google/protobuf/service.h>
 #include <string>
+
+#include "google/protobuf/service.h"
 #include "vtrc-memory.h"
 
 namespace vtrc { namespace common {

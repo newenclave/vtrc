@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 
-#include <google/protobuf/descriptor.h>
+#include "google/protobuf/descriptor.h"
 
 #include "vtrc-client.h"
 #include "vtrc-client-tcp.h"

@@ -5,15 +5,15 @@
 #include <vector>
 #include <queue>
 
-#include <google/protobuf/descriptor.h>
+#include "google/protobuf/descriptor.h"
 
-#include <boost/asio.hpp>
-#include <boost/chrono.hpp>
+#include "boost/asio.hpp"
+#include "boost/chrono.hpp"
 
-#include <boost/thread.hpp>
-#include <boost/thread/shared_mutex.hpp>
+#include "boost/thread.hpp"
+#include "boost/thread/shared_mutex.hpp"
 
-#include <boost/thread/condition_variable.hpp>
+#include "boost/thread/condition_variable.hpp"
 
 #include "vtrc-server/vtrc-application.h"
 #include "vtrc-server/vtrc-endpoint-iface.h"

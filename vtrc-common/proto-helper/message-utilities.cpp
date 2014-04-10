@@ -1,9 +1,9 @@
 #include "message-utilities.h"
 
 
-#include <boost/scoped_ptr.hpp>
-#include <google/protobuf/descriptor.h>
-#include <google/protobuf/descriptor.pb.h>
+#include "boost/scoped_ptr.hpp"
+#include "google/protobuf/descriptor.h"
+#include "google/protobuf/descriptor.pb.h"
 
 namespace vtrc { namespace utilities {
 

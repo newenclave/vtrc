@@ -1,7 +1,7 @@
 #include "vtrc-rpc-channel-c.h"
 
-#include <google/protobuf/service.h>
-#include <google/protobuf/descriptor.h>
+#include "google/protobuf/service.h"
+#include "google/protobuf/descriptor.h"
 
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
 #include "protocol/vtrc-rpc-options.pb.h"

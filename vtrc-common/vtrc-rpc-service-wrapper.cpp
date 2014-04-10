@@ -1,5 +1,5 @@
-#include <google/protobuf/service.h>
-#include <google/protobuf/descriptor.h>
+#include "google/protobuf/service.h"
+#include "google/protobuf/descriptor.h"
 
 #include "vtrc-rpc-service-wrapper.h"
 

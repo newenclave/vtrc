@@ -1,7 +1,7 @@
 #ifndef VTRC_CLOSURE_HOLDER_H
 #define VTRC_CLOSURE_HOLDER_H
 
-#include <google/protobuf/stubs/common.h>
+#include "google/protobuf/stubs/common.h"
 #include "vtrc-memory.h"
 
 namespace vtrc { namespace common {

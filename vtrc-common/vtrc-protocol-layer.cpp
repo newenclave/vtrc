@@ -1,8 +1,8 @@
 
-#include <boost/thread/tss.hpp>
+#include "boost/thread/tss.hpp"
 
-#include <google/protobuf/message.h>
-#include <google/protobuf/descriptor.h>
+#include "google/protobuf/message.h"
+#include "google/protobuf/descriptor.h"
 
 #include <exception>
 

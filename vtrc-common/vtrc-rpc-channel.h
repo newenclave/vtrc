@@ -1,7 +1,8 @@
 #ifndef VTRC_RPC_CHANNEL_H
 #define VTRC_RPC_CHANNEL_H
 
-#include <google/protobuf/service.h>
+#include "google/protobuf/service.h"
+
 #include "vtrc-connection-iface.h"
 #include "vtrc-protocol-layer.h"
 
