@@ -1,5 +1,6 @@
-#include <boost/crc.hpp>
+
 #include <memory.h>
+#include "boost/crc.hpp"
 
 #include "vtrc-hash-iface.h"
 

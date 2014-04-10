@@ -1,7 +1,7 @@
 #ifndef VTRC_BIND_H
 #define VTRC_BIND_H
 
-#include <boost/bind.hpp>
+#include "boost/bind.hpp"
 
 namespace vtrc {
     using boost::bind;

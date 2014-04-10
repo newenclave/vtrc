@@ -3,7 +3,7 @@
 #include "vtrc-thread.h"
 #include "vtrc-mutex-typedefs.h"
 
-#include <boost/asio.hpp>
+//#include "boost/asio.hpp"
 
 namespace vtrc { namespace common {
 

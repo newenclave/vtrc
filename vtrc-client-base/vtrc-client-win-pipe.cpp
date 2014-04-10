@@ -3,7 +3,7 @@
 #ifdef _WIN32
 
 #include <windows.h>
-#include <boost/asio/windows/stream_handle.hpp>
+#include "boost/asio/windows/stream_handle.hpp"
 #include "vtrc-client-stream-impl.h"
 #include "vtrc-common/vtrc-exception.h"
 #include "protocol/vtrc-errors.pb.h"

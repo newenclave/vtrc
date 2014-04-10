@@ -2,9 +2,9 @@
 #define VTRC_SIZEPACK_POLICY_H
 
 #include <string>
-
 #include <limits>
-#include <boost/static_assert.hpp>
+
+#include "boost/static_assert.hpp"
 
 /*
 size_packer_policy {

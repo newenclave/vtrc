@@ -16,8 +16,8 @@
 #include "protocol/vtrc-service.pb.h"
 #include "protocol/vtrc-errors.pb.h"
 
-#include <boost/random.hpp>
-#include <boost/random/random_device.hpp>
+#include "boost/random.hpp"
+#include "boost/random/random_device.hpp"
 
 #include "vtrc-thread.h"
 #include "vtrc-ref.h"

@@ -1,5 +1,5 @@
 
-#include <boost/lexical_cast.hpp>
+#include "boost/lexical_cast.hpp"
 
 #include "vtrc-client-tcp.h"
 #include "vtrc-client-stream-impl.h"

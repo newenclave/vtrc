@@ -1,10 +1,11 @@
 #ifndef VTRC_TRANSPORT_STREAM_IMPL_H
 #define VTRC_TRANSPORT_STREAM_IMPL_H
 
-#include <boost/asio.hpp>
 
 #include <deque>
 #include <string>
+
+#include "boost/asio.hpp"
 
 #include "vtrc-enviroment.h"
 #include "vtrc-memory.h"

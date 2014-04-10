@@ -1,10 +1,9 @@
+#include <string>
+#include <map>
 
 #include "google/protobuf/descriptor.h"
 #include "google/protobuf/descriptor.pb.h"
-
-#include <string>
-#include <map>
-#include <boost/lexical_cast.hpp>
+#include "boost/lexical_cast.hpp"
 
 #include "message-helper.h"
 

@@ -1,10 +1,10 @@
 #ifndef VTRC_SIGNAL_DECLARATION_H
 #define VTRC_SIGNAL_DECLARATION_H
 
-#include <boost/signals2/signal.hpp>
-#include <boost/signals2/signal_type.hpp>
-#include <boost/signals2/dummy_mutex.hpp>
-#include <boost/preprocessor/cat.hpp>
+#include "boost/signals2/signal.hpp"
+#include "boost/signals2/signal_type.hpp"
+#include "boost/signals2/dummy_mutex.hpp"
+#include "boost/preprocessor/cat.hpp"
 
 #include "vtrc-mutex.h"
 

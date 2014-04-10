@@ -1,7 +1,7 @@
 #ifndef VTRC_CHRONO_H
 #define VTRC_CHRONO_H
 
-#include <boost/chrono.hpp>
+#include "boost/chrono.hpp"
 
 namespace vtrc {
     namespace chrono {

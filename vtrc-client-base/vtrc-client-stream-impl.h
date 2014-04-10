@@ -1,7 +1,7 @@
 #ifndef VTRC_CLIENT_STREAM_IMPL_H
 #define VTRC_CLIENT_STREAM_IMPL_H
 
-#include <boost/asio.hpp>
+#include "boost/asio.hpp"
 
 #include "vtrc-client.h"
 #include "vtrc-bind.h"
