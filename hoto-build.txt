@@ -1,0 +1,28 @@
+you need:
+
+git:
+    apt-get install git
+
+CMake:
+    apt-get install cmake
+
+ProtoBuf:
+    apt-get install protobuf-compiler
+    apt-get install libprotoc-dev
+
+g++
+    apt-get install g++
+
+Boost: (MINIMUM version 1.50 is REQUIRED)
+
+    apt-get install libboost-all-dev
+
+        or
+
+    apt-get install libboost-system-dev libboost-chrono-dev libboost-thread-dev libboost-date-time-dev libboost-regex-dev libboost-random-dev libboost-atomic-dev libboost-chrono-dev
+
+
+or all togeter: 
+    apt-get install libboost-system-dev libboost-chrono-dev libboost-thread-dev libboost-date-time-dev libboost-regex-dev libboost-random-dev libboost-atomic-dev libboost-chrono-dev git cmake protobuf-compiler libprotoc-dev g++
+
+ 
