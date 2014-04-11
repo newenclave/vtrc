@@ -106,16 +106,24 @@ namespace vtrc { namespace common {
                 :proto_closure_(NULL)
             { }
 
+            void call_internal( )
+            {
+                if( internal_closure_ ) {
+                    connection_iface_sptr lck(connection_.lock( ));
+                    if( lck  )  {
+                        const bsys::error_code error_success(0,
+                                              bsys::get_system_category( ));
+                        internal_closure_( error_success );
+                    }
+                }
+            }
+
             ~closure_holder_type( ) try
             {
                 if( proto_closure_ )
                     delete proto_closure_;
 
-                if( internal_closure_ ) {
-                    const bsys::error_code error_success(0,
-                                            bsys::get_system_category( ));
-                    internal_closure_( error_success );
-                }
+                call_internal( );
 
             } catch( ... ) { ;;; }
 
@@ -629,16 +637,17 @@ namespace vtrc { namespace common {
                 return;
             }
 
-            if( std::uncaught_exception( ) ) {
+            connection_iface_sptr lck(holder->connection_.lock( ));
+            if( !lck ) return;
+
+            if( !std::uncaught_exception( ) ) {
+                wait ? closure_done( holder ) : closure_fake( holder );
+            } else {
 //                std::cerr << "Uncaught exception at done handler for "
 //                          << holder->llu_->call( ).service_id( )
 //                          << "::"
 //                          << holder->llu_->call( ).method_id( )
 //                          << std::endl;
-            } else {
-                connection_iface_sptr lck(holder->connection_.lock( ));
-                if( lck )
-                    wait ? closure_done( holder ) : closure_fake( holder );
             }
         }
 

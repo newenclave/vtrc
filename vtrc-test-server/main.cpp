@@ -123,6 +123,7 @@ void test_keeper_call( common::call_keeper_sptr ck,
                        common::connection_iface *c,
                        vtrc::server::application &app)
 {
+    vtrc::this_thread::sleep_for( vtrc::chrono::seconds( 1 ) );
     response->set_id( id );
     test_send(c, app);
 }
