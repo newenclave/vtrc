@@ -21,7 +21,10 @@ namespace vtrc { namespace common {
     public:
 
         static
-        vtrc::shared_ptr<call_keeper> create( connection_iface *connection);
+        vtrc::shared_ptr<call_keeper> create( connection_iface *connection );
+
+    public:
+        bool valid( ) const;
     };
 
     typedef vtrc::shared_ptr<call_keeper> call_keeper_sptr;
