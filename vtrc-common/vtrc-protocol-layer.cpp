@@ -81,7 +81,7 @@ namespace vtrc { namespace common {
         typedef vtrc_rpc::lowlevel_unit              lowlevel_unit_type;
         typedef vtrc::shared_ptr<lowlevel_unit_type> lowlevel_unit_sptr;
 
-        typedef condition_queues<
+        typedef condition_queues <
                 uint64_t,
                 lowlevel_unit_sptr
         > rpc_queue_type;
