@@ -33,9 +33,6 @@ namespace vtrc { namespace common {
 
         ~impl( )
         {
-            stop_all( );
-            join_all( );
-
             delete genegal_;
             if( !same_ ) delete rpc_;
         }
