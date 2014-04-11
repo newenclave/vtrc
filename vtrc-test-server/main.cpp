@@ -117,13 +117,13 @@ void call_delayed_test( const boost::system::error_code &err,
     test_send(c_, app_);
 }
 
-void test_keeper_call( common::call_keeper_sptr ck,
+void test_keeper_call( const boost::system::error_code &ecode,
+                        common::call_keeper_sptr ck,
                        ::vtrc_service::test_message* response,
                        uint64_t id,
                        common::connection_iface *c,
                        vtrc::server::application &app)
 {
-    vtrc::this_thread::sleep_for( vtrc::chrono::seconds( 1 ) );
     response->set_id( id );
     test_send(c, app);
 }
@@ -151,36 +151,20 @@ public:
     {
 //        c_->impersonate( );
 //        c_->revert( );
-//        boost::system::error_code ec(0, boost::system::get_system_category( ));
 
-//        boost::function<void ()> f(boost::bind(call_delayed_test,
-//                                   ec,
-//                                   controller, request, response, done,
-//                                   ++id_, c_, vtrc::ref(app_)));
-
-//        app_.get_rpc_service( ).post( f );
-
-//        dc_.call_from_now( boost::bind(call_delayed_test,
-//                                       boost::asio::placeholders::error,
-//                                       controller, request, response, done,
-//                                       ++id_, c_, vtrc::ref(app_)),
-//                           boost::posix_time::milliseconds( 0 ) );
-
-//        response->set_message_type( id_++ );
         {
-            //common::closure_holder ch(done);
             common::call_keeper_sptr ck(common::call_keeper::create(c_));
-
-
 
             if( (id_++ % 100) == 0 )
                 throw std::runtime_error( "oops 10 =)" );
 
-            app_.get_rpc_service(  ).post( vtrc::bind( test_keeper_call, ck,
-                                                       response, id_,
-                                                       c_, vtrc::ref(app_)) );
+//            dc_.call_from_now( vtrc::bind( test_keeper_call, _1,
+//                                ck,
+//                                response, id_,
+//                                c_, vtrc::ref(app_)),
+//                               boost::posix_time::milliseconds( 0 ));
 
-            //response->set_id( id_ );
+          response->set_id( id_ );
 //        connection_->get_io_service( ).dispatch(
 //                    vtrc::bind(test_send, connection_));
 //        boost::thread(test_send, connection_).detach( );
