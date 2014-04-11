@@ -7,9 +7,9 @@ package vtrc_rpc;
 
 message options {
     optional uint32     level   = 1 ; // client level "at least"
-    optional bool       wait    = 3 [default = true];  // wait answer
-    optional uint64     timeout = 2 [default = 60000]; // wait timeout
-                                                       // milliseconds
+    optional bool       wait    = 3 [default = true];       // wait answer
+    optional uint64     timeout = 2 [default = 60000000 ];  // wait timeout
+                                                            // microseconds
 };
 
 extend google.protobuf.ServiceOptions {

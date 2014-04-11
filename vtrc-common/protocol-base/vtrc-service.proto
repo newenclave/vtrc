@@ -19,7 +19,7 @@ service test_rpc {
 
     option (vtrc_rpc.service_options ) = {
         level:   1,
-        timeout: 13000,
+        timeout: 13000000,
         wait:    true
     };
 
@@ -41,7 +41,7 @@ service test_rpc {
 service test_events {
     option ( vtrc_rpc.service_options ) = {
         level:   1,
-        timeout: 1000,
+        timeout: 1000000,
         wait:    true
     };
     rpc test(vtrc_rpc.message_info) returns ( vtrc_rpc.message_info );

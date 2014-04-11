@@ -94,11 +94,11 @@ namespace vtrc { namespace common {
 
         void read_slot_for( uint64_t slot_id,
                             lowlevel_unit_sptr &mess,
-                            uint64_t millisec );
+                            uint64_t microsec );
 
         void read_slot_for( uint64_t slot_id,
                             std::deque<lowlevel_unit_sptr> &mess_list,
-                            uint64_t millisec );
+                            uint64_t microsec );
 
         void erase_slot ( uint64_t slot_id );
         void cancel_slot( uint64_t slot_id );

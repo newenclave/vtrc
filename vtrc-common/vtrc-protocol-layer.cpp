@@ -482,30 +482,30 @@ namespace vtrc { namespace common {
             send_message( llu );
         }
 
-        void wait_call_slot( uint64_t slot_id, uint64_t millisec)
+        void wait_call_slot( uint64_t slot_id, uint64_t microsec)
         {
             wait_result_codes qwr = rpc_queue_.wait_queue( slot_id,
-                             vtrc::chrono::milliseconds(millisec) );
+                             vtrc::chrono::microseconds(microsec) );
             raise_wait_error( qwr );
         }
 
         void read_slot_for(uint64_t slot_id, lowlevel_unit_sptr &mess,
-                                             uint64_t millisec)
+                                             uint64_t microsec)
         {
             wait_result_codes qwr =
                     rpc_queue_.read(
                         slot_id, mess,
-                        vtrc::chrono::milliseconds(millisec) );
+                        vtrc::chrono::microseconds(microsec) );
 
             raise_wait_error( qwr );
         }
 
         void read_slot_for(uint64_t slot_id,
                            std::deque<lowlevel_unit_sptr> &data_list,
-                           uint64_t millisec )
+                           uint64_t microsec )
         {
             wait_result_codes qwr = rpc_queue_.read_queue( slot_id, data_list,
-                                         vtrc::chrono::milliseconds(millisec));
+                                         vtrc::chrono::microseconds(microsec));
             raise_wait_error( qwr );
         }
 
@@ -948,18 +948,18 @@ namespace vtrc { namespace common {
         impl_->wait_call_slot( slot_id, millisec);
     }
 
-    void protocol_layer::read_slot_for( uint64_t slot_id,
+    void protocol_layer::read_slot_for(uint64_t slot_id,
                                         lowlevel_unit_sptr &mess,
-                                        uint64_t millisec)
+                                        uint64_t microsec)
     {
-        impl_->read_slot_for( slot_id, mess, millisec);
+        impl_->read_slot_for( slot_id, mess, microsec );
     }
 
     void protocol_layer::read_slot_for( uint64_t slot_id,
                                       std::deque<lowlevel_unit_sptr> &mess_list,
-                                      uint64_t millisec )
+                                      uint64_t microsec )
     {
-        impl_->read_slot_for( slot_id, mess_list, millisec);
+        impl_->read_slot_for( slot_id, mess_list, microsec );
     }
 
     void protocol_layer::erase_slot(uint64_t slot_id)
