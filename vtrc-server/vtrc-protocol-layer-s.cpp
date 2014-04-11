@@ -311,7 +311,7 @@ namespace vtrc { namespace server {
 
         bool get_pop_message( gpb::MessageLite &capsule )
         {
-            bool check = parent_->parse_and_pop_top( capsule );
+            bool check = parent_->parse_and_pop( capsule );
             if( !check ) {
                 connection_->close( );
             }

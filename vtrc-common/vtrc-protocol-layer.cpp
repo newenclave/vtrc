@@ -207,9 +207,8 @@ namespace vtrc { namespace common {
             /**
              * message =  message_header + <transform( message )>
             **/
-            transformer_->transform(
-                        body.empty( ) ? NULL : &body[0],
-                        body.size( ) );
+            transformer_->transform( body.empty( ) ? NULL : &body[0],
+                                     body.size( ) );
 
             result.append( body.begin( ), body.end( ) );
 
@@ -237,7 +236,7 @@ namespace vtrc { namespace common {
 
         }
 
-        bool parse_and_pop_top( gpb::MessageLite &result )
+        bool parse_and_pop( gpb::MessageLite &result )
         {
             std::string &data(queue_->messages( ).front( ));
 
@@ -923,9 +922,9 @@ namespace vtrc { namespace common {
         return impl_->message_queue_empty( );
     }
 
-    bool protocol_layer::parse_and_pop_top( gpb::MessageLite &result )
+    bool protocol_layer::parse_and_pop( gpb::MessageLite &result )
     {
-        return impl_->parse_and_pop_top( result );
+        return impl_->parse_and_pop( result );
     }
 
     uint64_t protocol_layer::next_index( )

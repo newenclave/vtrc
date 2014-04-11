@@ -202,7 +202,7 @@ namespace vtrc { namespace client {
 
                 lowlevel_unit_sptr llu(vtrc::make_shared<lowlevel_unit_type>());
 
-                bool check = parent_->parse_and_pop_top( *llu );
+                bool check = parent_->parse_and_pop( *llu );
 
                 if( !check ) {
 
@@ -246,7 +246,7 @@ namespace vtrc { namespace client {
         {
 
             vtrc_auth::init_capsule capsule;
-            bool check = parent_->parse_and_pop_top( capsule );
+            bool check = parent_->parse_and_pop( capsule );
 
             if( !check ) {
                 parent_->on_init_error(
@@ -271,7 +271,7 @@ namespace vtrc { namespace client {
             using namespace common::transformers;
 
             vtrc_auth::init_capsule capsule;
-            bool check = parent_->parse_and_pop_top( capsule );
+            bool check = parent_->parse_and_pop( capsule );
 
             if( !check ) {
                 parent_->on_init_error(
@@ -336,7 +336,7 @@ namespace vtrc { namespace client {
         void on_hello_call( )
         {
             vtrc_auth::init_capsule capsule;
-            bool check = parent_->parse_and_pop_top( capsule );
+            bool check = parent_->parse_and_pop( capsule );
 
             if( !check ) {
                 parent_->on_init_error(

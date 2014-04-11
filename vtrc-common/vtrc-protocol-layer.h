@@ -90,7 +90,6 @@ namespace vtrc { namespace common {
         void call_rpc_method(                   const lowlevel_unit_type &llu );
         void call_rpc_method( uint64_t slot_id, const lowlevel_unit_type &llu );
 
-        // refactor names here!
         void wait_slot_for( uint64_t slot_id, uint64_t millisec );
 
         void read_slot_for( uint64_t slot_id,
@@ -106,7 +105,6 @@ namespace vtrc { namespace common {
 
         void erase_all_slots( );
         void cancel_all_slots( );
-        //void close_queue( );
 
         const vtrc_rpc::options &get_method_options(
                             const google::protobuf::MethodDescriptor* method );
@@ -173,25 +171,12 @@ namespace vtrc { namespace common {
         virtual rpc_service_wrapper_sptr get_service_by_name(
                                                 const std::string &name ) = 0;
 
-        //bool check_message( const std::string &mess );
-//        bool parse_message( const std::string &mess,
-//                            google::protobuf::MessageLite &result );
-
-//        void pop_message( );
-
-        /* ==== delete this part ==== */
-
         size_t ready_messages_count( ) const;
         bool   message_queue_empty( ) const;
 
         /// false == bad message;
         /// protocol violation; we have to close connection in this case
-        bool   parse_and_pop_top( google::protobuf::MessageLite &result );
-
-//        message_queue_type       &message_queue( );
-//        const message_queue_type &message_queue( ) const;
-
-        /* ==== delete this part ==== */
+        bool   parse_and_pop( google::protobuf::MessageLite &result );
 
         void change_hash_maker  ( hash_iface *new_hasher );
         void change_hash_checker( hash_iface *new_hasher );
