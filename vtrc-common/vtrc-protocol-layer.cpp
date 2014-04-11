@@ -252,13 +252,8 @@ namespace vtrc { namespace common {
             }
 
             /// in all cases we pop message
-            pop_message( );
-            return checked;
-        }
-
-        void pop_message( )
-        {
             queue_->messages( ).pop_front( );
+            return checked;
         }
 
         size_t ready_messages_count( ) const
