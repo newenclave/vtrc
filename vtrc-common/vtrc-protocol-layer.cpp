@@ -943,9 +943,9 @@ namespace vtrc { namespace common {
         impl_->call_rpc_method( slot_id, llu );
     }
 
-    void protocol_layer::wait_slot_for( uint64_t slot_id, uint64_t millisec)
+    void protocol_layer::wait_slot_for(uint64_t slot_id, uint64_t microsec )
     {
-        impl_->wait_call_slot( slot_id, millisec);
+        impl_->wait_call_slot( slot_id, microsec );
     }
 
     void protocol_layer::read_slot_for(uint64_t slot_id,

@@ -90,7 +90,7 @@ namespace vtrc { namespace common {
         void call_rpc_method(                   const lowlevel_unit_type &llu );
         void call_rpc_method( uint64_t slot_id, const lowlevel_unit_type &llu );
 
-        void wait_slot_for( uint64_t slot_id, uint64_t millisec );
+        void wait_slot_for( uint64_t slot_id, uint64_t microsec );
 
         void read_slot_for( uint64_t slot_id,
                             lowlevel_unit_sptr &mess,
