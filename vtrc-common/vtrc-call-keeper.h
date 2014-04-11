@@ -24,6 +24,8 @@ namespace vtrc { namespace common {
         vtrc::shared_ptr<call_keeper> create( connection_iface *connection);
     };
 
+    typedef vtrc::shared_ptr<call_keeper> call_keeper_sptr;
+
 }}
 
 #endif // VTRC_CALL_KEEPER_H
