@@ -394,20 +394,22 @@ namespace vtrc { namespace common {
 
         static vtrc::shared_ptr<call_context> clone_context( call_context &src )
         {
-            return vtrc::make_shared<call_context>(src.get_lowlevel_message( ));
+            return vtrc::make_shared<call_context>( src );
         }
 
         static void clone_stack( call_stack_type &src, call_stack_type &res )
         {
-            call_stack_type tmp;
             typedef call_stack_type::const_iterator iter;
-            vtrc::shared_ptr<call_context> last;
+
+            call_stack_type tmp;
+            call_context *last(NULL);
+
             for( iter b(src.begin( )), e(src.end( )); b!=e; ++b ) {
                 tmp.push_back( clone_context( *(*b) ) );
                 if( last ) {
                     last->set_next( b->get( ) );
                 }
-                last = *b;
+                last = b->get( );
             }
             res.swap( tmp );
         }
@@ -415,8 +417,7 @@ namespace vtrc { namespace common {
         void copy_call_stack( call_stack_type &other ) const
         {
             if( NULL == context_.get( ) ) {
-                call_stack_type tmp;
-                other.swap( tmp );
+                other.clear( );
             } else {
                 clone_stack( *context_, other );
             }
@@ -692,6 +693,7 @@ namespace vtrc { namespace common {
             closure_hold->internal_closure_ = done;
 
             gpb::Closure* clos(make_closure(closure_hold, llu->opt( ).wait( )));
+            ch.ctx_->set_done_closure( clos );
 
             service->service( )->CallMethod( meth,
                                      closure_hold->controller_.get( ),

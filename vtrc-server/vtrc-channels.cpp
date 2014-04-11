@@ -77,6 +77,7 @@ namespace vtrc { namespace server {
 
                     rpc_channel::context_holder ch( &get_protocol(*clk), &llu);
                     ch.ctx_->set_call_options( call_opt );
+                    ch.ctx_->set_done_closure( done );
 
                     process_waitable_call( call_id, llu, response,
                                            clk, call_opt );

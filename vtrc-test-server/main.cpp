@@ -36,6 +36,7 @@
 #include "vtrc-common/vtrc-closure-holder.h"
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-delayed-call.h"
+#include "vtrc-common/vtrc-call-keeper.h"
 
 #include "protocol/vtrc-errors.pb.h"
 #include "protocol/vtrc-auth.pb.h"
@@ -156,7 +157,8 @@ public:
 
 //        response->set_message_type( id_++ );
         {
-            common::closure_holder ch(done);
+            //common::closure_holder ch(done);
+            common::call_keeper ck(c_);
 
             if( (id_++ % 100) == 0 )
                 throw std::runtime_error( "oops 10 =)" );
@@ -265,6 +267,7 @@ int main( ) try {
             (vtrc::server::endpoints::unix_local::create(app, file_name));
 
     ::chmod(file_name.c_str( ), 0xFFFFFF );
+
 
 #else
 

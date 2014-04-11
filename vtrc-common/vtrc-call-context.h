@@ -43,6 +43,10 @@ namespace vtrc { namespace common {
         const vtrc_rpc::options *get_call_options( ) const;
         void set_call_options(const vtrc_rpc::options &opts);
 
+        void set_done_closure( google::protobuf::Closure *done );
+        google::protobuf::Closure *get_done_closure(  );
+        const google::protobuf::Closure *get_done_closure(  ) const;
+
         virtual ~call_context( );
 
     };

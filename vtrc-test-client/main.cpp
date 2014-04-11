@@ -8,6 +8,7 @@
 
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-call-context.h"
+#include "vtrc-common/vtrc-call-keeper.h"
 #include "vtrc-common/vtrc-exception.h"
 #include "vtrc-common/vtrc-protocol-layer.h"
 

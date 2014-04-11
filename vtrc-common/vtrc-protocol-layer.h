@@ -134,6 +134,7 @@ namespace vtrc { namespace common {
         };
 
         friend class  rpc_channel;
+        friend class  call_keeper;
         friend struct context_holder;
 
     protected:
@@ -143,8 +144,6 @@ namespace vtrc { namespace common {
 
         virtual void init( )             = 0;
         virtual void on_data_ready( )    = 0;
-
-        //virtual void close( )            = 0;
 
         virtual const std::string &client_id( ) const = 0;
 
