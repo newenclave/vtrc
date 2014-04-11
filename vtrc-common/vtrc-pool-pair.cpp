@@ -16,7 +16,7 @@ namespace vtrc { namespace common {
         const bool   same_;
 
         impl( unsigned thread_count )
-            :genegal_(new thread_pool(thread_count ? thread_count : 1))
+            :genegal_(new thread_pool(thread_count))
             ,rpc_(genegal_)
             ,same_(true)
         {
@@ -24,8 +24,8 @@ namespace vtrc { namespace common {
         }
 
         impl( unsigned thread_count, unsigned rpc_thread_count )
-            :genegal_(new thread_pool(thread_count ? thread_count : 1))
-            ,rpc_(new thread_pool(rpc_thread_count ? rpc_thread_count : 1))
+            :genegal_(new thread_pool(thread_count))
+            ,rpc_(new thread_pool(rpc_thread_count))
             ,same_(false)
         {
 
