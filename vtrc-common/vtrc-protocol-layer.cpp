@@ -94,18 +94,16 @@ namespace vtrc { namespace common {
 
         struct closure_holder_type {
 
-            connection_iface_wptr                   connection_;
-            vtrc::scoped_ptr<gpb::Message>          req_;
-            vtrc::scoped_ptr<gpb::Message>          res_;
-            vtrc::scoped_ptr<rpc_controller>        controller_;
-            lowlevel_unit_sptr                      llu_;
-            common::closure_type                    internal_closure_;
-            gpb::Closure                           *proto_closure_;
-            bool                                    called_;
+            connection_iface_wptr             connection_;
+            vtrc::scoped_ptr<gpb::Message>    req_;
+            vtrc::scoped_ptr<gpb::Message>    res_;
+            vtrc::scoped_ptr<rpc_controller>  controller_;
+            lowlevel_unit_sptr                llu_;
+            common::closure_type              internal_closure_;
+            gpb::Closure                     *proto_closure_;
 
             closure_holder_type( )
                 :proto_closure_(NULL)
-                ,called_(false)
             { }
 
             ~closure_holder_type( ) try
@@ -623,8 +621,10 @@ namespace vtrc { namespace common {
 
         void closure_runner( closure_holder_sptr holder, bool wait )
         {
-            if( !holder->called_ ) {
-                holder->called_ = true;
+
+            if( holder->proto_closure_ ) {
+                delete holder->proto_closure_;
+                holder->proto_closure_ = NULL;
             } else {
                 return;
             }
