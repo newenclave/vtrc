@@ -135,11 +135,6 @@ namespace vtrc { namespace client {
                                              client_->get_rpc_handler( name )));
         }
 
-        void pop_message( )
-        {
-            parent_->pop_message( );
-        }
-
         void send_proto_message( const gpb::MessageLite &mess ) const
         {
             std::string s(mess.SerializeAsString( ));
@@ -203,16 +198,15 @@ namespace vtrc { namespace client {
 
         void on_rpc_process( )
         {
-            while( !parent_->message_queue( ).empty( ) ) {
-
-                std::string &mess (parent_->message_queue( ).front( ));
-
-                bool check = parent_->check_message( mess );
+            while( !parent_->message_queue_empty( ) ) {
 
                 lowlevel_unit_sptr llu(vtrc::make_shared<lowlevel_unit_type>());
 
+                bool check = parent_->parse_and_pop_top( *llu );
+
                 if( !check ) {
 
+                    llu->Clear( );
                     vtrc_errors::container *err = llu->mutable_error( );
                     err->set_code(vtrc_errors::ERR_PROTOCOL);
                     err->set_additional("Bad message was received");
@@ -223,8 +217,6 @@ namespace vtrc { namespace client {
 
                     return;
                 }
-
-                parent_->parse_message( mess, *llu );
 
                 switch( llu->info( ).message_type( ) ) {
 
@@ -247,22 +239,16 @@ namespace vtrc { namespace client {
                 default:
                     process_invalid( llu );
                 }
-
-                pop_message( );
             }
         }
 
         void on_server_ready( )
         {
 
-            std::string &mess = parent_->message_queue( ).front( );
-            bool check = parent_->check_message( mess );
-
             vtrc_auth::init_capsule capsule;
+            bool check = parent_->parse_and_pop_top( capsule );
 
-            if( check ) {
-                parent_->parse_message( mess, capsule );
-            } else {
+            if( !check ) {
                 parent_->on_init_error(
                             create_error( vtrc_errors::ERR_INTERNAL, "" ),
                             "Server's 'Ready' has bad hash. Bad session key." );
@@ -275,8 +261,6 @@ namespace vtrc { namespace client {
                                        "Server is not ready; stage: 'Ready'");
             }
 
-            pop_message( );
-
             change_stage( STAGE_RPC );
 
             on_ready( true );
@@ -285,8 +269,9 @@ namespace vtrc { namespace client {
         void on_trans_setup( )
         {
             using namespace common::transformers;
-            std::string &mess = parent_->message_queue( ).front( );
-            bool check = parent_->check_message( mess );
+
+            vtrc_auth::init_capsule capsule;
+            bool check = parent_->parse_and_pop_top( capsule );
 
             if( !check ) {
                 parent_->on_init_error(
@@ -296,10 +281,6 @@ namespace vtrc { namespace client {
                 return;
             }
 
-            vtrc_auth::init_capsule capsule;
-            parent_->parse_message( mess, capsule );
-
-            parent_->pop_message( );
 
             if( !capsule.ready( ) ) {
                 parent_->on_init_error( capsule.error( ),
@@ -354,8 +335,8 @@ namespace vtrc { namespace client {
 
         void on_hello_call( )
         {
-            std::string &mess = parent_->message_queue( ).front( );
-            bool check = parent_->check_message( mess );
+            vtrc_auth::init_capsule capsule;
+            bool check = parent_->parse_and_pop_top( capsule );
 
             if( !check ) {
                 parent_->on_init_error(
@@ -365,18 +346,12 @@ namespace vtrc { namespace client {
                 return;
             }
 
-            vtrc_auth::init_capsule capsule;
-
-            parent_->parse_message( mess, capsule );
-
             if( !capsule.ready( ) ) {
                 parent_->on_init_error(capsule.error( ),
                                        "Server is not ready; stage: 'Hello'");
                 connection_->close( );
                 return;
             }
-
-            pop_message( );
 
             vtrc_auth::client_selection init;
 

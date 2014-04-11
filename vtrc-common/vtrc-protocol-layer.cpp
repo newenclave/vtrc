@@ -224,27 +224,51 @@ namespace vtrc { namespace common {
                 const size_t old_size = queue_->messages( ).size( );
 
                 /**
-                 * message = <size>revert( data )
+                 * message = <size>transformed(data)
+                 * we must revert data in 'parse_and_pop_top'
                 **/
                 queue_->append( &next_data[0], next_data.size( ));
                 queue_->process( );
 
                 if( queue_->messages( ).size( ) > old_size ) {
-
-                    message_queue_type::iterator b(queue_->messages( ).begin());
-                    message_queue_type::iterator e(queue_->messages( ).end( ));
-                    std::advance( b, old_size );
-
-                    /// revert all new messages
-                    for( ; b!=e; ++b ) {
-                        revertor_->transform( b->empty( ) ? NULL : &(*b)[0],
-                                              b->size( ));
-                    }
-
                     parent_->on_data_ready( );
                 }
             }
 
+        }
+
+        bool parse_and_pop_top( gpb::MessageLite &result )
+        {
+            std::string &data(queue_->messages( ).front( ));
+
+            /// revert message
+            revertor_->transform( data.empty( ) ? NULL : &data[0],
+                                  data.size( ) );
+            /// check hash
+            bool checked = check_message( data );
+            if( checked ) {
+                /// parse
+                checked = parse_message( data, result );
+            }
+
+            /// in all cases we pop message
+            pop_message( );
+            return checked;
+        }
+
+        void pop_message( )
+        {
+            queue_->messages( ).pop_front( );
+        }
+
+        size_t ready_messages_count( ) const
+        {
+            return queue_->messages( ).size( );
+        }
+
+        bool message_queue_empty( ) const
+        {
+            return queue_->messages( ).empty( );
         }
 
         bool parse_message( const std::string &mess, gpb::MessageLite &result )
@@ -437,11 +461,6 @@ namespace vtrc { namespace common {
         void change_revertor( transformer_iface *new_reverter)
         {
             revertor_.reset(new_reverter);
-        }
-
-        void pop_message( )
-        {
-            queue_->messages( ).pop_front( );
         }
 
         void push_rpc_message(uint64_t slot_id, lowlevel_unit_sptr mess)
@@ -868,17 +887,6 @@ namespace vtrc { namespace common {
 
     // ===============
 
-    bool protocol_layer::check_message( const std::string &mess )
-    {
-        return impl_->check_message( mess );
-    }
-
-    bool protocol_layer::parse_message( const std::string &mess,
-                                        google::protobuf::MessageLite &result )
-    {
-        return impl_->parse_message(mess, result);
-    }
-
     void protocol_layer::make_call(protocol_layer::lowlevel_unit_sptr llu)
     {
         impl_->make_call( llu );
@@ -888,16 +896,6 @@ namespace vtrc { namespace common {
                                    closure_type done)
     {
         impl_->make_call( llu, done );
-    }
-
-    message_queue_type &protocol_layer::message_queue( )
-    {
-        return impl_->message_queue( );
-    }
-
-    const message_queue_type &protocol_layer::message_queue( ) const
-    {
-        return impl_->message_queue( );
     }
 
     void protocol_layer::change_hash_maker( hash_iface *new_hasher )
@@ -920,9 +918,19 @@ namespace vtrc { namespace common {
         impl_->change_revertor( new_reverter );
     }
 
-    void protocol_layer::pop_message( )
+    size_t protocol_layer::ready_messages_count( ) const
     {
-        impl_->pop_message( );
+        return impl_->ready_messages_count( );
+    }
+
+    bool protocol_layer::message_queue_empty( ) const
+    {
+        return impl_->message_queue_empty( );
+    }
+
+    bool protocol_layer::parse_and_pop_top( gpb::MessageLite &result )
+    {
+        return impl_->parse_and_pop_top( result );
     }
 
     uint64_t protocol_layer::next_index( )

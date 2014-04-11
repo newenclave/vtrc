@@ -173,26 +173,33 @@ namespace vtrc { namespace common {
         virtual rpc_service_wrapper_sptr get_service_by_name(
                                                 const std::string &name ) = 0;
 
-        bool check_message( const std::string &mess );
-        bool parse_message( const std::string &mess,
-                            google::protobuf::MessageLite &result );
+        //bool check_message( const std::string &mess );
+//        bool parse_message( const std::string &mess,
+//                            google::protobuf::MessageLite &result );
 
-        void pop_message( );
-
-        /* ==== delete this part ==== */
-
-        message_queue_type &message_queue( );
-        const message_queue_type &message_queue( ) const;
+//        void pop_message( );
 
         /* ==== delete this part ==== */
 
-        void change_hash_maker( hash_iface *new_hasher );
+        size_t ready_messages_count( ) const;
+        bool   message_queue_empty( ) const;
+
+        /// false == bad message;
+        /// protocol violation; we have to close connection in this case
+        bool   parse_and_pop_top( google::protobuf::MessageLite &result );
+
+//        message_queue_type       &message_queue( );
+//        const message_queue_type &message_queue( ) const;
+
+        /* ==== delete this part ==== */
+
+        void change_hash_maker  ( hash_iface *new_hasher );
         void change_hash_checker( hash_iface *new_hasher );
 
         // transform "out" data;
-        void change_transformer( transformer_iface *new_transformer);
+        void change_transformer( transformer_iface *new_transformer );
         // revert "in" data
-        void change_revertor( transformer_iface *new_reverter);
+        void change_revertor   ( transformer_iface *new_reverter );
 
     };
 }}

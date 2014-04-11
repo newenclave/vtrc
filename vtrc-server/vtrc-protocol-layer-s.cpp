@@ -137,11 +137,6 @@ namespace vtrc { namespace server {
             }
         }
 
-        bool check_message_hash( const std::string &mess )
-        {
-            return parent_->check_message( mess );
-        }
-
         void send_proto_message( const gpb::MessageLite &mess )
         {
             std::string s(mess.SerializeAsString( ));
@@ -316,15 +311,11 @@ namespace vtrc { namespace server {
 
         bool get_pop_message( gpb::MessageLite &capsule )
         {
-            std::string &mess(parent_->message_queue( ).front( ));
-            bool check = check_message_hash(mess);
+            bool check = parent_->parse_and_pop_top( capsule );
             if( !check ) {
                 connection_->close( );
-                return false;
             }
-            bool parsed = parse_message( mess, capsule );
-            parent_->pop_message( );
-            return parsed;
+            return check;
         }
 
         void call_done( const boost::system::error_code & /*err*/ )
@@ -376,12 +367,11 @@ namespace vtrc { namespace server {
         void on_rcp_call_ready( )
         {
             typedef vtrc_rpc::message_info message_info;
-            while( !parent_->message_queue( ).empty( ) ) {
+            while( !parent_->message_queue_empty( ) ) {
 
                 lowlevel_unit_sptr llu(vtrc::make_shared<lowlevel_unit_type>());
 
                 if(!get_pop_message( *llu )) {
-                    std::cout << "bad hash message!\n";
                     return;
                 }
 
@@ -401,11 +391,6 @@ namespace vtrc { namespace server {
                 }
             }
 
-        }
-
-        bool parse_message( const std::string &block, gpb::MessageLite &mess )
-        {
-            return parent_->parse_message( block, mess );
         }
 
         std::string first_message( )
