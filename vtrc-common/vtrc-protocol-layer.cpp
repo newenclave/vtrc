@@ -95,9 +95,9 @@ namespace vtrc { namespace common {
         struct closure_holder_type {
 
             connection_iface_wptr             connection_;
-            vtrc::scoped_ptr<gpb::Message>    req_;
-            vtrc::scoped_ptr<gpb::Message>    res_;
-            vtrc::scoped_ptr<rpc_controller>  controller_;
+            vtrc::unique_ptr<gpb::Message>    req_;
+            vtrc::unique_ptr<gpb::Message>    res_;
+            vtrc::unique_ptr<rpc_controller>  controller_;
             lowlevel_unit_sptr                llu_;
             common::closure_type              internal_closure_;
             gpb::Closure                     *proto_closure_;
@@ -145,12 +145,12 @@ namespace vtrc { namespace common {
         transport_iface             *connection_;
         protocol_layer              *parent_;
 
-        vtrc::scoped_ptr<hash_iface>             hash_maker_;
-        vtrc::scoped_ptr<hash_iface>             hash_checker_;
-        vtrc::scoped_ptr<transformer_iface>      transformer_;
-        vtrc::scoped_ptr<transformer_iface>      revertor_;
+        vtrc::unique_ptr<hash_iface>             hash_maker_;
+        vtrc::unique_ptr<hash_iface>             hash_checker_;
+        vtrc::unique_ptr<transformer_iface>      transformer_;
+        vtrc::unique_ptr<transformer_iface>      revertor_;
 
-        vtrc::scoped_ptr<data_queue::queue_base> queue_;
+        vtrc::unique_ptr<data_queue::queue_base> queue_;
 
         rpc_queue_type               rpc_queue_;
         vtrc::atomic<uint64_t>       rpc_index_;

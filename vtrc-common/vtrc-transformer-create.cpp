@@ -21,7 +21,7 @@ namespace vtrc { namespace common {
             std::string ts1 (s1 );
             std::string ts2 (s2 );
 
-            vtrc::scoped_ptr<hash_iface> sha256( hash::sha2::create256( ) );
+            vtrc::unique_ptr<hash_iface> sha256( hash::sha2::create256( ) );
 
             ts1.append( tkey.begin( ), tkey.end( ) );
             ts1.assign( sha256->get_data_hash( ts1.c_str( ), ts1.size( ) ) );

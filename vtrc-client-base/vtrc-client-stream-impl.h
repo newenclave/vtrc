@@ -31,7 +31,7 @@ namespace {
 
         std::vector<char>        read_buff_;
 
-        vtrc::scoped_ptr<protocol_layer_c> protocol_;
+        vtrc::unique_ptr<protocol_layer_c> protocol_;
 
         client_stream_impl( boost::asio::io_service &ios,
                             vtrc_client *client, size_t read_buffer_size )

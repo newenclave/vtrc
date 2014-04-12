@@ -9,7 +9,7 @@ namespace vtrc { namespace common {
 
     struct pool_pair::impl {
 
-        vtrc::scoped_ptr<thread_pool>  io_;
+        vtrc::unique_ptr<thread_pool>  io_;
         thread_pool                   *rpc_;
         const bool                     same_;
 

@@ -42,7 +42,7 @@ namespace  vtrc { namespace  common {
     };
 
     struct random_device::impl {
-        vtrc::scoped_ptr<random_impl> random_dev_;
+        vtrc::unique_ptr<random_impl> random_dev_;
         impl( bool use_mt19937 )
         {
             if( !use_mt19937 ) {

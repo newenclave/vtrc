@@ -10,6 +10,8 @@
 #include "vtrc-protocol-layer-s.h"
 #include "vtrc-common/vtrc-enviroment.h"
 
+#include <memory>
+
 namespace vtrc { namespace server { namespace endpoints {
 
     namespace {
@@ -30,7 +32,7 @@ namespace vtrc { namespace server { namespace endpoints {
 
             std::vector<char>                   read_buff_;
 
-            vtrc::scoped_ptr<protocol_layer_s>  protocol_;
+            vtrc::unique_ptr<protocol_layer_s>  protocol_;
 
             connection_impl(endpoint_iface &endpoint,
                             vtrc::shared_ptr<socket_type> sock )
