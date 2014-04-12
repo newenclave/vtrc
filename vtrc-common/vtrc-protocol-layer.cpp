@@ -111,7 +111,7 @@ namespace vtrc { namespace common {
                 if( NULL != internal_closure_.get( ) && (*internal_closure_)) {
                     connection_iface_sptr lck(connection_.lock( ));
                     if( lck  )  {
-                        const bsys::error_code error_success(0,
+                        const bsys::error_code error_success( 0,
                                               bsys::get_system_category( ));
                         (*internal_closure_)( error_success );
                     }
@@ -643,7 +643,6 @@ namespace vtrc { namespace common {
             if( !std::uncaught_exception( ) ) {
                 wait ? closure_done( holder ) : closure_fake( holder );
             } else {
-                holder->internal_closure_.reset( );
 //                std::cerr << "Uncaught exception at done handler for "
 //                          << holder->llu_->call( ).service_id( )
 //                          << "::"
@@ -661,7 +660,8 @@ namespace vtrc { namespace common {
         }
 
         void make_call_impl( lowlevel_unit_sptr llu,
-                             const closure_type &done )
+                             const closure_type &done,
+                             closure_holder_sptr &closure_hold)
         {
             protocol_layer::context_holder ch( parent_, llu.get( ) );
 
@@ -685,8 +685,7 @@ namespace vtrc { namespace common {
 
             ch.ctx_->set_call_options( call_opts );
 
-            closure_holder_sptr closure_hold
-                                (vtrc::make_shared<closure_holder_type>( ));
+            closure_hold = vtrc::make_shared<closure_holder_type>( );
 
             closure_hold->req_.reset
                 (service->service( )->GetRequestPrototype( meth ).New( ));
@@ -722,10 +721,10 @@ namespace vtrc { namespace common {
         {
             bool failed        = true;
             unsigned errorcode = 0;
-
+            closure_holder_sptr holder;
             try {
 
-                make_call_impl( llu, done );
+                make_call_impl( llu, done, holder );
                 failed   = false;
 
             } catch ( const vtrc::common::exception &ex ) {
@@ -746,6 +745,12 @@ namespace vtrc { namespace common {
                     llu->mutable_error( )->set_code( errorcode );
                     llu->clear_response( );
                     send_message( *llu );
+
+                    /// here we must reset internal_closure
+                    /// for preventing double call
+                    if( holder )
+                        holder->internal_closure_.reset( );
+
                     bsys::error_code e(0, bsys::get_system_category( ));
                     done( e );
                 }
