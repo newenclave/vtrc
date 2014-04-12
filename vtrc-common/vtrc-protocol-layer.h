@@ -61,7 +61,7 @@ namespace vtrc { namespace common {
 
     public:
 
-        typedef vtrc_rpc::lowlevel_unit     lowlevel_unit_type;
+        typedef vtrc_rpc::lowlevel_unit              lowlevel_unit_type;
         typedef vtrc::shared_ptr<lowlevel_unit_type> lowlevel_unit_sptr;
 
         typedef std::deque<std::string> message_queue_type;
