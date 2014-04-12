@@ -1,6 +1,8 @@
 #ifndef VTRC_THREAD_H
 #define VTRC_THREAD_H
 
+#include "config.h"
+
 #include "boost/thread.hpp"
 
 namespace vtrc {

@@ -1,6 +1,8 @@
 #ifndef VTRC_MUTEX_H
 #define VTRC_MUTEX_H
 
+#include "config.h"
+
 #include "boost/thread/mutex.hpp"
 #include "boost/thread/locks.hpp"
 

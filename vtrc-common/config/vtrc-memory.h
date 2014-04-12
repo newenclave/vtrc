@@ -1,6 +1,8 @@
 #ifndef VTRC_MEMORY_H
 #define VTRC_MEMORY_H
 
+#include "config.h"
+
 #include "boost/shared_ptr.hpp"
 #include "boost/weak_ptr.hpp"
 #include "boost/make_shared.hpp"
@@ -13,9 +15,10 @@ namespace vtrc {
     using boost::make_shared;
     using boost::enable_shared_from_this;
 
-/// will be add to config.h soon
+/// will be add to config.h soon;
 #ifndef STD_HAS_UNIQUE_PTR_IMPL
 
+    /// implementation for internal use only
     template<class T>
     class unique_ptr // noncopyable
     {

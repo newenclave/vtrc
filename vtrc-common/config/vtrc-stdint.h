@@ -1,6 +1,8 @@
 #ifndef VTRC_STDINT_H
 #define VTRC_STDINT_H
 
+#include "config.h"
+
 #ifdef _WIN32
 
 #if _MSC_VER >= 1600
