@@ -20,7 +20,6 @@ namespace vtrc { namespace common {
             ,protocol_(proto)
         {
             if(!protocol_->get_call_context( )) {
-                std::cout << "Call context invalid.";
                 throw std::runtime_error( "Call context is not found." );
             }
             protocol_->copy_call_stack( stack_ );
