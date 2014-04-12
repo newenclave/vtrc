@@ -94,13 +94,13 @@ namespace vtrc { namespace common {
 
         struct closure_holder_type {
 
-            connection_iface_wptr             connection_;
-            vtrc::unique_ptr<gpb::Message>    req_;
-            vtrc::unique_ptr<gpb::Message>    res_;
-            vtrc::unique_ptr<rpc_controller>  controller_;
-            lowlevel_unit_sptr                llu_;
-            common::closure_type              internal_closure_;
-            gpb::Closure                     *proto_closure_;
+            connection_iface_wptr                   connection_;
+            vtrc::unique_ptr<gpb::Message>          req_;
+            vtrc::unique_ptr<gpb::Message>          res_;
+            vtrc::unique_ptr<rpc_controller>        controller_;
+            lowlevel_unit_sptr                      llu_;
+            vtrc::unique_ptr<common::closure_type>  internal_closure_;
+            gpb::Closure                           *proto_closure_;
 
             closure_holder_type( )
                 :proto_closure_(NULL)
@@ -108,12 +108,12 @@ namespace vtrc { namespace common {
 
             void call_internal( )
             {
-                if( internal_closure_ ) {
+                if( NULL != internal_closure_.get( ) && (*internal_closure_)) {
                     connection_iface_sptr lck(connection_.lock( ));
                     if( lck  )  {
                         const bsys::error_code error_success(0,
                                               bsys::get_system_category( ));
-                        internal_closure_( error_success );
+                        (*internal_closure_)( error_success );
                     }
                 }
             }
@@ -643,6 +643,7 @@ namespace vtrc { namespace common {
             if( !std::uncaught_exception( ) ) {
                 wait ? closure_done( holder ) : closure_fake( holder );
             } else {
+                holder->internal_closure_.reset( );
 //                std::cerr << "Uncaught exception at done handler for "
 //                          << holder->llu_->call( ).service_id( )
 //                          << "::"
@@ -659,9 +660,9 @@ namespace vtrc { namespace common {
             return closure_hold->proto_closure_;
         }
 
-        void make_call_impl( lowlevel_unit_sptr llu, closure_type done )
+        void make_call_impl( lowlevel_unit_sptr llu,
+                             const closure_type &done )
         {
-
             protocol_layer::context_holder ch( parent_, llu.get( ) );
 
             common::rpc_service_wrapper_sptr
@@ -700,7 +701,7 @@ namespace vtrc { namespace common {
 
             closure_hold->      connection_ = connection_->weak_from_this( );
             closure_hold->             llu_ = llu;
-            closure_hold->internal_closure_ = done;
+            closure_hold->internal_closure_.reset(new closure_type(done));
 
             gpb::Closure* clos(make_closure(closure_hold, llu->opt( ).wait( )));
             ch.ctx_->set_done_closure( clos );
@@ -716,14 +717,15 @@ namespace vtrc { namespace common {
             make_call(llu, closure_type( ));
         }
 
-        void make_call(protocol_layer::lowlevel_unit_sptr llu, closure_type don)
+        void make_call(protocol_layer::lowlevel_unit_sptr llu,
+                                      const closure_type &done)
         {
             bool failed        = true;
             unsigned errorcode = 0;
 
             try {
 
-                make_call_impl( llu, don );
+                make_call_impl( llu, done );
                 failed   = false;
 
             } catch ( const vtrc::common::exception &ex ) {
@@ -744,6 +746,8 @@ namespace vtrc { namespace common {
                     llu->mutable_error( )->set_code( errorcode );
                     llu->clear_response( );
                     send_message( *llu );
+                    bsys::error_code e(0, bsys::get_system_category( ));
+                    done( e );
                 }
             } else {
                 send_message( empty_done_ );
@@ -752,7 +756,7 @@ namespace vtrc { namespace common {
         }
 
         void on_system_error(const boost::system::error_code &err,
-                             const std::string &add)
+                             const std::string &add )
         {
             set_ready( false );
 

@@ -153,7 +153,8 @@ public:
 //        c_->revert( );
 
         {
-            common::call_keeper_sptr ck(common::call_keeper::create(c_));
+            //common::call_keeper_sptr ck(common::call_keeper::create(c_));
+            common::closure_holder ch(done);
 
             if( (id_++ % 100) == 0 )
                 throw std::runtime_error( "oops 10 =)" );
