@@ -11,20 +11,20 @@ namespace vtrc { namespace common {
 
     struct pool_pair::impl {
 
-        thread_pool *genegal_;
+        thread_pool *io_;
         thread_pool *rpc_;
         const bool   same_;
 
         impl( unsigned thread_count )
-            :genegal_(new thread_pool(thread_count))
-            ,rpc_(genegal_)
+            :io_(new thread_pool(thread_count))
+            ,rpc_(io_)
             ,same_(true)
         {
 
         }
 
         impl( unsigned thread_count, unsigned rpc_thread_count )
-            :genegal_(new thread_pool(thread_count))
+            :io_(new thread_pool(thread_count))
             ,rpc_(new thread_pool(rpc_thread_count))
             ,same_(false)
         {
@@ -33,19 +33,19 @@ namespace vtrc { namespace common {
 
         ~impl( )
         {
-            delete genegal_;
+            delete io_;
             if( !same_ ) delete rpc_;
         }
 
         void stop_all( )
         {
-            genegal_->stop( );
+            io_->stop( );
             if( !same_ ) rpc_->stop( );
         }
 
         void join_all( )
         {
-            genegal_->join_all( );
+            io_->join_all( );
             if(!same_) rpc_->join_all( );
         }
 
@@ -66,12 +66,12 @@ namespace vtrc { namespace common {
 
     boost::asio::io_service &pool_pair::get_io_service( )
     {
-        return impl_->genegal_->get_io_service( );
+        return impl_->io_->get_io_service( );
     }
 
     const boost::asio::io_service &pool_pair::get_io_service( ) const
     {
-        return impl_->genegal_->get_io_service( );
+        return impl_->io_->get_io_service( );
     }
 
     boost::asio::io_service &pool_pair::get_rpc_service( )
@@ -86,12 +86,12 @@ namespace vtrc { namespace common {
 
     thread_pool &pool_pair::get_io_pool( )
     {
-        return *impl_->genegal_;
+        return *impl_->io_;
     }
 
     const thread_pool &pool_pair::get_io_pool( ) const
     {
-        return *impl_->genegal_;
+        return *impl_->io_;
     }
 
     thread_pool &pool_pair::get_rpc_pool( )
