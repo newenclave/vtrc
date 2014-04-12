@@ -17,9 +17,6 @@ namespace boost {
 
 namespace vtrc { namespace common {
 
-    typedef vtrc::function
-                       <void (const boost::system::error_code &)> closure_type;
-
     class enviroment;
     class protocol_layer;
     class call_context;

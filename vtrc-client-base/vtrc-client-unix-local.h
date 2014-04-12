@@ -43,7 +43,7 @@ namespace client {
 
         void connect( const std::string &address );
         void async_connect( const std::string &address,
-                            common::closure_type closure );
+                            common::system_closure_type closure );
 
         void on_write_error( const boost::system::error_code &err );
 

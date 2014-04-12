@@ -40,7 +40,7 @@ namespace vtrc { namespace client {
         }
 
         void async_connect( const std::string &address,
-                            common::closure_type closure )
+                            common::system_closure_type closure )
         {
             connect( address );
             bsys::error_code ec(0, bsys::get_system_category( ));
@@ -67,7 +67,7 @@ namespace vtrc { namespace client {
         }
 
         void async_connect( const std::wstring &address,
-                            common::closure_type closure )
+                            common::system_closure_type closure )
         {
             connect( address );
             bsys::error_code ec(0, bsys::get_system_category( ));
@@ -114,13 +114,13 @@ namespace vtrc { namespace client {
     }
 
     void client_win_pipe::async_connect( const std::string &address,
-                                           common::closure_type  closure )
+                                   common::system_closure_type  closure )
     {
         impl_->async_connect( address, closure );
     }
 
     void client_win_pipe::async_connect( const std::wstring &address,
-                                         common::closure_type  closure )
+                                 common::system_closure_type  closure )
     {
         impl_->async_connect( address, closure );
     }

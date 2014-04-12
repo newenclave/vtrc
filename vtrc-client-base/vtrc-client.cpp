@@ -126,7 +126,7 @@ namespace vtrc { namespace client {
         }
 
         void async_connect_success( const bsys::error_code &err,
-                                    common::closure_type closure )
+                                    common::system_closure_type closure )
         {
             if( !err )
                 parent_->on_connect_( );
@@ -142,7 +142,7 @@ namespace vtrc { namespace client {
         }
 
         void async_connect(const std::wstring &local_name,
-                           common::closure_type closure)
+                           common::system_closure_type closure)
         {
             vtrc::shared_ptr<client_win_pipe>
                          new_client(create_client<client_win_pipe>( ));
@@ -155,7 +155,7 @@ namespace vtrc { namespace client {
         }
 #endif
         void async_connect(const std::string &local_name,
-                           common::closure_type closure)
+                           common::system_closure_type closure)
         {
 #ifndef _WIN32
             vtrc::shared_ptr<client_unix_local>
@@ -180,7 +180,7 @@ namespace vtrc { namespace client {
 
         void async_connect( const std::string &address,
                             const std::string &service,
-                            common::closure_type &closure )
+                            common::system_closure_type &closure )
         {
             vtrc::shared_ptr<client_tcp>
                                new_client(create_client<client_tcp>( ));
@@ -405,7 +405,7 @@ namespace vtrc { namespace client {
     }
 
     void vtrc_client::async_connect(const std::string &local_name,
-                                    common::closure_type closure)
+                                    common::system_closure_type closure)
     {
         impl_->async_connect( local_name, closure );
     }
@@ -413,16 +413,16 @@ namespace vtrc { namespace client {
 #ifdef _WIN32
 
     void vtrc_client::async_connect(const std::wstring &local_name,
-                                    common::closure_type closure)
+                                    common::system_closure_type closure)
     {
         impl_->async_connect( local_name, closure );
     }
 
 #endif
 
-    void vtrc_client::async_connect( const std::string &address,
+    void vtrc_client::async_connect(const std::string &address,
                             const std::string &service,
-                            common::closure_type closure )
+                            common::system_closure_type closure )
     {
         impl_->async_connect( address, service, closure );
     }

@@ -27,7 +27,7 @@ namespace vtrc { namespace client {
         }
 
         void async_connect( const std::string &address,
-                            common::closure_type closure )
+                            common::system_closure_type closure )
         {
             basio::local::stream_protocol::endpoint ep (address);
             get_socket( ).async_connect( ep,
@@ -70,7 +70,7 @@ namespace vtrc { namespace client {
     }
 
     void client_unix_local::async_connect( const std::string &address,
-                                           common::closure_type  closure )
+                                        common::system_closure_type closure )
     {
         impl_->async_connect( address, closure );
     }

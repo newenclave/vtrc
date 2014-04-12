@@ -4,11 +4,12 @@
 #include "boost/asio/ip/tcp.hpp"
 
 #include "vtrc-memory.h"
+#include "vtrc-closure.h"
 
 namespace boost {
 
 namespace asio {
-    class    io_service;
+    class io_service;
 }
 
 namespace system {
@@ -45,7 +46,7 @@ namespace vtrc { namespace common {
 
         void write( const char *data, size_t length ) ;
         void write(const char *data, size_t length,
-                   const closure_type &success, bool on_send_success) ;
+                   const system_closure_type &success, bool on_send_success) ;
 
         virtual void on_write_error( const boost::system::error_code &err ) = 0;
 

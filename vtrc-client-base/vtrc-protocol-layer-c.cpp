@@ -142,7 +142,7 @@ namespace vtrc { namespace client {
         }
 
         void send_proto_message( const gpb::MessageLite &mess,
-                                 common::closure_type closure,
+                                 common::system_closure_type closure,
                                  bool on_send ) const
         {
             std::string s(mess.SerializeAsString( ));

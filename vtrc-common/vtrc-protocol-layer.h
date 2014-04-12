@@ -10,6 +10,7 @@
 
 #include "vtrc-call-context.h"
 #include "vtrc-rpc-service-wrapper.h"
+#include "vtrc-closure.h"
 
 namespace google { namespace protobuf {
     class Message;
@@ -92,7 +93,7 @@ namespace vtrc { namespace common {
         virtual void on_read_error ( const boost::system::error_code &err );
 
         void make_call( lowlevel_unit_sptr llu );
-        void make_call( lowlevel_unit_sptr llu, common::closure_type done);
+        void make_call( lowlevel_unit_sptr llu, protocol_closure done);
 
         void call_rpc_method(                   const lowlevel_unit_type &llu );
         void call_rpc_method( uint64_t slot_id, const lowlevel_unit_type &llu );

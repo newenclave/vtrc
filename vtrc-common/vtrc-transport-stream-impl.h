@@ -33,7 +33,7 @@ namespace vtrc { namespace common {
 
             struct message_holder {
                 std::string message_;
-                vtrc::shared_ptr<closure_type> closure_;
+                vtrc::shared_ptr<system_closure_type> closure_;
                 bool on_send_;
                 message_holder( )
                 { }
@@ -127,8 +127,8 @@ namespace vtrc { namespace common {
                                                   size_t len) = 0;
 
             message_holder_sptr make_holder( const char *data, size_t length,
-                                         vtrc::shared_ptr<closure_type> closure,
-                                         bool on_send)
+                                 vtrc::shared_ptr<system_closure_type> closure,
+                                 bool on_send)
             {
                 /// TODO: FIX IT
                 message_holder_sptr mh(vtrc::make_shared<message_holder>());
@@ -141,7 +141,7 @@ namespace vtrc { namespace common {
             message_holder_sptr make_holder( const char *data, size_t length)
             {
                 return make_holder(data, length,
-                                   vtrc::shared_ptr<closure_type>( ), false );
+                           vtrc::shared_ptr<system_closure_type>( ), false );
             }
 
             void write( const char *data, size_t length )
@@ -156,13 +156,13 @@ namespace vtrc { namespace common {
 #else
                 write_dispatcher_.post(
                        vtrc::bind( &this_type::write_impl, this, mh,
-                                    vtrc::shared_ptr<closure_type>( ),
+                                    vtrc::shared_ptr<system_closure_type>( ),
                                     parent_->shared_from_this( )));
 #endif
             }
 
             void write(const char *data, size_t length,
-                       const closure_type &success, bool on_send)
+                       const system_closure_type &success, bool on_send)
             {
 
 #ifndef TRANSPORT_USE_ASYNC_WRITE
@@ -173,8 +173,8 @@ namespace vtrc { namespace common {
                 basio::write( *stream_, basio::buffer( mh->message_ ), ec );
                 success( ec );
 #else
-                vtrc::shared_ptr<closure_type>
-                        closure(vtrc::make_shared<closure_type>(success));
+                vtrc::shared_ptr<system_closure_type>
+                       closure(vtrc::make_shared<system_closure_type>(success));
 
                 message_holder_sptr mh(make_holder(data, length,
                                                    closure, on_send));
@@ -195,7 +195,7 @@ namespace vtrc { namespace common {
 
             /// non concurrence call.
             void write_impl( message_holder_sptr data,
-                             vtrc::shared_ptr<closure_type> closure,
+                             vtrc::shared_ptr<system_closure_type> closure,
                              common::connection_iface_sptr /*inst*/)
             {
                 bool empty = write_queue_.empty( );

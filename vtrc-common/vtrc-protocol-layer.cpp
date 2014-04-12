@@ -94,13 +94,13 @@ namespace vtrc { namespace common {
 
         struct closure_holder_type {
 
-            connection_iface_wptr                   connection_;
-            vtrc::unique_ptr<gpb::Message>          req_;
-            vtrc::unique_ptr<gpb::Message>          res_;
-            vtrc::unique_ptr<rpc_controller>        controller_;
-            lowlevel_unit_sptr                      llu_;
-            vtrc::unique_ptr<common::closure_type>  internal_closure_;
-            gpb::Closure                           *proto_closure_;
+            connection_iface_wptr               connection_;
+            vtrc::unique_ptr<gpb::Message>      req_;
+            vtrc::unique_ptr<gpb::Message>      res_;
+            vtrc::unique_ptr<rpc_controller>    controller_;
+            lowlevel_unit_sptr                  llu_;
+            vtrc::unique_ptr<protocol_closure>  internal_closure_;
+            gpb::Closure                       *proto_closure_;
 
             closure_holder_type( )
                 :proto_closure_(NULL)
@@ -111,8 +111,7 @@ namespace vtrc { namespace common {
                 if( NULL != internal_closure_.get( ) && (*internal_closure_)) {
                     connection_iface_sptr lck(connection_.lock( ));
                     if( lck  )  {
-                        const bsys::error_code error_success( 0,
-                                              bsys::get_system_category( ));
+                        const vtrc_errors::container error_success;
                         (*internal_closure_)( error_success );
                     }
                 }
@@ -709,11 +708,11 @@ namespace vtrc { namespace common {
 
         void make_call(protocol_layer::lowlevel_unit_sptr llu)
         {
-            make_call(llu, closure_type( ));
+            make_call(llu, protocol_closure( ));
         }
 
         void make_call(protocol_layer::lowlevel_unit_sptr llu,
-                                      const closure_type &done)
+                                      const protocol_closure &done)
         {
             bool failed        = true;
             unsigned errorcode = 0;
@@ -721,7 +720,7 @@ namespace vtrc { namespace common {
             try {
 
                 hold = vtrc::make_shared<closure_holder_type>( );
-                hold->internal_closure_.reset(new closure_type(done));
+                hold->internal_closure_.reset(new protocol_closure(done));
 
                 make_call_impl( llu, hold );
                 failed   = false;
@@ -750,8 +749,7 @@ namespace vtrc { namespace common {
                     if( hold )
                         hold->internal_closure_.reset( );
 
-                    bsys::error_code e(0, bsys::get_system_category( ));
-                    done( e );
+                    done( llu->error( ) );
                 }
             } else {
                 send_message( empty_done_ );
@@ -907,7 +905,7 @@ namespace vtrc { namespace common {
     }
 
     void protocol_layer::make_call(protocol_layer::lowlevel_unit_sptr llu,
-                                   closure_type done)
+                                   protocol_closure done)
     {
         impl_->make_call( llu, done );
     }

@@ -120,14 +120,14 @@ namespace client {
         void connect( const std::string &address, const std::string &service );
 
         void async_connect( const std::string &local_name,
-                            common::closure_type closure);
+                            common::system_closure_type closure);
         void async_connect( const std::string &address,
                             const std::string &service,
-                            common::closure_type closure);
+                            common::system_closure_type closure);
 #ifdef _WIN32
         void connect( const std::wstring &local_name );
         void async_connect( const std::wstring &local_name,
-                            common::closure_type closure);
+                            common::system_closure_type closure);
 #endif
 
         bool ready( ) const;

@@ -60,7 +60,7 @@ namespace vtrc { namespace common {
     }
 
     void transport_unix_local::write(const char *data, size_t length,
-                              const closure_type &success, bool on_send_success)
+                      const system_closure_type &success, bool on_send_success)
     {
         impl_->write( data, length, success, on_send_success );
     }

@@ -144,7 +144,7 @@ namespace vtrc { namespace server {
         }
 
         void send_proto_message( const gpb::MessageLite &mess,
-                                 common::closure_type closure, bool on_send)
+                             common::system_closure_type closure, bool on_send)
         {
             std::string s(mess.SerializeAsString( ));
             connection_->write( s.c_str( ), s.size( ), closure, on_send );
@@ -318,7 +318,7 @@ namespace vtrc { namespace server {
             return check;
         }
 
-        void call_done( const boost::system::error_code & /*err*/ )
+        void call_done( const vtrc_errors::container & /*err*/ )
         {
             --current_calls_;
         }

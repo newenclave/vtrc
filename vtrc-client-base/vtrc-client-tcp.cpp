@@ -31,7 +31,7 @@ namespace vtrc { namespace client {
 
         void async_connect( const std::string &address,
                             const std::string &service,
-                            common::closure_type closure )
+                            common::system_closure_type closure )
         {
             basio::ip::tcp::endpoint ep
                     (basio::ip::address::from_string(address),
@@ -74,9 +74,9 @@ namespace vtrc { namespace client {
         impl_->connect( address, service );
     }
 
-    void client_tcp::async_connect( const std::string &address,
+    void client_tcp::async_connect(const std::string &address,
                                     const std::string &service,
-                                    common::closure_type closure )
+                                    common::system_closure_type closure )
     {
         impl_->async_connect( address, service, closure );
     }
