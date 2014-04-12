@@ -4,7 +4,6 @@
 #include "vtrc-call-context.h"
 #include "vtrc-protocol-layer.h"
 
-
 namespace vtrc { namespace common {
 
     struct call_keeper::impl {
@@ -59,3 +58,4 @@ namespace vtrc { namespace common {
     }
 
 }}
+

@@ -24,6 +24,9 @@ namespace vtrc_rpc {
     class options;
 }
 
+namespace vtrc_errors {
+    class container;
+}
 
 namespace boost { namespace system {
     class error_code;
@@ -40,6 +43,10 @@ namespace vtrc { namespace common {
     struct transformer_iface;
     struct transport_iface;
     class  call_context;
+
+    typedef vtrc::function <
+        void (const vtrc_errors::container &)
+    > protocol_closure;
 
     class protocol_layer {
 
