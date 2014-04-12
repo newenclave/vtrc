@@ -27,7 +27,7 @@ or all together:
 
  
 make folder for progect tree:
-$ mkdir githug
+$ mkdir github
 $ git clone https://github.com/newenclave/vtrc.git
 .....
 $ mkdir vtrc-build
