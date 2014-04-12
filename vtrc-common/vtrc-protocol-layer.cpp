@@ -111,8 +111,7 @@ namespace vtrc { namespace common {
                 if( NULL != internal_closure_.get( ) && (*internal_closure_)) {
                     connection_iface_sptr lck(connection_.lock( ));
                     if( lck  )  {
-                        const vtrc_errors::container error_success;
-                        (*internal_closure_)( error_success );
+                        (*internal_closure_)( llu_->error( ) );
                     }
                 }
             }
@@ -591,7 +590,7 @@ namespace vtrc { namespace common {
 
         void closure_done( closure_holder_sptr &holder )
         {
-            lowlevel_unit_sptr &llu = holder->llu_;
+            lowlevel_unit_type &llu = *holder->llu_;
 
             bool failed        = false;
             unsigned errorcode = 0;
@@ -608,22 +607,22 @@ namespace vtrc { namespace common {
 
             }
 
-            llu->clear_request( );
-            llu->clear_call( );
+            llu.clear_request( );
+            llu.clear_call( );
 
             if( failed ) {
 
-                llu->mutable_error( )->set_code( errorcode );
-                llu->clear_response( );
+                llu.mutable_error( )->set_code( errorcode );
+                llu.clear_response( );
 
                 if( !holder->controller_->ErrorText( ).empty( ) )
-                    llu->mutable_error( )
+                    llu.mutable_error( )
                           ->set_additional( holder->controller_->ErrorText( ));
 
             } else {
-                llu->set_response( holder->res_->SerializeAsString( ) );
+                llu.set_response( holder->res_->SerializeAsString( ) );
             }
-            send_message( *llu );
+            send_message( llu );
         }
 
         void closure_runner( closure_holder_sptr holder, bool wait )
