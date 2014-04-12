@@ -585,12 +585,12 @@ namespace vtrc { namespace common {
             return parent_->get_service_by_name( name );
         }
 
-        void closure_fake( closure_holder_sptr /*holder*/ )
+        void closure_fake( closure_holder_sptr & /*holder*/ )
         {
             //send_message( fake_ );
         }
 
-        void closure_done( closure_holder_sptr holder )
+        void closure_done( closure_holder_sptr &holder )
         {
             lowlevel_unit_sptr &llu = holder->llu_;
 

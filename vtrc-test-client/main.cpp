@@ -137,7 +137,7 @@ void run_client( vtrc::shared_ptr<client::vtrc_client> cl, bool wait)
                 vtrc::this_thread::sleep_for(
                             vtrc::chrono::microseconds(500) );
             work_time wt;
-            mi.set_b( ts );
+            //mi.set_b( ts );
             s.test( NULL, &mi, &mir, NULL );
             last = i; //mir.id( );
             std::cout << "response: " << last << "\n";
