@@ -27,6 +27,7 @@ namespace vtrc { namespace common {
 
         ~impl( )
         {
+            io_.reset( );
             if( !same_ ) delete rpc_;
         }
 
