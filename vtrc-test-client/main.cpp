@@ -73,6 +73,9 @@ public:
                   //<< vtrc::chrono::high_resolution_clock::now( )
                   << "\n";
 
+        vtrc::this_thread::sleep_for(
+                    vtrc::chrono::microseconds(50) );
+
         return;
 
         const vtrc::common::call_context *cc =
@@ -184,7 +187,7 @@ void on_disconnect( vtrc::condition_variable &cond )
 
 int main( )
 {
-    common::pool_pair pp(2, 2);
+    common::pool_pair pp(2, 4);
     vtrc::shared_ptr<client::vtrc_client> cl(client::vtrc_client::create(pp));
 
     cl->set_session_key( "1234" );
