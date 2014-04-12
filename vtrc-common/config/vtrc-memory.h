@@ -34,34 +34,34 @@ namespace vtrc {
 
         typedef T element_type;
 
-        explicit unique_ptr( T *p = NULL ) // throws( )
+        explicit unique_ptr( element_type *p = NULL ) // throws( )
             :ptr_( p )
         { }
 
-        ~unique_ptr() // throws( )
+        ~unique_ptr( ) // throws( )
         {
             typedef char complete_type[ sizeof(element_type) ? 1 : -1 ];
             (void) sizeof(complete_type);
             delete ptr_;
         }
 
-        void reset(T *p = NULL) // throws( )
+        void reset( element_type *p = NULL ) // throws( )
         {
-            this_type(p).swap(*this);
+            this_type( p ).swap( *this );
         }
 
-        T &operator * ( ) const // throws( )
+        element_type &operator * ( ) const // throws( )
         {
             return *ptr_;
         }
 
-        T *operator -> ( ) const
+        element_type *operator -> ( ) const
         {
             assert( ptr_ != 0 );
             return ptr_;
         }
 
-        T *get( ) const
+        element_type *get( ) const
         {
             return ptr_;
         }
@@ -73,6 +73,7 @@ namespace vtrc {
             other.ptr_ = ptr_;
             ptr_       = tmp;
         }
+
     };
 
 #endif
