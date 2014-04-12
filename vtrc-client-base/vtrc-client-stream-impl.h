@@ -20,9 +20,9 @@ namespace {
     template <typename ParentType, typename StreamType>
     struct client_stream_impl {
 
-        typedef ParentType                                      parent_type;
-        typedef StreamType                                      stream_type;
-        typedef client_stream_impl<parent_type, stream_type>    this_type;
+        typedef ParentType                                    parent_type;
+        typedef StreamType                                    stream_type;
+        typedef client_stream_impl<parent_type, stream_type>  this_type;
 
         boost::asio::io_service &ios_;
 
