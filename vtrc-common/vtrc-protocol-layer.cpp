@@ -660,7 +660,6 @@ namespace vtrc { namespace common {
         }
 
         void make_call_impl( lowlevel_unit_sptr llu,
-                             const closure_type &done,
                              closure_holder_sptr &closure_hold)
         {
             protocol_layer::context_holder ch( parent_, llu.get( ) );
@@ -685,8 +684,6 @@ namespace vtrc { namespace common {
 
             ch.ctx_->set_call_options( call_opts );
 
-            closure_hold = vtrc::make_shared<closure_holder_type>( );
-
             closure_hold->req_.reset
                 (service->service( )->GetRequestPrototype( meth ).New( ));
 
@@ -698,9 +695,8 @@ namespace vtrc { namespace common {
 
             closure_hold->controller_.reset(new common::rpc_controller);
 
-            closure_hold->      connection_ = connection_->weak_from_this( );
-            closure_hold->             llu_ = llu;
-            closure_hold->internal_closure_.reset(new closure_type(done));
+            closure_hold->connection_ = connection_->weak_from_this( );
+            closure_hold->       llu_ = llu;
 
             gpb::Closure* clos(make_closure(closure_hold, llu->opt( ).wait( )));
             ch.ctx_->set_done_closure( clos );
@@ -721,10 +717,13 @@ namespace vtrc { namespace common {
         {
             bool failed        = true;
             unsigned errorcode = 0;
-            closure_holder_sptr holder;
+            closure_holder_sptr hold;
             try {
 
-                make_call_impl( llu, done, holder );
+                hold = vtrc::make_shared<closure_holder_type>( );
+                hold->internal_closure_.reset(new closure_type(done));
+
+                make_call_impl( llu, hold );
                 failed   = false;
 
             } catch ( const vtrc::common::exception &ex ) {
@@ -748,8 +747,8 @@ namespace vtrc { namespace common {
 
                     /// here we must reset internal_closure
                     /// for preventing double call
-                    if( holder )
-                        holder->internal_closure_.reset( );
+                    if( hold )
+                        hold->internal_closure_.reset( );
 
                     bsys::error_code e(0, bsys::get_system_category( ));
                     done( e );
