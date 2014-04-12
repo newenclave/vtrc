@@ -1,9 +1,7 @@
+
 #include "vtrc-pool-pair.h"
-
-#include "vtrc-thread.h"
-#include "vtrc-mutex-typedefs.h"
-
-//#include "boost/asio.hpp"
+#include "vtrc-thread-pool.h"
+#include "vtrc-memory.h"
 
 namespace vtrc { namespace common {
 
@@ -11,13 +9,13 @@ namespace vtrc { namespace common {
 
     struct pool_pair::impl {
 
-        thread_pool *io_;
-        thread_pool *rpc_;
-        const bool   same_;
+        vtrc::scoped_ptr<thread_pool>  io_;
+        thread_pool                   *rpc_;
+        const bool                     same_;
 
         impl( unsigned thread_count )
             :io_(new thread_pool(thread_count))
-            ,rpc_(io_)
+            ,rpc_(io_.get( ))
             ,same_(true)
         {
 
@@ -33,7 +31,6 @@ namespace vtrc { namespace common {
 
         ~impl( )
         {
-            delete io_;
             if( !same_ ) delete rpc_;
         }
 
