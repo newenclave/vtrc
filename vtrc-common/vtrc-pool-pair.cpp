@@ -17,17 +17,13 @@ namespace vtrc { namespace common {
             :io_(new thread_pool(thread_count))
             ,rpc_(io_.get( ))
             ,same_(true)
-        {
-
-        }
+        { }
 
         impl( unsigned thread_count, unsigned rpc_thread_count )
             :io_(new thread_pool(thread_count))
             ,rpc_(new thread_pool(rpc_thread_count))
             ,same_(false)
-        {
-
-        }
+        { }
 
         ~impl( )
         {
@@ -50,11 +46,11 @@ namespace vtrc { namespace common {
 
     pool_pair::pool_pair( unsigned thread_count )
         :impl_(new impl(thread_count))
-    {}
+    { }
 
     pool_pair::pool_pair( unsigned thread_count, unsigned rpc_thread_count )
         :impl_(new impl(thread_count, rpc_thread_count))
-    {}
+    { }
 
     pool_pair::~pool_pair( )
     {
