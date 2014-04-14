@@ -49,7 +49,7 @@
 
 Usage:
 class test {
-    VTRC_DECLARE_SIGNAL(on_event, void());
+    VTRC_DECLARE_SIGNAL(on_event, void( ));
 };
 
 result:
@@ -57,7 +57,7 @@ result:
 class test {
     public:
       typedef boost::signals2::signal_type <
-                void(),
+                void( ),
                 boost::signals2::keywords::mutex_type<boost::mutex>
               >::type on_event_type;
       typedef on_event_type::slot_type on_event_slot_type;    // slot_type
