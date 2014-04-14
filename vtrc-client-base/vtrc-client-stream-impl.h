@@ -13,7 +13,7 @@
 
 namespace vtrc { namespace client {
 
-namespace {
+namespace { /// implementation.
 
     namespace basio = boost::asio;
     namespace bsys  = boost::system;
