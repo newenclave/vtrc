@@ -66,6 +66,11 @@ namespace {
             --(*count);
         }
 
+        common::empty_closure_type get_on_destroy( )
+        {
+            return vtrc::bind( &this_type::on_client_destroy, client_count_ );
+        }
+
         application &get_application( )
         {
             return app_;
@@ -109,11 +114,6 @@ namespace {
             return opts_;
         }
 
-        common::empty_closure_type get_on_destroy( )
-        {
-            return vtrc::bind( &this_type::on_client_destroy, client_count_ );
-        }
-
         void on_accept( const bsys::error_code &error,
                         vtrc::shared_ptr<socket_type> sock )
         {
@@ -123,6 +123,7 @@ namespace {
                            (transport_type::create( *this, sock,
                                                     get_on_destroy( )));
                     app_.get_clients( )->store( new_conn );
+                    ++(*client_count_);
                 } catch( ... ) {
                     ;;;
                 }
