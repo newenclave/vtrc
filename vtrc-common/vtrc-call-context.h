@@ -22,6 +22,7 @@ namespace vtrc { namespace common {
     public:
 
         call_context( vtrc_rpc::lowlevel_unit *lowlevel );
+        virtual ~call_context( );
 
         static const call_context *get( connection_iface *iface );
         static const call_context *get( connection_iface_sptr iface );
@@ -46,8 +47,6 @@ namespace vtrc { namespace common {
         void set_done_closure( google::protobuf::Closure *done );
         google::protobuf::Closure *get_done_closure(  );
         const google::protobuf::Closure *get_done_closure(  ) const;
-
-        virtual ~call_context( );
 
     };
 
