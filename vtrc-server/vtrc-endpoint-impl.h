@@ -57,7 +57,7 @@ namespace {
             ,acceptor_(ios_, endpoint_)
             ,opts_(opts)
             ,client_count_(vtrc::make_shared<vtrc::atomic<size_t> >(0))
-        {}
+        { }
 
         virtual ~endpoint_impl( ) { }
 
