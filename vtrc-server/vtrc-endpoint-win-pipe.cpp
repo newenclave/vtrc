@@ -13,6 +13,9 @@
 #include "vtrc-endpoint-iface.h"
 #include "vtrc-connection-impl.h"
 
+#include "vtrc-atomic.h"
+#include "vtrc-common/vtrc-closure.h"
+
 namespace vtrc { namespace server { namespace endpoints {
 
 namespace {
@@ -27,8 +30,9 @@ namespace {
         typedef commection_pipe_impl this_type;
 
         commection_pipe_impl( endpoint_iface &endpoint,
-                            vtrc::shared_ptr<socket_type> sock )
-            :connection_impl_type(endpoint, sock)
+                              vtrc::shared_ptr<socket_type> sock,
+                              const common::empty_closure_type &on_destroy)
+            :connection_impl_type(endpoint, sock, on_destroy)
         { }
 
         bool impersonate( )
@@ -52,10 +56,12 @@ namespace {
         }
 
         static vtrc::shared_ptr<this_type> create(endpoint_iface &endpoint,
-                                         vtrc::shared_ptr<socket_type> sock )
+                                 vtrc::shared_ptr<socket_type> sock,
+                                 const common::empty_closure_type &on_destroy)
         {
             vtrc::shared_ptr<this_type> new_inst
-                    (vtrc::make_shared<this_type>(vtrc::ref(endpoint), sock));
+                    (vtrc::make_shared<this_type>(vtrc::ref(endpoint), 
+                                                   sock, on_destroy));
 
             new_inst->init( );
             return new_inst;
@@ -67,6 +73,7 @@ namespace {
     struct pipe_ep_impl: public endpoint_iface {
 
         typedef pipe_ep_impl this_type;
+        typedef vtrc::shared_ptr< vtrc::atomic<size_t> > shared_counter_type;
 
         application             &app_;
         basio::io_service       &ios_;
@@ -77,7 +84,8 @@ namespace {
         size_t                   pipe_max_inst_;
         size_t                   in_buf_size_;
         size_t                   out_buf_size_;
-
+        shared_counter_type      client_count_;
+        
         basio::windows::overlapped_ptr overlapped_;
 
         pipe_ep_impl( application &app,
@@ -91,9 +99,20 @@ namespace {
             ,pipe_max_inst_(max_inst)
             ,in_buf_size_(in_buf_size)
             ,out_buf_size_(out_buf_size)
-        {}
+            ,client_count_(vtrc::make_shared<vtrc::atomic<size_t> >(0))
+        { }
 
         virtual ~pipe_ep_impl( ) { }
+
+        static void on_client_destroy( shared_counter_type count )
+        {
+            --(*count);
+        }
+
+        common::empty_closure_type get_on_destroy( )
+        {
+            return vtrc::bind( &this_type::on_client_destroy, client_count_ );
+        }
 
         application &get_application( )
         {
@@ -187,8 +206,10 @@ namespace {
             if( !error ) {
                 try {
                     vtrc::shared_ptr<transport_type> new_conn
-                             (transport_type::create( *this, sock ));
+                             (transport_type::create( 
+                                *this, sock, get_on_destroy( )));
                     app_.get_clients( )->store( new_conn );
+                    ++(*client_count_);
                 } catch( ... ) {
                     ;;;
                 }
