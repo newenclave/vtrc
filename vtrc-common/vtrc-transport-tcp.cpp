@@ -50,11 +50,6 @@ namespace vtrc { namespace common {
         impl_->close( );
     }
 
-    common::enviroment &transport_tcp::get_enviroment( )
-    {
-        return impl_->get_enviroment( );
-    }
-
     void transport_tcp::write( const char *data, size_t length )
     {
         return impl_->write( data, length );

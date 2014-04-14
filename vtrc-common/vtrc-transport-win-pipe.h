@@ -38,8 +38,6 @@ namespace vtrc { namespace common {
         const char *name( ) const                     ;
         void close( )                                 ;
 
-        common::enviroment      &get_enviroment( )    ;
-
         socket_type             &get_socket( )        ;
         const socket_type       &get_socket( ) const  ;
 

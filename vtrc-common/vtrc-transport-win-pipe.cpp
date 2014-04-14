@@ -52,11 +52,6 @@ namespace vtrc { namespace common {
         impl_->close( );
     }
 
-    common::enviroment &transport_win_pipe::get_enviroment( )
-    {
-        return impl_->get_enviroment( );
-    }
-
     void transport_win_pipe::write( const char *data, size_t length )
     {
         return impl_->write( data, length );

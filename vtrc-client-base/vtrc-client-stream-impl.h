@@ -9,6 +9,7 @@
 #include "vtrc-chrono.h"
 
 #include "vtrc-protocol-layer-c.h"
+#include "vtrc-common/vtrc-enviroment.h"
 
 namespace vtrc { namespace client {
 
@@ -28,6 +29,7 @@ namespace {
 
         parent_type             *parent_;
         vtrc_client             *client_;
+        common::enviroment       env_;
 
         std::vector<char>        read_buff_;
 
@@ -57,6 +59,11 @@ namespace {
         stream_type &get_socket( )
         {
             return parent_->get_socket( );
+        }
+
+        common::enviroment &get_enviroment( )
+        {
+            return env_;
         }
 
         void init(  )

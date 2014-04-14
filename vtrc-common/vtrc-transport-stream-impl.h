@@ -107,11 +107,6 @@ namespace vtrc { namespace common {
                 return closed_;
             }
 
-            common::enviroment &get_enviroment( )
-            {
-                return env_;
-            }
-
             boost::asio::io_service &get_io_service( )
             {
                 return ios_;

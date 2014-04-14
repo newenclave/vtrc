@@ -49,11 +49,6 @@ namespace vtrc { namespace common {
         impl_->close( );
     }
 
-    common::enviroment &transport_unix_local::get_enviroment( )
-    {
-        return impl_->get_enviroment( );
-    }
-
     void transport_unix_local::write( const char *data, size_t length )
     {
         return impl_->write( data, length );
