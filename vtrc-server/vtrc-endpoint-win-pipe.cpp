@@ -60,7 +60,7 @@ namespace {
                                  const common::empty_closure_type &on_destroy)
         {
             vtrc::shared_ptr<this_type> new_inst
-                    (vtrc::make_shared<this_type>(vtrc::ref(endpoint), 
+                    (vtrc::make_shared<this_type>(vtrc::ref(endpoint),
                                                    sock, on_destroy));
 
             new_inst->init( );
@@ -85,7 +85,7 @@ namespace {
         size_t                   in_buf_size_;
         size_t                   out_buf_size_;
         shared_counter_type      client_count_;
-        
+
         basio::windows::overlapped_ptr overlapped_;
 
         pipe_ep_impl( application &app,
@@ -112,6 +112,11 @@ namespace {
         common::empty_closure_type get_on_destroy( )
         {
             return vtrc::bind( &this_type::on_client_destroy, client_count_ );
+        }
+
+        size_t client_count( ) const
+        {
+            return (*client_count_);
         }
 
         application &get_application( )
@@ -206,7 +211,7 @@ namespace {
             if( !error ) {
                 try {
                     vtrc::shared_ptr<transport_type> new_conn
-                             (transport_type::create( 
+                             (transport_type::create(
                                 *this, sock, get_on_destroy( )));
                     app_.get_clients( )->store( new_conn );
                     ++(*client_count_);

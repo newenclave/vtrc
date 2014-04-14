@@ -66,6 +66,11 @@ namespace {
             --(*count);
         }
 
+        size_t client_count( ) const
+        {
+            return (*client_count_);
+        }
+
         common::empty_closure_type get_on_destroy( )
         {
             return vtrc::bind( &this_type::on_client_destroy, client_count_ );
