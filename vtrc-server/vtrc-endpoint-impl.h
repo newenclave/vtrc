@@ -49,7 +49,7 @@ namespace {
         shared_counter_type      client_count_;
 
         endpoint_impl( application &app,
-                      const endpoint_options &opts, const endpoint_type &ep)
+                       const endpoint_options &opts, const endpoint_type &ep)
             :app_(app)
             ,ios_(app_.get_io_service( ))
             ,env_(app_.get_enviroment())
