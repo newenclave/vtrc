@@ -122,6 +122,12 @@ namespace vtrc { namespace server { namespace endpoints {
                 //app_.get_clients( )->drop(this); // delete
             }
 
+            void close_drop( )
+            {
+                this->close( );
+                app_.get_clients( )->drop(this); // delete
+            }
+
             void start_reading( )
             {
 #if 0
@@ -154,15 +160,13 @@ namespace vtrc { namespace server { namespace endpoints {
                     try {
                         protocol_->process_data( &read_buff_[0], bytes );
                     } catch( const std::exception & /*ex*/ ) {
-                        this->close( );
-                        app_.get_clients( )->drop(this); // delete
+                        close_drop( );
                         return;
                     }
                     start_reading( );
                 } else {
                     protocol_->on_read_error( error );
-                    this->close( );
-                    app_.get_clients( )->drop(this); // delete
+                    close_drop( );
                 }
             }
 
