@@ -112,7 +112,7 @@ namespace vtrc { namespace common {
                 return ios_;
             }
 
-            void prepare_for_write(std::string &in_out)
+            void prepare_for_write( std::string &in_out )
             {
                 in_out.assign( prepare_for_write( in_out.c_str( ),
                                                   in_out.size( ) ) );
