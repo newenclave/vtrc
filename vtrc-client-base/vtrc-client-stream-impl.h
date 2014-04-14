@@ -81,7 +81,7 @@ namespace {
             return protocol_->ready( );
         }
 
-        void on_connect( const boost::system::error_code &err,
+        void on_connect( const bsys::error_code &err,
                          common::system_closure_type closure,
                          common::connection_iface_sptr /*parent*/)
         {
