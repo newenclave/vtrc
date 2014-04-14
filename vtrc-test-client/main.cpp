@@ -132,8 +132,7 @@ void run_client( vtrc::shared_ptr<client::vtrc_client> cl, bool wait)
     std::cout << "this thread: "
               << vtrc::this_thread::get_id( ) << " "
               << "\n";
-
-    for( int i=0; i<29999999999; ++i ) {
+    for( int i=0; i<2999999; ++i ) {
         try {
 
             if( wait )
@@ -143,23 +142,25 @@ void run_client( vtrc::shared_ptr<client::vtrc_client> cl, bool wait)
             //mi.set_b( ts );
             s.test( NULL, &mi, &mir, NULL );
             last = i; //mir.id( );
-            std::cout << "response: " << last << "\n";
+//            if( 0 == last % 201 )
+                std::cout << "response: " << last << "\n";
             //cl.reset( );
         } catch( const vtrc::common::exception &ex ) {
-            std::cout << "call error: "
-                      << " code (" << ex.code( ) << ")"
-                      << " category (" << ex.category( ) << ")"
-                      << " what: " << ex.what( )
-                      << " (" << ex.additional( ) << ")"
-                      << "\n";
+//            std::cout << "call error: "
+//                      << " code (" << ex.code( ) << ")"
+//                      << " category (" << ex.category( ) << ")"
+//                      << " what: " << ex.what( )
+//                      << " (" << ex.additional( ) << ")"
+//                      << "\n";
             //if( i % 100 == 0 )
-            std::cout << i << "\n";
+//            std::cout << i << "\n";
             if( ex.category( ) == vtrc_errors::CATEGORY_SYSTEM ) break;
             if( ex.code( ) == vtrc_errors::ERR_COMM ) break;
         } catch( const std::exception &ex ) {
             //std::cout << "call error: " << ex.what( ) << "\n";
         }
     }
+    std::cout << "last is: " << last << "\n";
 }
 
 void on_init_error(const vtrc_errors::container &cont, const char *message )
