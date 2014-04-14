@@ -66,7 +66,7 @@ namespace {
             --(*count);
         }
 
-        size_t client_count( ) const
+        size_t clients_count( ) const
         {
             return (*client_count_);
         }

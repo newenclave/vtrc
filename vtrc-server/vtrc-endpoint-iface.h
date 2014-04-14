@@ -37,7 +37,7 @@ namespace server {
         virtual void start( ) = 0;
         virtual void stop ( ) = 0;
 
-        virtual size_t client_count( ) const = 0;
+        virtual size_t clients_count( ) const = 0;
     };
 
     namespace endpoints {

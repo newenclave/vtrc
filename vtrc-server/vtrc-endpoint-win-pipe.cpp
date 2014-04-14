@@ -114,7 +114,7 @@ namespace {
             return vtrc::bind( &this_type::on_client_destroy, client_count_ );
         }
 
-        size_t client_count( ) const
+        size_t clients_count( ) const
         {
             return (*client_count_);
         }
