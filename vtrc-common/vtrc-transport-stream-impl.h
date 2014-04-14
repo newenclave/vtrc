@@ -232,6 +232,7 @@ namespace vtrc { namespace common {
                                 size_t total,
                                 common::connection_iface_sptr /*inst*/)
             {
+                message_holder &top_holder(*write_queue_.front( ));
 
                 if( !error ) {
 
@@ -239,16 +240,15 @@ namespace vtrc { namespace common {
 
                         total += bytes;
 
-                        const std::string &top(write_queue_.front( )->message_);
+                        const std::string &top(top_holder.message_);
                         async_write(top.c_str( ) + total,
                                     top.size( )  - total, total);
 
                     } else {
 
-                        message_holder &top(*write_queue_.front( ));
 
-                        if( top.closure_ && top.on_send_) {
-                            (*top.closure_)( error );
+                        if( top_holder.closure_ && top_holder.on_send_) {
+                            (*top_holder.closure_)( error );
                         }
 
                         write_queue_.pop_front( );
@@ -258,10 +258,8 @@ namespace vtrc { namespace common {
                     }
                 } else {
 
-                    message_holder &top(*write_queue_.front( ));
-
-                    if( top.closure_ && top.on_send_ ) {
-                        (*top.closure_)( error );
+                    if( top_holder.closure_ && top_holder.on_send_ ) {
+                        (*top_holder.closure_)( error );
                     }
 
                     parent_->on_write_error( error );
