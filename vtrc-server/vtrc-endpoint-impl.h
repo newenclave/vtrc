@@ -8,6 +8,8 @@
 
 #include "vtrc-ref.h"
 #include "vtrc-bind.h"
+#include "vtrc-atomic.h"
+#include "vtrc-common/vtrc-closure.h"
 
 #include "vtrc-common/vtrc-enviroment.h"
 
@@ -28,6 +30,8 @@ namespace {
         typedef EndpointType                          endpoint_type;
         typedef typename transport_type::socket_type  socket_type;
 
+        typedef vtrc::shared_ptr< vtrc::atomic<size_t> > shared_counter_type;
+
         typedef endpoint_impl<
                 acceptor_type,
                 endpoint_type,
@@ -42,6 +46,7 @@ namespace {
         acceptor_type            acceptor_;
 
         endpoint_options         opts_;
+        shared_counter_type      client_count_;
 
         endpoint_impl( application &app,
                       const endpoint_options &opts, const endpoint_type &ep)
@@ -51,9 +56,15 @@ namespace {
             ,endpoint_(ep)
             ,acceptor_(ios_, endpoint_)
             ,opts_(opts)
+            ,client_count_(vtrc::make_shared<vtrc::atomic<size_t> >(0))
         {}
 
         virtual ~endpoint_impl( ) { }
+
+        static void on_client_destroy( shared_counter_type count )
+        {
+            --(*count);
+        }
 
         application &get_application( )
         {
@@ -80,6 +91,7 @@ namespace {
                              basio::placeholders::error, new_sock ));
         }
 
+
         void start( )
         {
             start_accept( );
@@ -97,13 +109,19 @@ namespace {
             return opts_;
         }
 
+        common::empty_closure_type get_on_destroy( )
+        {
+            return vtrc::bind( &this_type::on_client_destroy, client_count_ );
+        }
+
         void on_accept( const bsys::error_code &error,
                         vtrc::shared_ptr<socket_type> sock )
         {
             if( !error ) {
                 try {
                     vtrc::shared_ptr<transport_type> new_conn
-                             (transport_type::create( *this, sock ));
+                           (transport_type::create( *this, sock,
+                                                    get_on_destroy( )));
                     app_.get_clients( )->store( new_conn );
                 } catch( ... ) {
                     ;;;

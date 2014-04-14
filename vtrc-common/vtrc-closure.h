@@ -20,6 +20,7 @@ namespace vtrc { namespace common {
     typedef vtrc::function<system_closure_sign>  system_closure_type;
     typedef vtrc::function<protcol_closure_sign> protcol_closure_type;
     typedef vtrc::function<success_closure_sign> success_closure_type;
+    typedef vtrc::function<void ( )>             empty_closure_type;
 
 }}
 

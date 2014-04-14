@@ -33,14 +33,17 @@ namespace vtrc { namespace server { namespace endpoints {
             std::vector<char>                   read_buff_;
 
             vtrc::unique_ptr<protocol_layer_s>  protocol_;
+            common::empty_closure_type          destroy_closure_;
 
             connection_impl(endpoint_iface &endpoint,
-                            vtrc::shared_ptr<socket_type> sock )
+                            vtrc::shared_ptr<socket_type> sock,
+                            const common::empty_closure_type &on_destroy)
                 :super_type(sock)
                 ,endpoint_(endpoint)
                 ,app_(endpoint_.get_application( ))
                 ,ios_(app_.get_io_service( ))
                 ,read_buff_(endpoint_.get_options( ).read_buffer_size)
+                ,destroy_closure_(on_destroy)
             {
                 protocol_.reset(new protocol_layer_s( vtrc::ref(app_), this,
                             endpoint_.get_options( ).maximum_active_calls,
@@ -53,19 +56,24 @@ namespace vtrc { namespace server { namespace endpoints {
             }
 
             static vtrc::shared_ptr<this_type> create(endpoint_iface &endpoint,
-                                            vtrc::shared_ptr<socket_type> sock )
+                                   vtrc::shared_ptr<socket_type> sock,
+                                   const common::empty_closure_type &on_destroy)
             {
                 vtrc::shared_ptr<this_type> new_inst
-                     (vtrc::make_shared<this_type>(vtrc::ref(endpoint), sock ));
+                     (vtrc::make_shared<this_type>(vtrc::ref(endpoint),
+                                                   sock, on_destroy ));
 
                 new_inst->init( );
                 return new_inst;
             }
 
             static vtrc::shared_ptr<this_type> create(endpoint_iface &endpoint,
-                                                        socket_type *sock )
+                                  socket_type *sock,
+                                  const common::empty_closure_type &on_destroy)
             {
-                return create( endpoint, vtrc::shared_ptr<socket_type>(sock) );
+                return create( endpoint,
+                               vtrc::shared_ptr<socket_type>(sock),
+                               on_destroy );
             }
 
             void init( )
@@ -119,7 +127,6 @@ namespace vtrc { namespace server { namespace endpoints {
             {
                 protocol_->on_write_error( error );
                 this->close( );
-                //app_.get_clients( )->drop(this); // delete
             }
 
             void close_drop( )
