@@ -245,10 +245,10 @@ namespace vtrc { namespace common {
 
                     } else {
 
-                        message_holder_sptr &top(write_queue_.front( ));
+                        message_holder &top(*write_queue_.front( ));
 
-                        if( top->closure_ && top->on_send_) {
-                            (*top->closure_)( error );
+                        if( top.closure_ && top.on_send_) {
+                            (*top.closure_)( error );
                         }
 
                         write_queue_.pop_front( );
@@ -258,10 +258,10 @@ namespace vtrc { namespace common {
                     }
                 } else {
 
-                    message_holder_sptr &top(write_queue_.front( ));
+                    message_holder &top(*write_queue_.front( ));
 
-                    if( top->closure_ && top->on_send_ ) {
-                        (*top->closure_)( error );
+                    if( top.closure_ && top.on_send_ ) {
+                        (*top.closure_)( error );
                     }
 
                     parent_->on_write_error( error );
