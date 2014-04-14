@@ -63,7 +63,7 @@ class test {
       typedef on_event_type::slot_type on_event_slot_type;    // slot_type
       typedef on_event_type::group_type on_event_group_type;  // group_type
       on_events_type &get_on_event( ) { return on_event_; }
-    private:
+    protected:
       on_event_type on_event_;
 }
 ==================
