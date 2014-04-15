@@ -166,6 +166,7 @@ public:
 //                               boost::posix_time::milliseconds( 0 ));
 
           response->set_id( id_ );
+          //std::cout << id_ << "\n";
 //        connection_->get_io_service( ).dispatch(
 //                    vtrc::bind(test_send, connection_));
 //        boost::thread(test_send, connection_).detach( );

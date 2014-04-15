@@ -4,7 +4,6 @@
 #include "boost/random/random_device.hpp"
 #include "boost/random.hpp"
 
-
 namespace vtrc {
     namespace random {
         using namespace boost::random;
