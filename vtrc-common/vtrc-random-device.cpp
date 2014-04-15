@@ -1,8 +1,7 @@
 
 #include "vtrc-random-device.h"
 
-#include "boost/random/random_device.hpp"
-#include "boost/random.hpp"
+#include "vtrc-random.h"
 
 #include <limits>
 
@@ -16,7 +15,7 @@ namespace  vtrc { namespace  common {
     };
 
     struct device_impl: public random_impl {
-        boost::random_device rd_;
+        vtrc::random_device rd_;
         void generate( char *b, char *e )
         {
             rd_.generate( b, e );
@@ -25,16 +24,16 @@ namespace  vtrc { namespace  common {
 
     struct mt19937_impl: public random_impl {
 
-        boost::mt19937 rng_;
+        vtrc::mt19937 rng_;
         mt19937_impl(  )
         {
-            boost::random_device rd;
+            vtrc::random_device rd;
             rng_.seed( rd( ) );
         }
 
         void generate( char *b, char *e )
         {
-            boost::random::uniform_int_distribution< > index_dist(0, UCHAR_MAX);
+            vtrc::random::uniform_int_distribution< > index_dist(0, UCHAR_MAX);
             for( ;b!=e ;++b ) {
                 *b = index_dist(rng_);
             }
