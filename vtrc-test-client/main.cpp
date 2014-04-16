@@ -188,7 +188,7 @@ void on_disconnect( vtrc::condition_variable &cond )
 
 int main( )
 {
-    common::pool_pair pp(2, 4);
+    common::pool_pair pp(1, 1);
     vtrc::shared_ptr<client::vtrc_client> cl(client::vtrc_client::create(pp));
 
     cl->set_session_key( "1234" );
