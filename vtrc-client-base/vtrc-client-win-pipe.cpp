@@ -172,7 +172,6 @@ namespace vtrc { namespace client {
         return impl_->id( );
     }
 
-
 }}
 
 
