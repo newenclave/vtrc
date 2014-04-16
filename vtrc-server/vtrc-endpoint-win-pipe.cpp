@@ -2,7 +2,6 @@
 
 #ifdef _WIN32
 
-#include "boost/asio.hpp"
 #include "boost/asio/windows/stream_handle.hpp"
 
 #include "vtrc-application.h"

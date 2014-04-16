@@ -1,6 +1,4 @@
 
-#include "boost/asio.hpp"
-
 #include "vtrc-common/vtrc-transport-tcp.h"
 
 #include "vtrc-endpoint-impl.h"

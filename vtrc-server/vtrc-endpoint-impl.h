@@ -1,6 +1,8 @@
 #ifndef VTRC_ENDPOINT_IMPL_H
 #define VTRC_ENDPOINT_IMPL_H
 
+#include "boost/asio.hpp"
+
 #include "vtrc-endpoint-iface.h"
 #include "vtrc-application.h"
 #include "vtrc-connection-iface.h"

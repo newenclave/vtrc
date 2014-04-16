@@ -1,7 +1,6 @@
 
 #ifndef  _WIN32
 
-#include "boost/asio.hpp"
 #include "boost/asio/local/stream_protocol.hpp"
 
 #include "vtrc-common/vtrc-transport-unix-local.h"
