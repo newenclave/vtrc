@@ -16,6 +16,9 @@ namespace vtrc { namespace common {
         struct impl;
         impl  *impl_;
 
+        pool_pair( const pool_pair & );
+        pool_pair& operator = ( const pool_pair & );
+
     public:
 
         pool_pair( unsigned thread_count );
