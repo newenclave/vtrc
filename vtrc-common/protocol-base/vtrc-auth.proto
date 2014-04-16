@@ -31,7 +31,7 @@ message init_protocol {
 }
 
 message client_selection {
-    optional uint32     hash                   = 1 [default = 1]; // CRC_32
+    optional uint32     hash                   = 1 [default = 2]; // CRC_32
     optional uint32     transform              = 2; // default TRANSFORM_NONE
     optional bytes      id                     = 3;
 }
