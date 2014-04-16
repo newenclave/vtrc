@@ -85,7 +85,7 @@ namespace vtrc { namespace server {
                     process_waitable_call( call_id, llu, response,
                                            clk, call_opt );
 
-                } else {                  /// NOT WAITABLE CALL
+                } else {                  /// NON WAITABLE CALL
                     get_protocol( *clk ).call_rpc_method( llu );
                 }
             }
