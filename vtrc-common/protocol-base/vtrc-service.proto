@@ -39,7 +39,7 @@ service test_rpc {
 service test_events {
     option ( vtrc_rpc.service_options ) = {
         level:   1,
-        timeout: 1000000,
+        timeout: 10000, // 10 milliseconds =)
         wait:    true
     };
     rpc test(vtrc_rpc.message_info) returns ( vtrc_rpc.message_info );

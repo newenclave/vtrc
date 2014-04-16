@@ -13,7 +13,7 @@ message options {
     /// other side waits answer
     optional bool       wait             = 2 [default = true];
 
-    /// wait timeout microseconds; only if 'wait' is true
+    /// wait timeout (MICROseconds); only if 'wait' is true;
     optional uint64     timeout          = 3 [default = 60000000 ];
 
     /// other side accepts callbacks for this call; only if 'wait' is true

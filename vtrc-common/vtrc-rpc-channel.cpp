@@ -40,6 +40,21 @@ namespace vtrc { namespace common  {
         return llu;
     }
 
+    bool can_accept_callbacks( const common::call_context *cc )
+    {
+        vtrc_rpc::options       const *opts = cc->get_call_options( );
+        vtrc_rpc::lowlevel_unit const *llu  = cc->get_lowlevel_message( );
+
+        bool accept_callbacks = llu->opt( ).has_accept_callbacks( )
+                                ? llu->opt( ).accept_callbacks( )
+                                : opts->accept_callbacks( );
+
+        bool wait = llu->opt( ).has_wait( )
+                    ? llu->opt( ).wait( )
+                    : opts->wait( );
+
+        return  wait && accept_callbacks;
+    }
 
     void rpc_channel::configure_message( common::connection_iface_sptr c,
                                          unsigned mess_type,
@@ -48,12 +63,17 @@ namespace vtrc { namespace common  {
         const common::call_context *cc(common::call_context::get(c));
 
         if( mess_type == callback_type_ ) {
-            if( cc && cc->get_lowlevel_message( )->opt( ).wait( ) ) {
+
+            if( cc && can_accept_callbacks( cc ) ) {
+
                 llu.mutable_info( )->set_message_type( mess_type );
                 llu.set_id( cc->get_lowlevel_message( )->id( ) );
+
             } else {
+
                 llu.mutable_info( )->set_message_type( direct_call_type_ );
                 llu.set_id(c->get_protocol( ).next_index( ));
+
             }
         } else {
             llu.mutable_info( )->set_message_type( mess_type );

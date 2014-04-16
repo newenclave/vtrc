@@ -142,16 +142,15 @@ void run_client( vtrc::shared_ptr<client::vtrc_client> cl, bool wait)
             //mi.set_b( ts );
             s.test( NULL, &mi, &mir, NULL );
             last = i; //mir.id( );
-//            if( 0 == last % 201 )
-                std::cout << "response: " << last << "\n";
+            std::cout << "response: " << last << "\n";
             //cl.reset( );
         } catch( const vtrc::common::exception &ex ) {
-//            std::cout << "call error: "
-//                      << " code (" << ex.code( ) << ")"
-//                      << " category (" << ex.category( ) << ")"
-//                      << " what: " << ex.what( )
-//                      << " (" << ex.additional( ) << ")"
-//                      << "\n";
+            std::cout << "call error: "
+                      << " code (" << ex.code( ) << ")"
+                      << " category (" << ex.category( ) << ")"
+                      << " what: " << ex.what( )
+                      << " (" << ex.additional( ) << ")"
+                      << "\n";
             //if( i % 100 == 0 )
 //            std::cout << i << "\n";
             if( ex.category( ) == vtrc_errors::CATEGORY_SYSTEM ) break;
