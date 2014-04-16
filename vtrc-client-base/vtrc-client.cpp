@@ -106,7 +106,7 @@ namespace vtrc { namespace client {
             parent_->on_connect_( );
         }
 
-        void connect(const std::string &local_name)
+        void connect( const std::string &local_name )
         {
 #ifndef _WIN32
             vtrc::shared_ptr<client_unix_local>
@@ -114,7 +114,7 @@ namespace vtrc { namespace client {
             client->connect( local_name );
 #else
             vtrc::shared_ptr<client_win_pipe>
-                    client(create_client<client_win_pipe>( ));
+                                    client(create_client<client_win_pipe>( ));
             client->connect( local_name );
 #endif
             parent_->on_connect_( );
