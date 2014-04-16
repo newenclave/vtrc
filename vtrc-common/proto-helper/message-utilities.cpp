@@ -24,7 +24,7 @@ namespace vtrc { namespace utilities {
 
 
 #define VTRC_CAS_NOT_REP_EQUAL( Type, Getter )          \
-            case fld_type::Type:						\
+            case fld_type::Type:                        \
             if( treflect->Getter( templ, fld ) !=       \
                 sreflect->Getter (src, fld ) )          \
             return false;                               \

@@ -6,10 +6,18 @@ import "google/protobuf/descriptor.proto";
 package vtrc_rpc;
 
 message options {
-    optional uint32     level   = 1 ; // client level "at least"
-    optional bool       wait    = 3 [default = true];       // wait answer
-    optional uint64     timeout = 2 [default = 60000000 ];  // wait timeout
-                                                            // microseconds
+
+    /// client level "at least"
+    optional uint32     level           = 1;
+
+    /// other side waits answer
+    optional bool       wait             = 2 [default = true];
+
+    /// wait timeout microseconds; only if 'wait' is true
+    optional uint64     timeout          = 3 [default = 60000000 ];
+
+    /// other side accepts callbacks for this call; only if 'wait' is true
+    optional bool       accept_callbacks = 4 [default = true];
 };
 
 extend google.protobuf.ServiceOptions {
