@@ -68,10 +68,13 @@ namespace vtrc { namespace server {
 
                 const gpb::uint64 call_id = llu.id( );
 
-                if( disable_wait_ )
+                if( disable_wait_ ) {
                     llu.mutable_opt( )->set_wait(false);
-                else
+                } else {
                     llu.mutable_opt( )->set_wait(call_opt.wait( ));
+                    llu.mutable_opt( )
+                        ->set_accept_callbacks(call_opt.accept_callbacks( ));
+                }
 
                 if( llu.opt( ).wait( ) ) { /// WAITABLE CALL
 
