@@ -54,17 +54,17 @@ namespace vtrc { namespace server {
                               google::protobuf::Closure*          done )
             {
                 common::closure_holder        clhl(done);
-                common::connection_iface_sptr clk (client_.lock( ));
+                common::connection_iface_sptr clnt (client_.lock( ));
 
-                if( clk.get( ) == NULL ) {
+                if( clnt.get( ) == NULL ) {
                     throw vtrc::common::exception( vtrc_errors::ERR_CHANNEL,
                                                    "Connection lost");
                 }
 
                 const vtrc_rpc::options &call_opt
-                            ( get_protocol( *clk ).get_method_options(method) );
+                         ( get_protocol( *clnt ).get_method_options(method) );
 
-                configure_message( clk, message_type_, llu );
+                configure_message( clnt, message_type_, llu );
 
                 const gpb::uint64 call_id = llu.id( );
 
@@ -78,15 +78,15 @@ namespace vtrc { namespace server {
 
                 if( llu.opt( ).wait( ) ) { /// WAITABLE CALL
 
-                    rpc_channel::context_holder ch( &get_protocol(*clk), &llu);
+                    rpc_channel::context_holder ch(&get_protocol(*clnt), &llu);
                     ch.ctx_->set_call_options( call_opt );
                     ch.ctx_->set_done_closure( done );
 
                     process_waitable_call( call_id, llu, response,
-                                           clk, call_opt );
+                                           clnt, call_opt );
 
                 } else {                  /// NON WAITABLE CALL
-                    get_protocol( *clk ).call_rpc_method( llu );
+                    get_protocol( *clnt ).call_rpc_method( llu );
                 }
             }
         };

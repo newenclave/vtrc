@@ -42,6 +42,10 @@ namespace vtrc { namespace common  {
 
     bool can_accept_callbacks( const common::call_context *cc )
     {
+#if 1   /// yeap. we always set it up
+        return cc->get_lowlevel_message( )->opt( ).wait( )
+            && cc->get_lowlevel_message( )->opt( ).accept_callbacks( );
+#else
         vtrc_rpc::options       const *opts = cc->get_call_options( );
         vtrc_rpc::lowlevel_unit const *llu  = cc->get_lowlevel_message( );
 
@@ -54,6 +58,7 @@ namespace vtrc { namespace common  {
                     : opts->wait( );
 
         return  wait && accept_callbacks;
+#endif
     }
 
     void rpc_channel::configure_message( common::connection_iface_sptr c,
