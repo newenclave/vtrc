@@ -35,7 +35,9 @@ namespace vtrc { namespace common  {
         llu->mutable_call( )->set_method_id( meth_name );
 
         llu->set_request( request->SerializeAsString( ) );
-        llu->set_response( response->SerializeAsString( ) );
+
+        /// useless thing
+        //llu->set_response( response->SerializeAsString( ) );
 
         return llu;
     }

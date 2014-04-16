@@ -966,8 +966,8 @@ namespace vtrc { namespace common {
     }
 
     void protocol_layer::read_slot_for(uint64_t slot_id,
-                                        lowlevel_unit_sptr &mess,
-                                        uint64_t microsec)
+                                       lowlevel_unit_sptr &mess,
+                                       uint64_t microsec)
     {
         impl_->read_slot_for( slot_id, mess, microsec );
     }
