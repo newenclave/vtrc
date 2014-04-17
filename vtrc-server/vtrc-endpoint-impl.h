@@ -24,20 +24,20 @@ namespace {
 
     template <typename AcceptorType,
               typename EndpointType,
-              typename TransportType>
+              typename ConnectionType>
     struct endpoint_impl: public endpoint_iface {
 
-        typedef TransportType                         transport_type;
+        typedef ConnectionType                        connection_type;
         typedef AcceptorType                          acceptor_type;
         typedef EndpointType                          endpoint_type;
-        typedef typename transport_type::socket_type  socket_type;
+        typedef typename connection_type::socket_type socket_type;
 
         typedef vtrc::shared_ptr< vtrc::atomic<size_t> > shared_counter_type;
 
         typedef endpoint_impl<
                 acceptor_type,
                 endpoint_type,
-                transport_type
+                connection_type
         > this_type;
 
         application             &app_;
@@ -126,8 +126,8 @@ namespace {
         {
             if( !error ) {
                 try {
-                    vtrc::shared_ptr<transport_type> new_conn
-                           (transport_type::create( *this, sock,
+                    vtrc::shared_ptr<connection_type> new_conn
+                           (connection_type::create( *this, sock,
                                                     get_on_destroy( )));
                     app_.get_clients( )->store( new_conn );
                     ++(*client_count_);
