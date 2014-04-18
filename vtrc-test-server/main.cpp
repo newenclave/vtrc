@@ -277,8 +277,8 @@ int main( ) try {
 
     std::string file_name("\\\\.\\pipe\\test_pipe");
 
-    vtrc::shared_ptr<vtrc::server::endpoint_iface> tcp_ul
-            (vtrc::server::endpoints::win_pipe::create(app, file_name));
+    vtrc::shared_ptr<vtrc::server::listener> tcp_ul
+            (vtrc::server::listeners::win_pipe::create(app, file_name));
 
 #endif
 

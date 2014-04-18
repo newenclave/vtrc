@@ -11,9 +11,9 @@ namespace vtrc { namespace server {
 
     class application;
 
-    namespace endpoints { namespace win_pipe {
+    namespace listeners { namespace win_pipe {
         listener *create( application &app, const std::string &name );
-        listener *create( application &app, const endpoint_options &opts,
+        listener *create( application &app, const listener_options &opts,
                                 const std::string &name );
     }}
 

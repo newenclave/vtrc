@@ -15,7 +15,7 @@
 #include "vtrc-atomic.h"
 #include "vtrc-common/vtrc-closure.h"
 
-namespace vtrc { namespace server { namespace endpoints {
+namespace vtrc { namespace server { namespace listeners {
 
 namespace {
 
@@ -28,10 +28,10 @@ namespace {
 
         typedef commection_pipe_impl this_type;
 
-        commection_pipe_impl( endpoint_iface &endpoint,
+        commection_pipe_impl( listener &listen,
                               vtrc::shared_ptr<socket_type> sock,
                               const common::empty_closure_type &on_destroy)
-            :connection_impl_type(endpoint, sock, on_destroy)
+            :connection_impl_type(listen, sock, on_destroy)
         { }
 
         bool impersonate( )
@@ -54,12 +54,12 @@ namespace {
 //            if( c && c->get_impersonated( ) ) RevertToSelf( );
         }
 
-        static vtrc::shared_ptr<this_type> create(endpoint_iface &endpoint,
+        static vtrc::shared_ptr<this_type> create(listener &listnr,
                                  vtrc::shared_ptr<socket_type> sock,
                                  const common::empty_closure_type &on_destroy)
         {
             vtrc::shared_ptr<this_type> new_inst
-                    (vtrc::make_shared<this_type>(vtrc::ref(endpoint),
+                    (vtrc::make_shared<this_type>(vtrc::ref(listnr),
                                                    sock, on_destroy));
 
             new_inst->init( );
@@ -85,7 +85,7 @@ namespace {
         basio::windows::overlapped_ptr overlapped_;
 
         pipe_listener( application &app,
-                const endpoint_options &opts, const std::string pipe_name,
+                const listener_options &opts, const std::string pipe_name,
                 size_t max_inst, size_t out_buf_size, size_t in_buf_size)
             :listener(app, opts)
             ,ios_(app.get_io_service( ))
@@ -176,12 +176,12 @@ namespace {
         void start( )
         {
             start_accept( );
-            app_.on_endpoint_started( this );
+            get_application( ).on_endpoint_started( this );
         }
 
         void stop ( )
         {
-            app_.on_endpoint_stopped( this );
+            get_application( ).on_endpoint_stopped( this );
         }
 
         void on_accept( const bsys::error_code &error,
@@ -192,7 +192,7 @@ namespace {
                     vtrc::shared_ptr<transport_type> new_conn
                              (transport_type::create(
                                 *this, sock, get_on_destroy( )));
-                    app_.get_clients( )->store( new_conn );
+                    get_application( ).get_clients( )->store( new_conn );
                     ++(*client_count_);
                 } catch( ... ) {
                     ;;;
@@ -210,7 +210,7 @@ namespace {
 
         listener *create( application &app, const std::string &name )
         {
-            endpoint_options def_opts(default_options( ));
+            listener_options def_opts(default_options( ));
             return new pipe_listener( app, default_options( ), name,
                                      PIPE_UNLIMITED_INSTANCES,
                                      def_opts.read_buffer_size,
@@ -222,7 +222,7 @@ namespace {
         //
         //}
 
-        listener *create( application &app, const endpoint_options &opts,
+        listener *create( application &app, const listener_options &opts,
                                 const std::string &name )
         {
             return new pipe_listener( app, opts, name,
