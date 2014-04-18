@@ -5,15 +5,15 @@
 
 #include <string>
 
-#include "vtrc-endpoint-base.h"
+#include "vtrc-listener.h"
 
 namespace vtrc { namespace server {
 
     class application;
 
     namespace endpoints { namespace win_pipe {
-        endpoint_base *create( application &app, const std::string &name );
-        endpoint_base *create( application &app, const endpoint_options &opts,
+        listener *create( application &app, const std::string &name );
+        listener *create( application &app, const endpoint_options &opts,
                                 const std::string &name );
     }}
 

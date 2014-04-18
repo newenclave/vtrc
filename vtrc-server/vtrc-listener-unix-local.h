@@ -5,15 +5,15 @@
 
 #include <string>
 
-#include "vtrc-endpoint-base.h"
+#include "vtrc-listener.h"
 
 namespace vtrc { namespace server {
 
     class application;
 
-    namespace endpoints { namespace unix_local {
-        endpoint_base *create( application &app, const std::string &name );
-        endpoint_base *create( application &app, const endpoint_options &opts,
+    namespace listeners { namespace unix_local {
+        listener *create( application &app, const std::string &name );
+        listener *create( application &app, const listener_options &opts,
                                 const std::string &name );
     }}
 

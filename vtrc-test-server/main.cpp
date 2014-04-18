@@ -16,10 +16,10 @@
 #include "boost/thread/condition_variable.hpp"
 
 #include "vtrc-server/vtrc-application.h"
-#include "vtrc-server/vtrc-endpoint-base.h"
-#include "vtrc-server/vtrc-endpoint-tcp.h"
-#include "vtrc-server/vtrc-endpoint-unix-local.h"
-#include "vtrc-server/vtrc-endpoint-win-pipe.h"
+#include "vtrc-server/vtrc-listener.h"
+#include "vtrc-server/vtrc-listener-tcp.h"
+#include "vtrc-server/vtrc-listener-unix-local.h"
+#include "vtrc-server/vtrc-listener-win-pipe.h"
 
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-pool-pair.h"
@@ -207,17 +207,17 @@ public:
 
 private:
 
-    void on_endpoint_started( vtrc::server::endpoint_base *ep )
+    void on_endpoint_started( vtrc::server::listener *ep )
     {
         std::cout << "Start endpoint: " << ep->string( ) << "\n";
     }
 
-    void on_endpoint_stopped( vtrc::server::endpoint_base *ep )
+    void on_endpoint_stopped( vtrc::server::listener *ep )
     {
         std::cout << "Stop endpoint: " << ep->string( ) << "\n";
     }
 
-    void on_endpoint_exception( vtrc::server::endpoint_base *ep )
+    void on_endpoint_exception( vtrc::server::listener *ep )
     {
         try {
             throw;
@@ -255,11 +255,11 @@ int main( ) try {
     common::pool_pair pp(1, 1);
     main_app app(pp);
 
-    vtrc::shared_ptr<vtrc::server::endpoint_base> tcp4_ep
-            (vtrc::server::endpoints::tcp::create(app, "0.0.0.0", 44667));
+    vtrc::shared_ptr<vtrc::server::listener> tcp4_ep
+            (vtrc::server::listeners::tcp::create(app, "0.0.0.0", 44667));
 
-    vtrc::shared_ptr<vtrc::server::endpoint_base> tcp6_ep
-            (vtrc::server::endpoints::tcp::create(app, "::", 44668));
+    vtrc::shared_ptr<vtrc::server::listener> tcp6_ep
+            (vtrc::server::listeners::tcp::create(app, "::", 44668));
 
 #ifndef _WIN32
 
@@ -267,8 +267,8 @@ int main( ) try {
 
     ::unlink( file_name.c_str( ) );
 
-    vtrc::shared_ptr<vtrc::server::endpoint_base> tcp_ul
-            (vtrc::server::endpoints::unix_local::create(app, file_name));
+    vtrc::shared_ptr<vtrc::server::listener> tcp_ul
+            (vtrc::server::listeners::unix_local::create(app, file_name));
 
     ::chmod(file_name.c_str( ), 0xFFFFFF );
 

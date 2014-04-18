@@ -5,14 +5,14 @@
 #include "vtrc-bind.h"
 #include "vtrc-ref.h"
 
-#include "vtrc-endpoint-base.h"
+#include "vtrc-listener.h"
 #include "vtrc-application.h"
 #include "vtrc-protocol-layer-s.h"
 #include "vtrc-common/vtrc-enviroment.h"
 
 #include <memory>
 
-namespace vtrc { namespace server { namespace endpoints {
+namespace vtrc { namespace server { namespace listeners {
 
     namespace {
 
@@ -26,7 +26,7 @@ namespace vtrc { namespace server { namespace endpoints {
             typedef connection_impl<super_type>      this_type;
             typedef typename super_type::socket_type socket_type;
 
-            endpoint_base                      &endpoint_;
+            listener                      &endpoint_;
             application                        &app_;
             basio::io_service                  &ios_;
             common::enviroment                  env_;
@@ -36,7 +36,7 @@ namespace vtrc { namespace server { namespace endpoints {
             vtrc::unique_ptr<protocol_layer_s>  protocol_;
             common::empty_closure_type          destroy_closure_;
 
-            connection_impl(endpoint_base &endpoint,
+            connection_impl(listener &endpoint,
                             vtrc::shared_ptr<socket_type> sock,
                             const common::empty_closure_type &on_destroy)
                 :super_type(sock)
@@ -57,7 +57,7 @@ namespace vtrc { namespace server { namespace endpoints {
                 return protocol_->client_id( );
             }
 
-            static vtrc::shared_ptr<this_type> create(endpoint_base &endpoint,
+            static vtrc::shared_ptr<this_type> create(listener &endpoint,
                                    vtrc::shared_ptr<socket_type> sock,
                                    const common::empty_closure_type &on_destroy)
             {
@@ -69,7 +69,7 @@ namespace vtrc { namespace server { namespace endpoints {
                 return new_inst;
             }
 
-            static vtrc::shared_ptr<this_type> create(endpoint_base &endpoint,
+            static vtrc::shared_ptr<this_type> create(listener &endpoint,
                                   socket_type *sock,
                                   const common::empty_closure_type &on_destroy)
             {
@@ -115,7 +115,7 @@ namespace vtrc { namespace server { namespace endpoints {
                 return protocol_->ready( );
             }
 
-            endpoint_base &endpoint( )
+            listener &endpoint( )
             {
                 return endpoint_;
             }

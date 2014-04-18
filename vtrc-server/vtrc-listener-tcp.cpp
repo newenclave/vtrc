@@ -1,10 +1,10 @@
 
 #include "vtrc-common/vtrc-transport-tcp.h"
 
-#include "vtrc-endpoint-impl.h"
+#include "vtrc-listener-impl.h"
 #include "vtrc-connection-impl.h"
 
-namespace vtrc { namespace server { namespace endpoints {
+namespace vtrc { namespace server { namespace listeners {
 
     namespace {
 
@@ -21,7 +21,7 @@ namespace vtrc { namespace server { namespace endpoints {
                 connection_type
         > super_type;
 
-        struct endpoint_tcp: public super_type {
+        struct listener_tcp: public super_type {
 
             static endpoint_type make_endpoint( const std::string &address,
                                                 unsigned short port )
@@ -29,8 +29,8 @@ namespace vtrc { namespace server { namespace endpoints {
                 return endpoint_type(bip::address::from_string(address), port);
             }
 
-            endpoint_tcp( application &app,
-                          const endpoint_options &opts,
+            listener_tcp( application &app,
+                          const listener_options &opts,
                           const std::string &address,
                           unsigned short port )
                 :super_type( app, opts, make_endpoint(address, port))
@@ -50,17 +50,17 @@ namespace vtrc { namespace server { namespace endpoints {
 
     namespace tcp {
 
-        endpoint_base *create(application &app, const endpoint_options &opts,
+        listener *create(application &app, const listener_options &opts,
                             const std::string &address, unsigned short service)
         {
-            return new endpoint_tcp( app, opts, address, service );
+            return new listener_tcp( app, opts, address, service );
         }
 
-        endpoint_base *create( application &app,
+        listener *create( application &app,
                                 const std::string &address,
                                 unsigned short service )
         {
-            const endpoint_options def_opts(default_options( ));
+            const listener_options def_opts(default_options( ));
 
             return create( app, def_opts, address, service );
         }

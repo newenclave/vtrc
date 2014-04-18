@@ -1,4 +1,4 @@
-#include "vtrc-endpoint-win-pipe.h"
+#include "vtrc-listener-win-pipe.h"
 
 #ifdef _WIN32
 
@@ -10,7 +10,6 @@
 #include "vtrc-common/vtrc-transport-win-pipe.h"
 #include "vtrc-common/vtrc-connection-list.h"
 
-#include "vtrc-endpoint-iface.h"
 #include "vtrc-connection-impl.h"
 
 #include "vtrc-atomic.h"
@@ -70,9 +69,9 @@ namespace {
 
     typedef commection_pipe_impl transport_type;
 
-    struct pipe_ep_impl: public endpoint_base {
+    struct pipe_listener: public listener {
 
-        typedef pipe_ep_impl this_type;
+        typedef pipe_listener this_type;
         typedef vtrc::shared_ptr< vtrc::atomic<size_t> > shared_counter_type;
 
         basio::io_service       &ios_;
@@ -85,10 +84,10 @@ namespace {
 
         basio::windows::overlapped_ptr overlapped_;
 
-        pipe_ep_impl( application &app,
+        pipe_listener( application &app,
                 const endpoint_options &opts, const std::string pipe_name,
                 size_t max_inst, size_t out_buf_size, size_t in_buf_size)
-            :endpoint_base(app, opts)
+            :listener(app, opts)
             ,ios_(app.get_io_service( ))
             ,endpoint_(pipe_name)
             ,pipe_max_inst_(max_inst)
@@ -97,7 +96,7 @@ namespace {
             ,client_count_(vtrc::make_shared<vtrc::atomic<size_t> >(0))
         { }
 
-        virtual ~pipe_ep_impl( ) { }
+        virtual ~pipe_listener( ) { }
 
         static void on_client_destroy( shared_counter_type count )
         {
@@ -209,10 +208,10 @@ namespace {
 
     namespace win_pipe {
 
-        endpoint_iface *create( application &app, const std::string &name )
+        listener *create( application &app, const std::string &name )
         {
             endpoint_options def_opts(default_options( ));
-            return new pipe_ep_impl( app, default_options( ), name,
+            return new pipe_listener( app, default_options( ), name,
                                      PIPE_UNLIMITED_INSTANCES,
                                      def_opts.read_buffer_size,
                                      def_opts.read_buffer_size );
@@ -223,10 +222,10 @@ namespace {
         //
         //}
 
-        endpoint_iface *create( application &app, const endpoint_options &opts,
+        listener *create( application &app, const endpoint_options &opts,
                                 const std::string &name )
         {
-            return new pipe_ep_impl( app, opts, name,
+            return new pipe_listener( app, opts, name,
                                      PIPE_UNLIMITED_INSTANCES,
                                      opts.read_buffer_size,
                                      opts.read_buffer_size );

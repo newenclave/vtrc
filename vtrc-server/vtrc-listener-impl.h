@@ -3,7 +3,7 @@
 
 #include "boost/asio.hpp"
 
-#include "vtrc-endpoint-base.h"
+#include "vtrc-listener.h"
 #include "vtrc-application.h"
 #include "vtrc-connection-iface.h"
 #include "vtrc-connection-list.h"
@@ -15,7 +15,7 @@
 
 #include "vtrc-common/vtrc-enviroment.h"
 
-namespace vtrc { namespace server { namespace endpoints {
+namespace vtrc { namespace server { namespace listeners {
 
 namespace {
 
@@ -25,7 +25,7 @@ namespace {
     template <typename AcceptorType,
               typename EndpointType,
               typename ConnectionType>
-    struct endpoint_impl: public endpoint_base {
+    struct endpoint_impl: public listener {
 
         typedef ConnectionType                        connection_type;
         typedef AcceptorType                          acceptor_type;
@@ -48,8 +48,8 @@ namespace {
         shared_counter_type      client_count_;
 
         endpoint_impl( application &app,
-                       const endpoint_options &opts, const endpoint_type &ep)
-            :endpoint_base(app, opts)
+                       const listener_options &opts, const endpoint_type &ep)
+            :listener(app, opts)
             ,ios_(app.get_io_service( ))
             ,endpoint_(ep)
             ,acceptor_(ios_, endpoint_)

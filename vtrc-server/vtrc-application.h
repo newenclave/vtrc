@@ -28,7 +28,7 @@ namespace vtrc {
 
 namespace server {
 
-    class  endpoint_base;
+    class  listener;
     struct connection_iface;
 
     class application {
@@ -40,7 +40,7 @@ namespace server {
         application( const application & );
         application& operator = ( const application & );
 
-        friend class endpoint_base;
+        friend class listener;
 
     public:
 
@@ -68,9 +68,9 @@ namespace server {
 
         /** TODO: fix it **/
 
-        virtual void on_endpoint_started(   endpoint_base * /*ep*/ ) { }
-        virtual void on_endpoint_stopped(   endpoint_base * /*ep*/ ) { }
-        virtual void on_endpoint_exception( endpoint_base * /*ep*/ ) { }
+        virtual void on_endpoint_started(   listener * /*ep*/ ) { }
+        virtual void on_endpoint_stopped(   listener * /*ep*/ ) { }
+        virtual void on_endpoint_exception( listener * /*ep*/ ) { }
 
         /** TODO: fix it **/
 

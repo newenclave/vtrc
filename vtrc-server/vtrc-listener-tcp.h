@@ -3,19 +3,19 @@
 
 #include <string>
 
-#include "vtrc-endpoint-base.h"
+#include "vtrc-listener.h"
 
 namespace vtrc { namespace server {
 
     class application;
 
-    namespace endpoints { namespace tcp {
+    namespace listeners { namespace tcp {
 
-        endpoint_base *create( application &app,
+        listener *create( application &app,
                                 const std::string &address,
                                 unsigned short service );
 
-        endpoint_base *create( application &app, const endpoint_options &opts,
+        listener *create( application &app, const listener_options &opts,
                                 const std::string &address,
                                 unsigned short service );
     }}

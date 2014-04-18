@@ -5,10 +5,10 @@
 
 #include "vtrc-common/vtrc-transport-unix-local.h"
 
-#include "vtrc-endpoint-impl.h"
+#include "vtrc-listener-impl.h"
 #include "vtrc-connection-impl.h"
 
-namespace vtrc { namespace server { namespace endpoints {
+namespace vtrc { namespace server { namespace listeners {
 
     namespace {
 
@@ -74,10 +74,10 @@ namespace vtrc { namespace server { namespace endpoints {
         > super_type;
 #endif
 
-        struct endpoint_unix: public super_type {
+        struct listener_unix: public super_type {
 
-            endpoint_unix( application &app,
-                           const endpoint_options &opts,
+            listener_unix( application &app,
+                           const listener_options &opts,
                            const std::string &name )
                 :super_type(app, opts, endpoint_type(name))
             { }
@@ -93,16 +93,16 @@ namespace vtrc { namespace server { namespace endpoints {
 
     namespace unix_local {
 
-        endpoint_base *create(application &app,
-                               const endpoint_options &opts,
+        listener *create(application &app,
+                               const listener_options &opts,
                                const std::string &name)
         {
-            return new endpoint_unix( app, opts, name );
+            return new listener_unix( app, opts, name );
         }
 
-        endpoint_base *create( application &app, const std::string &name )
+        listener *create( application &app, const std::string &name )
         {
-            const endpoint_options def_opts(default_options( ));
+            const listener_options def_opts(default_options( ));
             return create( app, def_opts, name );
         }
 
