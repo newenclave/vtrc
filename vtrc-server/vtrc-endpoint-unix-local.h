@@ -5,15 +5,15 @@
 
 #include <string>
 
-#include "vtrc-endpoint-iface.h"
+#include "vtrc-endpoint-base.h"
 
 namespace vtrc { namespace server {
 
     class application;
 
     namespace endpoints { namespace unix_local {
-        endpoint_iface *create( application &app, const std::string &name );
-        endpoint_iface *create( application &app, const endpoint_options &opts,
+        endpoint_base *create( application &app, const std::string &name );
+        endpoint_base *create( application &app, const endpoint_options &opts,
                                 const std::string &name );
     }}
 

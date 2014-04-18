@@ -1,5 +1,5 @@
 
-#include "vtrc-endpoint-iface.h"
+#include "vtrc-endpoint-base.h"
 
 namespace vtrc { namespace server { namespace endpoints {
 

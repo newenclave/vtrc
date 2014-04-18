@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "vtrc-endpoint-iface.h"
+#include "vtrc-endpoint-base.h"
 
 namespace vtrc { namespace server {
 
@@ -11,11 +11,11 @@ namespace vtrc { namespace server {
 
     namespace endpoints { namespace tcp {
 
-        endpoint_iface *create( application &app,
+        endpoint_base *create( application &app,
                                 const std::string &address,
                                 unsigned short service );
 
-        endpoint_iface *create( application &app, const endpoint_options &opts,
+        endpoint_base *create( application &app, const endpoint_options &opts,
                                 const std::string &address,
                                 unsigned short service );
     }}

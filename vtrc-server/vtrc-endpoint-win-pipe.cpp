@@ -70,16 +70,13 @@ namespace {
 
     typedef commection_pipe_impl transport_type;
 
-    struct pipe_ep_impl: public endpoint_iface {
+    struct pipe_ep_impl: public endpoint_base {
 
         typedef pipe_ep_impl this_type;
         typedef vtrc::shared_ptr< vtrc::atomic<size_t> > shared_counter_type;
 
-        application             &app_;
         basio::io_service       &ios_;
-        common::enviroment       env_;
 
-        endpoint_options         opts_;
         std::string              endpoint_;
         size_t                   pipe_max_inst_;
         size_t                   in_buf_size_;
@@ -91,10 +88,8 @@ namespace {
         pipe_ep_impl( application &app,
                 const endpoint_options &opts, const std::string pipe_name,
                 size_t max_inst, size_t out_buf_size, size_t in_buf_size)
-            :app_(app)
-            ,ios_(app_.get_io_service( ))
-            ,env_(app.get_enviroment( ))
-            ,opts_(opts)
+            :endpoint_base(app, opts)
+            ,ios_(app.get_io_service( ))
             ,endpoint_(pipe_name)
             ,pipe_max_inst_(max_inst)
             ,in_buf_size_(in_buf_size)
@@ -117,16 +112,6 @@ namespace {
         size_t clients_count( ) const
         {
             return (*client_count_);
-        }
-
-        application &get_application( )
-        {
-            return app_;
-        }
-
-        common::enviroment &get_enviroment( )
-        {
-            return env_;
         }
 
         std::string string( ) const
@@ -198,11 +183,6 @@ namespace {
         void stop ( )
         {
             app_.on_endpoint_stopped( this );
-        }
-
-        virtual const endpoint_options &get_options( ) const
-        {
-            return opts_;
         }
 
         void on_accept( const bsys::error_code &error,

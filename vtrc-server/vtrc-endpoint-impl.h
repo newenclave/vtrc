@@ -3,7 +3,7 @@
 
 #include "boost/asio.hpp"
 
-#include "vtrc-endpoint-iface.h"
+#include "vtrc-endpoint-base.h"
 #include "vtrc-application.h"
 #include "vtrc-connection-iface.h"
 #include "vtrc-connection-list.h"
@@ -25,7 +25,7 @@ namespace {
     template <typename AcceptorType,
               typename EndpointType,
               typename ConnectionType>
-    struct endpoint_impl: public endpoint_iface {
+    struct endpoint_impl: public endpoint_base {
 
         typedef ConnectionType                        connection_type;
         typedef AcceptorType                          acceptor_type;
@@ -40,24 +40,19 @@ namespace {
                 connection_type
         > this_type;
 
-        application             &app_;
         basio::io_service       &ios_;
-        common::enviroment       env_;
 
         endpoint_type            endpoint_;
         acceptor_type            acceptor_;
 
-        endpoint_options         opts_;
         shared_counter_type      client_count_;
 
         endpoint_impl( application &app,
                        const endpoint_options &opts, const endpoint_type &ep)
-            :app_(app)
-            ,ios_(app_.get_io_service( ))
-            ,env_(app_.get_enviroment())
+            :endpoint_base(app, opts)
+            ,ios_(app.get_io_service( ))
             ,endpoint_(ep)
             ,acceptor_(ios_, endpoint_)
-            ,opts_(opts)
             ,client_count_(vtrc::make_shared<vtrc::atomic<size_t> >(0))
         { }
 
@@ -76,16 +71,6 @@ namespace {
         common::empty_closure_type get_on_destroy( )
         {
             return vtrc::bind( &this_type::on_client_destroy, client_count_ );
-        }
-
-        application &get_application( )
-        {
-            return app_;
-        }
-
-        common::enviroment &get_enviroment( )
-        {
-            return env_;
         }
 
         virtual std::string string( ) const
@@ -107,18 +92,13 @@ namespace {
         void start( )
         {
             start_accept( );
-            app_.on_endpoint_started( this );
+            get_application( ).on_endpoint_started( this );
         }
 
         void stop ( )
         {
-            app_.on_endpoint_stopped( this );
+            get_application( ).on_endpoint_stopped( this );
             acceptor_.close( );
-        }
-
-        virtual const endpoint_options &get_options( ) const
-        {
-            return opts_;
         }
 
         void on_accept( const bsys::error_code &error,
@@ -129,7 +109,7 @@ namespace {
                     vtrc::shared_ptr<connection_type> new_conn
                            (connection_type::create( *this, sock,
                                                     get_on_destroy( )));
-                    app_.get_clients( )->store( new_conn );
+                    get_application( ).get_clients( )->store( new_conn );
                     ++(*client_count_);
                 } catch( ... ) {
                     ;;;

@@ -50,13 +50,13 @@ namespace vtrc { namespace server { namespace endpoints {
 
     namespace tcp {
 
-        endpoint_iface *create(application &app, const endpoint_options &opts,
+        endpoint_base *create(application &app, const endpoint_options &opts,
                             const std::string &address, unsigned short service)
         {
             return new endpoint_tcp( app, opts, address, service );
         }
 
-        endpoint_iface *create( application &app,
+        endpoint_base *create( application &app,
                                 const std::string &address,
                                 unsigned short service )
         {

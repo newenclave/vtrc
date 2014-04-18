@@ -93,14 +93,14 @@ namespace vtrc { namespace server { namespace endpoints {
 
     namespace unix_local {
 
-        endpoint_iface *create(application &app,
+        endpoint_base *create(application &app,
                                const endpoint_options &opts,
                                const std::string &name)
         {
             return new endpoint_unix( app, opts, name );
         }
 
-        endpoint_iface *create( application &app, const std::string &name )
+        endpoint_base *create( application &app, const std::string &name )
         {
             const endpoint_options def_opts(default_options( ));
             return create( app, def_opts, name );
