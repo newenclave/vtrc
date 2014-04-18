@@ -39,7 +39,7 @@ namespace vtrc { namespace common {
         delete impl_;
     }
 
-    const char *transport_unix_local::name( ) const
+    std::string transport_unix_local::name( ) const
     {
         return impl_->name( );
     }

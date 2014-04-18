@@ -42,7 +42,7 @@ namespace vtrc { namespace common {
         delete impl_;
     }
 
-    const char *transport_win_pipe::name( ) const
+    std::string transport_win_pipe::name( ) const
     {
         return impl_->name( );
     }

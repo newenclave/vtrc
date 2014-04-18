@@ -38,7 +38,7 @@ namespace vtrc { namespace common {
 
         virtual ~transport_unix_local(  );
 
-        const char *name( ) const                     ;
+        std::string name( ) const                     ;
         void close( )                                 ;
 
         socket_type             &get_socket( )        ;

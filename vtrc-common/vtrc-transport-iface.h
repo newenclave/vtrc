@@ -20,7 +20,7 @@ namespace vtrc { namespace common {
 
         virtual ~transport_iface( ) { }
 
-        virtual const char *name( ) const   = 0;
+        virtual std::string name( ) const   = 0;
         virtual void close( )               = 0;
         virtual bool active( ) const        = 0;
         virtual void init( )                = 0;

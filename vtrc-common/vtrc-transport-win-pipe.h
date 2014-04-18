@@ -37,7 +37,7 @@ namespace vtrc { namespace common {
         transport_win_pipe( vtrc::shared_ptr<socket_type> sock );
         virtual ~transport_win_pipe(  );
 
-        const char *name( ) const                     ;
+        std::string name( ) const                     ;
         void close( )                                 ;
 
         socket_type             &get_socket( )        ;

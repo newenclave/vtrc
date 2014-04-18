@@ -29,6 +29,12 @@ namespace vtrc { namespace common {
 
     };
 
+    std::string make_name( socket_type &sock )
+    {
+        std::ostringstream oss;
+        oss << "tcp://" << sock.remote_endpoint( );
+    }
+
     transport_tcp::transport_tcp( vtrc::shared_ptr<socket_type> sock )
         :impl_(new impl(sock, "tcp"))
     {
@@ -40,7 +46,7 @@ namespace vtrc { namespace common {
         delete impl_;
     }
 
-    const char *transport_tcp::name( ) const
+    std::string transport_tcp::name( ) const
     {
         return impl_->name( );
     }

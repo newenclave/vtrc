@@ -88,7 +88,7 @@ namespace vtrc { namespace common {
             virtual ~transport_impl( )
             { }
 
-            const char *name( ) const
+            std::string name( ) const
             {
                 return name_.c_str( );
             }
