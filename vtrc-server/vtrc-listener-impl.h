@@ -73,7 +73,7 @@ namespace {
                                weak_from_this( ), _1 );
         }
 
-        virtual std::string string( ) const
+        virtual std::string name( ) const
         {
             return "unknown://";
         }

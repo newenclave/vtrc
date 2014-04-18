@@ -36,7 +36,7 @@ namespace vtrc { namespace server { namespace listeners {
                 :super_type( app, opts, make_endpoint(address, port))
             { }
 
-            virtual std::string string( ) const
+            virtual std::string name( ) const
             {
                 std::ostringstream oss;
                 oss << "tcp://" << endpoint_.address( ).to_string( )

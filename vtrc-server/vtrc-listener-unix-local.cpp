@@ -82,7 +82,7 @@ namespace vtrc { namespace server { namespace listeners {
                 :super_type(app, opts, endpoint_type(name))
             { }
 
-            std::string string( ) const
+            std::string name( ) const
             {
                 std::ostringstream oss;
                 oss << "unix://" << endpoint_.path( );

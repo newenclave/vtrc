@@ -225,25 +225,25 @@ private:
     void on_new_connection( const common::connection_iface *c,
                             vtrc::server::listener *ep)
     {
-        std::cout << "new connection: ep = " << ep->string( )
+        std::cout << "new connection: ep = " << ep->name( )
                   << "; c = " << c->name( ) << "\n";
     }
 
     void on_stop_connection( const common::connection_iface *c,
                              vtrc::server::listener *ep )
     {
-        std::cout << "stop connection: ep = " << ep->string( )
+        std::cout << "stop connection: ep = " << ep->name( )
                   << "; c = " << c->name( ) << "\n";
     }
 
     void on_endpoint_started( vtrc::server::listener *ep )
     {
-        std::cout << "Start endpoint: " << ep->string( ) << "\n";
+        std::cout << "Start endpoint: " << ep->name( ) << "\n";
     }
 
     void on_endpoint_stopped( vtrc::server::listener *ep )
     {
-        std::cout << "Stop endpoint: " << ep->string( ) << "\n";
+        std::cout << "Stop endpoint: " << ep->name( ) << "\n";
     }
 
     std::string get_session_key( vtrc::common::connection_iface *connection,

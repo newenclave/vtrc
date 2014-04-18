@@ -63,7 +63,7 @@ namespace server {
 
     public:
 
-        virtual std::string string( ) const = 0;
+        virtual std::string name( ) const = 0;
 
         virtual void start( ) = 0;
         virtual void stop ( ) = 0;

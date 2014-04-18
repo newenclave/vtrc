@@ -117,7 +117,7 @@ namespace {
                                weak_from_this( ), _1 );
         }
 
-        std::string string( ) const
+        std::string name( ) const
         {
             return std::string("pipe://") + endpoint_;
         }
