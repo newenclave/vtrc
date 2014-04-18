@@ -83,6 +83,7 @@ namespace {
         shared_counter_type      client_count_;
 
         basio::windows::overlapped_ptr overlapped_;
+        bool                     working_;
 
         pipe_listener( application &app,
                 const listener_options &opts, const std::string pipe_name,
@@ -94,6 +95,7 @@ namespace {
             ,in_buf_size_(in_buf_size)
             ,out_buf_size_(out_buf_size)
             ,client_count_(vtrc::make_shared<vtrc::atomic<size_t> >(0))
+            ,working_(true)
         { }
 
         virtual ~pipe_listener( ) { }
@@ -120,6 +122,7 @@ namespace {
 
         void start_accept(  )
         {
+            if( !working_ ) return;
             SECURITY_DESCRIPTOR secdesc;
             SECURITY_ATTRIBUTES secarttr;
             InitializeSecurityDescriptor(&secdesc,
@@ -176,12 +179,15 @@ namespace {
         void start( )
         {
             start_accept( );
-            get_application( ).on_endpoint_started( this );
+            on_start_( );
         }
 
         void stop ( )
         {
-            get_application( ).on_endpoint_stopped( this );
+            bsys::error_code ec( ERROR_CANCELLED,
+                        basio::error::get_system_category( ));
+            overlapped_.complete( ec, 0 );
+            on_stop_( );
         }
 
         void on_accept( const bsys::error_code &error,
