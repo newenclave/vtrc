@@ -34,7 +34,7 @@ namespace vtrc { namespace server { namespace endpoints {
                           const std::string &address,
                           unsigned short port )
                 :super_type( app, opts, make_endpoint(address, port))
-            {}
+            { }
 
             virtual std::string string( ) const
             {
