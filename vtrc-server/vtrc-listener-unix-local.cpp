@@ -97,7 +97,9 @@ namespace vtrc { namespace server { namespace listeners {
                                const listener_options &opts,
                                const std::string &name)
         {
-            return new listener_unix( app, opts, name );
+            listener *new_l = new listener_unix( app, opts, name );
+            app.attach_listener( new_l );
+            return new_l;
         }
 
         listener *create( application &app, const std::string &name )

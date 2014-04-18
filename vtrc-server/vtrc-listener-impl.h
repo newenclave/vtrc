@@ -88,7 +88,6 @@ namespace {
                              basio::placeholders::error, new_sock ));
         }
 
-
         void start( )
         {
             start_accept( );

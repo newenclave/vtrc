@@ -53,7 +53,9 @@ namespace vtrc { namespace server { namespace listeners {
         listener *create(application &app, const listener_options &opts,
                             const std::string &address, unsigned short service)
         {
-            return new listener_tcp( app, opts, address, service );
+            listener *new_l = new listener_tcp( app, opts, address, service );
+            app.attach_listener( new_l );
+            return new_l;
         }
 
         listener *create( application &app,

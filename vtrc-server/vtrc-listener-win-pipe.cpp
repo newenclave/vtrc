@@ -214,29 +214,27 @@ namespace {
 }
 
     namespace win_pipe {
+        listener *create( application &app, const listener_options &opts,
+                                const std::string &name )
+        {
+            listener *new_l = new pipe_listener( app, opts, name,
+                                     PIPE_UNLIMITED_INSTANCES,
+                                     opts.read_buffer_size,
+                                     opts.read_buffer_size );
+            app.attach_listener( new_l );
+            return new_l;
+        }
 
         listener *create( application &app, const std::string &name )
         {
             listener_options def_opts(default_options( ));
-            return new pipe_listener( app, default_options( ), name,
-                                     PIPE_UNLIMITED_INSTANCES,
-                                     def_opts.read_buffer_size,
-                                     def_opts.read_buffer_size );
+            return create( app, def_opts, name );
         }
 
         //endpoint_iface *create( application &app, const std::wstring &name )
         //{
         //
         //}
-
-        listener *create( application &app, const listener_options &opts,
-                                const std::string &name )
-        {
-            return new pipe_listener( app, opts, name,
-                                     PIPE_UNLIMITED_INSTANCES,
-                                     opts.read_buffer_size,
-                                     opts.read_buffer_size );
-        }
     }
 
 }}}
