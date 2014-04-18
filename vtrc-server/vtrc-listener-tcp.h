@@ -11,13 +11,13 @@ namespace vtrc { namespace server {
 
     namespace listeners { namespace tcp {
 
-        listener *create( application &app,
-                                const std::string &address,
-                                unsigned short service );
+        listener_sptr create( application &app,
+                              const std::string &address,
+                              unsigned short service );
 
-        listener *create( application &app, const listener_options &opts,
-                                const std::string &address,
-                                unsigned short service );
+        listener_sptr create( application &app, const listener_options &opts,
+                              const std::string &address,
+                              unsigned short service );
     }}
 
 }}

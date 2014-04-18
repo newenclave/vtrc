@@ -153,7 +153,7 @@ namespace vtrc { namespace server {
         return std::string( );
     }
 
-    void application::attach_listener( listener * )
+    void application::attach_listener( vtrc::shared_ptr<listener> /*nl*/)
     {
         ;;;
     }

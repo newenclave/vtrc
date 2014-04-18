@@ -4,6 +4,7 @@
 #include <string>
 
 #include "vtrc-common/vtrc-signal-declaration.h"
+#include "vtrc-memory.h"
 
 namespace vtrc {
 
@@ -23,7 +24,7 @@ namespace server {
         unsigned read_buffer_size;
     };
 
-    class listener {
+    class listener: public vtrc::enable_shared_from_this<listener> {
 
         struct        impl;
         friend struct impl;
@@ -49,6 +50,16 @@ namespace server {
         common::enviroment      &get_enviroment( );
         const listener_options  &get_options( ) const;
 
+        vtrc::weak_ptr<listener> weak_from_this( )
+        {
+            return vtrc::weak_ptr<listener>( shared_from_this( ) );
+        }
+
+        vtrc::weak_ptr<listener const> weak_from_this( ) const
+        {
+            return vtrc::weak_ptr<listener const>( shared_from_this( ));
+        }
+
     public:
 
         virtual std::string string( ) const = 0;
@@ -59,6 +70,8 @@ namespace server {
         virtual size_t clients_count( ) const = 0;
 
     };
+
+    typedef vtrc::shared_ptr<listener> listener_sptr;
 
     namespace listeners {
         listener_options default_options( );

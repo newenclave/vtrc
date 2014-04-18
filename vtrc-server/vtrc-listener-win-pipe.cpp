@@ -87,13 +87,13 @@ namespace {
 
         pipe_listener( application &app,
                 const listener_options &opts, const std::string pipe_name,
-                size_t max_inst, size_t out_buf_size, size_t in_buf_size)
+                size_t max_inst)
             :listener(app, opts)
             ,ios_(app.get_io_service( ))
             ,endpoint_(pipe_name)
             ,pipe_max_inst_(max_inst)
-            ,in_buf_size_(in_buf_size)
-            ,out_buf_size_(out_buf_size)
+            ,in_buf_size_(opts.read_buffer_size)
+            ,out_buf_size_(opts.read_buffer_size)
             ,client_count_(vtrc::make_shared<vtrc::atomic<size_t> >(0))
             ,working_(true)
         { }
@@ -214,18 +214,19 @@ namespace {
 }
 
     namespace win_pipe {
-        listener *create( application &app, const listener_options &opts,
+        listener_sptr create( application &app, const listener_options &opts,
                                 const std::string &name )
         {
-            listener *new_l = new pipe_listener( app, opts, name,
-                                     PIPE_UNLIMITED_INSTANCES,
-                                     opts.read_buffer_size,
-                                     opts.read_buffer_size );
+            vtrc::shared_ptr<pipe_listener>new_l
+                    (vtrc::make_shared<pipe_listener>(
+                         vtrc::ref(app), vtrc::ref(opts),
+                         vtrc::ref(name),
+                         PIPE_UNLIMITED_INSTANCES));
             app.attach_listener( new_l );
             return new_l;
         }
 
-        listener *create( application &app, const std::string &name )
+        listener_sptr create( application &app, const std::string &name )
         {
             listener_options def_opts(default_options( ));
             return create( app, def_opts, name );

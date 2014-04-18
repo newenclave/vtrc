@@ -93,16 +93,20 @@ namespace vtrc { namespace server { namespace listeners {
 
     namespace unix_local {
 
-        listener *create(application &app,
+        listener_sptr create(application &app,
                                const listener_options &opts,
                                const std::string &name)
         {
-            listener *new_l = new listener_unix( app, opts, name );
+            vtrc::shared_ptr<listener_unix>new_l
+                    (vtrc::make_shared<listener_unix>(
+                         vtrc::ref(app), vtrc::ref(opts),
+                         vtrc::ref(name) ) );
+
             app.attach_listener( new_l );
             return new_l;
         }
 
-        listener *create( application &app, const std::string &name )
+        listener_sptr create( application &app, const std::string &name )
         {
             const listener_options def_opts(default_options( ));
             return create( app, def_opts, name );

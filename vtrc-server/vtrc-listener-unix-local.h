@@ -12,8 +12,8 @@ namespace vtrc { namespace server {
     class application;
 
     namespace listeners { namespace unix_local {
-        listener *create( application &app, const std::string &name );
-        listener *create( application &app, const listener_options &opts,
+        listener_sptr create( application &app, const std::string &name );
+        listener_sptr create( application &app, const listener_options &opts,
                                 const std::string &name );
     }}
 
