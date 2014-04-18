@@ -2,6 +2,7 @@
 #include "vtrc-application.h"
 
 #include "vtrc-common/vtrc-enviroment.h"
+#include "vtrc-atomic.h"
 
 namespace vtrc { namespace server {
 
@@ -10,7 +11,8 @@ namespace vtrc { namespace server {
         common::enviroment   env_;
         listener_options     opts_;
 
-        listener       *parent_;
+        listener            *parent_;
+        vtrc::atomic<size_t> client_count_;
 
         impl( application &app, const listener_options &opts )
             :app_(app)
@@ -46,6 +48,22 @@ namespace vtrc { namespace server {
         return impl_->opts_;
     }
 
+    size_t listener::clients_count( ) const
+    {
+        return impl_->client_count_;
+    }
+
+    void listener::new_connection( const common::connection_iface *conn )
+    {
+        ++impl_->client_count_;
+        on_new_connection_( conn );
+    }
+
+    void listener::stop_connection( const common::connection_iface *conn )
+    {
+        --impl_->client_count_;
+        on_stop_connection_( conn );
+    }
 
     namespace listeners {
 

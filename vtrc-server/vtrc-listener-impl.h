@@ -5,6 +5,7 @@
 
 #include "vtrc-listener.h"
 #include "vtrc-application.h"
+
 #include "vtrc-connection-iface.h"
 #include "vtrc-connection-list.h"
 
@@ -22,6 +23,10 @@ namespace {
     namespace basio = boost::asio;
     namespace bsys  = boost::system;
 
+    typedef vtrc::function<
+        void (const common::connection_iface *)
+    > close_closure;
+
     template <typename AcceptorType,
               typename EndpointType,
               typename ConnectionType>
@@ -31,8 +36,6 @@ namespace {
         typedef AcceptorType                          acceptor_type;
         typedef EndpointType                          endpoint_type;
         typedef typename connection_type::socket_type socket_type;
-
-        typedef vtrc::shared_ptr< vtrc::atomic<size_t> > shared_counter_type;
 
         typedef listener_impl<
                 acceptor_type,
@@ -45,32 +48,29 @@ namespace {
         endpoint_type            endpoint_;
         acceptor_type            acceptor_;
 
-        shared_counter_type      client_count_;
-
         listener_impl( application &app,
                        const listener_options &opts, const endpoint_type &ep)
             :listener(app, opts)
             ,ios_(app.get_io_service( ))
             ,endpoint_(ep)
             ,acceptor_(ios_, endpoint_)
-            ,client_count_(vtrc::make_shared<vtrc::atomic<size_t> >(0))
         { }
 
         virtual ~listener_impl( ) { }
 
-        static void on_client_destroy( shared_counter_type count )
+        void on_client_destroy( vtrc::weak_ptr<listener> inst,
+                                const common::connection_iface *conn )
         {
-            --(*count);
+            vtrc::shared_ptr<listener> lock( inst.lock( ) );
+            if( lock ) {
+                this->stop_connection( conn );
+            }
         }
 
-        size_t clients_count( ) const
+        close_closure get_on_destroy( )
         {
-            return (*client_count_);
-        }
-
-        common::empty_closure_type get_on_destroy( )
-        {
-            return vtrc::bind( &this_type::on_client_destroy, client_count_ );
+            return vtrc::bind( &this_type::on_client_destroy, this,
+                               weak_from_this( ), _1 );
         }
 
         virtual std::string string( ) const
@@ -105,11 +105,14 @@ namespace {
         {
             if( !error ) {
                 try {
+
                     vtrc::shared_ptr<connection_type> new_conn
                            (connection_type::create( *this, sock,
                                                     get_on_destroy( )));
+
                     get_application( ).get_clients( )->store( new_conn );
-                    ++(*client_count_);
+                    new_connection( new_conn.get( ) );
+
                 } catch( ... ) {
                     ;;;
                 }

@@ -19,6 +19,10 @@ namespace vtrc { namespace server { namespace listeners {
         namespace basio = boost::asio;
         namespace bsys  = boost::system;
 
+        typedef vtrc::function<
+            void (const common::connection_iface *)
+        > close_closure;
+
         template <typename SuperType>
         struct connection_impl: public SuperType {
 
@@ -34,18 +38,18 @@ namespace vtrc { namespace server { namespace listeners {
             std::vector<char>                   read_buff_;
 
             vtrc::unique_ptr<protocol_layer_s>  protocol_;
-            common::empty_closure_type          destroy_closure_;
+            close_closure                       close_closure_;
 
             connection_impl(listener &endpoint,
                             vtrc::shared_ptr<socket_type> sock,
-                            const common::empty_closure_type &on_destroy)
+                            const close_closure &on_close)
                 :super_type(sock)
                 ,endpoint_(endpoint)
                 ,app_(endpoint_.get_application( ))
                 ,ios_(app_.get_io_service( ))
                 ,env_(endpoint_.get_enviroment( ))
                 ,read_buff_(endpoint_.get_options( ).read_buffer_size)
-                ,destroy_closure_(on_destroy)
+                ,close_closure_(on_close)
             {
                 protocol_.reset(new protocol_layer_s( vtrc::ref(app_), this,
                             endpoint_.get_options( ).maximum_active_calls,
@@ -59,7 +63,7 @@ namespace vtrc { namespace server { namespace listeners {
 
             static vtrc::shared_ptr<this_type> create(listener &endpoint,
                                    vtrc::shared_ptr<socket_type> sock,
-                                   const common::empty_closure_type &on_destroy)
+                                   const close_closure &on_destroy)
             {
                 vtrc::shared_ptr<this_type> new_inst
                      (vtrc::make_shared<this_type>(vtrc::ref(endpoint),
@@ -70,8 +74,8 @@ namespace vtrc { namespace server { namespace listeners {
             }
 
             static vtrc::shared_ptr<this_type> create(listener &endpoint,
-                                  socket_type *sock,
-                                  const common::empty_closure_type &on_destroy)
+                                  socket_type   *sock,
+                                  close_closure &on_destroy)
             {
                 return create( endpoint,
                                vtrc::shared_ptr<socket_type>(sock),
@@ -106,6 +110,7 @@ namespace vtrc { namespace server { namespace listeners {
 
             void close(  )
             {
+                close_closure_( this );
                 super_type::close( );
                 protocol_->erase_all_slots( );
             }
@@ -113,11 +118,6 @@ namespace vtrc { namespace server { namespace listeners {
             bool active( ) const
             {
                 return protocol_->ready( );
-            }
-
-            listener &endpoint( )
-            {
-                return endpoint_;
             }
 
             const common::call_context *get_call_context( ) const

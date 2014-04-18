@@ -33,10 +33,10 @@ namespace server {
         VTRC_DECLARE_SIGNAL( on_start,          void( ) );
         VTRC_DECLARE_SIGNAL( on_stop,           void( ) );
         VTRC_DECLARE_SIGNAL( on_new_connection,
-                             void( const common::connection_iface & ) );
+                             void( const common::connection_iface * ) );
 
         VTRC_DECLARE_SIGNAL( on_stop_connection,
-                             void( const common::connection_iface & ) );
+                             void( const common::connection_iface * ) );
 
 
     public:
@@ -49,6 +49,7 @@ namespace server {
         application             &get_application( );
         common::enviroment      &get_enviroment( );
         const listener_options  &get_options( ) const;
+        size_t clients_count( ) const;
 
         vtrc::weak_ptr<listener> weak_from_this( )
         {
@@ -67,7 +68,11 @@ namespace server {
         virtual void start( ) = 0;
         virtual void stop ( ) = 0;
 
-        virtual size_t clients_count( ) const = 0;
+
+    protected:
+
+        void new_connection( const common::connection_iface *conn );
+        void stop_connection( const common::connection_iface *conn );
 
     };
 
