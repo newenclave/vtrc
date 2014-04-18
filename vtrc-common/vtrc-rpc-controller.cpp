@@ -28,7 +28,7 @@ namespace vtrc { namespace common {
 
     rpc_controller::rpc_controller( )
         :impl_(new impl)
-    {}
+    { }
 
     rpc_controller::~rpc_controller( )
     {
