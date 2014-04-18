@@ -20,8 +20,9 @@ namespace vtrc { namespace common {
 
         void reset( )
         {
-            failed_   = false;
-            canceled_ = false;
+            failed_     = false;
+            canceled_   = false;
+            cancel_cl_  = NULL;
             error_string_.clear( );
         }
     };
@@ -72,7 +73,11 @@ namespace vtrc { namespace common {
 
     void rpc_controller::NotifyOnCancel( gpb::Closure* callback )
     {
-        impl_->cancel_cl_ = callback;
+        if( impl_->canceled_ ) {
+            callback->Run( );
+        } else {
+            impl_->cancel_cl_ = callback;
+        }
     }
 
 }}
