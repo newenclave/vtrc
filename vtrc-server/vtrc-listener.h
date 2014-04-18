@@ -30,13 +30,13 @@ namespace server {
         friend struct impl;
         impl         *impl_;
 
-        VTRC_DECLARE_SIGNAL( on_start,          void( ) );
-        VTRC_DECLARE_SIGNAL( on_stop,           void( ) );
+        VTRC_DECLARE_SIGNAL( on_start,          void ( ) );
+        VTRC_DECLARE_SIGNAL( on_stop,           void ( ) );
         VTRC_DECLARE_SIGNAL( on_new_connection,
-                             void( const common::connection_iface * ) );
+                             void ( const common::connection_iface * ) );
 
         VTRC_DECLARE_SIGNAL( on_stop_connection,
-                             void( const common::connection_iface * ) );
+                             void ( const common::connection_iface * ) );
 
 
     public:

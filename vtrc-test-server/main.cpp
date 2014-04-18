@@ -205,7 +205,36 @@ public:
         :application(pp)
     { }
 
+
 private:
+
+    void attach_listener( vtrc::shared_ptr<server::listener> nl )
+    {
+        nl->get_on_start( ).connect(
+                  vtrc::bind(&main_app::on_endpoint_started, this, nl.get( )));
+        nl->get_on_stop( ).connect(
+                  vtrc::bind(&main_app::on_endpoint_stopped, this, nl.get( )));
+
+        nl->get_on_new_connection( ).connect(
+                  vtrc::bind(&main_app::on_new_connection, this, _1, nl.get( )));
+
+        nl->get_on_stop_connection( ).connect(
+                  vtrc::bind(&main_app::on_stop_connection, this, _1, nl.get( )));
+    }
+
+    void on_new_connection( const common::connection_iface *c,
+                            vtrc::server::listener *ep)
+    {
+        std::cout << "new connection: ep = " << ep->string( )
+                  << "; c = " << c->name( ) << "\n";
+    }
+
+    void on_stop_connection( const common::connection_iface *c,
+                             vtrc::server::listener *ep )
+    {
+        std::cout << "stop connection: ep = " << ep->string( )
+                  << "; c = " << c->name( ) << "\n";
+    }
 
     void on_endpoint_started( vtrc::server::listener *ep )
     {
@@ -215,18 +244,6 @@ private:
     void on_endpoint_stopped( vtrc::server::listener *ep )
     {
         std::cout << "Stop endpoint: " << ep->string( ) << "\n";
-    }
-
-    void on_endpoint_exception( vtrc::server::listener *ep )
-    {
-        try {
-            throw;
-        } catch( const std::exception &ex ) {
-            std::cout << "Endpoint exception '" << ep->string( )
-                      << "': " << ex.what( ) << "\n";
-        } catch( ... ) {
-            throw;
-        }
     }
 
     std::string get_session_key( vtrc::common::connection_iface *connection,
