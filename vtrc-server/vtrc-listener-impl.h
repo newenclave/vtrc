@@ -92,12 +92,12 @@ namespace {
         void start( )
         {
             start_accept( );
-            get_application( ).on_endpoint_started( this );
+            on_start_( );
         }
 
         void stop ( )
         {
-            get_application( ).on_endpoint_stopped( this );
+            on_stop_( );
             acceptor_.close( );
         }
 

@@ -66,14 +66,6 @@ namespace server {
         virtual std::string get_session_key( common::connection_iface* conn,
                                              const std::string &id);
 
-        /** TODO: fix it **/
-
-        virtual void on_endpoint_started(   listener * /*ep*/ ) { }
-        virtual void on_endpoint_stopped(   listener * /*ep*/ ) { }
-        virtual void on_endpoint_exception( listener * /*ep*/ ) { }
-
-        /** TODO: fix it **/
-
     };
 
 }}
