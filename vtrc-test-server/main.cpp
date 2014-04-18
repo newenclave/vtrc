@@ -226,6 +226,7 @@ private:
                             vtrc::server::listener *ep)
     {
         std::cout << "new connection: ep = " << ep->name( )
+                  << "; count: "  << ep->clients_count( )
                   << "; c = " << c->name( ) << "\n";
     }
 
@@ -233,6 +234,7 @@ private:
                              vtrc::server::listener *ep )
     {
         std::cout << "stop connection: ep = " << ep->name( )
+                  << "; count: "  << ep->clients_count( )
                   << "; c = " << c->name( ) << "\n";
     }
 

@@ -18,6 +18,7 @@ namespace vtrc { namespace server {
             :app_(app)
             ,env_(app_.get_enviroment( ))
             ,opts_(opts)
+            ,client_count_(0)
         { }
     };
 
