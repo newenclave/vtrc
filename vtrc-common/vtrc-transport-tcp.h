@@ -8,13 +8,15 @@
 
 namespace boost {
 
-namespace asio {
-    class io_service;
-}
+    namespace asio {
+        class io_service;
+    }
 
-namespace system {
-    class error_code;
-}}
+    namespace system {
+        class error_code;
+    }
+
+}
 
 namespace vtrc { namespace common {
 
