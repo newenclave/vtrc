@@ -24,7 +24,7 @@ namespace server {
 
     class endpoint_base {
 
-        struct impl;
+        struct  impl;
         impl   *impl_;
 
     public:
@@ -46,6 +46,7 @@ namespace server {
         virtual void stop ( ) = 0;
 
         virtual size_t clients_count( ) const = 0;
+
     };
 
     namespace endpoints {
