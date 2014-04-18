@@ -153,4 +153,9 @@ namespace vtrc { namespace server {
         return std::string( );
     }
 
+    void application::attach_listener( listener * )
+    {
+        ;;;
+    }
+
 }}
