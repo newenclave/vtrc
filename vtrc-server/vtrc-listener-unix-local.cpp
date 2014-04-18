@@ -67,7 +67,7 @@ namespace vtrc { namespace server { namespace listeners {
         > super_type;
 
 #else
-        typedef endpoint_impl<
+        typedef listener_impl<
             acceptor_type,
             endpoint_type,
             connection_type

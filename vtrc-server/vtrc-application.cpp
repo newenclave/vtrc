@@ -93,7 +93,7 @@ namespace vtrc { namespace server {
 
     application::application(  )
         :impl_(new impl)
-    {}
+    { }
 
     application::application(common::pool_pair &pools)
      :impl_(new impl(&pools.get_io_service( ), &pools.get_rpc_service( )))

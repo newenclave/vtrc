@@ -15,7 +15,7 @@ namespace vtrc { namespace server { namespace listeners {
         typedef connection_impl<transport_type> connection_type;
         typedef bip::tcp::endpoint endpoint_type;
 
-        typedef endpoint_impl <
+        typedef listener_impl <
                 bip::tcp::acceptor,
                 bip::tcp::endpoint,
                 connection_type

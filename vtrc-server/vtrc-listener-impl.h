@@ -25,7 +25,7 @@ namespace {
     template <typename AcceptorType,
               typename EndpointType,
               typename ConnectionType>
-    struct endpoint_impl: public listener {
+    struct listener_impl: public listener {
 
         typedef ConnectionType                        connection_type;
         typedef AcceptorType                          acceptor_type;
@@ -34,7 +34,7 @@ namespace {
 
         typedef vtrc::shared_ptr< vtrc::atomic<size_t> > shared_counter_type;
 
-        typedef endpoint_impl<
+        typedef listener_impl<
                 acceptor_type,
                 endpoint_type,
                 connection_type
@@ -47,7 +47,7 @@ namespace {
 
         shared_counter_type      client_count_;
 
-        endpoint_impl( application &app,
+        listener_impl( application &app,
                        const listener_options &opts, const endpoint_type &ep)
             :listener(app, opts)
             ,ios_(app.get_io_service( ))
@@ -56,7 +56,7 @@ namespace {
             ,client_count_(vtrc::make_shared<vtrc::atomic<size_t> >(0))
         { }
 
-        virtual ~endpoint_impl( ) { }
+        virtual ~listener_impl( ) { }
 
         static void on_client_destroy( shared_counter_type count )
         {
