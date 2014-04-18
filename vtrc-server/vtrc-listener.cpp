@@ -21,8 +21,7 @@ namespace vtrc { namespace server {
         { }
     };
 
-    listener::listener(application & app,
-                                 const listener_options &opts)
+    listener::listener(application & app, const listener_options &opts)
         :impl_(new impl(app, opts))
     {
         impl_->parent_ = this;
