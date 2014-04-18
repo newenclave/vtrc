@@ -80,7 +80,6 @@ namespace {
         size_t                   pipe_max_inst_;
         size_t                   in_buf_size_;
         size_t                   out_buf_size_;
-        shared_counter_type      client_count_;
 
         basio::windows::overlapped_ptr overlapped_;
         bool                     working_;
@@ -94,25 +93,24 @@ namespace {
             ,pipe_max_inst_(max_inst)
             ,in_buf_size_(opts.read_buffer_size)
             ,out_buf_size_(opts.read_buffer_size)
-            ,client_count_(vtrc::make_shared<vtrc::atomic<size_t> >(0))
             ,working_(true)
         { }
 
         virtual ~pipe_listener( ) { }
 
-        static void on_client_destroy( shared_counter_type count )
+        void on_client_destroy( vtrc::weak_ptr<listener> inst,
+                                const common::connection_iface *conn )
         {
-            --(*count);
+            vtrc::shared_ptr<listener> lock( inst.lock( ) );
+            if( lock ) {
+                this->stop_connection( conn );
+            }
         }
 
-        common::empty_closure_type get_on_destroy( )
+        close_closure get_on_destroy( )
         {
-            return vtrc::bind( &this_type::on_client_destroy, client_count_ );
-        }
-
-        size_t clients_count( ) const
-        {
-            return (*client_count_);
+            return vtrc::bind( &this_type::on_client_destroy, this,
+                               weak_from_this( ), _1 );
         }
 
         std::string string( ) const
@@ -200,7 +198,8 @@ namespace {
                              (transport_type::create(
                                 *this, sock, get_on_destroy( )));
                     get_application( ).get_clients( )->store( new_conn );
-                    ++(*client_count_);
+                    new_connection( new_conn.get( ) );
+
                 } catch( ... ) {
                     ;;;
                 }
