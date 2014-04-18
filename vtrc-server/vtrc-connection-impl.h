@@ -110,9 +110,13 @@ namespace vtrc { namespace server { namespace listeners {
 
             void close(  )
             {
-                close_closure_( this );
                 super_type::close( );
                 protocol_->erase_all_slots( );
+            }
+
+            void on_close(  )
+            {
+                close_closure_( this );
             }
 
             bool active( ) const
