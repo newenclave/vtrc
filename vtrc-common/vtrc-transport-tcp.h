@@ -31,8 +31,6 @@ namespace vtrc { namespace common {
 
         typedef boost::asio::ip::tcp::socket socket_type;
 
-        transport_tcp(vtrc::shared_ptr<socket_type> sock,
-                       const empty_closure_type &on_close );
         transport_tcp( vtrc::shared_ptr<socket_type> sock );
         virtual ~transport_tcp(  );
 

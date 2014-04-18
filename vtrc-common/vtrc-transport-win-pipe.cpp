@@ -37,14 +37,6 @@ namespace vtrc { namespace common {
         impl_->set_parent( this );
     }
 
-    transport_win_pipe::transport_win_pipe( vtrc::shared_ptr<socket_type> sock,
-                                    const empty_closure_type &on_close)
-        :impl_(new impl(sock, "win-pipe"))
-    {
-        impl_->set_parent( this );
-        impl_->set_on_close( on_close );
-    }
-
     transport_win_pipe::~transport_win_pipe(  )
     {
         delete impl_;

@@ -33,8 +33,6 @@ namespace vtrc { namespace common {
         typedef boost::asio::windows::stream_handle socket_type;
 
         transport_win_pipe( vtrc::shared_ptr<socket_type> sock );
-        transport_win_pipe( vtrc::shared_ptr<socket_type> sock,
-                            const empty_closure_type &on_close);
         virtual ~transport_win_pipe(  );
 
         const char *name( ) const                     ;
