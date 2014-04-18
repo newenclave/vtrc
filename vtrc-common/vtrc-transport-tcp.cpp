@@ -35,6 +35,14 @@ namespace vtrc { namespace common {
         impl_->set_parent( this );
     }
 
+    transport_tcp::transport_tcp(vtrc::shared_ptr<socket_type> sock,
+                                 const empty_closure_type &on_close)
+        :impl_(new impl(sock, "tcp"))
+    {
+        impl_->set_parent( this );
+        impl_->set_on_close( on_close );
+    }
+
     transport_tcp::~transport_tcp(  )
     {
         delete impl_;

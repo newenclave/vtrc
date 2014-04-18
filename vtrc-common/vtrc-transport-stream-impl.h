@@ -11,6 +11,7 @@
 #include "vtrc-memory.h"
 #include "vtrc-bind.h"
 #include "vtrc-mutex.h"
+#include "vtrc-closure.h"
 
 #include "vtrc-chrono.h"
 
@@ -53,6 +54,8 @@ namespace vtrc { namespace common {
 
             basio::io_service::strand            write_dispatcher_;
 
+            empty_closure_type                   on_close_;
+
 #ifndef TRANSPORT_USE_ASYNC_WRITE
             vtrc::mutex                          write_lock_;
 #else
@@ -72,6 +75,11 @@ namespace vtrc { namespace common {
             void set_parent(parent_type *parent)
             {
                 parent_ = parent;
+            }
+
+            void set_on_close(const empty_closure_type &on_close)
+            {
+                on_close_ = on_close;
             }
 
             parent_type *get_parent( )
@@ -99,6 +107,7 @@ namespace vtrc { namespace common {
                     closed_ = true;
                     stream_->close( );
                     parent_->on_close( );
+                    if( on_close_ ) on_close_( );
                 }
             }
 

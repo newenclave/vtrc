@@ -34,6 +34,14 @@ namespace vtrc { namespace common {
         impl_->set_parent( this );
     }
 
+    transport_unix_local::transport_unix_local(vtrc::shared_ptr<socket_type> s,
+                                          const empty_closure_type &on_close)
+        :impl_(new impl(s, "unix-local"))
+    {
+        impl_->set_parent( this );
+        impl_->set_on_close( on_close );
+    }
+
     transport_unix_local::~transport_unix_local(  )
     {
         delete impl_;

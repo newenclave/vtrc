@@ -33,6 +33,9 @@ namespace vtrc { namespace common {
         typedef boost::asio::local::stream_protocol::socket socket_type;
 
         transport_unix_local( vtrc::shared_ptr<socket_type> sock );
+        transport_unix_local( vtrc::shared_ptr<socket_type> sock,
+                              const empty_closure_type &on_close);
+
         virtual ~transport_unix_local(  );
 
         const char *name( ) const                     ;
