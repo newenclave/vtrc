@@ -184,6 +184,7 @@ namespace {
 
         void stop ( )
         {
+            working_ = false;
             bsys::error_code ec( ERROR_CANCELLED,
                         basio::error::get_system_category( ));
             overlapped_.complete( ec, 0 );
