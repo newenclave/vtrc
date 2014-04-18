@@ -3,6 +3,8 @@
 
 #include <string>
 
+//#include "vtrc-common/vtrc-signal-declaration.h"
+
 namespace vtrc {
 
     namespace common {
