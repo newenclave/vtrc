@@ -96,7 +96,6 @@ namespace {
 
         void stop ( )
         {
-            on_stop_( );
             acceptor_.close( );
         }
 
@@ -118,6 +117,7 @@ namespace {
                 }
                 start_accept( );
             } else {
+                on_stop_( );
                 //delete sock;
             }
         }
