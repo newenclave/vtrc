@@ -211,15 +211,15 @@ private:
     void attach_listener( vtrc::shared_ptr<server::listener> nl )
     {
         nl->get_on_start( ).connect(
-                  vtrc::bind(&main_app::on_endpoint_started, this, nl.get( )));
+                vtrc::bind(&main_app::on_endpoint_started, this, nl.get( )));
         nl->get_on_stop( ).connect(
-                  vtrc::bind(&main_app::on_endpoint_stopped, this, nl.get( )));
+                vtrc::bind(&main_app::on_endpoint_stopped, this, nl.get( )));
 
         nl->get_on_new_connection( ).connect(
-                  vtrc::bind(&main_app::on_new_connection, this, _1, nl.get( )));
+                vtrc::bind(&main_app::on_new_connection, this, _1, nl.get( )));
 
         nl->get_on_stop_connection( ).connect(
-                  vtrc::bind(&main_app::on_stop_connection, this, _1, nl.get( )));
+                vtrc::bind(&main_app::on_stop_connection, this, _1, nl.get( )));
     }
 
     void on_new_connection( const common::connection_iface *c,
@@ -324,6 +324,7 @@ int main( ) try {
 
 } catch( const std::exception &ex ) {
 
+    google::protobuf::ShutdownProtobufLibrary( );
     std::cout << "general error: " << ex.what( ) << "\n";
     return 0;
 }

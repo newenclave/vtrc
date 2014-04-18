@@ -185,6 +185,8 @@ void on_disconnect( vtrc::condition_variable &cond )
     cond.notify_all( );
 }
 
+
+
 int main( )
 {
     common::pool_pair pp(1, 1);
@@ -200,7 +202,7 @@ int main( )
     cl->get_on_disconnect( ).connect( boost::bind( on_disconnect, vtrc::ref(cond) ));
     cl->get_on_init_error( ).connect( boost::bind( on_init_error, _1, _2 ) );
 
-    cl->connect( "/tmp/test.socket" );
+    //cl->connect( "/tmp/test.socket" );
     //cl->connect( "10.3.0.40", "44667" );
     //cl->connect( "\\\\.\\pipe\\test_pipe");
     //cl->connect( "127.0.0.1", "44667" );
