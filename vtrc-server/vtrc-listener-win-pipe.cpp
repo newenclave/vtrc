@@ -24,13 +24,17 @@ namespace {
     typedef common::transport_win_pipe       connection_type;
     typedef connection_impl<connection_type> connection_impl_type;
 
+    typedef vtrc::function<
+        void (const common::connection_iface *)
+    > close_closure;
+
     struct commection_pipe_impl: public connection_impl_type {
 
         typedef commection_pipe_impl this_type;
 
         commection_pipe_impl( listener &listen,
                               vtrc::shared_ptr<socket_type> sock,
-                              const common::empty_closure_type &on_destroy)
+                              const close_closure &on_destroy)
             :connection_impl_type(listen, sock, on_destroy)
         { }
 
@@ -56,7 +60,7 @@ namespace {
 
         static vtrc::shared_ptr<this_type> create(listener &listnr,
                                  vtrc::shared_ptr<socket_type> sock,
-                                 const common::empty_closure_type &on_destroy)
+                                 const close_closure &on_destroy)
         {
             vtrc::shared_ptr<this_type> new_inst
                     (vtrc::make_shared<this_type>(vtrc::ref(listnr),
