@@ -131,11 +131,15 @@ public:
 };
 
 class server_application: public application {
+
     typedef server_application this_type;
+
 public:
+
     server_application( pool_pair &pair )
         :application( pair )
     {}
+
     vtrc::shared_ptr<rpc_service_wrapper>
              get_service_by_name( connection_iface* connection,
                                   const std::string &service_name )
