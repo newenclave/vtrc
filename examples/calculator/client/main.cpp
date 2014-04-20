@@ -23,7 +23,7 @@ void usage(  )
           << "or:\n\tcalculator_client <localname>\n"
           << "examples:\n"
           << "\tfor tcp: calculator_client 127.0.0.1 55555\n"
-          << "\tfor unix: calculator_client /tmp/calculator.sock\n"
+          << "\tfor unix: calculator_client ~/calculator.sock\n"
           << "\tfor win pipe: calculator_client \\\\.\\pipe\\calculator_pipe\n";
 }
 

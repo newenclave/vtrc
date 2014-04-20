@@ -82,6 +82,11 @@ namespace vtrc { namespace server { namespace listeners {
                 :super_type(app, opts, endpoint_type(name))
             { }
 
+            void stop_impl( )
+            {
+                ::unlink( endpoint_.path( ).c_str( ) );
+            }
+
             std::string name( ) const
             {
                 std::ostringstream oss;

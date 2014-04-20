@@ -97,6 +97,11 @@ namespace {
         void stop ( )
         {
             acceptor_->close( );
+            stop_impl( );
+        }
+
+        virtual void stop_impl( )
+        {
 
         }
 

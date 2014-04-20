@@ -181,7 +181,7 @@ void usage(  )
           << "or:\n\tcalculator_server <localname>\n"
           << "examples:\n"
           << "\tfor tcp: calculator_server 0.0.0.0 55555\n"
-          << "\tfor unix: calculator_server /tmp/calculator.sock\n"
+          << "\tfor unix: calculator_server ~/calculator.sock\n"
           << "\tfor win pipe: calculator_server \\\\.\\pipe\\calculator_pipe\n";
 }
 
@@ -200,6 +200,7 @@ int main( int argc, char **argv ) try
 
     if( argc < 3 ) {
 #ifndef _WIN32
+        ::unlink( argv[1] );
         main_listener = listeners::unix_local::create(app, argv[1]);
 #else
         main_listener = listeners::win_pipe::create(app, argv[1]);
