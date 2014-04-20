@@ -121,6 +121,9 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
 
     std::cout << "My thread id: " << vtrc::this_thread::get_id( ) << "\n";
 
+    /**
+     * ======================== FIRST ==================================
+    **/
     test_name = "first";
     std::cout << splitter << test_name << ":\n";
     try {
@@ -134,6 +137,9 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
                   << ex.additional( ) << "\n";
     }
 
+    /**
+     * ======================== SECOND =================================
+    **/
     test_name = "second";
     std::cout << splitter << test_name << ":\n";
     try {
@@ -147,6 +153,9 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
                   << ex.additional( ) << "\n";
     }
 
+    /**
+     * ======================== THRID ==================================
+    **/
     test_name = "third";
     std::cout << splitter << test_name << ":\n";
     try {
@@ -161,6 +170,9 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
                   << ex.additional( ) << "\n";
     }
 
+    /**
+     * ======================== THE TEST THAT FAILED ===================
+    **/
     test_name = "failed";
     std::cout << splitter << test_name << ":\n";
     try {
@@ -174,6 +186,9 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
                   << ex.additional( ) << "\n";
     }
 
+    /**
+     * ======================== THE TEST THAT FAILED 2 =================
+    **/
     test_name = "failed2";
     std::cout << splitter << test_name << ":\n";
     try {
