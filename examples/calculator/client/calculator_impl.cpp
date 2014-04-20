@@ -60,7 +60,6 @@ namespace {
 
         double sum( double l, double r )             const
         {
-            ++calls_count_;
             number_pair_type p = make_pair( l, r );
             number_type      n;
             stub_.sum( NULL, &p, &n, NULL );
@@ -69,7 +68,6 @@ namespace {
 
         double sum( std::string const &l, double r ) const
         {
-            ++calls_count_;
             number_pair_type p = make_pair( l, r );
             number_type      n;
             stub_.sum( NULL, &p, &n, NULL );
@@ -78,7 +76,6 @@ namespace {
 
         double sum( double l, std::string const &r ) const
         {
-            ++calls_count_;
             number_pair_type p = make_pair( l, r );
             number_type      n;
             stub_.sum( NULL, &p, &n, NULL );
@@ -87,7 +84,6 @@ namespace {
 
         double mul( double l, double r )             const
         {
-            ++calls_count_;
             number_pair_type p = make_pair( l, r );
             number_type      n;
             stub_.mul( NULL, &p, &n, NULL );
@@ -97,7 +93,6 @@ namespace {
 
         double mul( std::string const &l, double r ) const
         {
-            ++calls_count_;
             number_pair_type p = make_pair( l, r );
             number_type      n;
             stub_.mul( NULL, &p, &n, NULL );
@@ -107,7 +102,6 @@ namespace {
 
         double mul( double l, std::string const &r ) const
         {
-            ++calls_count_;
             number_pair_type p = make_pair( l, r );
             number_type      n;
             stub_.mul( NULL, &p, &n, NULL );
@@ -117,7 +111,6 @@ namespace {
 
         double div( double l, double r )             const
         {
-            ++calls_count_;
             number_pair_type p = make_pair( l, r );
             number_type      n;
             stub_.div( NULL, &p, &n, NULL );
@@ -127,7 +120,6 @@ namespace {
 
         double div( std::string const &l, double r ) const
         {
-            ++calls_count_;
             number_pair_type p = make_pair( l, r );
             number_type      n;
             stub_.div( NULL, &p, &n, NULL );
@@ -137,7 +129,6 @@ namespace {
 
         double div( double l, std::string const &r ) const
         {
-            ++calls_count_;
             number_pair_type p = make_pair( l, r );
             number_type      n;
             stub_.div( NULL, &p, &n, NULL );
@@ -147,7 +138,6 @@ namespace {
 
         double pow( double l, double r )             const
         {
-            ++calls_count_;
             number_pair_type p = make_pair( l, r );
             number_type      n;
             stub_.pow( NULL, &p, &n, NULL );
@@ -157,7 +147,6 @@ namespace {
 
         double pow( std::string const &l, double r ) const
         {
-            ++calls_count_;
             number_pair_type p = make_pair( l, r );
             number_type      n;
             stub_.pow( NULL, &p, &n, NULL );
@@ -167,7 +156,6 @@ namespace {
 
         double pow( double l, std::string const &r ) const
         {
-            ++calls_count_;
             number_pair_type p = make_pair( l, r );
             number_type      n;
             stub_.pow( NULL, &p, &n, NULL );

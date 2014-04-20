@@ -46,6 +46,21 @@ class variable_pool: public vtrc_example::variable_pool {
     std::map<std::string, double> variables_;
     unsigned server_calback_count_;
 
+    void set_variable(::google::protobuf::RpcController* controller,
+                 const ::vtrc_example::number* request,
+                 ::vtrc_example::number* response,
+                 ::google::protobuf::Closure* done)
+    {
+        ++server_calback_count_;
+        closure_holder done_holder(done);
+        std::string n(request->name( ));
+
+        std::cout << "Server sets variable: '" << n << "'"
+                  << " = " <<  request->value( )
+                  << " thread id: " << vtrc::this_thread::get_id( ) << "\n";
+
+        variables_[n] = request->value( );
+    }
 
     void get_variable(::google::protobuf::RpcController* controller,
                  const ::vtrc_example::number* request,
