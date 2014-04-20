@@ -2,6 +2,7 @@
 
 #include "vtrc-client-base/vtrc-client.h"
 #include "vtrc-common/vtrc-pool-pair.h"
+#include "vtrc-common/vtrc-exception.h"
 
 #include "protocol/calculator.pb.h"
 #include "calculator-iface.h"
@@ -9,6 +10,8 @@
 #include "vtrc-condition-variable.h"
 #include "vtrc-bind.h"
 #include "vtrc-ref.h"
+#include "vtrc-thread.h"
+#include "vtrc-chrono.h"
 
 using namespace vtrc::client;
 using namespace vtrc::common;
@@ -24,6 +27,20 @@ void usage(  )
           << "\tfor win pipe: calculator_client \\\\.\\pipe\\calculator_pipe\n";
 }
 
+struct work_time {
+    typedef vtrc::chrono::high_resolution_clock::time_point time_point;
+    time_point start_;
+    work_time( )
+        :start_(vtrc::chrono::high_resolution_clock::now( ))
+    {}
+    ~work_time( )
+    {
+        time_point::duration stop(
+                    vtrc::chrono::high_resolution_clock::now( ) - start_);
+        std::cout << "Call time: " << stop << "\n";
+    }
+};
+
 class variable_pool: public vtrc_example::variable_pool {
 
     std::map<std::string, double> variables_;
@@ -36,7 +53,8 @@ class variable_pool: public vtrc_example::variable_pool {
         closure_holder done_holder(done);
         std::string n(request->name( ));
 
-        std::cout << "Server wants variable: " << n << "\n";
+        std::cout << "Server wants variable: '" << n << "'"
+                  << " thread id: " << vtrc::this_thread::get_id( ) << "\n";
 
         std::map<std::string, double>::const_iterator f(variables_.find(n));
         if( f == variables_.end( ) ) {
@@ -56,6 +74,78 @@ public:
     }
 
 };
+
+void tests( vtrc::shared_ptr<vtrc_client> client,
+            vtrc::shared_ptr<variable_pool> vars )
+{
+
+    work_time wt;
+    /// create calculator client interface
+    vtrc::unique_ptr<interfaces::calculator>
+                            calc(interfaces::create_calculator( client ));
+
+    std::string test_name;
+    /// first: simple sum, mul, div, pow
+
+    std::string splitter( 80, '=' );
+    splitter += "\n";
+
+    std::cout << "My thread id: " << vtrc::this_thread::get_id( ) << "\n";
+
+    test_name = "first";
+    std::cout << splitter << test_name << ":\n";
+    try {
+
+        double res = calc->mul( "pi", calc->mul( "e", 1 ) );
+        std::cout << "\tpi * e = " << res << "\n";
+        vars->set( test_name, res ); /// now we can use old result
+
+    } catch( const vtrc::common::exception& ex ) {
+        std::cout << "call '"<< test_name << "' failed: " << ex.what( ) << "; "
+                  << ex.additional( ) << "\n";
+    }
+
+    test_name = "second";
+    std::cout << splitter << test_name << ":\n";
+    try {
+
+        double res = calc->sum( 17, calc->mul( 3, 5 ));
+        std::cout << "\t17 + 3 * 5 = " << res << "\n";
+        vars->set( test_name, res );
+
+    } catch( const vtrc::common::exception& ex ) {
+        std::cout << "call '"<< test_name << "' failed: " << ex.what( ) << "; "
+                  << ex.additional( ) << "\n";
+    }
+
+    test_name = "third";
+    std::cout << splitter << test_name << ":\n";
+    try {
+        std::cout << "\tnow we take first and seconds results "
+                  << "and make pow(firts, second)\n";
+        double res = calc->pow( "first", calc->mul( "second", 1 ));
+        std::cout << "\tpow(first, second) = " << res << "\n";
+        vars->set( test_name, res );
+
+    } catch( const vtrc::common::exception& ex ) {
+        std::cout << "call '"<< test_name << "' failed: " << ex.what( ) << "; "
+                  << ex.additional( ) << "\n";
+    }
+
+    test_name = "failed";
+    std::cout << splitter << test_name << ":\n";
+    try {
+        std::cout << "\tDivision by zero\n";
+        double res = calc->div( "first", 0);
+        std::cout << "\tfirst/0 = " << res << "\n"; /// we don't see this out
+        vars->set( test_name, res );
+
+    } catch( const vtrc::common::exception& ex ) { /// but see this
+        std::cout << "call '"<< test_name << "' failed: " << ex.what( ) << "; "
+                  << ex.additional( ) << "\n";
+    }
+
+}
 
 void on_client_ready( vtrc::condition_variable &cond )
 {
@@ -101,7 +191,6 @@ int main( int argc, char **argv ) try
     client->assign_weak_rpc_handler( vtrc::weak_ptr<variable_pool>(vars) );
 
     /// wait for client ready
-
     vtrc::unique_lock<vtrc::mutex> ready_lock(ready_mutex);
     ready_cond.wait( ready_lock, vtrc::bind( &vtrc_client::ready, client ) );
 
@@ -109,17 +198,9 @@ int main( int argc, char **argv ) try
 
     vars->set( "pi", 3.1415926 );
     vars->set( "e",  2.7182818 );
-    vars->set( "myvar", 100.100 );
 
-    /// create calculator
-    vtrc::unique_ptr<interfaces::calculator>
-                                calc(interfaces::create_calculator( client ));
-
-    try {
-        std::cout << "res: " << calc->sum( "piz", calc->mul( "e", 1 ) ) << "\n";
-    } catch( const std::exception& ex ) {
-        std::cout << "calls failed: " << ex.what( ) << "\n";
-    }
+    /// we call 'tests' in another thread, for example
+    vtrc::thread(tests, client, vars).join( ); /// and wait it
 
     return 0;
 
