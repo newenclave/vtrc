@@ -76,6 +76,7 @@ class variable_pool: public vtrc_example::variable_pool {
 
         std::map<std::string, double>::const_iterator f(variables_.find(n));
         if( f == variables_.end( ) ) {
+            std::cout << "Client sends exception to server...\n";
             std::ostringstream oss;
             oss << "Variable is not found: '" << n << "'";
             throw std::runtime_error( oss.str( ) );
@@ -165,6 +166,21 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
         std::cout << "\tDivision by zero\n";
         double res = calc->div( "first", 0);
         std::cout << "\tfirst/0 = " << res << "\n"; /// we don't see this out
+        vars->set( test_name, res );
+
+    } catch( const vtrc::common::exception& ex ) { /// but see this
+        std::cout << "call '"<< test_name << "' failed: " << ex.what( ) << "; "
+                  << ex.additional( ) << "\n";
+    }
+
+    test_name = "failed2";
+    std::cout << splitter << test_name << ":\n";
+    try {
+        std::cout << "\tRequesting invalid variabe 'invalid'"
+                  << " and make 'invalid' * 1\n";
+        double res = calc->mul( "invalid", 1 );
+        std::cout << "\t'invalid' * 1 = "
+                  << res << "\n"; /// we don't see this out
         vars->set( test_name, res );
 
     } catch( const vtrc::common::exception& ex ) { /// but see this
