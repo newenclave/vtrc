@@ -124,7 +124,7 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
     std::cout << splitter << test_name << ":\n";
     try {
 
-        double res = calc->mul( "pi", calc->mul( "e", 1 ) );
+        double res = calc->mul( "pi", "e" );
         std::cout << "\tpi * e = " << res << "\n";
         vars->set( test_name, res ); /// now we can use old result
 
@@ -151,7 +151,7 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
     try {
         std::cout << "\tnow we take first and seconds results "
                   << "and make pow(firts, second)\n";
-        double res = calc->pow( "first", calc->mul( "second", 1 ));
+        double res = calc->pow( "first", "second" );
         std::cout << "\tpow(first, second) = " << res << "\n";
         vars->set( test_name, res );
 

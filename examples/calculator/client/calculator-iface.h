@@ -17,18 +17,26 @@ namespace interfaces {
         virtual double sum( double l, double r )             const = 0;
         virtual double sum( std::string const &l, double r ) const = 0;
         virtual double sum( double l, std::string const &r ) const = 0;
+        virtual double sum( std::string const &l,
+                            std::string const &r ) const = 0;
 
         virtual double mul( double l, double r )             const = 0;
         virtual double mul( std::string const &l, double r ) const = 0;
         virtual double mul( double l, std::string const &r ) const = 0;
+        virtual double mul( std::string const &l,
+                            std::string const &r ) const = 0;
 
         virtual double div( double l, double r )             const = 0;
         virtual double div( std::string const &l, double r ) const = 0;
         virtual double div( double l, std::string const &r ) const = 0;
+        virtual double div( std::string const &l,
+                            std::string const &r ) const = 0;
 
         virtual double pow( double l, double r )             const = 0;
         virtual double pow( std::string const &l, double r ) const = 0;
         virtual double pow( double l, std::string const &r ) const = 0;
+        virtual double pow( std::string const &l,
+                            std::string const &r ) const = 0;
 
         virtual unsigned calls_count( ) const = 0;
 

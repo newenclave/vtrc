@@ -82,6 +82,15 @@ namespace {
             return n.value( );
         }
 
+        double sum( std::string const &l, std::string const &r ) const
+        {
+            number_pair_type p = make_pair( l, r );
+            number_type      n;
+            stub_.sum( NULL, &p, &n, NULL );
+            return n.value( );
+        }
+
+
         double mul( double l, double r )             const
         {
             number_pair_type p = make_pair( l, r );
@@ -101,6 +110,14 @@ namespace {
         }
 
         double mul( double l, std::string const &r ) const
+        {
+            number_pair_type p = make_pair( l, r );
+            number_type      n;
+            stub_.mul( NULL, &p, &n, NULL );
+            return n.value( );
+
+        }
+        double mul( std::string const &l, std::string const &r ) const
         {
             number_pair_type p = make_pair( l, r );
             number_type      n;
@@ -136,6 +153,15 @@ namespace {
 
         }
 
+        double div( std::string const &l, std::string const &r ) const
+        {
+            number_pair_type p = make_pair( l, r );
+            number_type      n;
+            stub_.div( NULL, &p, &n, NULL );
+            return n.value( );
+
+        }
+
         double pow( double l, double r )             const
         {
             number_pair_type p = make_pair( l, r );
@@ -155,6 +181,14 @@ namespace {
         }
 
         double pow( double l, std::string const &r ) const
+        {
+            number_pair_type p = make_pair( l, r );
+            number_type      n;
+            stub_.pow( NULL, &p, &n, NULL );
+            return n.value( );
+        }
+
+        double pow( std::string const &l, std::string const &r ) const
         {
             number_pair_type p = make_pair( l, r );
             number_type      n;
