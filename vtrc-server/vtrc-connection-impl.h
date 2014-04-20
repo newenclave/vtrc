@@ -42,14 +42,14 @@ namespace vtrc { namespace server { namespace listeners {
 
             connection_impl(listener &endpoint,
                             vtrc::shared_ptr<socket_type> sock,
-                            const close_closure &on_close)
+                            const close_closure &on_close_cb)
                 :super_type(sock)
                 ,endpoint_(endpoint)
                 ,app_(endpoint_.get_application( ))
                 ,ios_(app_.get_io_service( ))
                 ,env_(endpoint_.get_enviroment( ))
                 ,read_buff_(endpoint_.get_options( ).read_buffer_size)
-                ,close_closure_(on_close)
+                ,close_closure_(on_close_cb)
             {
                 protocol_.reset(new protocol_layer_s( vtrc::ref(app_), this,
                             endpoint_.get_options( ).maximum_active_calls,
@@ -63,11 +63,11 @@ namespace vtrc { namespace server { namespace listeners {
 
             static vtrc::shared_ptr<this_type> create(listener &endpoint,
                                    vtrc::shared_ptr<socket_type> sock,
-                                   const close_closure &on_destroy)
+                                   const close_closure &on_close_cb)
             {
                 vtrc::shared_ptr<this_type> new_inst
                      (vtrc::make_shared<this_type>(vtrc::ref(endpoint),
-                                                   sock, on_destroy ));
+                                                   sock, on_close_cb ));
 
                 new_inst->init( );
                 return new_inst;
@@ -75,11 +75,11 @@ namespace vtrc { namespace server { namespace listeners {
 
             static vtrc::shared_ptr<this_type> create(listener &endpoint,
                                   socket_type   *sock,
-                                  close_closure &on_destroy)
+                                  close_closure &on_close_cb)
             {
                 return create( endpoint,
                                vtrc::shared_ptr<socket_type>(sock),
-                               on_destroy );
+                               on_close_cb );
             }
 
             void init( )

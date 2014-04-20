@@ -67,7 +67,7 @@ namespace {
             }
         }
 
-        close_closure get_on_destroy( )
+        close_closure get_on_close_cb( )
         {
             return vtrc::bind( &this_type::on_client_destroy, this,
                                weak_from_this( ), _1 );
@@ -107,7 +107,7 @@ namespace {
 
                     vtrc::shared_ptr<connection_type> new_conn
                            (connection_type::create( *this, sock,
-                                                    get_on_destroy( )));
+                                                    get_on_close_cb( )));
 
                     get_application( ).get_clients( )->store( new_conn );
                     new_connection( new_conn.get( ) );

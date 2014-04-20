@@ -206,7 +206,6 @@ public:
     { }
 
 
-private:
 
     void attach_listener( vtrc::shared_ptr<server::listener> nl )
     {
@@ -221,6 +220,8 @@ private:
         nl->get_on_stop_connection( ).connect(
                 vtrc::bind(&main_app::on_stop_connection, this, _1, nl.get( )));
     }
+
+private:
 
     void on_new_connection( const common::connection_iface *c,
                             vtrc::server::listener *ep)

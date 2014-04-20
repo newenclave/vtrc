@@ -34,8 +34,8 @@ namespace {
 
         commection_pipe_impl( listener &listen,
                               vtrc::shared_ptr<socket_type> sock,
-                              const close_closure &on_destroy)
-            :connection_impl_type(listen, sock, on_destroy)
+                              const close_closure &on_close_cb)
+            :connection_impl_type(listen, sock, on_close_cb)
         { }
 
         bool impersonate( )
@@ -60,11 +60,11 @@ namespace {
 
         static vtrc::shared_ptr<this_type> create(listener &listnr,
                                  vtrc::shared_ptr<socket_type> sock,
-                                 const close_closure &on_destroy)
+                                 const close_closure &on_close_cb)
         {
             vtrc::shared_ptr<this_type> new_inst
                     (vtrc::make_shared<this_type>(vtrc::ref(listnr),
-                                                   sock, on_destroy));
+                                                   sock, on_close_cb));
 
             new_inst->init( );
             return new_inst;
@@ -111,7 +111,7 @@ namespace {
             }
         }
 
-        close_closure get_on_destroy( )
+        close_closure get_on_close_cb( )
         {
             return vtrc::bind( &this_type::on_client_destroy, this,
                                weak_from_this( ), _1 );
@@ -200,7 +200,7 @@ namespace {
                 try {
                     vtrc::shared_ptr<transport_type> new_conn
                              (transport_type::create(
-                                *this, sock, get_on_destroy( )));
+                                *this, sock, get_on_close_cb( )));
                     get_application( ).get_clients( )->store( new_conn );
                     new_connection( new_conn.get( ) );
 
