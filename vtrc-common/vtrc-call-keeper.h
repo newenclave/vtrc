@@ -15,7 +15,8 @@ namespace vtrc { namespace common {
         call_keeper& operator = ( const call_keeper &other );
 
     public:
-        call_keeper( connection_iface     *connection );
+
+        call_keeper( connection_iface *connection );
         virtual ~call_keeper( );
 
     public:
@@ -24,6 +25,7 @@ namespace vtrc { namespace common {
         vtrc::shared_ptr<call_keeper> create( connection_iface *connection );
 
     public:
+
         bool valid( ) const;
     };
 
