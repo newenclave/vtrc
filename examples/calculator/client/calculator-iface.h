@@ -30,6 +30,8 @@ namespace interfaces {
         virtual double pow( std::string const &l, double r ) const = 0;
         virtual double pow( double l, std::string const &r ) const = 0;
 
+        virtual unsigned calls_count( ) const = 0;
+
     };
 
     calculator *create_calculator( vtrc::shared_ptr<vtrc::client::vtrc_client> client );

@@ -10,16 +10,20 @@ namespace {
         typedef vtrc_example::number number_type;
         typedef vtrc_example::number_pair number_pair_type;
 
+
         vtrc::shared_ptr<google::protobuf::RpcChannel> channel_;
         mutable stub_type                              stub_;
+        mutable unsigned                               calls_count_;
 
         calculator_impl( vtrc::shared_ptr<vtrc::client::vtrc_client> client )
             :channel_(client->create_channel( ))
             ,stub_(channel_.get( ))
+            ,calls_count_(0)
         { }
 
         number_pair_type make_pair( double l, double r ) const
         {
+            ++calls_count_;
             number_pair_type result;
             result.mutable_first( )->set_value( l );
             result.mutable_second( )->set_value( r );
@@ -28,6 +32,7 @@ namespace {
 
         number_pair_type make_pair( std::string const &l, double r ) const
         {
+            ++calls_count_;
             number_pair_type result;
             result.mutable_first( )->set_name( l );
             result.mutable_second( )->set_value( r );
@@ -37,6 +42,7 @@ namespace {
         number_pair_type make_pair( std::string const &l,
                                     std::string const &r ) const
         {
+            ++calls_count_;
             number_pair_type result;
             result.mutable_first( )->set_name( l );
             result.mutable_second( )->set_name( r );
@@ -45,6 +51,7 @@ namespace {
 
         number_pair_type make_pair( double l, std::string const &r ) const
         {
+            ++calls_count_;
             number_pair_type result;
             result.mutable_first( )->set_value( l );
             result.mutable_second( )->set_name( r );
@@ -53,6 +60,7 @@ namespace {
 
         double sum( double l, double r )             const
         {
+            ++calls_count_;
             number_pair_type p = make_pair( l, r );
             number_type      n;
             stub_.sum( NULL, &p, &n, NULL );
@@ -61,6 +69,7 @@ namespace {
 
         double sum( std::string const &l, double r ) const
         {
+            ++calls_count_;
             number_pair_type p = make_pair( l, r );
             number_type      n;
             stub_.sum( NULL, &p, &n, NULL );
@@ -69,6 +78,7 @@ namespace {
 
         double sum( double l, std::string const &r ) const
         {
+            ++calls_count_;
             number_pair_type p = make_pair( l, r );
             number_type      n;
             stub_.sum( NULL, &p, &n, NULL );
@@ -77,6 +87,7 @@ namespace {
 
         double mul( double l, double r )             const
         {
+            ++calls_count_;
             number_pair_type p = make_pair( l, r );
             number_type      n;
             stub_.mul( NULL, &p, &n, NULL );
@@ -86,6 +97,7 @@ namespace {
 
         double mul( std::string const &l, double r ) const
         {
+            ++calls_count_;
             number_pair_type p = make_pair( l, r );
             number_type      n;
             stub_.mul( NULL, &p, &n, NULL );
@@ -95,6 +107,7 @@ namespace {
 
         double mul( double l, std::string const &r ) const
         {
+            ++calls_count_;
             number_pair_type p = make_pair( l, r );
             number_type      n;
             stub_.mul( NULL, &p, &n, NULL );
@@ -104,6 +117,7 @@ namespace {
 
         double div( double l, double r )             const
         {
+            ++calls_count_;
             number_pair_type p = make_pair( l, r );
             number_type      n;
             stub_.div( NULL, &p, &n, NULL );
@@ -113,6 +127,7 @@ namespace {
 
         double div( std::string const &l, double r ) const
         {
+            ++calls_count_;
             number_pair_type p = make_pair( l, r );
             number_type      n;
             stub_.div( NULL, &p, &n, NULL );
@@ -122,6 +137,7 @@ namespace {
 
         double div( double l, std::string const &r ) const
         {
+            ++calls_count_;
             number_pair_type p = make_pair( l, r );
             number_type      n;
             stub_.div( NULL, &p, &n, NULL );
@@ -131,6 +147,7 @@ namespace {
 
         double pow( double l, double r )             const
         {
+            ++calls_count_;
             number_pair_type p = make_pair( l, r );
             number_type      n;
             stub_.pow( NULL, &p, &n, NULL );
@@ -140,6 +157,7 @@ namespace {
 
         double pow( std::string const &l, double r ) const
         {
+            ++calls_count_;
             number_pair_type p = make_pair( l, r );
             number_type      n;
             stub_.pow( NULL, &p, &n, NULL );
@@ -149,10 +167,16 @@ namespace {
 
         double pow( double l, std::string const &r ) const
         {
+            ++calls_count_;
             number_pair_type p = make_pair( l, r );
             number_type      n;
             stub_.pow( NULL, &p, &n, NULL );
             return n.value( );
+        }
+
+        unsigned calls_count( ) const
+        {
+            return calls_count_;
         }
 
     };

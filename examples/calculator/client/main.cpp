@@ -44,12 +44,15 @@ struct work_time {
 class variable_pool: public vtrc_example::variable_pool {
 
     std::map<std::string, double> variables_;
+    unsigned server_calback_count_;
+
 
     void get_variable(::google::protobuf::RpcController* controller,
                  const ::vtrc_example::number* request,
                  ::vtrc_example::number* response,
                  ::google::protobuf::Closure* done)
     {
+        ++server_calback_count_;
         closure_holder done_holder(done);
         std::string n(request->name( ));
 
@@ -66,6 +69,15 @@ class variable_pool: public vtrc_example::variable_pool {
     }
 
 public:
+
+    variable_pool( )
+        :server_calback_count_(0)
+    {}
+
+    unsigned calls_count( ) const
+    {
+        return server_calback_count_;
+    }
 
     void set( std::string const &name, double value )
     {
@@ -145,6 +157,10 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
                   << ex.additional( ) << "\n";
     }
 
+    std::cout << splitter;
+
+    std::cout << "Total RPC was made: " << calc->calls_count( ) << "\n";
+
 }
 
 void on_client_ready( vtrc::condition_variable &cond )
@@ -201,6 +217,9 @@ int main( int argc, char **argv ) try
 
     /// we call 'tests' in another thread, for example
     vtrc::thread(tests, client, vars).join( ); /// and wait it
+
+    std::cout << "Server callbacks count: " << vars->calls_count( ) << "\n";
+    std::cout << "\n\nFINISH\n\n";
 
     return 0;
 
