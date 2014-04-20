@@ -255,9 +255,9 @@ int main( int argc, char **argv ) try
     }
 
     /// set rpc handler for local variable
-
     vtrc::shared_ptr<variable_pool> vars(vtrc::make_shared<variable_pool>());
     client->assign_weak_rpc_handler( vtrc::weak_ptr<variable_pool>(vars) );
+
 
     /// wait for client ready; There must be a better way. But anyway ... :)))
     vtrc::mutex              ready_mutex;
@@ -266,7 +266,6 @@ int main( int argc, char **argv ) try
     ready_cond.wait( ready_lock, vtrc::bind( &vtrc_client::ready, client ) );
 
     /// add some variables
-
     vars->set( "pi", 3.1415926 );
     vars->set( "e",  2.7182818 );
 
