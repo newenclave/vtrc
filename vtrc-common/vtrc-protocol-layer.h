@@ -157,13 +157,16 @@ namespace vtrc { namespace common {
 
         typedef std::deque< vtrc::shared_ptr<call_context> > call_stack_type;
 
-        call_context *push_call_context ( call_context *cc );
-        call_context *push_call_context ( vtrc::shared_ptr<call_context> cc );
-        void           pop_call_context ( );
-        call_context  *top_call_context ( );
-        void         reset_call_stack   ( );
-        void          swap_call_stack   ( call_stack_type& other );
-        void          copy_call_stack   ( call_stack_type& other ) const;
+        /**
+         * call context
+        **/
+        call_context  *push_call_context ( call_context *cc );
+        call_context  *push_call_context ( vtrc::shared_ptr<call_context> cc );
+        void           pop_call_context  ( );
+        call_context  *top_call_context  ( );
+        void           reset_call_stack  ( );
+        void           swap_call_stack   ( call_stack_type& other );
+        void           copy_call_stack   ( call_stack_type& other ) const;
 
     public:
 
