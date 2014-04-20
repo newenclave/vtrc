@@ -52,6 +52,7 @@ class variable_pool: public vtrc_example::variable_pool {
                  ::google::protobuf::Closure* done)
     {
         ++server_calback_count_;
+
         closure_holder done_holder(done);
         std::string n(request->name( ));
 
