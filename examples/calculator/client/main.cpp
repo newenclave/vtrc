@@ -128,7 +128,8 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
     std::cout << splitter << test_name << ":\n";
     try {
 
-        double res = calc->mul( "pi", "e" );
+        double res = calc->mul( "pi", "e" ); /// CALL
+
         std::cout << "\tpi * e = " << res << "\n";
         vars->set( test_name, res ); /// now we can use old result
 
@@ -144,7 +145,8 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
     std::cout << splitter << test_name << ":\n";
     try {
 
-        double res = calc->sum( 17, calc->mul( 3, 5 ));
+        double res = calc->sum( 17, calc->mul( 3, 5 )); /// CALL
+
         std::cout << "\t17 + 3 * 5 = " << res << "\n";
         vars->set( test_name, res );
 
@@ -161,7 +163,9 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
     try {
         std::cout << "\tnow we take first and seconds results "
                   << "and make pow(firts, second)\n";
-        double res = calc->pow( "first", "second" );
+
+        double res = calc->pow( "first", "second" ); /// CALL
+
         std::cout << "\tpow(first, second) = " << res << "\n";
         vars->set( test_name, res );
 
@@ -177,7 +181,9 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
     std::cout << splitter << test_name << ":\n";
     try {
         std::cout << "\tDivision by zero\n";
-        double res = calc->div( "first", 0);
+
+        double res = calc->div( "first", 0); /// CALL
+
         std::cout << "\tfirst/0 = " << res << "\n"; /// we don't see this out
         vars->set( test_name, res );
 
@@ -194,7 +200,9 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
     try {
         std::cout << "\tRequesting invalid variabe 'invalid'"
                   << " and make 'invalid' * 1\n";
-        double res = calc->mul( "invalid", 1 );
+
+        double res = calc->mul( "invalid", 1 ); /// CALL
+
         std::cout << "\t'invalid' * 1 = "
                   << res << "\n"; /// we don't see this out
         vars->set( test_name, res );
