@@ -166,6 +166,8 @@ int main( int argc, char **argv ) try
         usage( );
         return 1;
     }
+
+    /// one thread for transport io, and one for calls
     pool_pair pp(1, 1);
     server_application app( pp );
 
