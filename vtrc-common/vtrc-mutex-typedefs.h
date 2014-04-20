@@ -12,4 +12,4 @@ namespace vtrc {
     typedef boost::upgrade_to_unique_lock<shared_mutex>  upgrade_to_unique;
 }
 
-#endif // VTRCMUTEX_H
+#endif // VTRC_MUTEX_TYPEDEFS_H
