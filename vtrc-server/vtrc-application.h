@@ -24,12 +24,12 @@ namespace vtrc {
         class rpc_service_wrapper;
         class connection_list;
         class pool_pair;
+        struct connection_iface;
     }
 
 namespace server {
 
     class  listener;
-    struct connection_iface;
 
     class application {
 

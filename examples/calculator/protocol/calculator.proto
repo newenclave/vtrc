@@ -1,9 +1,32 @@
 
-import "google/protobuf/descriptor.proto";
-import "vtrc-errors.proto";
-import "vtrc-types.proto";
+//import "google/protobuf/descriptor.proto";
+//import "vtrc-errors.proto";
+//import "vtrc-types.proto";
 
-package vtrc_calculator;
+package vtrc_example;
+option cc_generic_services = true;
 
+message number {
 
+    optional double value = 1; // value
+    optional string name  = 2; // variable name
 
+    message pair {
+        optional number first   = 1;
+        optional number second  = 2;
+    }
+}
+
+service calculator {
+
+    rpc sum( number.pair ) returns ( number );
+    rpc mul( number.pair ) returns ( number );
+    rpc div( number.pair ) returns ( number );
+    rpc pow( number.pair ) returns ( number );
+
+}
+
+service variable_pool {
+    rpc set_variable(number) returns ( number );
+    rpc get_variable(number) returns ( number );
+}

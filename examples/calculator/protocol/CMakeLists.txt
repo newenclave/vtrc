@@ -15,9 +15,9 @@ endforeach( )
 
 file(GLOB protofiles ./*.proto)
 
-set( PROTO_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR} )
+set( PROTO_FILES_DIR    ${CMAKE_CURRENT_BINARY_DIR} )
 set( PROTO_FILES_OUTPUT ${PROTO_FILES_DIR}/protocol )
-file(MAKE_DIRECTORY ${PROTO_FILES_OUTPUT})
+file(MAKE_DIRECTORY     ${PROTO_FILES_OUTPUT})
 
 include_directories( ${vtrc_common_s_PROTO_OUTPUT} )
 include_directories( ${PROTO_FILES_DIR} )
