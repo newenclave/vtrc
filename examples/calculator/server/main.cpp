@@ -23,6 +23,7 @@
 using namespace vtrc::server;
 using namespace vtrc::common;
 
+/// calculator implementation
 class calculator_impl: public vtrc_example::calculator {
 
     application      &app_;
@@ -117,6 +118,7 @@ private:
     }
 };
 
+/// just in case; rpc_service_wrapper can be used instead
 class my_rpc_wrapper: public rpc_service_wrapper
 {
 public:
