@@ -18,7 +18,7 @@ namespace vtrc { namespace common {
             :connection_(conn)
             ,protocol_(proto)
         {
-            if(!protocol_->get_call_context( )) {
+            if( !protocol_->get_call_context( ) ) {
                 throw std::runtime_error( "Call context is not found." );
             }
             protocol_->copy_call_stack( stack_ );
