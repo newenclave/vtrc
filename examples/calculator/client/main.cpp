@@ -72,7 +72,7 @@ class variable_pool: public vtrc_example::variable_pool {
         std::string n(request->name( ));
 
         std::cout << "Server wants variable: '" << n << "'"
-                  << " thread id: " << vtrc::this_thread::get_id( ) << "\n";
+                  << "; thread id: " << vtrc::this_thread::get_id( ) << "\n";
 
         std::map<std::string, double>::const_iterator f(variables_.find(n));
         if( f == variables_.end( ) ) {
