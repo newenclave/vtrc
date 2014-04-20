@@ -66,8 +66,6 @@ add_library(${lib_name} STATIC ${lib_src})
 
 list(APPEND dependencies
     vtrc_common_s
-    Boost
-    PROTOBUF
     )
 
 message( "-- Seting up dependencies for " ${lib_name} )
