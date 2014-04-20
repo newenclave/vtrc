@@ -32,6 +32,8 @@ class calculator_impl: public vtrc_example::calculator {
 
     static rpc_channel *client_channel( connection_iface *client )
     {
+        /// create CALLBACK channel.
+        /// so, all calls will be made in client-call thread context
         return channels
                 ::unicast
                 ::create_callback_channel(client->shared_from_this( ));
