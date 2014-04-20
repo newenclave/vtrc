@@ -196,6 +196,14 @@ namespace {
             return n.value( );
         }
 
+        void not_implemented( ) const
+        {
+            ++calls_count_;
+            number_pair_type p;
+            number_type      n;
+            stub_.not_implemented( NULL, &p, &n, NULL );
+        }
+
         unsigned calls_count( ) const
         {
             return calls_count_;

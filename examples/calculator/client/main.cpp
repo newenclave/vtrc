@@ -212,9 +212,24 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
                   << ex.additional( ) << "\n";
     }
 
-    std::cout << splitter;
+    /**
+     * ======================== THE TEST THAT FAILED 3 =================
+    **/
+    test_name = "unimplemented call";
+    std::cout << splitter << test_name << ":\n";
+    try {
+        std::cout << "\tMaking call that unimplemented on server-side\n";
 
+        calc->not_implemented( ); /// CALL
+
+    } catch( const vtrc::common::exception& ex ) { /// but see this
+        std::cout << "call '"<< test_name << "' failed: " << ex.what( ) << "; "
+                  << ex.additional( ) << "\n";
+    }
+
+    std::cout << splitter;
     std::cout << "Total RPC was made: " << calc->calls_count( ) << "\n";
+    std::cout << splitter;
 
 }
 

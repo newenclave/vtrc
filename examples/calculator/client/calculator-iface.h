@@ -38,6 +38,8 @@ namespace interfaces {
         virtual double pow( std::string const &l,
                             std::string const &r ) const = 0;
 
+        virtual void not_implemented( ) const = 0;
+
         virtual unsigned calls_count( ) const = 0;
 
     };

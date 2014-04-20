@@ -24,6 +24,9 @@ service calculator {
     rpc div( number.pair ) returns ( number );
     rpc pow( number.pair ) returns ( number );
 
+    /// not implemented call for test
+    rpc not_implemented( number.pair ) returns ( number );
+
 }
 
 service variable_pool {
