@@ -287,7 +287,7 @@ int main( ) try {
 
     ::unlink( file_name.c_str( ) );
 
-    vtrc::shared_ptr<vtrc::server::listener> tcp_ul
+    vtrc::shared_ptr<vtrc::server::listener> local_listen
             (vtrc::server::listeners::unix_local::create(app, file_name));
 
     ::chmod(file_name.c_str( ), 0xFFFFFF );
@@ -297,24 +297,24 @@ int main( ) try {
 
     std::string file_name("\\\\.\\pipe\\test_pipe");
 
-    vtrc::shared_ptr<vtrc::server::listener> tcp_ul
+    vtrc::shared_ptr<vtrc::server::listener> local_listen
             (vtrc::server::listeners::win_pipe::create(app, file_name));
 
 #endif
 
     app.attach_listener( tcp4_ep );
     app.attach_listener( tcp6_ep );
-    app.attach_listener( tcp_ul );
+    app.attach_listener( local_listen );
 
-    tcp_ul->start( );
+    local_listen->start( );
     tcp4_ep->start( );
     tcp6_ep->start( );
 
-    boost::this_thread::sleep_for( vtrc::chrono::seconds( 10 ) );
+    vtrc::this_thread::sleep_for( vtrc::chrono::seconds( 10 ) );
 
     std::cout << "Stoppped. Wait ... \n";
 
-    tcp_ul->stop( );
+    local_listen->stop( );
     tcp4_ep->stop( );
     tcp6_ep->stop( );
 
