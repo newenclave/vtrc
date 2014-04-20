@@ -1,7 +1,7 @@
 
 aux_source_directory(. src_dir)
 
-set( exe_name calculator_server)
+set( exe_name calculator_server )
 
 add_executable(${exe_name} ${src_dir})
 
