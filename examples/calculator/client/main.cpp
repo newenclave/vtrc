@@ -239,9 +239,6 @@ int main( int argc, char **argv ) try
 
     /// connect slot to 'on_ready'
 
-    vtrc::mutex              ready_mutex;
-    vtrc::condition_variable ready_cond;
-
     client->get_on_ready( ).connect( vtrc::bind( on_client_ready,
                             vtrc::ref( ready_cond ) ) );
 
@@ -262,7 +259,9 @@ int main( int argc, char **argv ) try
     vtrc::shared_ptr<variable_pool> vars(vtrc::make_shared<variable_pool>());
     client->assign_weak_rpc_handler( vtrc::weak_ptr<variable_pool>(vars) );
 
-    /// wait for client ready
+    /// wait for client ready; There must be a better way. But anyway ... :)))
+    vtrc::mutex              ready_mutex;
+    vtrc::condition_variable ready_cond;
     vtrc::unique_lock<vtrc::mutex> ready_lock(ready_mutex);
     ready_cond.wait( ready_lock, vtrc::bind( &vtrc_client::ready, client ) );
 
