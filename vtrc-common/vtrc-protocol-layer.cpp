@@ -876,16 +876,6 @@ namespace vtrc { namespace common {
         return impl_->get_method_options( method );
     }
 
-    void protocol_layer::set_level( unsigned level )
-    {
-        impl_->set_level( level );
-    }
-
-    unsigned protocol_layer::get_level( ) const
-    {
-        return impl_->get_level( );
-    }
-
     const call_context *protocol_layer::get_call_context( ) const
     {
         return impl_->get_call_context( );
@@ -897,6 +887,16 @@ namespace vtrc { namespace common {
     }
 
     // ===============
+
+    void protocol_layer::set_level( unsigned level )
+    {
+        impl_->set_level( level );
+    }
+
+    unsigned protocol_layer::get_level( ) const
+    {
+        return impl_->get_level( );
+    }
 
     void protocol_layer::make_call(protocol_layer::lowlevel_unit_sptr llu)
     {
