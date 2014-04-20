@@ -284,7 +284,10 @@ int main( int argc, char **argv ) try
     vars->set( "e",  2.7182818 );
 
     /// we call 'tests' in another thread, for example
-    vtrc::thread(tests, client, vars).join( ); /// and wait it
+    //vtrc::thread(tests, client, vars).join( ); /// and wait it
+
+    /// or we can call it in main( )
+    tests( client, vars );
 
     std::cout << "Server callbacks count: " << vars->calls_count( ) << "\n";
     std::cout << "\n\nFINISH\n\n";
