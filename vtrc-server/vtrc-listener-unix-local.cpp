@@ -101,8 +101,6 @@ namespace vtrc { namespace server { namespace listeners {
                     (vtrc::make_shared<listener_unix>(
                          vtrc::ref(app), vtrc::ref(opts),
                          vtrc::ref(name) ) );
-
-            app.attach_listener( new_l );
             return new_l;
         }
 

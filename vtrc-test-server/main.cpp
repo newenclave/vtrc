@@ -301,6 +301,10 @@ int main( ) try {
 
 #endif
 
+    app.attach_listener( tcp4_ep );
+    app.attach_listener( tcp6_ep );
+    app.attach_listener( tcp_ul );
+
     tcp_ul->start( );
     tcp4_ep->start( );
     tcp6_ep->start( );

@@ -225,7 +225,6 @@ namespace {
                          vtrc::ref(app), vtrc::ref(opts),
                          vtrc::ref(name),
                          PIPE_UNLIMITED_INSTANCES));
-            app.attach_listener( new_l );
             return new_l;
         }
 

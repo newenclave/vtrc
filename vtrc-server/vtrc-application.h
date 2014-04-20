@@ -65,8 +65,6 @@ namespace server {
 
         virtual std::string get_session_key( common::connection_iface* conn,
                                              const std::string &id);
-
-        virtual void attach_listener( vtrc::shared_ptr<listener> nl );
     };
 
 }}

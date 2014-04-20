@@ -58,7 +58,6 @@ namespace vtrc { namespace server { namespace listeners {
                     (vtrc::make_shared<listener_tcp>(
                              vtrc::ref(app), vtrc::ref(opts),
                              vtrc::ref(address), service ));
-            app.attach_listener( new_l );
             return new_l;
         }
 
