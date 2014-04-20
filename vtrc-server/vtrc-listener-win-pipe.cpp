@@ -97,7 +97,7 @@ namespace {
             ,pipe_max_inst_(max_inst)
             ,in_buf_size_(opts.read_buffer_size)
             ,out_buf_size_(opts.read_buffer_size)
-            ,working_(true)
+            ,working_(false)
         { }
 
         virtual ~pipe_listener( ) { }
@@ -180,6 +180,7 @@ namespace {
 
         void start( )
         {
+            working_ = true;
             start_accept( );
             on_start_( );
         }

@@ -16,6 +16,7 @@
 #include "vtrc-listener-win-pipe.h"
 
 #include "vtrc-memory.h"
+#include "vtrc-bind.h"
 
 #include <math.h>
 #include <boost/lexical_cast.hpp>
@@ -60,9 +61,9 @@ private:
         return num.value( );
     }
 
-    number_pair extract_number( const vtrc_example::number_pair* req ) const
+    number_pair extract_num_pair( const vtrc_example::number_pair* req ) const
     {
-        std::pair<double, double> result;
+        number_pair result;
 
         if( req->first( ).has_value( ) ) result.first = req->first( ).value( );
         else result.first = request_client_variable( req->first( ).name( ) );
@@ -80,7 +81,7 @@ private:
     {
         closure_holder done_holder( done );
 
-        number_pair req = extract_number( request );
+        number_pair req = extract_num_pair( request );
         response->set_value( req.first + req.second );
 
     }
@@ -90,7 +91,7 @@ private:
              ::google::protobuf::Closure* done)
     {
         closure_holder done_holder( done );
-        number_pair req = extract_number( request );
+        number_pair req = extract_num_pair( request );
         response->set_value( req.first * req.second );
 
     }
@@ -100,10 +101,10 @@ private:
              ::google::protobuf::Closure* done)
     {
         closure_holder done_holder( done );
-        number_pair req = extract_number( request );
+        number_pair req = extract_num_pair( request );
 
         if( req.second == 0 )
-            throw std::logic_error( "Division by zero. =(" );
+            throw std::logic_error( "Division by zero." );
 
         response->set_value( req.first / req.second );
 
@@ -115,7 +116,7 @@ private:
              ::google::protobuf::Closure* done)
     {
         closure_holder done_holder( done );
-        number_pair req = extract_number( request );
+        number_pair req = extract_num_pair( request );
         response->set_value( ::pow(req.first, req.second) );
     }
 };
@@ -130,6 +131,7 @@ public:
 };
 
 class server_application: public application {
+    typedef server_application this_type;
 public:
     server_application( pool_pair &pair )
         :application( pair )
@@ -146,6 +148,29 @@ public:
                                     new calculator_impl( *this, connection ) );
 
         return vtrc::shared_ptr<my_rpc_wrapper>();
+    }
+
+    void on_new_connection( listener_sptr l, const connection_iface *c )
+    {
+        std::cout << "New connection from " << l->name( ) << "...stop it.\n";
+        l->stop( );
+
+    }
+
+    void on_stop_connection( listener_sptr l, const connection_iface *c )
+    {
+        std::cout << "Close connection on " << l->name( ) << "...start it.\n";
+        l->start( );
+    }
+
+    void attach_listener( listener_sptr listen )
+    {
+        listen->get_on_new_connection( ).connect(
+                    vtrc::bind( &this_type::on_new_connection, this,
+                                listen, _1 ));
+        listen->get_on_stop_connection( ).connect(
+                    vtrc::bind( &this_type::on_stop_connection, this,
+                                listen, _1 ));
     }
 };
 
@@ -183,6 +208,8 @@ int main( int argc, char **argv ) try
         main_listener = listeners::tcp::create(app, argv[1],
                 boost::lexical_cast<unsigned short>(argv[2]));
     }
+
+    app.attach_listener( main_listener );
 
     std::cout << "starting '" << main_listener->name( ) << "'...";
 

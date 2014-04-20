@@ -43,17 +43,16 @@ namespace {
                 connection_type
         > this_type;
 
-        basio::io_service       &ios_;
+        basio::io_service              &ios_;
 
-        endpoint_type            endpoint_;
-        acceptor_type            acceptor_;
+        endpoint_type                   endpoint_;
+        vtrc::unique_ptr<acceptor_type> acceptor_;
 
         listener_impl( application &app,
                        const listener_options &opts, const endpoint_type &ep)
             :listener(app, opts)
             ,ios_(app.get_io_service( ))
             ,endpoint_(ep)
-            ,acceptor_(ios_, endpoint_)
         { }
 
         virtual ~listener_impl( ) { }
@@ -83,20 +82,22 @@ namespace {
             vtrc::shared_ptr<socket_type> new_sock
                     ( vtrc::make_shared<socket_type>(vtrc::ref(ios_) ) );
 
-            acceptor_.async_accept( *new_sock,
+            acceptor_->async_accept( *new_sock,
                 vtrc::bind( &this_type::on_accept, this,
                              basio::placeholders::error, new_sock ));
         }
 
         void start( )
         {
+            acceptor_.reset(new acceptor_type(ios_, endpoint_));
             start_accept( );
             on_start_( );
         }
 
         void stop ( )
         {
-            acceptor_.close( );
+            acceptor_->close( );
+
         }
 
         void on_accept( const bsys::error_code &error,
