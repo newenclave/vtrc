@@ -117,7 +117,7 @@ namespace vtrc { namespace common  {
             /// from client: call, insertion_call
             /// from server: event, callback
             if( top->info( ).message_type( ) != mess_type ) {
-                cl->get_protocol( ).make_call( top );
+                cl->get_protocol( ).make_local_call( top );
             } else {
                 response->ParseFromString( top->response( ) );
                 wait = false;

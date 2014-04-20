@@ -657,8 +657,8 @@ namespace vtrc { namespace common {
             return closure_hold->proto_closure_;
         }
 
-        void make_call_impl( lowlevel_unit_sptr llu,
-                             closure_holder_sptr &closure_hold)
+        void make_local_call_impl( lowlevel_unit_sptr llu,
+                                   closure_holder_sptr &closure_hold)
         {
             protocol_layer::context_holder ch( parent_, llu.get( ) );
 
@@ -705,12 +705,12 @@ namespace vtrc { namespace common {
                                      closure_hold->res_.get( ), clos );
         }
 
-        void make_call(protocol_layer::lowlevel_unit_sptr llu)
+        void make_local_call(protocol_layer::lowlevel_unit_sptr llu)
         {
-            make_call(llu, protocol_closure( ));
+            make_local_call(llu, protocol_closure( ));
         }
 
-        void make_call(protocol_layer::lowlevel_unit_sptr llu,
+        void make_local_call(protocol_layer::lowlevel_unit_sptr llu,
                                       const protocol_closure &done)
         {
             bool failed        = true;
@@ -721,8 +721,8 @@ namespace vtrc { namespace common {
                 hold = vtrc::make_shared<closure_holder_type>( );
                 hold->internal_closure_.reset(new protocol_closure(done));
 
-                make_call_impl( llu, hold );
-                failed   = false;
+                make_local_call_impl( llu, hold );
+                failed = false;
 
             } catch ( const vtrc::common::exception &ex ) {
                 errorcode = ex.code( );
@@ -898,15 +898,15 @@ namespace vtrc { namespace common {
         return impl_->get_level( );
     }
 
-    void protocol_layer::make_call(protocol_layer::lowlevel_unit_sptr llu)
+    void protocol_layer::make_local_call(protocol_layer::lowlevel_unit_sptr llu)
     {
-        impl_->make_call( llu );
+        impl_->make_local_call( llu );
     }
 
-    void protocol_layer::make_call(protocol_layer::lowlevel_unit_sptr llu,
+    void protocol_layer::make_local_call(protocol_layer::lowlevel_unit_sptr llu,
                                    protocol_closure done)
     {
-        impl_->make_call( llu, done );
+        impl_->make_local_call( llu, done );
     }
 
     void protocol_layer::change_hash_maker( hash_iface *new_hasher )

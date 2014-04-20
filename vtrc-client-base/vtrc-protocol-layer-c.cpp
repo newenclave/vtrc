@@ -154,7 +154,7 @@ namespace vtrc { namespace client {
         {
             vtrc_client_sptr c(client.lock( ));
             if( !c ) return;
-            parent_->make_call( llu );
+            parent_->make_local_call( llu );
         }
 
         void process_event( lowlevel_unit_sptr &llu )

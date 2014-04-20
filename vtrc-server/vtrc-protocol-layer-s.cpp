@@ -326,7 +326,7 @@ namespace vtrc { namespace server {
         void push_call( lowlevel_unit_sptr llu,
                         common::connection_iface_sptr /*conn*/ )
         {
-            parent_->make_call( llu,
+            parent_->make_local_call( llu,
                 vtrc::bind(&this_type::call_done, this, _1 ));
         }
 

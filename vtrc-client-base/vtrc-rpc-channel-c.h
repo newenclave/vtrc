@@ -23,7 +23,7 @@ namespace vtrc {
 
 namespace client {
 
-    class rpc_channel_c: public vtrc::common::rpc_channel {
+    class rpc_channel_c: public common::rpc_channel {
 
         struct        impl;
         friend struct impl;
