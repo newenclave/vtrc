@@ -748,7 +748,9 @@ namespace vtrc { namespace common {
                     if( hold )
                         hold->internal_closure_.reset( );
 
-                    done( llu->error( ) );
+                    /// call 'done' if it exists
+                    if( done )
+                        done( llu->error( ) );
                 }
             } else {
                 send_message( empty_done_ );
