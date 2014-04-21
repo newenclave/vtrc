@@ -108,7 +108,7 @@ namespace vtrc { namespace common {
 
             void call_internal( )
             {
-                if( NULL != internal_closure_.get( ) && (*internal_closure_)) {
+                if( NULL != internal_closure_.get( ) ) {
                     connection_iface_sptr lck(connection_.lock( ));
                     if( lck  )  {
                         (*internal_closure_)( llu_->error( ) );
@@ -707,7 +707,10 @@ namespace vtrc { namespace common {
 
         void make_local_call(protocol_layer::lowlevel_unit_sptr llu)
         {
-            make_local_call(llu, protcol_closure_type( ));
+            struct fake_call {
+                static void call( vtrc_errors::container const & ) { }
+            };
+            make_local_call( llu, &fake_call::call );
         }
 
         void make_local_call(protocol_layer::lowlevel_unit_sptr llu,
@@ -749,8 +752,7 @@ namespace vtrc { namespace common {
                         hold->internal_closure_.reset( );
 
                     /// call 'done' if it exists
-                    if( done )
-                        done( llu->error( ) );
+                    done( llu->error( ) );
                 }
             } else {
                 send_message( empty_done_ );
