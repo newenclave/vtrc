@@ -277,10 +277,10 @@ int main( ) try {
     main_app app(pp);
 
     vtrc::shared_ptr<vtrc::server::listener> tcp4_ep
-            (vtrc::server::listeners::tcp::create(app, "0.0.0.0", 44667));
+            (vtrc::server::listeners::tcp::create(app, "0.0.0.0", 44667, true ));
 
     vtrc::shared_ptr<vtrc::server::listener> tcp6_ep
-            (vtrc::server::listeners::tcp::create(app, "::", 44668));
+            (vtrc::server::listeners::tcp::create(app, "::", 44668, true));
 
 #ifndef _WIN32
 

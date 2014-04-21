@@ -99,10 +99,13 @@ namespace vtrc { namespace client {
             return c;
         }
 
-        void connect( const std::string &address, const std::string &service )
+        void connect( const std::string &address,
+                      const std::string &service, bool tcp_nodelay )
         {
             vtrc::shared_ptr<client_tcp> client(create_client<client_tcp>( ));
             client->connect( address, service );
+            if( tcp_nodelay )
+                client->set_no_delay( true );
             parent_->on_connect_( );
         }
 
@@ -178,16 +181,33 @@ namespace vtrc { namespace client {
 #endif
         }
 
+        void async_connect_success_tcp( vtrc::shared_ptr<client_tcp> client,
+                            bool tcp_nodelay,
+                            const bsys::error_code &err,
+                            common::system_closure_type closure )
+        {
+            if( !err ) {
+
+                if( tcp_nodelay )
+                    client->set_no_delay( tcp_nodelay );
+
+                parent_->on_connect_( );
+            }
+            closure(err);
+        }
+
         void async_connect( const std::string &address,
                             const std::string &service,
+                            bool tcp_nodelay,
                             common::system_closure_type &closure )
         {
             vtrc::shared_ptr<client_tcp>
                                new_client(create_client<client_tcp>( ));
 
             new_client->async_connect( address, service,
-                    vtrc::bind( &this_type::async_connect_success,
+                    vtrc::bind( &this_type::async_connect_success_tcp,
                                 this,
+                                new_client, tcp_nodelay,
                                 basio::placeholders::error,
                                 closure ));
         }
@@ -399,9 +419,9 @@ namespace vtrc { namespace client {
 #endif
 
     void vtrc_client::connect( const std::string &address,
-                               const std::string &service )
+                               const std::string &service, bool tcp_nodelay )
     {
-        impl_->connect( address, service );
+        impl_->connect( address, service, tcp_nodelay );
     }
 
     void vtrc_client::async_connect(const std::string &local_name,
@@ -422,9 +442,10 @@ namespace vtrc { namespace client {
 
     void vtrc_client::async_connect(const std::string &address,
                             const std::string &service,
-                            common::system_closure_type closure )
+                            common::system_closure_type closure,
+                            bool tcp_nodelay)
     {
-        impl_->async_connect( address, service, closure );
+        impl_->async_connect( address, service, tcp_nodelay, closure );
     }
 
     bool vtrc_client::ready( ) const

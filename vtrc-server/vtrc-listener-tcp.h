@@ -13,11 +13,14 @@ namespace vtrc { namespace server {
 
         listener_sptr create( application &app,
                               const std::string &address,
-                              unsigned short service );
+                              unsigned short service,
+                              bool tcp_nodelay = false );
 
-        listener_sptr create( application &app, const listener_options &opts,
+        listener_sptr create( application &app,
+                              const listener_options &opts,
                               const std::string &address,
-                              unsigned short service );
+                              unsigned short service,
+                              bool tcp_nodelay = false );
     }}
 
 }}

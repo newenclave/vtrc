@@ -24,14 +24,16 @@ namespace client {
         struct impl;
         impl  *impl_;
 
-        client_tcp( boost::asio::io_service &ios, vtrc_client *client );
+        client_tcp( boost::asio::io_service &ios,
+                    vtrc_client *client );
 
     public:
 
         typedef vtrc::shared_ptr<client_tcp> shared_type;
 
         static shared_type create (
-                            boost::asio::io_service &ios, vtrc_client *client );
+                            boost::asio::io_service &ios,
+                            vtrc_client *client );
 
         ~client_tcp( );
         void init( );
@@ -40,6 +42,7 @@ namespace client {
 
         void connect( const std::string &address,
                       const std::string &service );
+
         void async_connect( const std::string &address,
                             const std::string &service,
                             common::system_closure_type closure );

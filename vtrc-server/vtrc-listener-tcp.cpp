@@ -23,6 +23,8 @@ namespace vtrc { namespace server { namespace listeners {
 
         struct listener_tcp: public super_type {
 
+            bool no_delay_;
+
             static endpoint_type make_endpoint( const std::string &address,
                                                 unsigned short port )
             {
@@ -32,8 +34,9 @@ namespace vtrc { namespace server { namespace listeners {
             listener_tcp( application &app,
                           const listener_options &opts,
                           const std::string &address,
-                          unsigned short port )
+                          unsigned short port, bool no_delay )
                 :super_type( app, opts, make_endpoint(address, port))
+                ,no_delay_(no_delay)
             { }
 
             virtual std::string name( ) const
@@ -47,7 +50,8 @@ namespace vtrc { namespace server { namespace listeners {
 
             void connection_setup( vtrc::shared_ptr<connection_type> &con )
             {
-                //con->set_no_delay( true );
+                if( no_delay_ )
+                    con->set_no_delay( true );
             }
 
         };
@@ -56,23 +60,25 @@ namespace vtrc { namespace server { namespace listeners {
     namespace tcp {
 
         listener_sptr create(application &app, const listener_options &opts,
-                            const std::string &address, unsigned short service)
+                            const std::string &address, unsigned short service,
+                             bool tcp_nodelay)
         {
 
             vtrc::shared_ptr<listener_tcp>new_l
                     (vtrc::make_shared<listener_tcp>(
                              vtrc::ref(app), vtrc::ref(opts),
-                             vtrc::ref(address), service ));
+                             vtrc::ref(address), service,
+                             tcp_nodelay ));
             return new_l;
         }
 
         listener_sptr create( application &app,
                                 const std::string &address,
-                                unsigned short service )
+                                unsigned short service, bool tcp_nodelay )
         {
             const listener_options def_opts(default_options( ));
 
-            return create( app, def_opts, address, service );
+            return create( app, def_opts, address, service, tcp_nodelay );
         }
 
     }

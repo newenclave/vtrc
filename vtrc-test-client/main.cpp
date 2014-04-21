@@ -205,7 +205,7 @@ int main( )
     //cl->connect( "/tmp/test.socket" );
     //cl->connect( "10.3.0.40", "44667" );
     //cl->connect( "\\\\.\\pipe\\test_pipe");
-    cl->connect( "127.0.0.1", "44667" );
+    cl->connect( "127.0.0.1", "44667", true );
     //cl->connect( "::1", "44668" );
     ///cl->async_connect( "127.0.0.1", "44667", on_connect );
 
