@@ -27,6 +27,11 @@ namespace vtrc { namespace common {
             return get_parent( )->prepare_for_write( data, len );
         }
 
+        void set_no_delay( bool value )
+        {
+            get_socket( ).set_option( bip::tcp::no_delay( true ) );
+        }
+
     };
 
     transport_tcp::transport_tcp( vtrc::shared_ptr<socket_type> sock )
@@ -59,6 +64,11 @@ namespace vtrc { namespace common {
                        const system_closure_type &success, bool on_send_success)
     {
         impl_->write( data, length, success, on_send_success );
+    }
+
+    void transport_tcp::set_no_delay( bool value )
+    {
+        impl_->set_no_delay( value );
     }
 
     std::string transport_tcp::prepare_for_write(const char *data, size_t len)

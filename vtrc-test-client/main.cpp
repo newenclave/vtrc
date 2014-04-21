@@ -99,7 +99,7 @@ class test_ev: public vtrc_service::test_events
 public:
     test_ev( vtrc::common::connection_iface *c )
         :c_( c )
-    {}
+    { }
 
     void test(::google::protobuf::RpcController* controller,
                          const ::vtrc_service::test_message* request,
@@ -203,9 +203,9 @@ int main( )
     cl->get_on_init_error( ).connect( boost::bind( on_init_error, _1, _2 ) );
 
     //cl->connect( "/tmp/test.socket" );
-    cl->connect( "10.3.0.40", "44667" );
+    //cl->connect( "10.3.0.40", "44667" );
     //cl->connect( "\\\\.\\pipe\\test_pipe");
-    //cl->connect( "127.0.0.1", "44667" );
+    cl->connect( "127.0.0.1", "44667" );
     //cl->connect( "::1", "44668" );
     ///cl->async_connect( "127.0.0.1", "44667", on_connect );
 

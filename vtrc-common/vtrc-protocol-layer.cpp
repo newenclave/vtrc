@@ -754,6 +754,7 @@ namespace vtrc { namespace common {
                         done( llu->error( ) );
                 }
             } else {
+                /// TODO: think!
                 send_message( empty_done_ );
             }
 
