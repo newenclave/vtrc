@@ -108,7 +108,7 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
             vtrc::shared_ptr<variable_pool> vars )
 {
 
-    //work_time wt;
+    work_time wt;
     /// create calculator client interface
     vtrc::unique_ptr<interfaces::calculator>
                             calc(interfaces::create_calculator( client ));
