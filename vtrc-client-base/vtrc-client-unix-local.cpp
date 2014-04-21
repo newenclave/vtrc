@@ -23,6 +23,7 @@ namespace vtrc { namespace client {
         {
             basio::local::stream_protocol::endpoint ep (address);
             get_socket( ).connect( ep );
+            connection_setup( );
             start_reading( );
         }
 

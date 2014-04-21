@@ -105,6 +105,11 @@ namespace {
 
         }
 
+        virtual void connection_setup( vtrc::shared_ptr<connection_type> &con )
+        {
+
+        }
+
         void on_accept( const bsys::error_code &error,
                         vtrc::shared_ptr<socket_type> sock )
         {
@@ -115,6 +120,7 @@ namespace {
                            (connection_type::create( *this, sock,
                                                     get_on_close_cb( )));
 
+                    connection_setup( new_conn );
                     get_application( ).get_clients( )->store( new_conn );
                     new_connection( new_conn.get( ) );
 

@@ -81,11 +81,17 @@ namespace { /// implementation.
             return protocol_->ready( );
         }
 
+        virtual void connection_setup(  )
+        {
+
+        }
+
         void on_connect( const bsys::error_code &err,
                          common::system_closure_type closure,
                          common::connection_iface_sptr /*parent*/)
         {
             if( !err ) {
+                connection_setup( );
                 start_reading( );
             }
             closure( err );

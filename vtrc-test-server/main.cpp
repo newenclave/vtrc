@@ -94,6 +94,7 @@ void test_send( common::connection_iface *connection,
         {
 //            std::cout << "ping 2 " << vtrc::this_thread::get_id( ) << "\n";
             ping.ping( NULL, &preq, &pres, NULL );
+            ping.ping( NULL, &preq, &pres, NULL );
         }
     } catch( std::exception const &ex ) {
 //        std::cout << "png error " << ex.what( ) << "\n";

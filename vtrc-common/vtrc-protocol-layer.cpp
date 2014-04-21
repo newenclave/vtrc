@@ -754,8 +754,9 @@ namespace vtrc { namespace common {
                         done( llu->error( ) );
                 }
             } else {
-                /// TODO: think!
-                send_message( empty_done_ );
+                /// yeah ... write - write - read;
+                /// but maybe it is better to set up TCP_NODELAY ... hm
+                /// send_message( empty_done_ );
             }
 
         }

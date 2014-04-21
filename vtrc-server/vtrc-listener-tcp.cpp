@@ -45,6 +45,11 @@ namespace vtrc { namespace server { namespace listeners {
                 return oss.str( );
             }
 
+            void connection_setup( vtrc::shared_ptr<connection_type> &con )
+            {
+                con->set_no_delay( true );
+            }
+
         };
     }
 

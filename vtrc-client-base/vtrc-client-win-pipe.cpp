@@ -36,6 +36,7 @@ namespace vtrc { namespace client {
             } else {
                 get_socket( ).assign( pipe );
             }
+            connection_setup( );
             start_reading( );
         }
 
@@ -62,7 +63,7 @@ namespace vtrc { namespace client {
             } else {
                 get_socket( ).assign( pipe );
             }
-
+            connection_setup( );
             start_reading( );
         }
 

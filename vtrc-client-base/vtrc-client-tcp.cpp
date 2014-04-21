@@ -26,6 +26,7 @@ namespace vtrc { namespace client {
                     (basio::ip::address::from_string(address),
                      boost::lexical_cast<unsigned short>(service) );
             get_socket( ).connect( ep );
+            connection_setup( );
             start_reading( );
         }
 
