@@ -705,7 +705,7 @@ namespace vtrc { namespace common {
                                      closure_hold->res_.get( ), clos );
         }
 
-        void make_local_call(protocol_layer::lowlevel_unit_sptr llu)
+        void make_local_call( protocol_layer::lowlevel_unit_sptr llu )
         {
             struct fake_call {
                 static void call( vtrc_errors::container const & ) { }
@@ -713,8 +713,8 @@ namespace vtrc { namespace common {
             make_local_call( llu, &fake_call::call );
         }
 
-        void make_local_call(protocol_layer::lowlevel_unit_sptr llu,
-                                      const protcol_closure_type &done)
+        void make_local_call( protocol_layer::lowlevel_unit_sptr llu,
+                                      const protcol_closure_type &done )
         {
             bool failed        = true;
             unsigned errorcode = 0;
