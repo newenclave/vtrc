@@ -51,6 +51,11 @@ namespace { /// implementation.
             parent_ = parent;
         }
 
+        parent_type *get_parent( )
+        {
+            return parent_;
+        }
+
         const std::string &id( ) const
         {
             return protocol_->client_id( );

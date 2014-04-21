@@ -30,6 +30,11 @@ namespace vtrc { namespace client {
             start_reading( );
         }
 
+        void connection_setup( )
+        {
+             //get_parent( )->set_no_delay( true );
+        }
+
         void async_connect( const std::string &address,
                             const std::string &service,
                             common::system_closure_type closure )

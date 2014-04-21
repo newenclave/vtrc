@@ -93,6 +93,12 @@ namespace vtrc { namespace server { namespace listeners {
                 oss << "unix://" << endpoint_.path( );
                 return oss.str( );
             }
+
+            void connection_setup( vtrc::shared_ptr<connection_type> & /*con*/ )
+            {
+
+            }
+
         };
     }
 
