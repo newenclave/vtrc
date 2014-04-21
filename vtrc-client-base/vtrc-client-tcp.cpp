@@ -15,8 +15,11 @@ namespace vtrc { namespace client {
 
         typedef impl this_type;
 
-        impl( boost::asio::io_service &ios, vtrc_client *client )
+        bool no_delay_;
+
+        impl( boost::asio::io_service &ios, vtrc_client *client, bool nodelay )
             :super_type(ios, client, 4096)
+            ,no_delay_(nodelay)
         { }
 
         void connect( const std::string &address,
@@ -32,8 +35,8 @@ namespace vtrc { namespace client {
 
         void connection_setup( )
         {
-//            if( no_delay_ )
-//                get_parent( )->set_no_delay( true );
+            if( no_delay_ )
+                get_parent( )->set_no_delay( true );
         }
 
         void async_connect( const std::string &address,
@@ -56,18 +59,18 @@ namespace vtrc { namespace client {
     }
 
     client_tcp::client_tcp(boost::asio::io_service &ios,
-                            vtrc_client *client)
+                            vtrc_client *client, bool tcp_nodelay)
         :common::transport_tcp(create_socket(ios))
-        ,impl_(new impl(ios, client ))
+        ,impl_(new impl(ios, client, tcp_nodelay ))
     {
         impl_->set_parent( this );
     }
 
     vtrc::shared_ptr<client_tcp> client_tcp::create(basio::io_service &ios,
-                                        vtrc_client *client)
+                                        vtrc_client *client, bool tcp_nodelay)
     {
         vtrc::shared_ptr<client_tcp> new_inst
-                    (new client_tcp( ios, client ));
+                    (new client_tcp( ios, client, tcp_nodelay ));
         new_inst->init( );
         return new_inst;
     }

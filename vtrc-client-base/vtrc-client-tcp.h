@@ -25,7 +25,7 @@ namespace client {
         impl  *impl_;
 
         client_tcp( boost::asio::io_service &ios,
-                    vtrc_client *client );
+                    vtrc_client *client, bool tcp_nodelay );
 
     public:
 
@@ -33,7 +33,7 @@ namespace client {
 
         static shared_type create (
                             boost::asio::io_service &ios,
-                            vtrc_client *client );
+                            vtrc_client *client, bool tcp_nodelay );
 
         ~client_tcp( );
         void init( );

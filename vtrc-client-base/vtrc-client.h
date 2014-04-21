@@ -126,7 +126,7 @@ namespace client {
         void async_connect( const std::string &address,
                             const std::string &service,
                             common::system_closure_type closure,
-                            bool tcp_nodelay = false);
+                            bool tcp_nodelay = false );
 #ifdef _WIN32
         void connect( const std::wstring &local_name );
         void async_connect( const std::wstring &local_name,
