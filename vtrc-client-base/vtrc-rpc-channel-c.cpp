@@ -83,8 +83,11 @@ namespace vtrc { namespace client {
 
             if( disable_wait_ )
                 llu.mutable_opt( )->set_wait( false );
-            else
+            else {
                 llu.mutable_opt( )->set_wait( call_opt.wait( ) );
+                llu.mutable_opt( )->set_accept_callbacks
+                                               ( call_opt.accept_callbacks( ) );
+            }
 
             parent_->configure_message_for( clk, llu );
             uint64_t call_id = llu.id( );
