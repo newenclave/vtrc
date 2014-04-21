@@ -103,11 +103,6 @@ namespace vtrc { namespace server { namespace listeners {
                 return *protocol_;
             }
 
-            bool ready( ) const
-            {
-                protocol_->ready( );
-            }
-
             void close(  )
             {
                 super_type::close( );
