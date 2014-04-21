@@ -707,10 +707,10 @@ namespace vtrc { namespace common {
 
         void make_local_call( protocol_layer::lowlevel_unit_sptr llu )
         {
-            struct fake_call {
+            struct empty {
                 static void call( vtrc_errors::container const & ) { }
             };
-            make_local_call( llu, &fake_call::call );
+            make_local_call( llu, &empty::call );
         }
 
         void make_local_call( protocol_layer::lowlevel_unit_sptr llu,
