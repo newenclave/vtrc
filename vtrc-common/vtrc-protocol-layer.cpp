@@ -230,7 +230,7 @@ namespace vtrc { namespace common {
 
                 /**
                  * message = <size>transformed(data)
-                 * we must revert data in 'parse_and_pop_top'
+                 * we must revert data in 'parse_and_pop'
                 **/
                 queue_->append( &next_data[0], next_data.size( ));
                 queue_->process( );
