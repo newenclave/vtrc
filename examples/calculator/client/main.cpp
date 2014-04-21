@@ -177,12 +177,11 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
     /**
      * ======================== THE TEST THAT FAILED ===================
     **/
-    test_name = "failed";
+    test_name = "Division by zero";
     std::cout << splitter << test_name << ":\n";
     try {
-        std::cout << "\tDivision by zero\n";
 
-        double res = calc->div( "first", 0); /// CALL
+        double res = calc->div( "first", 0); /// FAIL CALL
 
         std::cout << "\tfirst/0 = " << res << "\n"; /// we don't see this out
         vars->set( test_name, res );
@@ -195,17 +194,15 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
     /**
      * ======================== THE TEST THAT FAILED 2 =================
     **/
-    test_name = "failed2";
+    test_name = "Invalid variable";
     std::cout << splitter << test_name << ":\n";
     try {
         std::cout << "\tRequesting invalid variabe 'invalid'"
                   << " and make 'invalid' * 1\n";
 
-        double res = calc->mul( "invalid", 1 ); /// CALL
+        double res = calc->mul( "invalid", 1 ); /// FAIL CALL
 
-        std::cout << "\t'invalid' * 1 = "
-                  << res << "\n"; /// we don't see this out
-        vars->set( test_name, res );
+        std::cout << res << "\n";
 
     } catch( const vtrc::common::exception& ex ) { /// but see this
         std::cout << "call '"<< test_name << "' failed: " << ex.what( ) << "; "
