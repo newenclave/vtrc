@@ -32,7 +32,7 @@ struct work_time {
     time_point start_;
     work_time( )
         :start_(vtrc::chrono::high_resolution_clock::now( ))
-    {}
+    { }
     ~work_time( )
     {
         time_point::duration stop(
