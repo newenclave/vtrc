@@ -94,13 +94,13 @@ namespace vtrc { namespace common {
 
         struct closure_holder_type {
 
-            connection_iface_wptr               connection_;
-            vtrc::unique_ptr<gpb::Message>      req_;
-            vtrc::unique_ptr<gpb::Message>      res_;
-            vtrc::unique_ptr<rpc_controller>    controller_;
-            lowlevel_unit_sptr                  llu_;
-            vtrc::unique_ptr<protocol_closure>  internal_closure_;
-            gpb::Closure                       *proto_closure_;
+            connection_iface_wptr                   connection_;
+            vtrc::unique_ptr<gpb::Message>          req_;
+            vtrc::unique_ptr<gpb::Message>          res_;
+            vtrc::unique_ptr<rpc_controller>        controller_;
+            lowlevel_unit_sptr                      llu_;
+            vtrc::unique_ptr<protcol_closure_type>  internal_closure_;
+            gpb::Closure                           *proto_closure_;
 
             closure_holder_type( )
                 :proto_closure_(NULL)
@@ -707,11 +707,11 @@ namespace vtrc { namespace common {
 
         void make_local_call(protocol_layer::lowlevel_unit_sptr llu)
         {
-            make_local_call(llu, protocol_closure( ));
+            make_local_call(llu, protcol_closure_type( ));
         }
 
         void make_local_call(protocol_layer::lowlevel_unit_sptr llu,
-                                      const protocol_closure &done)
+                                      const protcol_closure_type &done)
         {
             bool failed        = true;
             unsigned errorcode = 0;
@@ -719,7 +719,7 @@ namespace vtrc { namespace common {
             try {
 
                 hold = vtrc::make_shared<closure_holder_type>( );
-                hold->internal_closure_.reset(new protocol_closure(done));
+                hold->internal_closure_.reset(new protcol_closure_type(done));
 
                 make_local_call_impl( llu, hold );
                 failed = false;
@@ -906,7 +906,7 @@ namespace vtrc { namespace common {
     }
 
     void protocol_layer::make_local_call(protocol_layer::lowlevel_unit_sptr llu,
-                                   protocol_closure done)
+                                         const protcol_closure_type &done)
     {
         impl_->make_local_call( llu, done );
     }

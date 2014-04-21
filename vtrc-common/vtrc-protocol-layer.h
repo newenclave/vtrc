@@ -45,10 +45,6 @@ namespace vtrc { namespace common {
     struct transport_iface;
     class  call_context;
 
-    typedef vtrc::function <
-        void (const vtrc_errors::container &)
-    > protocol_closure;
-
     class protocol_layer {
 
         struct        impl;
@@ -93,7 +89,8 @@ namespace vtrc { namespace common {
         virtual void on_read_error ( const boost::system::error_code &err );
 
         void make_local_call( lowlevel_unit_sptr llu );
-        void make_local_call( lowlevel_unit_sptr llu, protocol_closure done);
+        void make_local_call( lowlevel_unit_sptr llu,
+                              const protcol_closure_type &done);
 
         void call_rpc_method(                   const lowlevel_unit_type &llu );
         void call_rpc_method( uint64_t slot_id, const lowlevel_unit_type &llu );
