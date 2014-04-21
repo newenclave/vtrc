@@ -26,6 +26,12 @@ namespace vtrc { namespace common {
         :impl_(new impl(lowlevel))
     { }
 
+    call_context::~call_context( )
+    {
+        delete impl_;
+    }
+
+
     const call_context *call_context::get( connection_iface *iface )
     {
         return iface->get_call_context( );
@@ -104,11 +110,6 @@ namespace vtrc { namespace common {
     const google::protobuf::Closure *call_context::get_done_closure( ) const
     {
         return impl_->done_;
-    }
-
-    call_context::~call_context( )
-    {
-        delete impl_;
     }
 
 }}
