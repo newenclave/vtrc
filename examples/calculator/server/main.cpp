@@ -151,7 +151,7 @@ public:
             return vtrc::make_shared<my_rpc_wrapper>(
                                     new calculator_impl( *this, connection ) );
 
-        return vtrc::shared_ptr<my_rpc_wrapper>();
+        return vtrc::shared_ptr<my_rpc_wrapper>( );
     }
 
     void on_new_connection( listener_sptr l, const connection_iface *c )
