@@ -182,6 +182,7 @@ namespace vtrc { namespace common {
         ~impl( )
         { }
 
+
         static protocol_layer::lowlevel_unit_type make_fake_mess( )
         {
 
@@ -385,6 +386,9 @@ namespace vtrc { namespace common {
         {
             if( !context_->empty( ) )
                 context_->pop_front( );
+//            if( context_->empty( ) ) {
+//                context_.reset(  );
+//            }
         }
 
         void reset_call_context( )
@@ -438,7 +442,7 @@ namespace vtrc { namespace common {
 
         call_context *top_call_context( )
         {
-            return context_.get( ) && !context_->empty( )
+            return (context_.get( ) && !context_->empty( ))
                     ? context_->front( ).get( )
                     : NULL;
         }
@@ -844,7 +848,7 @@ namespace vtrc { namespace common {
     */
 
     call_context *protocol_layer::push_call_context(
-                                             vtrc::shared_ptr<call_context> cc)
+                                            vtrc::shared_ptr<call_context> cc)
     {
         return impl_->push_call_context( cc );
     }

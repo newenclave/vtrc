@@ -179,7 +179,6 @@ namespace vtrc { namespace server {
             bool check = get_pop_message( capsule );
 
             if( !check ) {
-                std::cout << "Close\n";
                 capsule.Clear( );
                 capsule.mutable_error( )->set_code( vtrc_errors::ERR_INTERNAL );
                 send_and_close( capsule );

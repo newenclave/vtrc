@@ -108,7 +108,7 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
             vtrc::shared_ptr<variable_pool> vars )
 {
 
-    work_time wt;
+    //work_time wt;
     /// create calculator client interface
     vtrc::unique_ptr<interfaces::calculator>
                             calc(interfaces::create_calculator( client ));
@@ -244,7 +244,7 @@ int main( int argc, char **argv ) try
     }
 
     /// one thread for transport io, and one for calls
-    pool_pair pp(1, 1);
+    pool_pair pp(2, 3);
 
     /// create client
     vtrc::shared_ptr<vtrc_client> client(vtrc_client::create(pp));
@@ -289,9 +289,14 @@ int main( int argc, char **argv ) try
     std::cout << "Server callbacks count: " << vars->calls_count( ) << "\n";
     std::cout << "\n\nFINISH\n\n";
 
+    pp.stop_all( );
+    pp.join_all( );
+
+    google::protobuf::ShutdownProtobufLibrary( );
     return 0;
 
 } catch( const std::exception &ex ) {
+    google::protobuf::ShutdownProtobufLibrary( );
     std::cout << "General client error: " << ex.what( ) << "\n";
     return 2;
 }
