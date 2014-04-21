@@ -48,15 +48,17 @@ namespace vtrc { namespace server {
 
             void send_message(lowlevel_unit_type &llu,
                         const google::protobuf::MethodDescriptor* method,
-                              google::protobuf::RpcController*  /*controller*/,
+                              google::protobuf::RpcController*  controller,
                         const google::protobuf::Message*        /*request   */,
                               google::protobuf::Message*          response,
                               google::protobuf::Closure*          done )
             {
-                common::closure_holder        clhl(done);
+                common::closure_holder        done_holder(done);
                 common::connection_iface_sptr clnt (client_.lock( ));
 
                 if( clnt.get( ) == NULL ) {
+                    if( controller )
+                        controller->SetFailed( "Connection lost" );
                     throw vtrc::common::exception( vtrc_errors::ERR_CHANNEL,
                                                    "Connection lost");
                 }
@@ -64,9 +66,6 @@ namespace vtrc { namespace server {
                 const vtrc_rpc::options &call_opt
                          ( get_protocol( *clnt ).get_method_options(method) );
 
-                configure_message( clnt, message_type_, llu );
-
-                const gpb::uint64 call_id = llu.id( );
 
                 if( disable_wait_ ) {
                     llu.mutable_opt( )->set_wait(false);
@@ -75,6 +74,9 @@ namespace vtrc { namespace server {
                     llu.mutable_opt( )
                         ->set_accept_callbacks(call_opt.accept_callbacks( ));
                 }
+
+                configure_message( clnt, message_type_, llu );
+                const gpb::uint64 call_id = llu.id( );
 
                 if( llu.opt( ).wait( ) ) { /// WAITABLE CALL
 

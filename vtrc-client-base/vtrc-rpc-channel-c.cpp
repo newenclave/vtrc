@@ -64,12 +64,12 @@ namespace vtrc { namespace client {
         void send_message( lowlevel_unit_type &llu,
                      const gpb::MethodDescriptor *method,
                            gpb::RpcController *controller,
-                     const gpb::Message *       /*  request  */,
-                           gpb::Message *response,
-                           gpb::Closure *           done   )
+                     const gpb::Message *  /*  request  */,
+                           gpb::Message *      response,
+                           gpb::Closure *      done   )
         {
-            common::connection_iface_sptr clk(connection_.lock( ));
             common::closure_holder done_holder(done);
+            common::connection_iface_sptr clk(connection_.lock( ));
 
             if( clk.get( ) == NULL ) {
                 if( controller )
