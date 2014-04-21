@@ -156,15 +156,15 @@ public:
 
     void on_new_connection( listener_sptr l, const connection_iface *c )
     {
-        std::cout << "New connection from " << l->name( ) << "...stop it.\n";
-        l->stop( );
+        //std::cout << "New connection from " << l->name( ) << "...stop it.\n";
+        //l->stop( );
 
     }
 
     void on_stop_connection( listener_sptr l, const connection_iface *c )
     {
-        std::cout << "Close connection on " << l->name( ) << "...start it.\n";
-        l->start( );
+        //std::cout << "Close connection on " << l->name( ) << "...start it.\n";
+        //l->start( );
     }
 
     void attach_listener( listener_sptr listen )

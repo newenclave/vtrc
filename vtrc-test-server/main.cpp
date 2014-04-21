@@ -67,7 +67,7 @@ struct work_time {
 };
 
 void test_send( common::connection_iface *connection,
-                vtrc::server::application &app )
+                vtrc::server::application &app, int count )
 {
     common::connection_iface_sptr s(connection->shared_from_this());
     vtrc::shared_ptr<google::protobuf::RpcChannel> ev(
@@ -93,8 +93,8 @@ void test_send( common::connection_iface *connection,
         //for( ;; )
         {
 //            std::cout << "ping 2 " << vtrc::this_thread::get_id( ) << "\n";
-            ping.ping( NULL, &preq, &pres, NULL );
-            ping.ping( NULL, &preq, &pres, NULL );
+            while( count-- )
+                ping.ping( NULL, &preq, &pres, NULL );
         }
     } catch( std::exception const &ex ) {
 //        std::cout << "png error " << ex.what( ) << "\n";
@@ -115,7 +115,7 @@ void call_delayed_test( const boost::system::error_code &err,
     common::closure_holder ch(done);
     response->set_message_type( id );
 
-    test_send(c_, app_);
+    test_send(c_, app_, 1);
 }
 
 void test_keeper_call( const boost::system::error_code &ecode,
@@ -126,7 +126,7 @@ void test_keeper_call( const boost::system::error_code &ecode,
                        vtrc::server::application &app)
 {
     response->set_id( id );
-    test_send(c, app);
+    test_send(c, app, 1);
 }
 
 class test_impl: public vtrc_service::test_rpc {
