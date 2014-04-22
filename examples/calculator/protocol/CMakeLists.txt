@@ -3,9 +3,7 @@ set(lib_name calculator_protocol_lib_s)
 
 include_directories( ${PROJECT_SOURCE_DIR} )
 
-list(APPEND src_dirs
-        .
-    )
+list(APPEND src_dirs . )
 
 set( vtrc_common vtrc_common_s )
 
@@ -33,8 +31,8 @@ foreach(next_proto ${protofiles})
     get_filename_component(in_PATH  ${next_proto} PATH)
 
     set( OUTPUT_FILES
-                ${${lib_name}_PROTOBUF_FILES_OUTPUT}/${out_FILE}.pb.h
-                ${${lib_name}_PROTOBUF_FILES_OUTPUT}/${out_FILE}.pb.cc
+             ${${lib_name}_PROTOBUF_FILES_OUTPUT}/${out_FILE}.pb.h
+             ${${lib_name}_PROTOBUF_FILES_OUTPUT}/${out_FILE}.pb.cc
        )
 
     add_custom_command(
@@ -63,7 +61,7 @@ foreach(next_proto ${protofiles})
     list( APPEND lib_src ${OUTPUT_FILES})
     list( APPEND lib_src ${next_proto})
 
-endforeach()
+endforeach( )
 
 ##################################################
 
