@@ -1,5 +1,5 @@
 
-set(lib_name calculator_protocol_lib_s)
+set(lib_name calculator_protocol_s)
 
 include_directories( ${PROJECT_SOURCE_DIR} )
 

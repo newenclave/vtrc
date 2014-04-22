@@ -6,7 +6,7 @@ set( exe_name calculator_client )
 add_executable(${exe_name} ${src_dir})
 
 list(APPEND dependencies
-    calculator_protocol_lib_s
+    calculator_protocol_s
     vtrc_client_base_s
     vtrc_common_s
     Boost
