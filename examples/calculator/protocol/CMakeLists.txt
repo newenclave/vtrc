@@ -15,6 +15,8 @@ endforeach( )
 
 file(GLOB protofiles ./*.proto)
 
+####################### PROTOCOL FILES #######################
+
 set( ${lib_name}_PROTOBUF_FILES_DIR    ${CMAKE_CURRENT_BINARY_DIR} )
 
 set( ${lib_name}_PROTOBUF_FILES_OUTPUT
