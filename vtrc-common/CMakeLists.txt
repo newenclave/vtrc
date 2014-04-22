@@ -21,16 +21,18 @@ include_directories( ${CONFIG_FILES_DIRECTORY} )
 
 ####################### PROTOCOL BASE #######################
 
-set( VTRC_POTOBUF_IMPORT_DIRS
-    ${CMAKE_CURRENT_SOURCE_DIR}/protocol-base )
+set( ${lib_name}_POTOBUF_IMPORT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/protocol-base )
 
 file(GLOB protofiles protocol-base/*.proto)
 
-set( VTRC_BASE_PROTO_FILES_DIR    ${CMAKE_CURRENT_BINARY_DIR} )
-set( VTRC_BASE_PROTO_FILES_OUTPUT ${VTRC_BASE_PROTO_FILES_DIR}/protocol )
-file(MAKE_DIRECTORY               ${VTRC_BASE_PROTO_FILES_OUTPUT})
+set( ${lib_name}_PROTOBUF_FILES_DIR    ${CMAKE_CURRENT_BINARY_DIR} )
 
-include_directories( ${VTRC_BASE_PROTO_FILES_DIR} )
+set( ${lib_name}_PROTOBUF_FILES_OUTPUT
+     ${${lib_name}_PROTOBUF_FILES_DIR}/protocol )
+
+file( MAKE_DIRECTORY ${${lib_name}_PROTOBUF_FILES_OUTPUT})
+
+include_directories( ${${lib_name}_PROTOBUF_FILES_DIR} )
 
 foreach(next_proto ${protofiles})
 
@@ -38,8 +40,8 @@ foreach(next_proto ${protofiles})
     get_filename_component(in_PATH  ${next_proto} PATH)
 
     set( OUTPUT_FILES
-                ${VTRC_BASE_PROTO_FILES_OUTPUT}/${out_FILE}.pb.h
-                ${VTRC_BASE_PROTO_FILES_OUTPUT}/${out_FILE}.pb.cc
+                ${${lib_name}_PROTOBUF_FILES_OUTPUT}/${out_FILE}.pb.h
+                ${${lib_name}_PROTOBUF_FILES_OUTPUT}/${out_FILE}.pb.cc
        )
 
     add_custom_command(
@@ -48,7 +50,7 @@ foreach(next_proto ${protofiles})
                         --proto_path=${PROTOBUF_INCLUDE_DIRS}
                         --proto_path=${POTOBUF_IMPORT_DIRS}
                         --proto_path=${in_PATH}
-                        --cpp_out=${VTRC_BASE_PROTO_FILES_OUTPUT}
+                        --cpp_out=${${lib_name}_PROTOBUF_FILES_OUTPUT}
                         ${next_proto}
         WORKING_DIRECTORY
                 ${GENERATED_FILES_OUTPUT}
@@ -97,17 +99,26 @@ set(${lib_name}_DEFINITIONS "-DSTATIC" PARENT_SCOPE)
 
 set(${lib_name}_INCLUDE_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${VTRC_BASE_PROTO_FILES_DIR}
+    ${${lib_name}_PROTOBUF_FILES_DIR}
+    ${${lib_name}_PROTOBUF_FILES_OUTPUT}
     ${CONFIG_FILES_DIRECTORY}
     PARENT_SCOPE
 )
 
-set( ${lib_name}_PROTO_DIR
-     ${VTRC_POTOBUF_IMPORT_DIRS}
-       PARENT_SCOPE )
 
-set( ${lib_name}_PROTO_OUTPUT
-     ${VTRC_BASE_PROTO_FILES_OUTPUT}
-       PARENT_SCOPE )
+set( ${lib_name}_PROTOBUF_FILES_OUTPUT
+     ${${lib_name}_PROTOBUF_FILES_OUTPUT}
+     PARENT_SCOPE
+)
+
+set( ${lib_name}_PROJECT_SOURCE_DIR
+     ${PROJECT_SOURCE_DIR}
+       PARENT_SCOPE
+)
+
+set( ${lib_name}_POTOBUF_IMPORT_DIR
+     ${${lib_name}_POTOBUF_IMPORT_DIR}
+     PARENT_SCOPE
+)
 
 set(${lib_name}_LIBRARIES ${${lib_name}_LOCATION} PARENT_SCOPE)

@@ -171,7 +171,7 @@ public:
 //        connection_->get_io_service( ).dispatch(
 //                    vtrc::bind(test_send, connection_));
 //        boost::thread(test_send, connection_).detach( );
-          test_send(c_, app_, 1);
+          test_send(c_, app_, 5);
         }
     }
 
@@ -311,7 +311,7 @@ int main( ) try {
     tcp4_ep->start( );
     tcp6_ep->start( );
 
-    vtrc::this_thread::sleep_for( vtrc::chrono::seconds( 10 ) );
+    vtrc::this_thread::sleep_for( vtrc::chrono::seconds( 10999999 ) );
 
     std::cout << "Stoppped. Wait ... \n";
 

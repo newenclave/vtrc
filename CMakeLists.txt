@@ -25,8 +25,6 @@ find_package( Boost 1.50 COMPONENTS
               REQUIRED)
 find_package( Protobuf REQUIRED)
 
-set( vtrc_root_directory ${PROJECT_SOURCE_DIR} PARENT_SCOPE )
-
 add_subdirectory(vtrc-common)
 add_subdirectory(vtrc-server)
 add_subdirectory(vtrc-test-server)

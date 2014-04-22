@@ -7,20 +7,25 @@ list(APPEND src_dirs
         .
     )
 
+set( vtrc_common vtrc_common_s )
+
 foreach( src_dir ${src_dirs} )
-    aux_source_directory(${src_dir} lib_src)
-    file(GLOB headers ${src_dir}/*.h)
-    list(APPEND lib_src ${headers})
+    aux_source_directory(   ${src_dir} lib_src)
+    file(GLOB   headers     ${src_dir}/*.h)
+    list(APPEND lib_src     ${headers})
 endforeach( )
 
 file(GLOB protofiles ./*.proto)
 
-set( PROTO_FILES_DIR    ${CMAKE_CURRENT_BINARY_DIR} )
-set( PROTO_FILES_OUTPUT ${PROTO_FILES_DIR}/protocol )
-file(MAKE_DIRECTORY     ${PROTO_FILES_OUTPUT})
+set( ${lib_name}_PROTOBUF_FILES_DIR    ${CMAKE_CURRENT_BINARY_DIR} )
 
-include_directories( ${vtrc_common_s_PROTO_OUTPUT} )
-include_directories( ${PROTO_FILES_DIR} )
+set( ${lib_name}_PROTOBUF_FILES_OUTPUT
+     ${${lib_name}_PROTOBUF_FILES_DIR}/protocol )
+
+file(MAKE_DIRECTORY     ${${lib_name}_PROTOBUF_FILES_OUTPUT})
+
+include_directories( ${${lib_name}_PROTOBUF_FILES_DIR} )
+include_directories( ${${vtrc_common}_PROTOBUF_FILES_OUTPUT} )
 
 foreach(next_proto ${protofiles})
 
@@ -28,8 +33,8 @@ foreach(next_proto ${protofiles})
     get_filename_component(in_PATH  ${next_proto} PATH)
 
     set( OUTPUT_FILES
-                ${PROTO_FILES_OUTPUT}/${out_FILE}.pb.h
-                ${PROTO_FILES_OUTPUT}/${out_FILE}.pb.cc
+                ${${lib_name}_PROTOBUF_FILES_OUTPUT}/${out_FILE}.pb.h
+                ${${lib_name}_PROTOBUF_FILES_OUTPUT}/${out_FILE}.pb.cc
        )
 
     add_custom_command(
@@ -37,9 +42,9 @@ foreach(next_proto ${protofiles})
                 ${PROTOBUF_PROTOC_EXECUTABLE}
                         --proto_path=${PROTOBUF_INCLUDE_DIRS}
                         --proto_path=${POTOBUF_IMPORT_DIRS}
-                        --proto_path=${vtrc_common_s_PROTO_DIR}
                         --proto_path=${in_PATH}
-                        --cpp_out=${PROTO_FILES_OUTPUT}
+                        --proto_path=${${vtrc_common}_POTOBUF_IMPORT_DIR}
+                        --cpp_out=${${lib_name}_PROTOBUF_FILES_OUTPUT}
                         ${next_proto}
         WORKING_DIRECTORY
                 ${GENERATED_FILES_OUTPUT}
@@ -87,8 +92,7 @@ set(${lib_name}_DEFINITIONS "-DSTATIC" PARENT_SCOPE)
 
 set(${lib_name}_INCLUDE_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${vtrc_common_s_PROTO_OUTPUT}
-    ${PROTO_FILES_DIR}
+    ${${lib_name}_PROTOBUF_FILES_DIR}
     ${CONFIG_FILES_DIRECTORY}
     PARENT_SCOPE
 )

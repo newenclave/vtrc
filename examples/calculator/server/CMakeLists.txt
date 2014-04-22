@@ -6,15 +6,15 @@ set( exe_name calculator_server )
 add_executable(${exe_name} ${src_dir})
 
 list(APPEND dependencies
+    calculator_protocol_lib_s
     vtrc_server_s
     vtrc_common_s
-    calculator_protocol_lib_s
     Boost
     PROTOBUF
     )
 
 include_directories(${PROJECT_SOURCE_DIR})
-include_directories(${PROJECT_SOURCE_DIR}/../../)
+include_directories(${vtrc_common_s_PROJECT_SOURCE_DIR})
 
 message( "-- Seting up dependencies for " ${exe_name} )
 foreach( dep ${dependencies} )

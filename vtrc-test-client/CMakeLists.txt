@@ -5,10 +5,9 @@ set( exe_name vtrc_test_client)
 
 add_executable(${exe_name} ${src_dir})
 
-list(APPEND dependencies  
+list(APPEND dependencies
     vtrc_client_base_s
     vtrc_common_s
-    vtrc_protocol_base_s
     Boost
     PROTOBUF
     )
@@ -17,14 +16,14 @@ include_directories(${PROJECT_SOURCE_DIR})
 
 message( "-- Seting up dependencies for " ${exe_name} )
 foreach( dep ${dependencies} )
-    
+
     message( "\tAdd dependence: " ${dep} )
-    
+
     add_dependencies(       ${exe_name} ${dep}      )
     add_definitions(        ${${dep}_DEFINITIONS}   )
     include_directories(    ${${dep}_INCLUDE_DIRS}  )
     target_link_libraries(  ${exe_name} ${${dep}_LIBRARIES} )
-    
+
 endforeach(dep)
 
 if(WIN32)

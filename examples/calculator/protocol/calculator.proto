@@ -1,7 +1,7 @@
 
 //import "google/protobuf/descriptor.proto";
 //import "vtrc-errors.proto";
-//import "vtrc-types.proto";
+import "vtrc-types.proto";
 
 package vtrc_example;
 option cc_generic_services = true;
