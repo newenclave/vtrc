@@ -20,7 +20,7 @@ set( ${lib_name}_PROTOBUF_FILES_DIR    ${CMAKE_CURRENT_BINARY_DIR} )
 set( ${lib_name}_PROTOBUF_FILES_OUTPUT
      ${${lib_name}_PROTOBUF_FILES_DIR}/protocol )
 
-file(MAKE_DIRECTORY     ${${lib_name}_PROTOBUF_FILES_OUTPUT})
+file(MAKE_DIRECTORY  ${${lib_name}_PROTOBUF_FILES_OUTPUT})
 
 include_directories( ${${lib_name}_PROTOBUF_FILES_DIR} )
 include_directories( ${${vtrc_common}_PROTOBUF_FILES_OUTPUT} )
