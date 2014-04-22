@@ -14,7 +14,7 @@ list(APPEND dependencies
     )
 
 include_directories(${PROJECT_SOURCE_DIR})
-include_directories(${PROJECT_SOURCE_DIR}/../../)
+include_directories(${vtrc_common_s_PROJECT_SOURCE_DIR})
 
 message( "-- Seting up dependencies for " ${exe_name} )
 foreach( dep ${dependencies} )
