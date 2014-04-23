@@ -93,8 +93,8 @@ private:
         closure_holder done_holder( done );
         number_pair req = extract_num_pair( request );
         response->set_value( req.first * req.second );
-
     }
+
     void div(::google::protobuf::RpcController* /*controller*/,
              const ::vtrc_example::number_pair* request,
              ::vtrc_example::number* response,
@@ -163,6 +163,7 @@ public:
 
     void on_stop_connection( listener_sptr l, const connection_iface *c )
     {
+        /// yes, you can stop it and start again.
         //std::cout << "Close connection on " << l->name( ) << "...start it.\n";
         //l->start( );
     }
