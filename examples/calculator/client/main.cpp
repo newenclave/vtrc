@@ -30,15 +30,18 @@ void usage(  )
 struct work_time {
     typedef vtrc::chrono::high_resolution_clock::time_point time_point;
     time_point start_;
+    time_point total_;
     work_time( )
         :start_(vtrc::chrono::high_resolution_clock::now( ))
+        ,total_(start_)
     { }
 
     void print_point( const std::string &name )
     {
-        time_point::duration stop(
-                    vtrc::chrono::high_resolution_clock::now( ) - start_);
-        std::cout << "[" << name << "]"<< " call time: " << stop << "\n";
+        time_point now(vtrc::chrono::high_resolution_clock::now( ));
+        time_point::duration stop( now - start_);
+        std::cout << "[" << name << "]"<< " call time: '" << stop
+                  << "' total: '" << (now - total_) << "'\n";
         start_ = vtrc::chrono::high_resolution_clock::now( );
     }
 
@@ -114,12 +117,12 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
 {
 
     work_time wt;
+
     /// create calculator client interface
     vtrc::unique_ptr<interfaces::calculator>
                             calc(interfaces::create_calculator( client ));
 
     std::string test_name;
-    /// first: simple sum, mul, div, pow
 
     std::string splitter( 80, '=' );
     splitter += "\n";
@@ -183,7 +186,7 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
     wt.print_point( test_name );
 
     /**
-     * ======================== THE TEST THAT FAILED ===================
+     * ======================== THE TEST THAT FAILED 1 =================
     **/
     test_name = "Division by zero";
     std::cout << splitter << test_name << ":\n";
