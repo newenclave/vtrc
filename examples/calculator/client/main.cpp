@@ -33,12 +33,17 @@ struct work_time {
     work_time( )
         :start_(vtrc::chrono::high_resolution_clock::now( ))
     { }
-    ~work_time( )
+
+    void print_point( const std::string &name )
     {
         time_point::duration stop(
                     vtrc::chrono::high_resolution_clock::now( ) - start_);
-        std::cout << "Call time: " << stop << "\n";
+        std::cout << "[" << name << "]"<< " call time: " << stop << "\n";
+        start_ = vtrc::chrono::high_resolution_clock::now( );
     }
+
+    ~work_time( )
+    { }
 };
 
 class variable_pool: public vtrc_example::variable_pool {
@@ -137,6 +142,7 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
         std::cout << "call '"<< test_name << "' failed: " << ex.what( ) << "; "
                   << ex.additional( ) << "\n";
     }
+    wt.print_point( test_name );
 
     /**
      * ======================== SECOND =================================
@@ -154,6 +160,7 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
         std::cout << "call '"<< test_name << "' failed: " << ex.what( ) << "; "
                   << ex.additional( ) << "\n";
     }
+    wt.print_point( test_name );
 
     /**
      * ======================== THRID ==================================
@@ -173,6 +180,7 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
         std::cout << "call '"<< test_name << "' failed: " << ex.what( ) << "; "
                   << ex.additional( ) << "\n";
     }
+    wt.print_point( test_name );
 
     /**
      * ======================== THE TEST THAT FAILED ===================
@@ -190,6 +198,7 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
         std::cout << "call '"<< test_name << "' failed: " << ex.what( ) << "; "
                   << ex.additional( ) << "\n";
     }
+    wt.print_point( test_name );
 
     /**
      * ======================== THE TEST THAT FAILED 2 =================
@@ -208,6 +217,7 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
         std::cout << "call '"<< test_name << "' failed: " << ex.what( ) << "; "
                   << ex.additional( ) << "\n";
     }
+    wt.print_point( test_name );
 
     /**
      * ======================== THE TEST THAT FAILED 3 =================
@@ -223,6 +233,7 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
         std::cout << "call '"<< test_name << "' failed: " << ex.what( ) << "; "
                   << ex.additional( ) << "\n";
     }
+    wt.print_point( test_name );
 
     std::cout << splitter;
     std::cout << "Total RPC was made: " << calc->calls_count( ) << "\n";
