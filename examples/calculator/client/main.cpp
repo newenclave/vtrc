@@ -44,14 +44,14 @@ struct work_time {
 class variable_pool: public vtrc_example::variable_pool {
 
     std::map<std::string, double> variables_;
-    unsigned server_calback_count_;
+    unsigned server_callback_count_;
 
     void set_variable(::google::protobuf::RpcController* controller,
                  const ::vtrc_example::number* request,
                  ::vtrc_example::number* response,
                  ::google::protobuf::Closure* done)
     {
-        ++server_calback_count_;
+        ++server_callback_count_;
 
         closure_holder done_holder(done);
         std::string n(request->name( ));
@@ -68,7 +68,7 @@ class variable_pool: public vtrc_example::variable_pool {
                  ::vtrc_example::number* response,
                  ::google::protobuf::Closure* done)
     {
-        ++server_calback_count_;
+        ++server_callback_count_;
         closure_holder done_holder(done);
         std::string n(request->name( ));
 
@@ -88,12 +88,12 @@ class variable_pool: public vtrc_example::variable_pool {
 public:
 
     variable_pool( )
-        :server_calback_count_(0)
+        :server_callback_count_(0)
     {}
 
     unsigned calls_count( ) const
     {
-        return server_calback_count_;
+        return server_callback_count_;
     }
 
     void set( std::string const &name, double value )
