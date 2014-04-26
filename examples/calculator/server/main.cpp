@@ -61,6 +61,8 @@ private:
         return num.value( );
     }
 
+    /// return value if it is set;
+    /// else try to get value from client by variable 'name'
     number_pair extract_num_pair( const vtrc_example::number_pair* req ) const
     {
         number_pair result;
