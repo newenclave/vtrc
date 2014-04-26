@@ -49,6 +49,10 @@ struct work_time {
     { }
 };
 
+
+/// variable_pool for server.
+/// server can request variable by name
+///
 class variable_pool: public vtrc_example::variable_pool {
 
     std::map<std::string, double> variables_;
@@ -97,7 +101,7 @@ public:
 
     variable_pool( )
         :server_callback_count_(0)
-    {}
+    { }
 
     unsigned calls_count( ) const
     {
@@ -126,8 +130,7 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
 
     std::string test_name;
 
-    std::string splitter( 80, '=' );
-    splitter += "\n";
+    std::string splitter( std::string(80, '=').append( "\n" ) );
 
     std::cout << "My thread id: " << vtrc::this_thread::get_id( ) << "\n";
 

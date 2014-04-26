@@ -234,9 +234,9 @@ namespace vtrc { namespace common {
             }
 
             void write_handler( const bsys::error_code &error,
-                                size_t bytes,
-                                size_t length,
-                                size_t total,
+                                size_t const bytes,
+                                size_t const length,
+                                size_t       total,
                                 common::connection_iface_sptr /*inst*/)
             {
                 message_holder &top_holder(*write_queue_.front( ));

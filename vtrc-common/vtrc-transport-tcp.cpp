@@ -29,7 +29,7 @@ namespace vtrc { namespace common {
 
         void set_no_delay( bool value )
         {
-            get_socket( ).set_option( bip::tcp::no_delay( true ) );
+            get_socket( ).set_option( bip::tcp::no_delay( value ) );
         }
 
     };
