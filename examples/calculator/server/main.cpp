@@ -21,6 +21,8 @@
 #include <math.h>
 #include <boost/lexical_cast.hpp>
 
+#include <stdarg.h>
+
 using namespace vtrc::server;
 using namespace vtrc::common;
 
