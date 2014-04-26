@@ -31,12 +31,20 @@ namespace {
     struct commection_pipe_impl: public connection_impl_type {
 
         typedef commection_pipe_impl this_type;
+        std::string name_;
 
         commection_pipe_impl( listener &listen,
                               vtrc::shared_ptr<socket_type> sock,
-                              const close_closure &on_close_cb)
+                              const close_closure &on_close_cb,
+                              const std::string &name )
             :connection_impl_type(listen, sock, on_close_cb)
+            ,name_(name)
         { }
+
+        std::string name(  ) const 
+        {
+            return name_;
+        }
 
         bool impersonate( )
         {
@@ -60,11 +68,14 @@ namespace {
 
         static vtrc::shared_ptr<this_type> create(listener &listnr,
                                  vtrc::shared_ptr<socket_type> sock,
-                                 const close_closure &on_close_cb)
+                                 const close_closure &on_close_cb,
+                                 const std::string &name)
         {
             vtrc::shared_ptr<this_type> new_inst
                     (vtrc::make_shared<this_type>(vtrc::ref(listnr),
-                                                   sock, on_close_cb));
+                                        sock, 
+                                        vtrc::ref(on_close_cb), 
+                                        vtrc::ref(name)));
 
             new_inst->init( );
             return new_inst;
@@ -201,7 +212,8 @@ namespace {
                 try {
                     vtrc::shared_ptr<transport_type> new_conn
                              (transport_type::create(
-                                *this, sock, get_on_close_cb( )));
+                                *this, sock, get_on_close_cb( ),
+                                name( )));
                     get_application( ).get_clients( )->store( new_conn );
                     new_connection( new_conn.get( ) );
 
