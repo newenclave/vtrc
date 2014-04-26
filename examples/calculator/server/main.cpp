@@ -157,7 +157,7 @@ public:
     void on_new_connection( listener_sptr l, const connection_iface *c )
     {
         std::cout << "New connection: "
-                  << "ep: "     << l->name()
+                  << "ep: "     << l->name( ) << "; "
                   << "client: " << c->name( )
                   << "\n"
                     ;
