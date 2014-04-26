@@ -132,7 +132,7 @@ namespace vtrc { namespace client {
         {
             return common::rpc_service_wrapper_sptr
                         (new common::rpc_service_wrapper(
-                                             client_->get_rpc_handler( name )));
+                             client_->get_rpc_handler( name )));
         }
 
         void send_proto_message( const gpb::MessageLite &mess ) const
