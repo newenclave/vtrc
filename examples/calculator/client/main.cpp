@@ -290,8 +290,9 @@ int main( int argc, char **argv ) try
     client->assign_weak_rpc_handler( vtrc::weak_ptr<variable_pool>(vars) );
 
 
-    /// wait for client ready; There must be a better way. But anyway ... :)))
-    vtrc::mutex              ready_mutex;
+    /// wait for client ready;
+    /// There must be a better way. But anyway ... :)))
+    vtrc::mutex                    ready_mutex;
     vtrc::unique_lock<vtrc::mutex> ready_lock(ready_mutex);
     ready_cond.wait( ready_lock, vtrc::bind( &vtrc_client::ready, client ) );
 
