@@ -134,7 +134,6 @@ namespace vtrc { namespace server {
 
 
             bool send_to_client2( common::connection_iface_sptr  next,
-                                  const common::connection_iface_sptr &sender,
                                   lowlevel_unit_type &mess,
                                   unsigned mess_type)
             {
@@ -176,8 +175,7 @@ namespace vtrc { namespace server {
                 } else {
                     lck_list->foreach_while(
                             vtrc::bind( &this_type::send_to_client2, this, _1,
-                                        vtrc::cref(clk), vtrc::ref(llu),
-                                        message_type_) );
+                                        vtrc::ref(llu), message_type_) );
                 }
             }
         };
