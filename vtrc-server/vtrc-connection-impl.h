@@ -40,6 +40,8 @@ namespace vtrc { namespace server { namespace listeners {
             vtrc::unique_ptr<protocol_layer_s>  protocol_;
             close_closure                       close_closure_;
 
+            std::string                         name_;
+
             connection_impl(listener &endpoint,
                             vtrc::shared_ptr<socket_type> sock,
                             const close_closure &on_close_cb)
@@ -54,6 +56,11 @@ namespace vtrc { namespace server { namespace listeners {
                 protocol_.reset(new protocol_layer_s( vtrc::ref(app_), this,
                             endpoint_.get_options( ).maximum_active_calls,
                             endpoint_.get_options( ).maximum_message_length));
+            }
+
+            void set_name( std::string const &name )
+            {
+                name_.assign( name );
             }
 
             const std::string &id( ) const
@@ -112,6 +119,11 @@ namespace vtrc { namespace server { namespace listeners {
             void on_close(  )
             {
                 close_closure_( this );
+            }
+
+            std::string name( ) const
+            {
+                return name_;
             }
 
             bool active( ) const

@@ -94,9 +94,27 @@ namespace vtrc { namespace server { namespace listeners {
                 return oss.str( );
             }
 
-            void connection_setup( vtrc::shared_ptr<connection_type> & /*con*/ )
+            void connection_setup( vtrc::shared_ptr<connection_type> &con )
             {
+                std::ostringstream oss;
+                oss << "unix://" << endpoint_.path( );
 
+                ucred cred = { 0 };
+                unsigned len = sizeof(cred);
+                if (getsockopt(con->get_socket( ).native_handle( ),
+                               SOL_SOCKET, SO_PEERCRED, &cred, &len) != -1)
+                {
+                    oss << "["
+                        << "p:" << cred.pid << ", "
+                        << "g:" << cred.gid << ", "
+                        << "u:" << cred.uid
+                        << "]"
+                        ;
+                } else {
+                    oss << "[get PEERCRED error]";
+                }
+
+                con->set_name( oss.str( ) );
             }
 
         };

@@ -117,8 +117,10 @@ namespace client {
     public:
 
         void connect( const std::string &local_name );
+
         void connect( const std::string &address,
-                      const std::string &service, bool tcp_nodelay = false );
+                      const std::string &service,
+                      bool tcp_nodelay = false );
 
         void async_connect( const std::string &local_name,
                             common::system_closure_type closure);

@@ -88,7 +88,7 @@ namespace { /// implementation.
 
         virtual void connection_setup(  )
         {
-
+            ;;;
         }
 
         void on_connect( const bsys::error_code &err,

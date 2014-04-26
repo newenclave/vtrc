@@ -52,6 +52,9 @@ namespace vtrc { namespace server { namespace listeners {
             {
                 if( no_delay_ )
                     con->set_no_delay( true );
+                std::ostringstream oss;
+                oss << "tcp://" << con->get_socket( ).remote_endpoint( );
+                con->set_name( oss.str( ) );
             }
 
         };
