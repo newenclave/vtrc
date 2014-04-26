@@ -156,15 +156,22 @@ public:
 
     void on_new_connection( listener_sptr l, const connection_iface *c )
     {
-        //std::cout << "New connection from " << l->name( ) << "...stop it.\n";
+        std::cout << "New connection: "
+                  << "ep: "     << l->name()
+                  << "client: " << c->name( )
+                  << "\n"
+                    ;
+
+        /// here we cat stop listener without any problem
         //l->stop( );
 
     }
 
     void on_stop_connection( listener_sptr l, const connection_iface *c )
     {
-        /// yes, you can stop it and start again.
-        //std::cout << "Close connection on " << l->name( ) << "...start it.\n";
+        std::cout << "Close connection: " << c->name( ) << "\n";
+
+        /// yes, we can stop it and start again.
         //l->start( );
     }
 
