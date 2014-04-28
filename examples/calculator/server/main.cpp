@@ -54,6 +54,7 @@ private:
 
     typedef std::pair<double, double> number_pair;
 
+    /// callback to client
     double request_client_variable( const std::string &name ) const
     {
         vtrc_example::variable_pool_Stub stub(client_channel_.get( ));
