@@ -167,7 +167,8 @@ namespace { /// implementation.
 
     };
 
-}
-}}
+}  // namespace {
+
+}} // namespace vtrc { namespace client {
 
 #endif // VTRC_CLIENT_STREAM_IMPL_H
