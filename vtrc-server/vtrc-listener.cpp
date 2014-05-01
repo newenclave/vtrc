@@ -53,6 +53,16 @@ namespace vtrc { namespace server {
         return impl_->client_count_;
     }
 
+    vtrc::weak_ptr<listener> listener::weak_from_this( )
+    {
+        return vtrc::weak_ptr<listener>( shared_from_this( ) );
+    }
+
+    vtrc::weak_ptr<const listener> listener::weak_from_this( ) const
+    {
+        return vtrc::weak_ptr<listener const>( shared_from_this( ));
+    }
+
     void listener::new_connection( const common::connection_iface *conn )
     {
         ++impl_->client_count_;

@@ -52,27 +52,18 @@ namespace server {
         const listener_options  &get_options( ) const;
         size_t clients_count( ) const;
 
-        vtrc::weak_ptr<listener> weak_from_this( )
-        {
-            return vtrc::weak_ptr<listener>( shared_from_this( ) );
-        }
-
-        vtrc::weak_ptr<listener const> weak_from_this( ) const
-        {
-            return vtrc::weak_ptr<listener const>( shared_from_this( ));
-        }
+        vtrc::weak_ptr<listener>       weak_from_this( );
+        vtrc::weak_ptr<listener const> weak_from_this( ) const;
 
     public:
 
         virtual std::string name( ) const = 0;
-
-        virtual void start( ) = 0;
-        virtual void stop ( ) = 0;
-
+        virtual void start( )             = 0;
+        virtual void stop ( )             = 0;
 
     protected:
 
-        void new_connection( const common::connection_iface *conn );
+        void new_connection(  const common::connection_iface *conn );
         void stop_connection( const common::connection_iface *conn );
 
     };
