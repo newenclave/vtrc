@@ -111,7 +111,6 @@ public:
     void set( std::string const &name, double value )
     {
         /// don't need lock this calls;
-
         std::cout << "Set '" << name << "' = " << value << "\n";
         variables_[name] = value;
     }
