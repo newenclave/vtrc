@@ -82,15 +82,8 @@ namespace client {
         static
         vtrc::shared_ptr<vtrc_client> create( common::pool_pair &pools );
 
-        vtrc::weak_ptr<vtrc_client> weak_from_this( )
-        {
-            return vtrc::weak_ptr<vtrc_client>( shared_from_this( ) );
-        }
-
-        vtrc::weak_ptr<vtrc_client const> weak_from_this( ) const
-        {
-            return vtrc::weak_ptr<vtrc_client const>( shared_from_this( ) );
-        }
+        vtrc::weak_ptr<vtrc_client>       weak_from_this( );
+        vtrc::weak_ptr<vtrc_client const> weak_from_this( ) const;
 
         boost::asio::io_service       &get_io_service( );
         const boost::asio::io_service &get_io_service( ) const;

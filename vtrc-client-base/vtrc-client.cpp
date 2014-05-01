@@ -323,6 +323,16 @@ namespace vtrc { namespace client {
         return new_inst;
     }
 
+    vtrc::weak_ptr<vtrc_client> vtrc_client::weak_from_this( )
+    {
+        return vtrc::weak_ptr<vtrc_client>( shared_from_this( ) );
+    }
+
+    vtrc::weak_ptr<vtrc_client const> vtrc_client::weak_from_this( ) const
+    {
+        return vtrc::weak_ptr<vtrc_client const>( shared_from_this( ) );
+    }
+
     vtrc_client::~vtrc_client( )
     {
         delete impl_;

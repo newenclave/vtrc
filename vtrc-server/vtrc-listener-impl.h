@@ -91,7 +91,7 @@ namespace {
         {
             acceptor_.reset(new acceptor_type(ios_, endpoint_));
             start_accept( );
-            on_start_( );
+            get_on_start( )( );
         }
 
         void stop ( )
@@ -129,7 +129,7 @@ namespace {
                 }
                 start_accept( );
             } else {
-                on_stop_( );
+                get_on_stop( )( );
                 //delete sock;
             }
         }
