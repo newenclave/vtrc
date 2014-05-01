@@ -91,11 +91,7 @@ namespace vtrc { namespace common {
             std::string name( ) const
             {
                 std::ostringstream oss;
-                oss << name_ << "://";
-//                if( stream_->is_open( ) )
-//                    oss << stream_->remote_endpoint( );
-//                else
-//                    oss << "<inactive>";
+                oss << name_ << "://<unknown>";
                 return oss.str( );
             }
 
