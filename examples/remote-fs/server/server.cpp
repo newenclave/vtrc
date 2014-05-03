@@ -15,10 +15,14 @@
 #include "vtrc-server/vtrc-listener-unix-local.h"
 #include "vtrc-server/vtrc-listener-win-pipe.h"
 
+#include "vtrc-bind.h"
+#include "vtrc-ref.h"
+
 namespace po = boost::program_options;
 using namespace vtrc;
 
 class fs_application: public server::application {
+    typedef fs_application this_type;
 public:
     fs_application( common::pool_pair &pp )
         :server::application(pp)
@@ -37,6 +41,33 @@ public:
         }
     }
 
+    void on_new_connection( server::listener_sptr l,
+                            const common::connection_iface *c )
+    {
+        std::cout << "New connection: "
+                  << "ep: "     << l->name( ) << "; "
+                  << "client: " << c->name( )
+                  << "\n"
+                    ;
+
+    }
+
+    void on_stop_connection( server::listener_sptr l,
+                             const common::connection_iface *c )
+    {
+        std::cout << "Close connection: " << c->name( ) << "\n";
+    }
+
+    void attach_listener( server::listener_sptr listen )
+    {
+        listen->get_on_new_connection( ).connect(
+                    vtrc::bind( &this_type::on_new_connection, this,
+                                listen, _1 ));
+        listen->get_on_stop_connection( ).connect(
+                    vtrc::bind( &this_type::on_stop_connection, this,
+                                listen, _1 ));
+    }
+
 };
 
 void get_options( po::options_description& desc )
@@ -45,6 +76,12 @@ void get_options( po::options_description& desc )
         ("help,?",                                 "help message")
         ("server,s",    po::value<std::vector< std::string> >( ),
                         "endpoint name; <tcp address>:<port> or <pipe name>")
+
+        ("io-pool-size,i",  po::value<unsigned>( ), "threads for io operations"
+                                                    "; default = 1")
+        ("rpc-pool-size,r", po::value<unsigned>( ), "threads for rpc calls"
+                                                    "; default = 1")
+
         ;
 }
 
@@ -81,10 +118,26 @@ int start( const po::variables_map &params )
                                  "Use --help for details");
     }
 
+    unsigned io_size = params.count( "io-pool-size" )
+            ? params["io-pool-size"].as<unsigned>( )
+            : 1;
+
+    if( io_size < 1 ) {
+        throw std::runtime_error( "io-pool-size must be at least 1" );
+    }
+
+    unsigned rpc_size = params.count( "rpc-pool-size" )
+            ? params["rpc-pool-size"].as<unsigned>( )
+            : 1;
+
+    if( rpc_size < 1 ) {
+        throw std::runtime_error( "rpc-pool-size must be at least 1" );
+    }
+
     typedef std::vector<std::string> string_vector;
     string_vector servers = params["server"].as< string_vector >( );
 
-    common::pool_pair pp( 1, 1 );
+    common::pool_pair pp( io_size, rpc_size );
     fs_application app( pp );
 
     std::vector<server::listener_sptr> listeners;
@@ -94,11 +147,12 @@ int start( const po::variables_map &params )
     for( string_vector::const_iterator b(servers.begin( )), e(servers.end( ));
                     b != e; ++b)
     {
-        listeners.push_back( create_from_string( *b, app ) );
-        listeners.back( )->start( );
+        server::listener_sptr new_listener = create_from_string( *b, app );
+        listeners.push_back(new_listener);
+        app.attach_listener( new_listener );
+        new_listener->start( );
     }
 
-    pp.stop_all( );
     pp.join_all( );
 
     return 0;
