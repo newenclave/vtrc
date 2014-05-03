@@ -191,5 +191,9 @@ int start( const po::variables_map &params )
         tree_dir( impl );
     }
 
+    impl.reset( ); // close fs instance
+    pp.stop_all( );
+    pp.join_all( );
+
     return 0;
 }

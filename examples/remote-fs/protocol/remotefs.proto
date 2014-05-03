@@ -1,3 +1,5 @@
+import "vtrc-rpc-options.proto";
+
 package vtrc_example;
 option cc_generic_services = true;
 
@@ -48,8 +50,12 @@ service remote_fs {
     rpc iter_info (fs_iterator_info) returns( fs_element_info);
     rpc iter_clone(fs_iterator_info) returns(fs_iterator_info);
 
-    // close instance or iterator
-    rpc close(fs_handle) returns (fs_handle);
+    // close instance or iterator; disable 'wait' for this call
+    rpc close(fs_handle) returns (fs_handle)
+    { option (vtrc_rpc.method_options) = {
+        wait: false
+    };};
+
 }
 
 // files operations

@@ -2,6 +2,7 @@
 #include <iostream>
 #include "boost/program_options.hpp"
 #include "vtrc-common/vtrc-exception.h"
+#include "google/protobuf/descriptor.h"
 
 namespace po = boost::program_options;
 
@@ -52,7 +53,7 @@ int main( int argc, char *argv[] )
         show_help( description );
         return 0;
     }
-
+    int err = 0;
     try {
         start( vm );
     } catch( const vtrc::common::exception &ex ) {
@@ -63,12 +64,13 @@ int main( int argc, char *argv[] )
             std::cerr << " '" << add << "'";
         }
         std::cerr << "\n";
-        return 3;
+        err = 3;
     } catch( const std::exception &ex ) {
         std::cerr << "Client start failed: " << ex.what( ) << "\n";
-        return 3;
+        err = 3;
     }
 
-    return 0;
+    google::protobuf::ShutdownProtobufLibrary( );
+    return err;
 }
 

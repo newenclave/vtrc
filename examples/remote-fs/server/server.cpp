@@ -28,6 +28,11 @@ public:
         :server::application(pp)
     { }
 
+    ~fs_application( )
+    {
+        google::protobuf::ShutdownProtobufLibrary( );
+    }
+
     vtrc::shared_ptr<common::rpc_service_wrapper>
              get_service_by_name( common::connection_iface* connection,
                                   const std::string &service_name )
