@@ -34,7 +34,7 @@ service remote_fs {
     // get path by handle
     rpc pwd (fs_handle_path) returns (fs_handle_path);
 
-    // check is path exists
+    // check if path exists
     rpc exists(fs_handle_path) returns (fs_element_info);
 
     // start iterate directory
