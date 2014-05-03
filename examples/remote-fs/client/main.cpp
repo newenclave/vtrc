@@ -18,7 +18,7 @@ po::variables_map create_cmd_params(int argc, char *argv[],
         po::command_line_parser(argc, argv)
             .options(desc)
             .allow_unregistered( )
-            .run());
+            .run( ));
     po::store(parsed, vm);
     po::notify(vm);
     return vm;
