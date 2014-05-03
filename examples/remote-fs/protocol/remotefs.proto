@@ -1,4 +1,3 @@
-import "vtrc-rpc-options.proto";
 
 package vtrc_example;
 option cc_generic_services = true;
@@ -31,18 +30,18 @@ message fs_iterator_info {
 service remote_fs {
 
     // open instance
-    rpc open(fs_handle_path) returns (fs_handle_path);
+    rpc open(fs_handle_path)    returns (fs_handle_path);
 
     // cd instance path
-    rpc cd  (fs_handle_path) returns (fs_handle_path);
+    rpc cd  (fs_handle_path)    returns (fs_handle_path);
     // get path by handle
-    rpc pwd (fs_handle_path) returns (fs_handle_path);
+    rpc pwd (fs_handle_path)    returns (fs_handle_path);
 
     // check if path exists
-    rpc exists(fs_handle_path) returns (fs_element_info);
+    rpc exists(fs_handle_path)  returns (fs_element_info);
 
     // get path info
-    rpc info(fs_handle_path) returns (fs_element_info);
+    rpc info(fs_handle_path)    returns (fs_element_info);
 
     // iterate directory
     rpc iter_begin( fs_handle_path ) returns(fs_iterator_info);
@@ -50,11 +49,8 @@ service remote_fs {
     rpc iter_info (fs_iterator_info) returns( fs_element_info);
     rpc iter_clone(fs_iterator_info) returns(fs_iterator_info);
 
-    // close instance or iterator; disable 'wait' for this call
-    rpc close(fs_handle) returns (fs_handle)
-    { option (vtrc_rpc.method_options) = {
-        wait: false
-    };};
+    // close instance or iterator;
+    rpc close(fs_handle) returns (fs_handle);
 
 }
 
