@@ -33,4 +33,5 @@ add_subdirectory(vtrc-client-base)
 add_subdirectory(vtrc-test-client)
 
 add_subdirectory(examples/calculator)
+add_subdirectory(examples/remote-fs)
 
