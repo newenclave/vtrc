@@ -1,24 +1,76 @@
 #include "protocol/remotefs.pb.h"
+
+#include "boost/filesystem.hpp"
+
 #include "vtrc-common/vtrc-connection-iface.h"
+
 #include "google/protobuf/descriptor.h"
+#include "vtrc-common/vtrc-closure-holder.h"
+
+#include "vtrc-common/vtrc-mutex-typedefs.h"
 
 namespace {
 
-    enum handle_type_index {
-         handle_fs       = 0
-        ,handle_iterator = 1
-        ,handle_file     = 2
+    using namespace vtrc;
+    namespace gpb = google::protobuf;
+    namespace fs  = boost::filesystem;
 
-        ,handle_last
-    };
+    typedef std::map<gpb::uint32, fs::path>               path_map;
+    typedef std::map<gpb::uint32, fs::directory_iterator> iterator_map;
+    typedef std::map<gpb::uint32, FILE *>                 files_map;
 
     class remote_fs_impl: public vtrc_example::remote_fs {
 
         vtrc::common::connection_iface *connection_;
+        gpb::uint32     handle_index_;
+
+        path_map        fs_inst_;
+        iterator_map    iterators_;
+
+        void open(::google::protobuf::RpcController* controller,
+             const ::vtrc_example::fs_handle_path* request,
+             ::vtrc_example::fs_handle_path* response,
+             ::google::protobuf::Closure* done)
+        {
+            common::closure_holder holder( done );
+        }
+
+        void cd(::google::protobuf::RpcController* controller,
+             const ::vtrc_example::fs_handle_path* request,
+             ::vtrc_example::fs_handle_path* response,
+             ::google::protobuf::Closure* done)
+        {
+            common::closure_holder holder( done );
+        }
+
+        void pwd(::google::protobuf::RpcController* controller,
+             const ::vtrc_example::fs_handle_path* request,
+             ::vtrc_example::fs_handle_path* response,
+             ::google::protobuf::Closure* done)
+        {
+            common::closure_holder holder( done );
+        }
+
+        void begin(::google::protobuf::RpcController* controller,
+             const ::vtrc_example::fs_handle_path* request,
+             ::vtrc_example::fs_iterator_info* response,
+             ::google::protobuf::Closure* done)
+        {
+            common::closure_holder holder( done );
+        }
+
+        void next(::google::protobuf::RpcController* controller,
+             const ::vtrc_example::fs_iterator_info* request,
+             ::vtrc_example::fs_iterator_info* response,
+             ::google::protobuf::Closure* done)
+        {
+            common::closure_holder holder( done );
+        }
 
     public:
         remote_fs_impl(vtrc::common::connection_iface *connection)
             :connection_(connection)
+            ,handle_index_(100)
         { }
     };
 }
