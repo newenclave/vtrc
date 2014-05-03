@@ -28,7 +28,9 @@ void usage(  )
 }
 
 struct work_time {
+
     typedef vtrc::chrono::high_resolution_clock::time_point time_point;
+
     time_point start_;
     time_point total_;
     work_time( )
