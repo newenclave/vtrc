@@ -200,7 +200,7 @@ namespace remote_fs {
     {
         return new remote_fs_impl( client );
     }
-    const std::string name( )
+    std::string name( )
     {
         return vtrc_example::remote_fs::descriptor( )->full_name( );
     }
@@ -213,7 +213,7 @@ namespace remote_file {
         return NULL;
     }
 
-    const std::string name( )
+    std::string name( )
     {
         return vtrc_example::remote_file::descriptor( )->full_name( );
     }

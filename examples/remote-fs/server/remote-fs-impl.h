@@ -10,12 +10,12 @@ namespace google { namespace protobuf {
 
 namespace remote_fs {
     google::protobuf::Service *create(vtrc::common::connection_iface *client );
-    const std::string name( );
+    std::string name( );
 }
 
 namespace remote_file {
     google::protobuf::Service *create(vtrc::common::connection_iface *client );
-    const std::string name( );
+    std::string name( );
 }
 
 #endif // REMOTEFSIMPL_H
