@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include "boost/program_options.hpp"
+#include "vtrc-common/vtrc-exception.h"
 
 namespace po = boost::program_options;
 
@@ -54,6 +55,15 @@ int main( int argc, char *argv[] )
 
     try {
         start( vm );
+    } catch( const vtrc::common::exception &ex ) {
+        std::cerr << "Client start failed: "
+                  << ex.what( );
+        std::string add(ex.additional( ));
+        if( !add.empty( ) ) {
+            std::cerr << " '" << add << "'";
+        }
+        std::cerr << "\n";
+        return 3;
     } catch( const std::exception &ex ) {
         std::cerr << "Client start failed: " << ex.what( ) << "\n";
         return 3;

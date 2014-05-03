@@ -170,7 +170,6 @@ namespace {
 
         }
 
-
         void begin(::google::protobuf::RpcController* controller,
              const ::vtrc_example::fs_handle_path* request,
              ::vtrc_example::fs_iterator_info* response,

@@ -49,7 +49,6 @@ public:
                   << "client: " << c->name( )
                   << "\n"
                     ;
-
     }
 
     void on_stop_connection( server::listener_sptr l,

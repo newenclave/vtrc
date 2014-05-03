@@ -51,6 +51,7 @@ void connect_to( client::vtrc_client_sptr client, std::string const &server )
 
 void on_client_ready( vtrc::condition_variable &cond )
 {
+    std::cout << "Connection is ready...\n";
     cond.notify_all( );
 }
 
@@ -66,13 +67,18 @@ int start( const po::variables_map &params )
     client::vtrc_client_sptr client = client::vtrc_client::create( pp );
 
     /// connect slot to 'on_ready'
+    std::cout << "Creating client ... " ;
     vtrc::condition_variable ready_cond;
     client->get_on_ready( ).connect( vtrc::bind( on_client_ready,
                             vtrc::ref( ready_cond ) ) );
 
+    std::cout << "success\n";
+
     std::string path;
 
     connect_to( client, params["server"].as<std::string>( ) );
+
+    std::cout << "Connecting to " << params["server"].as<std::string>( ) << "\n";
 
     vtrc::mutex                    ready_mutex;
     vtrc::unique_lock<vtrc::mutex> ready_lock(ready_mutex);

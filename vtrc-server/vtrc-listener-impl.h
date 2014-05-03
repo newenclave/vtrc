@@ -115,20 +115,20 @@ namespace {
         {
             if( !error ) {
                 try {
-
                     vtrc::shared_ptr<connection_type> new_conn
                            (connection_type::create( *this, sock,
                                                     get_on_close_cb( )));
-
                     connection_setup( new_conn );
                     get_application( ).get_clients( )->store( new_conn );
                     new_connection( new_conn.get( ) );
 
                 } catch( ... ) {
-                    ;;;
+                    sock->close( );
                 }
                 start_accept( );
             } else {
+                std::cout << "On accept error " << error.message( ) << "\n";
+
                 get_on_stop( )( );
                 //delete sock;
             }
