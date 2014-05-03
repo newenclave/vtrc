@@ -6,16 +6,35 @@ message fs_handle {
 }
 
 // fs directory operations;
-message fs_open_req {
-    optional string path = 1;
+message fs_handle_path {
+    optional fs_handle  handle = 1;
+    optional string     path   = 2;
 }
 
-message fs_open_res {
-    optional fs_handle handle = 1;
+message fs_element_info {
+    optional bool is_directory  = 1;
+    optional bool is_empty      = 2;
+    optional bool is_regular    = 3;
+}
+
+message fs_iterator_info {
+    optional fs_handle  handle = 1;
+    optional string     path   = 2; // path
+    optional bool       end    = 3; // this is last one
 }
 
 service remote_fs {
-    rpc open(fs_open_req) returns (fs_open_res);
+
+    // open instance
+    rpc open(fs_handle_path) returns (fs_handle_path);
+    // cd instance path
+    rpc cd  (fs_handle_path) returns (fs_handle_path);
+    // get path by handle
+    rpc pwd (fs_handle_path) returns (fs_handle_path);
+
+    // start iterate directory
+    rpc begin(fs_handle_path) returns(fs_iterator_info);
+    rpc next (fs_iterator_info) returns(fs_iterator_info);
 }
 
 // files operations
