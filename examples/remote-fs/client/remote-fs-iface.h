@@ -11,10 +11,21 @@ namespace vtrc { namespace client {
 namespace interfaces {
 
     struct fs_info {
-        bool is_exist_;
-        bool is_directory_;
-        bool is_empty_;
-        bool is_regular_;
+        std::string path_;
+        bool        is_exist_;
+        bool        is_directory_;
+        bool        is_empty_;
+        bool        is_regular_;
+    };
+
+    struct remote_fs_iterator {
+
+        virtual ~remote_fs_iterator( ) { }
+
+        virtual const fs_info &info( )       = 0;
+        virtual void next( )                 = 0;
+        virtual bool end( )            const = 0;
+        virtual vtrc::shared_ptr<remote_fs_iterator> clone( ) const = 0;
     };
 
     struct remote_fs {
@@ -28,6 +39,9 @@ namespace interfaces {
 
         virtual fs_info info( std::string const &path ) const = 0;
         virtual fs_info info( ) const = 0;
+
+        /// iterator start
+        virtual vtrc::shared_ptr<remote_fs_iterator> begin_iterator( ) const =0;
 
         /// service
         virtual unsigned get_handle( ) const = 0;

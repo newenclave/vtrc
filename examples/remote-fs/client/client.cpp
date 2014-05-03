@@ -27,6 +27,7 @@ void get_options( po::options_description& desc )
         ("path,p", po::value<std::string>( ), "Init remote path for client")
         ("pwd,w", "Show current remote path")
         ("info,i", po::value<std::string>( ), "Show info about remote path")
+        ("list,l", "list remote directory")
         ;
 }
 
@@ -53,6 +54,34 @@ void on_client_ready( vtrc::condition_variable &cond )
 {
     std::cout << "Connection is ready...\n";
     cond.notify_all( );
+}
+
+std::string leaf_of( const std::string &path )
+{
+    std::string::const_reverse_iterator b(path.rbegin( ));
+    std::string::const_reverse_iterator e(path.rend( ));
+    for( ; b!=e ;++b ) {
+        if( *b == '/' || *b == '\\' ) {
+            return std::string( b.base( ), path.end( ) );
+        }
+    }
+    return path;
+}
+
+void list_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl, int level = 0 )
+{
+    vtrc::shared_ptr<interfaces::remote_fs_iterator> i(impl->begin_iterator( ));
+    std::string lstring( level * 2, ' ' );
+    while( !i->end( ) ) {
+        bool is_dir( i->info( ).is_directory_ );
+        std::cout << lstring
+                  << ( i->info( ).is_empty_ ? " " : "+" );
+        std::cout << ( is_dir ? "[" : " " )
+                  << leaf_of(i->info( ).path_)
+                  << ( is_dir ? "]" : " " )
+                  << "\n";
+        i->next( );
+    }
 }
 
 int start( const po::variables_map &params )
@@ -116,6 +145,11 @@ int start( const po::variables_map &params )
                   << (inf.is_empty_ ? "true" : "false") << "\n";
         std::cout << "\tregular:\t"
                   << (inf.is_regular_ ? "true" : "false") << "\n";
+    }
+
+    if( params.count( "list" ) ) {
+        std::cout << "List dir:\n";
+        list_dir( impl, 1 );
     }
 
     return 0;

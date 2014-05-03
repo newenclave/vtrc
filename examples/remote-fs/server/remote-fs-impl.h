@@ -5,8 +5,7 @@
 
 namespace google { namespace protobuf {
     class Service;
-} }
-
+}}
 
 namespace remote_fs {
     google::protobuf::Service *create(vtrc::common::connection_iface *client );
