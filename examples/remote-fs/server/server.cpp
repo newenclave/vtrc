@@ -73,9 +73,9 @@ public:
 void get_options( po::options_description& desc )
 {
     desc.add_options( )
-        ("help,?",                                 "help message")
-        ("server,s",    po::value<std::vector< std::string> >( ),
-                        "endpoint name; <tcp address>:<port> or <pipe name>")
+        ("help,?",   "help message")
+        ("server,s", po::value<std::vector< std::string> >( ),
+                     "endpoint name; <tcp address>:<port> or <pipe/file name>")
 
         ("io-pool-size,i",  po::value<unsigned>( ), "threads for io operations"
                                                     "; default = 1")
