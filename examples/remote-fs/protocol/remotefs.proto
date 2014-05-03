@@ -5,3 +5,20 @@ message fs_handle {
     optional uint32 value = 1;
 }
 
+// fs directory operations;
+message fs_open_req {
+    optional string path = 1;
+}
+
+message fs_open_res {
+    optional fs_handle handle = 1;
+}
+
+service remote_fs {
+    rpc open(fs_open_req) returns (fs_open_res);
+}
+
+// files operations
+service remote_file {
+
+}
