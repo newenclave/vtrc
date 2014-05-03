@@ -69,10 +69,10 @@ std::string leaf_of( const std::string &path )
     return path;
 }
 
-void list_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl, int level = 0 )
+void list_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl )
 {
     vtrc::shared_ptr<interfaces::remote_fs_iterator> i(impl->begin_iterator( ));
-    std::string lstring( level * 2, ' ' );
+    std::string lstring( 2, ' ' );
     for( ; !i->end( ); i->next( )) {
         bool is_dir( i->info( ).is_directory_ );
         std::cout << lstring
@@ -183,7 +183,7 @@ int start( const po::variables_map &params )
 
     if( params.count( "list" ) ) {
         std::cout << "List dir:\n";
-        list_dir( impl, 1 );
+        list_dir( impl );
     }
 
     if( params.count( "tree" ) ) {
