@@ -140,7 +140,8 @@ int start( const po::variables_map &params )
 
     connect_to( client, params["server"].as<std::string>( ) );
 
-    std::cout << "Connecting to " << params["server"].as<std::string>( ) << "\n";
+    std::cout << "Connected to "
+              << params["server"].as<std::string>( ) << "\n";
 
     vtrc::mutex                    ready_mutex;
     vtrc::unique_lock<vtrc::mutex> ready_lock(ready_mutex);
