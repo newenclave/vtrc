@@ -193,7 +193,7 @@ namespace {
         {
             working_ = true;
             start_accept( );
-            on_start_( );
+            get_on_start( )( );
         }
 
         void stop ( )
@@ -202,7 +202,7 @@ namespace {
             bsys::error_code ec( ERROR_CANCELLED,
                         basio::error::get_system_category( ));
             overlapped_.complete( ec, 0 );
-            on_stop_( );
+            get_on_stop( )( );
         }
 
         void on_accept( const bsys::error_code &error,
