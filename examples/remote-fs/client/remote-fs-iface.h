@@ -16,6 +16,7 @@ namespace interfaces {
         bool        is_directory_;
         bool        is_empty_;
         bool        is_regular_;
+        bool        is_symlink_;
     };
 
     struct remote_fs_iterator {
@@ -41,6 +42,8 @@ namespace interfaces {
         virtual fs_info info( ) const = 0;
 
         /// iterator start
+        virtual vtrc::shared_ptr<remote_fs_iterator> begin_iterator(
+                                              const std::string &path) const =0;
         virtual vtrc::shared_ptr<remote_fs_iterator> begin_iterator( ) const =0;
 
         /// service

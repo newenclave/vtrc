@@ -169,6 +169,7 @@ namespace {
             response->set_is_exist( is_exists );
             if( is_exists ) {
                 bool is_dir = fs::is_directory( p );
+                response->set_is_symlink( fs::is_symlink( p ) );
                 response->set_is_directory( is_dir );
                 if( is_dir )
                     response->set_is_empty(fs::is_empty( p ));

@@ -28,6 +28,7 @@ void get_options( po::options_description& desc )
         ("pwd,w", "Show current remote path")
         ("info,i", po::value<std::string>( ), "Show info about remote path")
         ("list,l", "list remote directory")
+        ("tree,t", "show remote directory as tree")
         ;
 }
 
@@ -72,7 +73,7 @@ void list_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl, int level = 0 )
 {
     vtrc::shared_ptr<interfaces::remote_fs_iterator> i(impl->begin_iterator( ));
     std::string lstring( level * 2, ' ' );
-    while( !i->end( ) ) {
+    for( ; !i->end( ); i->next( )) {
         bool is_dir( i->info( ).is_directory_ );
         std::cout << lstring
                   << ( i->info( ).is_empty_ ? " " : "+" );
@@ -80,9 +81,41 @@ void list_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl, int level = 0 )
                   << leaf_of(i->info( ).path_)
                   << ( is_dir ? "]" : " " )
                   << "\n";
-        i->next( );
     }
 }
+
+void tree_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl,
+               const std::string &path,
+               int level = 0 )
+{
+    vtrc::shared_ptr<interfaces::remote_fs_iterator> i
+                                                (impl->begin_iterator( path ));
+    std::string lstring( level * 2, ' ' );
+    for( ; !i->end( ); i->next( )) {
+        bool is_dir( i->info( ).is_directory_ );
+        std::cout << lstring
+                  << ( i->info( ).is_empty_ ? " " : "+" );
+        if( is_dir ) {
+            std::cout << "[" << leaf_of(i->info( ).path_) << "]\n";
+            try {
+                tree_dir( impl, i->info( ).path_, level + 1 );
+            } catch( ... ) {
+                std::cout << lstring << "  <iteration failed>\n";
+            }
+        } else if( i->info( ).is_symlink_ ) {
+            std::cout << "<!" << leaf_of(i->info( ).path_) << ">\n";
+        } else {
+            std::cout << " " << leaf_of(i->info( ).path_) << "\n";
+        }
+
+    }
+}
+
+void tree_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl )
+{
+    tree_dir( impl, "", 0 );
+}
+
 
 int start( const po::variables_map &params )
 {
@@ -150,6 +183,11 @@ int start( const po::variables_map &params )
     if( params.count( "list" ) ) {
         std::cout << "List dir:\n";
         list_dir( impl, 1 );
+    }
+
+    if( params.count( "tree" ) ) {
+        std::cout << "Tree dir:\n";
+        tree_dir( impl );
     }
 
     return 0;

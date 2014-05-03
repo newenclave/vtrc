@@ -17,6 +17,7 @@ namespace {
         res.is_directory_   = info.is_directory( );
         res.is_empty_       = info.is_empty( );
         res.is_regular_     = info.is_regular( );
+        res.is_symlink_     = info.is_symlink( );
         return res;
     }
 
@@ -40,6 +41,7 @@ namespace {
             ,iter_(iter)
             ,has_info_(false)
         {
+
         }
 
         ~remote_fs_iterator_impl( ) try
@@ -165,13 +167,20 @@ namespace {
             return info( "" );
         }
 
-        vtrc::shared_ptr<interfaces::remote_fs_iterator> begin_iterator( ) const
+        vtrc::shared_ptr<interfaces::remote_fs_iterator>
+                                  begin_iterator(const std::string &path) const
         {
             vtrc_example::fs_iterator_info ri;
             vtrc_example::fs_handle_path   hp;
             hp.mutable_handle( )->set_value( fs_handle_ );
+            hp.set_path( path );
             stub_.iter_begin( NULL, &hp, &ri, NULL );
             return vtrc::make_shared<remote_fs_iterator_impl>( channel_, ri );
+        }
+
+        vtrc::shared_ptr<interfaces::remote_fs_iterator> begin_iterator( ) const
+        {
+            return begin_iterator( "" );
         }
 
         unsigned get_handle( ) const
