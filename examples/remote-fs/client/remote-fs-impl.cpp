@@ -77,7 +77,7 @@ namespace {
             vtrc_example::fs_element_info info;
             hp.mutable_handle( )->set_value( fs_handle_ );
             hp.set_path( path );
-            stub_.exists( NULL, &hp, &info, NULL );
+            stub_.info( NULL, &hp, &info, NULL );
             interfaces::fs_info res;
             res.is_exist_ = info.is_exist( );
             res.is_directory_ = info.is_directory( );

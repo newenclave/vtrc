@@ -147,6 +147,7 @@ int start( const po::variables_map &params )
     for( string_vector::const_iterator b(servers.begin( )), e(servers.end( ));
                     b != e; ++b)
     {
+        std::cout << "Starting listener at '" <<  *b << "'\n";
         server::listener_sptr new_listener = create_from_string( *b, app );
         listeners.push_back(new_listener);
         app.attach_listener( new_listener );
