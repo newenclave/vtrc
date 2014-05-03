@@ -25,6 +25,7 @@ void get_options( po::options_description& desc )
         ("server,s", po::value<std::string>( ),
                      "server name; <tcp address>:<port> or <pipe/file name>")
         ("path,p", po::value<std::string>( ), "Init remote path for client")
+        ("pwd,w", "Show current remote path")
         ;
 }
 
@@ -39,9 +40,9 @@ void connect_to( client::vtrc_client_sptr client, std::string const &server )
         throw std::runtime_error( oss.str( ) );
     }
 
-    if( params.size( ) == 1 ) { // local name
+    if( params.size( ) == 1 ) {        /// local name
         client->connect( params[0] );
-    } else if( params.size( ) == 2 ) {
+    } else if( params.size( ) == 2 ) { /// tcp
         client->connect( params[0], params[1]);
     }
 
@@ -86,7 +87,14 @@ int start( const po::variables_map &params )
     vtrc::shared_ptr<interfaces::remote_fs> impl
             (interfaces::create_remote_fs(client, path));
 
-    std::cout << "Success; id is '" << impl->get_handle( ) << "\n";
+    std::cout << "Success; id is '" << impl->get_handle( ) << "'\n";
+
+    std::cout << "Path " << ( impl->exists(  ) ? "exists" : "not exists" )
+              << "\n";
+
+    if( params.count( "pwd" ) ) {
+        std::cout << "PWD: " << impl->pwd( ) << "\n";
+    }
 
     return 0;
 }

@@ -14,6 +14,10 @@ namespace interfaces {
 
         virtual ~remote_fs( ) { }
         virtual void cd( const std::string &new_path ) const = 0;
+        virtual std::string pwd( ) const = 0;
+
+        virtual bool exists( std::string const &path ) const = 0;
+        virtual bool exists( ) const = 0;
 
         /// service
         virtual unsigned get_handle( ) const = 0;

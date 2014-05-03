@@ -48,6 +48,29 @@ namespace {
             stub_.cd( NULL, &hp, &hp, NULL );
         }
 
+        std::string pwd( ) const
+        {
+            vtrc_example::fs_handle_path hp;
+            hp.mutable_handle( )->set_value( fs_handle_ );
+            stub_.pwd( NULL, &hp, &hp, NULL );
+            return hp.path( );
+        }
+
+        bool exists( std::string const &path ) const
+        {
+            vtrc_example::fs_handle_path hp;
+            vtrc_example::fs_element_info info;
+            hp.mutable_handle( )->set_value( fs_handle_ );
+            hp.set_path( path );
+            stub_.exists( NULL, &hp, &info, NULL );
+            return info.is_exist( );
+        }
+
+        bool exists( ) const
+        {
+            return exists( "" );
+        }
+
         unsigned get_handle( ) const
         {
             return fs_handle_;
