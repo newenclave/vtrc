@@ -26,6 +26,7 @@ void get_options( po::options_description& desc )
                      "server name; <tcp address>:<port> or <pipe/file name>")
         ("path,p", po::value<std::string>( ), "Init remote path for client")
         ("pwd,w", "Show current remote path")
+        ("info,i", po::value<std::string>( ), "Show info about remote path")
         ;
 }
 
@@ -94,6 +95,21 @@ int start( const po::variables_map &params )
 
     if( params.count( "pwd" ) ) {
         std::cout << "PWD: " << impl->pwd( ) << "\n";
+    }
+
+    if( params.count( "info" ) ) {
+        std::string pi(params["info"].as<std::string>( ));
+        std::cout << "Trying get info about '" << pi << "'...";
+        interfaces::fs_info inf = impl->info( pi );
+        std::cout << "success.\nInfo:\n";
+        std::cout << "\texists:\t\t"
+                  << (inf.is_exist_ ? "true" : "false") << "\n";
+        std::cout << "\tdirectory:\t"
+                  << (inf.is_directory_ ? "true" : "false") << "\n";
+        std::cout << "\tempty:\t\t"
+                  << (inf.is_empty_ ? "true" : "false") << "\n";
+        std::cout << "\tregular:\t"
+                  << (inf.is_regular_ ? "true" : "false") << "\n";
     }
 
     return 0;
