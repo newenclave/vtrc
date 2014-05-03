@@ -22,7 +22,7 @@ void get_options( po::options_description& desc )
         ;
 }
 
-void connect( client::vtrc_client_sptr client, std::string const &server )
+void connect_to( client::vtrc_client_sptr client, std::string const &server )
 {
     std::vector<std::string> params;
     boost::split( params, server, boost::is_any_of(":") );
@@ -49,9 +49,11 @@ int start( const po::variables_map &params )
                                  "Use --help for details");
     }
 
+
     common::pool_pair pp(1, 1);
     client::vtrc_client_sptr client = client::vtrc_client::create( pp );
 
+    connect_to( client, params["server"].as<std::string>( ) );
 
     return 0;
 }
