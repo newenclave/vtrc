@@ -1,5 +1,6 @@
 #include "protocol/remotefs.pb.h"
 #include "vtrc-common/vtrc-connection-iface.h"
+#include "google/protobuf/descriptor.h"
 
 namespace {
 
@@ -22,19 +23,26 @@ namespace {
     };
 }
 
-
 namespace remote_fs {
-
-    google::protobuf::Service *create_fs_instance(
-                            vtrc::common::connection_iface *client )
+    google::protobuf::Service *create(vtrc::common::connection_iface *client )
     {
-        return new remote_fs_impl(client);
+        return new remote_fs_impl( client );
     }
+    const std::string name( )
+    {
+        return vtrc_example::remote_fs::descriptor( )->full_name( );
+    }
+}
 
-    google::protobuf::Service *create_file_instance(
-                            vtrc::common::connection_iface *client )
+namespace remote_file {
+
+    google::protobuf::Service *create(vtrc::common::connection_iface *client )
     {
         return NULL;
     }
 
+    const std::string name( )
+    {
+        return vtrc_example::remote_file::descriptor( )->full_name( );
+    }
 }

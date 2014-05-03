@@ -1,17 +1,11 @@
 #include <iostream>
 #include "boost/program_options.hpp"
-#include "vtrc-server/vtrc-application.h"
-#include "vtrc-common/vtrc-pool-pair.h"
 
-using namespace vtrc;
 namespace po = boost::program_options;
 
-class fs_application: public server::application {
-public:
-    fs_application( common::pool_pair &pp )
-        :server::application(pp)
-    { }
-};
+/// implementation is in server.cpp
+int start( const po::variables_map &params );
+void get_options( po::options_description& desc );
 
 po::variables_map create_cmd_params(int argc, char *argv[],
                                     po::options_description const desc)
@@ -35,17 +29,9 @@ void show_help( po::options_description const &desc )
 
 int main( int argc, char *argv[] )
 {
-
     po::options_description description("Allowed common options");
 
-    description.add_options( )
-        ("help,?",                                 "help message")
-        ("server,s",    po::value<std::string>( ), "endpoint name; "
-                                                   "tcp address or pipe name")
-        ("port,p",      po::value<std::string>( ), "port for tcp server")
-        ("pass,k",      po::value<std::string>( ), "password for remote clients")
-        ;
-
+    get_options( description );
     po::variables_map vm;
 
     try {
@@ -62,16 +48,12 @@ int main( int argc, char *argv[] )
         return 0;
     }
 
-    if( vm.count( "server" ) == 0 ) {
-        std::cerr << "Server endpoint is not defined\n";
-        show_help( description );
-        return 2;
+    try {
+        start( vm );
+    } catch( const std::exception &ex ) {
+        std::cerr << "Server start failed: " << ex.what( ) << "\n";
+        return 3;
     }
 
-    common::pool_pair pp( 1, 1 );
-    fs_application app( pp );
-
-    pp.stop_all( );
-    pp.join_all( );
     return 0;
 }
