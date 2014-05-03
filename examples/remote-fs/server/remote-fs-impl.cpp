@@ -74,10 +74,10 @@ namespace {
         {
             common::closure_holder holder( done );
             gpb::uint32 hdl;
-            fs::path p;
+            fs::path p(request->path( ));
 
-            if( !request->has_handle( ) ) { /// ok. new instance request
-                p = request->path( );
+            if( !request->has_handle( ) || p.is_absolute( ) ) { /// ok.
+                                                     /// new instance requested
                 p.normalize( );
                 hdl = next_index( );
 
@@ -86,6 +86,7 @@ namespace {
                 hdl = request->handle( ).value( );
                 vtrc::upgradable_lock l( fs_inst_lock_ );
                 path_map::const_iterator f(fs_inst_.find( hdl ));
+
                 if( f == fs_inst_.end( ) )
                     throw vtrc::common::exception(
                             vtrc_errors::ERR_NOT_FOUND, "Bad handle" );
