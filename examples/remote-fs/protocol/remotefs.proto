@@ -27,6 +27,7 @@ service remote_fs {
 
     // open instance
     rpc open(fs_handle_path) returns (fs_handle_path);
+
     // cd instance path
     rpc cd  (fs_handle_path) returns (fs_handle_path);
     // get path by handle
@@ -35,6 +36,9 @@ service remote_fs {
     // start iterate directory
     rpc begin(fs_handle_path) returns(fs_iterator_info);
     rpc next (fs_iterator_info) returns(fs_iterator_info);
+
+    // close instance or iterator
+    rpc close(fs_handle) returns (fs_handle);
 }
 
 // files operations

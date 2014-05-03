@@ -22,7 +22,8 @@ find_package( Boost 1.50 COMPONENTS
                     thread
                     atomic
                     random
-		    program_options
+                    program_options
+                    filesystem
               REQUIRED)
 find_package( Protobuf REQUIRED)
 
