@@ -71,6 +71,26 @@ namespace {
             return exists( "" );
         }
 
+        interfaces::fs_info info( std::string const &path ) const
+        {
+            vtrc_example::fs_handle_path hp;
+            vtrc_example::fs_element_info info;
+            hp.mutable_handle( )->set_value( fs_handle_ );
+            hp.set_path( path );
+            stub_.exists( NULL, &hp, &info, NULL );
+            interfaces::fs_info res;
+            res.is_exist_ = info.is_exist( );
+            res.is_directory_ = info.is_directory( );
+            res.is_empty_ = info.is_empty( );
+            res.is_regular_ = info.is_regular( );
+            return res;
+        }
+
+        interfaces::fs_info info( ) const
+        {
+            return info( "" );
+        }
+
         unsigned get_handle( ) const
         {
             return fs_handle_;

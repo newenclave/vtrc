@@ -149,6 +149,28 @@ namespace {
             response->set_is_exist( fs::exists( p ) );
         }
 
+        void info(::google::protobuf::RpcController* controller,
+                     const ::vtrc_example::fs_handle_path* request,
+                     ::vtrc_example::fs_element_info* response,
+                     ::google::protobuf::Closure* done)
+        {
+            common::closure_holder holder( done );
+            gpb::uint32 hdl;
+            fs::path p(path_from_request( request, hdl ));
+
+            bool is_exists = fs::exists( p );
+            response->set_is_exist( is_exists );
+            if( is_exists ) {
+                bool is_dir = fs::is_directory( p );
+                response->set_is_directory( is_dir );
+                if( is_dir )
+                    response->set_is_empty(fs::is_empty(p));
+                response->set_is_regular( fs::is_regular( p ) );
+            }
+
+        }
+
+
         void begin(::google::protobuf::RpcController* controller,
              const ::vtrc_example::fs_handle_path* request,
              ::vtrc_example::fs_iterator_info* response,

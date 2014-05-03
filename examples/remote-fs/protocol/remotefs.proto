@@ -16,6 +16,7 @@ message fs_element_info {
     optional bool is_directory  = 2;
     optional bool is_empty      = 3;
     optional bool is_regular    = 4;
+
 }
 
 message fs_iterator_info {
@@ -36,6 +37,9 @@ service remote_fs {
 
     // check if path exists
     rpc exists(fs_handle_path) returns (fs_element_info);
+
+    // get path info
+    rpc info(fs_handle_path) returns (fs_element_info);
 
     // start iterate directory
     rpc begin(fs_handle_path) returns(fs_iterator_info);
