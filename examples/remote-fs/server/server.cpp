@@ -50,8 +50,8 @@ public:
                             const common::connection_iface *c )
     {
         std::cout << "New connection: "
-                  << "ep: "     << l->name( ) << "; "
-                  << "client: " << c->name( )
+                  << "\n\tep: "     << l->name( ) << "; "
+                  << "\n\tclient: " << c->name( )
                   << "\n"
                     ;
     }
@@ -59,7 +59,8 @@ public:
     void on_stop_connection( server::listener_sptr l,
                              const common::connection_iface *c )
     {
-        std::cout << "Close connection: " << c->name( ) << "\n";
+        std::cout << "Close connection: "
+                  << c->name( ) << "\n";
     }
 
     void attach_listener( server::listener_sptr listen )
