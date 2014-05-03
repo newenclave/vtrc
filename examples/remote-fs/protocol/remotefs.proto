@@ -1,0 +1,7 @@
+package vtrc_example;
+option cc_generic_services = true;
+
+message fs_handle {
+    optional uint32 value = 1;
+}
+
