@@ -131,6 +131,16 @@ namespace {
              ::google::protobuf::Closure* done)
         {
             common::closure_holder holder(done);
+            size_t len = request->length( ) % (44 * 1024);
+            if( !len ) {
+                response->set_length( 0 );
+                return;
+            }
+            file_ptr f(file_from_hdl(request->hdl( ).value( )));
+            std::vector<char> data(len);
+            size_t r = fread( &data[0], 1, len, f.get( ) );
+            response->set_length( r );
+            response->set_data( &data[0], r );
         }
 
         void write(::google::protobuf::RpcController* controller,
@@ -139,6 +149,10 @@ namespace {
              ::google::protobuf::Closure* done)
         {
             common::closure_holder holder(done);
+            file_ptr f(file_from_hdl(request->hdl( ).value( )));
+            size_t w = fwrite( request->data( ).c_str( ), 1,
+                                request->data( ).size( ), f.get( ) );
+            response->set_length( w );
         }
 
     public:
