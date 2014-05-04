@@ -74,7 +74,7 @@ namespace {
 
             gpb::uint32 hdl(next_index( ));
             vtrc::unique_shared_lock usl( files_lock_ );
-            files_.insert( std::make_pair( hdl, fnew) );
+            files_.insert( std::make_pair( hdl, fnew ) );
             response->set_value( hdl );
         }
 
