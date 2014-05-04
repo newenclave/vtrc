@@ -2,6 +2,8 @@
 #define REMOTE_FS_IFACE_H
 
 #include <string>
+#include <vector>
+#include "google/protobuf/stubs/common.h"
 #include "vtrc-memory.h"
 
 namespace vtrc { namespace client {
@@ -29,6 +31,25 @@ namespace interfaces {
         virtual vtrc::shared_ptr<remote_fs_iterator> clone( ) const = 0;
     };
 
+    struct remote_file {
+        virtual ~remote_file( ) { }
+
+        virtual const std::string &path( )       const = 0;
+        virtual void close( )                    const = 0;
+
+        virtual google::protobuf::uint64 tell( ) const = 0;
+        virtual void seek( google::protobuf::uint64 pos,
+                           unsigned whence )     const = 0;
+        virtual void seek_begin( google::protobuf::uint64 pos ) const = 0;
+        virtual void seek_end( google::protobuf::uint64 pos )   const = 0;
+
+        virtual size_t read( std::string &data, size_t max_len ) const = 0;
+
+        virtual size_t write( std::string &data )               const = 0;
+        virtual size_t write( const char *data, size_t lenght ) const = 0;
+
+    };
+
     struct remote_fs {
 
         virtual ~remote_fs( ) { }
@@ -54,6 +75,9 @@ namespace interfaces {
                 vtrc::shared_ptr<vtrc::client::vtrc_client> client,
                 std::string const &path );
 
+    remote_file *create_remote_file(
+            vtrc::shared_ptr<vtrc::client::vtrc_client> client,
+            std::string const &path );
 }
 
 #endif // REMOTE_FS_IFACE_H

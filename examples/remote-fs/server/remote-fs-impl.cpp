@@ -82,9 +82,6 @@ namespace {
                  ::google::protobuf::Closure* done)
         {
             common::closure_holder holder(done);
-            file_ptr f(file_from_hdl( request->value( ) ));
-            fclose( f.get( ) );
-            response->set_value( request->value( ) );
             vtrc::unique_shared_lock usl( files_lock_ );
             files_.erase( request->value( ) );
         }
@@ -130,7 +127,11 @@ namespace {
                  ::google::protobuf::Closure* done)
             {
                 common::closure_holder holder(done);
-                size_t len = request->length( ) % (44 * 1024);
+
+                size_t len = request->length( ) > (44 * 1024)
+                        ? (44 * 1024)
+                        : request->length( );
+
                 if( !len ) {
                     response->set_length( 0 );
                     return;

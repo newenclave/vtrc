@@ -90,6 +90,110 @@ namespace {
         }
     };
 
+    struct remote_file_impl: public interfaces::remote_file {
+        typedef vtrc_example::remote_file_Stub file_stub_type;
+
+        std::string                                    path_;
+        vtrc::shared_ptr<google::protobuf::RpcChannel> channel_;
+        mutable file_stub_type                         stub_;
+        vtrc_example::fs_handle                        fhdl_;
+
+        remote_file_impl( const std::string &p,
+                          vtrc::shared_ptr<vtrc::client::vtrc_client> client,
+                          const vtrc_example::fs_handle &fhdl)
+            :path_(p)
+            ,channel_(client->create_channel( ))
+            ,stub_(channel_.get( ))
+            ,fhdl_(fhdl)
+        { }
+
+        void close_impl( ) const
+        {
+            try {
+                vtrc_example::fs_handle f;
+                stub_.close( NULL, &fhdl_, &f, NULL );
+            } catch( ... ) {
+                ;;;
+            }
+        }
+
+        ~remote_file_impl( )
+        {
+            close_impl( );
+        }
+
+        const std::string &path( ) const
+        {
+            return path_;
+        }
+
+        void close( ) const
+        {
+            close_impl( );
+        }
+
+        google::protobuf::uint64 tell( ) const
+        {
+            vtrc_example::file_position pos;
+            stub_.tell( NULL, &fhdl_, &pos, NULL);
+            return pos.position( );
+        }
+
+        void seek( google::protobuf::uint64 position, unsigned whence ) const
+        {
+            vtrc_example::file_set_position set_pos;
+            vtrc_example::file_position pos;
+
+            set_pos.mutable_hdl( )->CopyFrom( fhdl_ );
+            set_pos.set_position( position );
+            set_pos.set_whence( whence );
+            stub_.seek( NULL, &set_pos, &pos, NULL);
+        }
+
+        void seek_begin( google::protobuf::uint64 pos ) const
+        {
+            seek( pos, vtrc_example::POS_SEEK_SET );
+        }
+
+        void seek_end( google::protobuf::uint64 pos )   const
+        {
+            seek( pos, vtrc_example::POS_SEEK_END );
+        }
+
+        size_t read( std::string &data, size_t max_len )  const
+        {
+            vtrc_example::file_data_block block;
+
+            block.mutable_hdl( )->CopyFrom( fhdl_ );
+            block.set_length( max_len );
+
+            stub_.read( NULL, &block, &block, NULL );
+
+            data.swap( *(block.mutable_data( )) );
+            return data.size( );
+        }
+
+        size_t write( std::string &data ) const
+        {
+            return write( data.c_str( ), data.size( ) );
+        }
+
+        size_t write( const char *data, size_t lenght ) const
+        {
+            vtrc_example::file_data_block block;
+
+            size_t len = (lenght > (44 * 1024))
+                    ? (44 * 1024)
+                    : lenght;
+
+            block.mutable_hdl( )->CopyFrom( fhdl_ );
+            block.set_data( data, len );
+
+            stub_.write( NULL, &block, &block, NULL );
+            return block.length( );
+        }
+    };
+
     struct remote_fs_impl: public interfaces::remote_fs {
         typedef remote_fs_impl this_type;
 
@@ -198,6 +302,13 @@ namespace interfaces {
                 std::string const &path )
     {
         return new remote_fs_impl( client, path );
+    }
+
+    remote_file *create_remote_file(
+            vtrc::shared_ptr<vtrc::client::vtrc_client> client,
+            std::string const &path )
+    {
+
     }
 
 }
