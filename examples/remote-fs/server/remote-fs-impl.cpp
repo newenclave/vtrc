@@ -62,13 +62,15 @@ namespace {
             std::string path(request->path( ));
             std::string mode(request->mode( ));
 
-            file_ptr fnew( fopen( path.c_str( ), mode.c_str( ) ), fclose );
+            FILE *f = fopen( path.c_str( ), mode.c_str( ) );
 
-            if( !fnew ) {
+            if( !f ) {
                 throw vtrc::common::exception(
                             errno, vtrc_errors::CATEGORY_SYSTEM,
                             "fopen failed");
             }
+
+            file_ptr fnew( f, fclose );
 
             gpb::uint32 hdl(next_index( ));
             vtrc::unique_shared_lock usl( files_lock_ );
