@@ -35,7 +35,7 @@ void show_help( po::options_description const &desc )
 
 int main( int argc, char *argv[] )
 {
-    po::options_description description("Allowed common options");
+    po::options_description description("Allowed options");
 
     get_options( description );
     po::variables_map vm;
