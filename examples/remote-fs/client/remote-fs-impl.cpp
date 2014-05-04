@@ -98,14 +98,22 @@ namespace {
         mutable file_stub_type                         stub_;
         vtrc_example::fs_handle                        fhdl_;
 
-        remote_file_impl( const std::string &p,
-                          vtrc::shared_ptr<vtrc::client::vtrc_client> client,
-                          const vtrc_example::fs_handle &fhdl)
+        void open( std::string const &mode )
+        {
+            vtrc_example::file_open_req req;
+            req.set_path( path_ );
+            req.set_mode( mode );
+            stub_.open( NULL, &req, &fhdl_, NULL );
+        }
+
+        remote_file_impl( const std::string &p, const std::string &mode,
+                          vtrc::shared_ptr<vtrc::client::vtrc_client> client)
             :path_(p)
             ,channel_(client->create_channel( ))
             ,stub_(channel_.get( ))
-            ,fhdl_(fhdl)
-        { }
+        {
+            open( mode );
+        }
 
         void close_impl( ) const
         {
@@ -271,6 +279,21 @@ namespace {
             return info( "" );
         }
 
+        size_t file_size( std::string const &path ) const
+        {
+            vtrc_example::fs_handle_path hp;
+            vtrc_example::file_position  pos;
+            hp.mutable_handle( )->set_value( fs_handle_ );
+            hp.set_path( path );
+            stub_.file_size( NULL, &hp, &pos, NULL );
+            return pos.position( );
+        }
+
+        size_t file_size( ) const
+        {
+            return file_size( "" );
+        }
+
         vtrc::shared_ptr<interfaces::remote_fs_iterator>
                                   begin_iterator(const std::string &path) const
         {
@@ -306,9 +329,9 @@ namespace interfaces {
 
     remote_file *create_remote_file(
             vtrc::shared_ptr<vtrc::client::vtrc_client> client,
-            std::string const &path )
+            std::string const &path , const std::string &mode)
     {
-
+        return new remote_file_impl( path, mode, client );
     }
 
 }

@@ -1,12 +1,16 @@
 #include <vector>
 #include <string>
 
+#include <fstream>
+
+
 #include "boost/program_options.hpp"
 #include "boost/algorithm/string.hpp"
 #include "boost/lexical_cast.hpp"
 
 #include "vtrc-client-base/vtrc-client.h"
 #include "vtrc-common/vtrc-pool-pair.h"
+#include "vtrc-common/vtrc-exception.h"
 
 #include "remote-fs-iface.h"
 
@@ -32,6 +36,9 @@ void get_options( po::options_description& desc )
 
         ("pull,g", po::value<std::string>( ), "Download remote file")
         ("push,u", po::value<std::string>( ), "Upload remote file")
+
+        ("block-size,b", po::value<unsigned>( ), "Block size for pull and push"
+                                                 "; 1-44k")
 
         ;
 }
@@ -86,6 +93,44 @@ void list_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl )
                   << ( is_dir ? "]" : " " )
                   << "\n";
     }
+}
+
+void pull_file( client::vtrc_client_sptr client,
+                vtrc::shared_ptr<interfaces::remote_fs> &impl,
+                const std::string &remote_path, size_t block_size )
+{
+    size_t remote_size = -1;
+    try {
+        remote_size = impl->file_size( remote_path );
+        std::cout << "Remote file size is: " << remote_size << "\n";
+    } catch( const vtrc::common::exception &ex ) {
+        std::cout << "Remote file size is unknown: "
+                  << remote_path
+                  << " '" << ex.what( ) << "; " << ex.additional( ) << "'"
+                  << "\n";
+    }
+
+    std::string name = leaf_of( remote_path );
+    vtrc::shared_ptr<interfaces::remote_file> rem_f
+            ( interfaces::create_remote_file( client, remote_path, "rb" ) );
+
+    std::cout << "Open remote file success.\n"
+              << "Starting...\n"
+              << "Block size = " << block_size
+              << std::endl;
+
+    std::ofstream f;
+    f.open(name.c_str( ), std::ofstream::out );
+
+    std::string block;
+    size_t total = 0;
+
+    while( rem_f->read( block, block_size ) ) {
+        total += block.size( );
+        std::cout << "Got " << total << " bytes\r";
+        f.write( block.c_str( ), block.size( ) );
+    }
+    std::cout << "\nDownload complete\n";
 }
 
 void tree_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl,
@@ -193,6 +238,16 @@ int start( const po::variables_map &params )
     if( params.count( "tree" ) ) {
         std::cout << "Tree dir:\n";
         tree_dir( impl );
+    }
+
+    size_t bs = params.count( "block-size" )
+            ? params["block-size"].as<unsigned>( )
+            : 4096;
+
+    if( params.count( "pull" ) ) {
+        std::string path = params["pull"].as<std::string>( );
+        std::cout << "pull file '" << path << "'\n";
+        pull_file( client, impl, path, bs );
     }
 
     impl.reset( ); // close fs instance

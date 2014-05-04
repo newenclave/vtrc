@@ -62,6 +62,9 @@ namespace interfaces {
         virtual fs_info info( std::string const &path ) const = 0;
         virtual fs_info info( ) const = 0;
 
+        virtual size_t file_size( std::string const &path ) const = 0;
+        virtual size_t file_size( ) const = 0;
+
         /// iterator start
         virtual vtrc::shared_ptr<remote_fs_iterator> begin_iterator(
                                               const std::string &path) const =0;
@@ -77,7 +80,7 @@ namespace interfaces {
 
     remote_file *create_remote_file(
             vtrc::shared_ptr<vtrc::client::vtrc_client> client,
-            std::string const &path );
+            std::string const &path, std::string const &mode );
 }
 
 #endif // REMOTE_FS_IFACE_H
