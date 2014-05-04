@@ -29,6 +29,10 @@ void get_options( po::options_description& desc )
         ("info,i", po::value<std::string>( ), "Show info about remote path")
         ("list,l", "list remote directory")
         ("tree,t", "show remote directory as tree")
+
+        ("pull,g", po::value<std::string>( ), "Download remote file")
+        ("push,u", po::value<std::string>( ), "Upload remote file")
+
         ;
 }
 
