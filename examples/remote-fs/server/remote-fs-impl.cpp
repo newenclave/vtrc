@@ -84,9 +84,9 @@ namespace {
             common::closure_holder holder(done);
             file_ptr f(file_from_hdl( request->value( ) ));
             fclose( f.get( ) );
+            response->set_value( request->value( ) );
             vtrc::unique_shared_lock usl( files_lock_ );
             files_.erase( request->value( ) );
-            response->set_value( request->value( ) );
         }
 
         void tell(::google::protobuf::RpcController* controller,
