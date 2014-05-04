@@ -75,8 +75,15 @@ enum file_position_whence {
 }
 
 message file_set_position {
-    optional int64  position = 1;
-    optional uint32 whence   = 2;
+    optional fs_handle  hdl      = 1;
+    optional int64      position = 2;
+    optional uint32     whence   = 3;
+}
+
+message file_data_block {
+    optional fs_handle  hdl     = 1;
+    optional bytes      data    = 2;
+    optional uint32     length  = 3;
 }
 
 
@@ -90,4 +97,7 @@ service remote_file {
     rpc seek(file_set_position) returns (file_position);
 
 
+    rpc read(file_data_block)  returns (file_data_block);
+    rpc write(file_data_block) returns (file_data_block);
 }
+

@@ -74,7 +74,6 @@ namespace {
             vtrc::unique_shared_lock usl( files_lock_ );
             files_.insert( std::make_pair( hdl, fnew) );
             response->set_value( hdl );
-
         }
 
         void close(::google::protobuf::RpcController* controller,
@@ -96,6 +95,14 @@ namespace {
                  ::google::protobuf::Closure* done)
         {
             common::closure_holder holder(done);
+            file_ptr f(file_from_hdl( request->value( ) ));
+            long pos = ftell( f.get( ) );
+            if( -1 == pos ) {
+                throw vtrc::common::exception(
+                            errno, vtrc_errors::CATEGORY_SYSTEM,
+                            "ftell failed");
+            }
+            response->set_position( static_cast<gpb::uint64>(pos) );
         }
 
         void seek(::google::protobuf::RpcController* controller,
@@ -103,6 +110,33 @@ namespace {
                  ::vtrc_example::file_position* response,
                  ::google::protobuf::Closure* done)
 
+        {
+            common::closure_holder holder(done);
+
+            file_ptr f(file_from_hdl( request->hdl( ).value( ) ));
+
+            int pos = fseek( f.get( ), request->position( ),
+                                        request->whence( ) );
+            if( -1 == pos ) {
+                throw vtrc::common::exception(
+                            errno, vtrc_errors::CATEGORY_SYSTEM,
+                            "fseek failed");
+            }
+            response->set_position( request->position( ) );
+        }
+
+        void read(::google::protobuf::RpcController* controller,
+             const ::vtrc_example::file_data_block* request,
+             ::vtrc_example::file_data_block* response,
+             ::google::protobuf::Closure* done)
+        {
+            common::closure_holder holder(done);
+        }
+
+        void write(::google::protobuf::RpcController* controller,
+             const ::vtrc_example::file_data_block* request,
+             ::vtrc_example::file_data_block* response,
+             ::google::protobuf::Closure* done)
         {
             common::closure_holder holder(done);
         }
