@@ -95,6 +95,41 @@ void list_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl )
     }
 }
 
+void push_file( client::vtrc_client_sptr client,
+                const std::string &local_path, size_t block_size )
+{
+    std::string name = leaf_of( local_path );
+    vtrc::shared_ptr<interfaces::remote_file> rem_f
+            ( interfaces::create_remote_file( client, name, "wb" ) );
+
+    std::cout << "Open remote file success.\n"
+              << "Starting...\n"
+              << "Block size = " << block_size
+              << std::endl;
+
+    std::ifstream f;
+    f.open(local_path.c_str( ), std::ofstream::in );
+
+    std::string block(block_size, 0);
+    size_t total = 0;
+
+    size_t r = f.readsome( &block[0], block_size );
+    while( r ) {
+        size_t shift = 0;
+        while ( r ) {
+            size_t w = rem_f->write( block.c_str( ) + shift, r );
+            total += w;
+            shift += w;
+            r -= w;
+            std::cout << "Post " << total << " bytes\r";
+        }
+        r = f.readsome( &block[0], block_size );
+    }
+
+    std::cout << "\nUpload complete\n";
+
+}
+
 void pull_file( client::vtrc_client_sptr client,
                 vtrc::shared_ptr<interfaces::remote_fs> &impl,
                 const std::string &remote_path, size_t block_size )
@@ -248,6 +283,12 @@ int start( const po::variables_map &params )
         std::string path = params["pull"].as<std::string>( );
         std::cout << "pull file '" << path << "'\n";
         pull_file( client, impl, path, bs );
+    }
+
+    if( params.count( "push" ) ) {
+        std::string path = params["push"].as<std::string>( );
+        std::cout << "push file '" << path << "'\n";
+        push_file( client, path, bs );
     }
 
     impl.reset( ); // close fs instance
