@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <errno.h>
+
 #include "protocol/remotefs.pb.h"
 #include "protocol/vtrc-errors.pb.h"
 
@@ -19,14 +22,104 @@ namespace {
     namespace gpb = google::protobuf;
     namespace fs  = boost::filesystem;
 
+    typedef vtrc::shared_ptr<FILE> file_ptr;
+
     typedef std::map<gpb::uint32, fs::path>               path_map;
     typedef std::map<gpb::uint32, fs::directory_iterator> iterator_map;
-    typedef std::map<gpb::uint32, FILE *>                 files_map;
+    typedef std::map<gpb::uint32, file_ptr >              files_map;
+
+    class remote_file_impl: public vtrc_example::remote_file {
+
+        vtrc::common::connection_iface *connection_;
+        vtrc::atomic<gpb::uint32>       handle_index_;
+
+        files_map           files_;
+        vtrc::shared_mutex  files_lock_;
+
+        gpb::uint32 next_index( )
+        {
+            return ++handle_index_;
+        }
+
+        file_ptr file_from_hdl( gpb::uint32 hdl )
+        {
+            vtrc::shared_lock sl( files_lock_ );
+            files_map::iterator f(files_.find( hdl ));
+            if( f == files_.end( ) ) {
+                throw vtrc::common::exception(
+                      vtrc_errors::ERR_NOT_FOUND, "Bad file handle" );
+            }
+            return f->second;
+        }
+
+        void open(::google::protobuf::RpcController* controller,
+                 const ::vtrc_example::file_open_req* request,
+                 ::vtrc_example::fs_handle* response,
+                 ::google::protobuf::Closure* done)
+        {
+            common::closure_holder holder(done);
+
+            std::string path(request->path( ));
+            std::string mode(request->mode( ));
+
+            file_ptr fnew( fopen( path.c_str( ), mode.c_str( ) ), fclose );
+
+            if( !fnew ) {
+                throw vtrc::common::exception(
+                            errno, vtrc_errors::CATEGORY_SYSTEM,
+                            "fopen failed");
+            }
+
+            gpb::uint32 hdl(next_index( ));
+            vtrc::unique_shared_lock usl( files_lock_ );
+            files_.insert( std::make_pair( hdl, fnew) );
+            response->set_value( hdl );
+
+        }
+
+        void close(::google::protobuf::RpcController* controller,
+                 const ::vtrc_example::fs_handle* request,
+                 ::vtrc_example::fs_handle* response,
+                 ::google::protobuf::Closure* done)
+        {
+            common::closure_holder holder(done);
+            file_ptr f(file_from_hdl( request->value( ) ));
+            fclose( f.get( ) );
+            vtrc::unique_shared_lock usl( files_lock_ );
+            files_.erase( request->value( ) );
+            response->set_value( request->value( ) );
+        }
+
+        void tell(::google::protobuf::RpcController* controller,
+                 const ::vtrc_example::fs_handle* request,
+                 ::vtrc_example::file_position* response,
+                 ::google::protobuf::Closure* done)
+        {
+            common::closure_holder holder(done);
+        }
+
+        void seek(::google::protobuf::RpcController* controller,
+                 const ::vtrc_example::file_set_position* request,
+                 ::vtrc_example::file_position* response,
+                 ::google::protobuf::Closure* done)
+
+        {
+            common::closure_holder holder(done);
+        }
+
+    public:
+
+        remote_file_impl(vtrc::common::connection_iface *connection)
+            :connection_(connection)
+            ,handle_index_(100)
+        { }
+
+    };
 
     class remote_fs_impl: public vtrc_example::remote_fs {
 
         vtrc::common::connection_iface *connection_;
-        vtrc::atomic<gpb::uint32>     handle_index_;
+        vtrc::atomic<gpb::uint32>       handle_index_;
 
         path_map            fs_inst_;
         vtrc::shared_mutex  fs_inst_lock_;
@@ -162,6 +255,18 @@ namespace {
             response->set_is_exist( fs::exists( p ) );
         }
 
+        void file_size(::google::protobuf::RpcController* controller,
+                     const ::vtrc_example::fs_handle_path* request,
+                     ::vtrc_example::file_position* response,
+                     ::google::protobuf::Closure* done)
+        {
+            common::closure_holder holder( done );
+            gpb::uint32 hdl;
+            fs::path p(path_from_request( request, hdl ));
+            response->set_position(fs::file_size( p ));
+        }
+
+
         void fill_info( fs::path const &p,
                         vtrc_example::fs_element_info* response )
         {
@@ -277,7 +382,7 @@ namespace remote_file {
 
     google::protobuf::Service *create(vtrc::common::connection_iface *client )
     {
-        return NULL;
+        return new remote_file_impl( client );
     }
 
     std::string name( )

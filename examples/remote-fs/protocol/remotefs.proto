@@ -6,6 +6,11 @@ message fs_handle {
     optional uint32 value = 1;
 }
 
+message file_position {
+    optional uint64 position = 1;
+}
+
+
 // fs directory operations;
 message fs_handle_path {
     optional fs_handle  handle = 1;
@@ -30,18 +35,22 @@ message fs_iterator_info {
 service remote_fs {
 
     // open instance
-    rpc open(fs_handle_path)    returns (fs_handle_path);
+    rpc open(fs_handle_path)        returns (fs_handle_path);
 
     // cd instance path
-    rpc cd  (fs_handle_path)    returns (fs_handle_path);
+    rpc cd  (fs_handle_path)        returns (fs_handle_path);
+
     // get path by handle
-    rpc pwd (fs_handle_path)    returns (fs_handle_path);
+    rpc pwd (fs_handle_path)        returns (fs_handle_path);
 
     // check if path exists
-    rpc exists(fs_handle_path)  returns (fs_element_info);
+    rpc exists(fs_handle_path)      returns (fs_element_info);
+
+    // get file size
+    rpc file_size(fs_handle_path)   returns (file_position);
 
     // get path info
-    rpc info(fs_handle_path)    returns (fs_element_info);
+    rpc info(fs_handle_path)        returns (fs_element_info);
 
     // iterate directory
     rpc iter_begin( fs_handle_path ) returns(fs_iterator_info);
@@ -54,7 +63,31 @@ service remote_fs {
 
 }
 
+message file_open_req {
+    optional string path = 1;
+    optional string mode = 2;
+}
+
+enum file_position_whence {
+    POS_SEEK_SET  = 0;
+    POS_SEEK_CUR  = 1;
+    POS_SEEK_END  = 2;
+}
+
+message file_set_position {
+    optional int64  position = 1;
+    optional uint32 whence   = 2;
+}
+
+
 // files operations
 service remote_file {
+
+    rpc open(file_open_req) returns (fs_handle);
+    rpc close(fs_handle)    returns (fs_handle);
+
+    rpc tell(fs_handle)         returns (file_position);
+    rpc seek(file_set_position) returns (file_position);
+
 
 }
