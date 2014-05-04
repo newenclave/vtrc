@@ -28,6 +28,7 @@ or all together:
  
 make folder for project tree:
 $ mkdir github
+$ cd github
 $ git clone https://github.com/newenclave/vtrc.git
 .....
 $ mkdir vtrc-build
