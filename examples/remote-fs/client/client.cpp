@@ -35,10 +35,10 @@ void get_options( po::options_description& desc )
         ("tree,t", "show remote directory as tree")
 
         ("pull,g", po::value<std::string>( ), "Download remote file")
-        ("push,u", po::value<std::string>( ), "Upload remote file")
+        ("push,u", po::value<std::string>( ), "Upload local file")
 
         ("block-size,b", po::value<unsigned>( ), "Block size for pull and push"
-                                                 "; 1-44k")
+                                                 "; 1-44000")
 
         ;
 }
