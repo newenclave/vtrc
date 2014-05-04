@@ -265,13 +265,13 @@ namespace {
             response->set_path( p.string( ) );
         }
 
-        void cd(::google::protobuf::RpcController* controller,
-             const ::vtrc_example::fs_handle_path* request,
-             ::vtrc_example::fs_handle_path* response,
-             ::google::protobuf::Closure* done)
-        {
-            common::closure_holder holder( done );
-        }
+//        void cd(::google::protobuf::RpcController* controller,
+//             const ::vtrc_example::fs_handle_path* request,
+//             ::vtrc_example::fs_handle_path* response,
+//             ::google::protobuf::Closure* done)
+//        {
+//            common::closure_holder holder( done );
+//        }
 
         void pwd(::google::protobuf::RpcController* controller,
              const ::vtrc_example::fs_handle_path* request,
@@ -292,9 +292,9 @@ namespace {
         }
 
         void exists(::google::protobuf::RpcController* controller,
-                     const ::vtrc_example::fs_handle_path* request,
-                     ::vtrc_example::fs_element_info* response,
-                     ::google::protobuf::Closure* done)
+             const ::vtrc_example::fs_handle_path* request,
+             ::vtrc_example::fs_element_info* response,
+             ::google::protobuf::Closure* done)
         {
             common::closure_holder holder( done );
             gpb::uint32 hdl;
@@ -303,9 +303,9 @@ namespace {
         }
 
         void file_size(::google::protobuf::RpcController* controller,
-                     const ::vtrc_example::fs_handle_path* request,
-                     ::vtrc_example::file_position* response,
-                     ::google::protobuf::Closure* done)
+             const ::vtrc_example::fs_handle_path* request,
+             ::vtrc_example::file_position* response,
+             ::google::protobuf::Closure* done)
         {
             common::closure_holder holder( done );
             gpb::uint32 hdl;
@@ -342,9 +342,9 @@ namespace {
         }
 
         void info(::google::protobuf::RpcController* controller,
-                     const ::vtrc_example::fs_handle_path* request,
-                     ::vtrc_example::fs_element_info* response,
-                     ::google::protobuf::Closure* done)
+             const ::vtrc_example::fs_handle_path* request,
+             ::vtrc_example::fs_element_info* response,
+             ::google::protobuf::Closure* done)
         {
             common::closure_holder holder( done );
             gpb::uint32 hdl;
