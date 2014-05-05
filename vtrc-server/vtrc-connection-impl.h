@@ -68,9 +68,9 @@ namespace vtrc { namespace server { namespace listeners {
                 return protocol_->client_id( );
             }
 
-            static vtrc::shared_ptr<this_type> create(listener &endpoint,
-                                   vtrc::shared_ptr<socket_type> sock,
-                                   const close_closure &on_close_cb)
+            static vtrc::shared_ptr<this_type>
+                create(listener &endpoint, vtrc::shared_ptr<socket_type> sock,
+                                           const close_closure &on_close_cb)
             {
                 vtrc::shared_ptr<this_type> new_inst
                      (vtrc::make_shared<this_type>(vtrc::ref(endpoint),
@@ -80,8 +80,8 @@ namespace vtrc { namespace server { namespace listeners {
                 return new_inst;
             }
 
-            static vtrc::shared_ptr<this_type> create(listener &endpoint,
-                                  socket_type   *sock,
+            static vtrc::shared_ptr<this_type>
+                create(listener &endpoint, socket_type   *sock,
                                   close_closure &on_close_cb)
             {
                 return create( endpoint,
