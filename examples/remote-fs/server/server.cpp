@@ -93,13 +93,25 @@ void get_options( po::options_description& desc )
 server::listener_sptr create_from_string( const std::string &name,
                                           server::application &app)
 {
-    std::vector<std::string> params;
-    boost::split( params, name, boost::is_any_of(":") );
+
     server::listener_sptr result;
-    if( params.size( ) > 3 ) {
-        std::ostringstream oss;
-        oss << "Invalid endpoint name: " << name;
-        throw std::runtime_error( oss.str( ) );
+
+    std::vector<std::string> params;
+
+    std::string::const_reverse_iterator b(name.rbegin( ));
+    std::string::const_reverse_iterator e(name.rend( ));
+    for( ; b!=e ;++b ) {
+        if( *b == ':' ) {
+            std::string::const_reverse_iterator bb(b);
+            ++bb;
+            params.push_back( std::string( name.begin( ), bb.base( )) );
+            params.push_back( std::string( b.base( ), name.end( )));
+
+            break;
+        }
+    }
+    if( params.empty( ) ) {
+        params.push_back( name );
     }
 
     if( params.size( ) == 1 ) { // local name
