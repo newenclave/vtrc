@@ -28,8 +28,8 @@ namespace {
 
             bool is_dir( i->info( ).is_directory_ );
 
-            dirs    += is_dir ? 1 : 0;
-            files   += is_dir ? 0 : 1;
+            dirs  += is_dir ? 1 : 0;
+            files += is_dir ? 0 : 1;
 
             std::cout << lstring
                       << ( i->info( ).is_empty_ ? " " : "+" );
