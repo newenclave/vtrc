@@ -105,77 +105,16 @@ void list_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl )
     }
 }
 
-void push_file( client::vtrc_client_sptr client,
-                const std::string &local_path, size_t block_size )
-{
-    std::string name = leaf_of( local_path );
-    vtrc::shared_ptr<interfaces::remote_file> rem_f
-            ( interfaces::create_remote_file( client, name, "wb" ) );
+namespace rfs_examples {
 
-    std::cout << "Open remote file success.\n"
-              << "Starting...\n"
-              << "Block size = " << block_size
-              << std::endl;
+    /// rfs-push-file.cpp
+    void push_file( client::vtrc_client_sptr client,
+                const std::string &local_path, size_t block_size );
 
-    std::ifstream f;
-    f.open(local_path.c_str( ), std::ofstream::in );
-
-    std::string block(block_size, 0);
-    size_t total = 0;
-
-    size_t r = f.readsome( &block[0], block_size );
-    while( r ) {
-        size_t shift = 0;
-        while ( r ) {
-            size_t w = rem_f->write( block.c_str( ) + shift, r );
-            total += w;
-            shift += w;
-            r -= w;
-            std::cout << "Post " << total << " bytes\r";
-        }
-        r = f.readsome( &block[0], block_size );
-    }
-
-    std::cout << "\nUpload complete\n";
-
-}
-
-void pull_file( client::vtrc_client_sptr client,
-                vtrc::shared_ptr<interfaces::remote_fs> &impl,
-                const std::string &remote_path, size_t block_size )
-{
-    size_t remote_size = -1;
-    try {
-        remote_size = impl->file_size( remote_path );
-        std::cout << "Remote file size is: " << remote_size << "\n";
-    } catch( const vtrc::common::exception &ex ) {
-        std::cout << "Remote file size is unknown: "
-                  << remote_path
-                  << " '" << ex.what( ) << "; " << ex.additional( ) << "'"
-                  << "\n";
-    }
-
-    std::string name = leaf_of( remote_path );
-    vtrc::shared_ptr<interfaces::remote_file> rem_f
-            ( interfaces::create_remote_file( client, remote_path, "rb" ) );
-
-    std::cout << "Open remote file success.\n"
-              << "Starting...\n"
-              << "Block size = " << block_size
-              << std::endl;
-
-    std::ofstream f;
-    f.open(name.c_str( ), std::ofstream::out );
-
-    std::string block;
-    size_t total = 0;
-
-    while( rem_f->read( block, block_size ) ) {
-        total += block.size( );
-        std::cout << "Got " << total << " bytes\r";
-        f.write( block.c_str( ), block.size( ) );
-    }
-    std::cout << "\nDownload complete\n";
+    /// rfs-pull-file.cpp
+    void pull_file( client::vtrc_client_sptr client,
+                    vtrc::shared_ptr<interfaces::remote_fs> &impl,
+                    const std::string &remote_path, size_t block_size );
 }
 
 void tree_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl,
@@ -210,10 +149,8 @@ void tree_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl )
     tree_dir( impl, "", 0 );
 }
 
-
 int start( const po::variables_map &params )
 {
-
     if( params.count( "server" ) == 0 ) {
         throw std::runtime_error("Server is not defined;\n"
                                  "Use --help for details");
@@ -295,13 +232,13 @@ int start( const po::variables_map &params )
     if( params.count( "pull" ) ) {
         std::string path = params["pull"].as<std::string>( );
         std::cout << "pull file '" << path << "'\n";
-        pull_file( client, impl, path, bs );
+        rfs_examples::pull_file( client, impl, path, bs );
     }
 
     if( params.count( "push" ) ) {
         std::string path = params["push"].as<std::string>( );
         std::cout << "push file '" << path << "'\n";
-        push_file( client, path, bs );
+        rfs_examples::push_file( client, path, bs );
     }
 
     impl.reset( ); // close fs instance
