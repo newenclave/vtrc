@@ -10,24 +10,11 @@
 
 #include "vtrc-memory.h"
 
+#include "utils.h"
 
 namespace rfs_examples {
 
     using namespace vtrc;
-
-    namespace {
-        std::string leaf_of( const std::string &path )
-        {
-            std::string::const_reverse_iterator b(path.rbegin( ));
-            std::string::const_reverse_iterator e(path.rend( ));
-            for( ; b!=e ;++b ) {
-                if( *b == '/' || *b == '\\' ) {
-                    return std::string( b.base( ), path.end( ) );
-                }
-            }
-            return path;
-       }
-    }
 
     void push_file( client::vtrc_client_sptr client,
                     const std::string &local_path, size_t block_size )

@@ -1,6 +1,5 @@
 
 #include <iostream>
-#include <string>
 #include <fstream>
 
 #include "vtrc-client-base/vtrc-client.h"
@@ -10,23 +9,12 @@
 
 #include "vtrc-memory.h"
 
+#include "utils.h"
+
 namespace rfs_examples {
 
     using namespace vtrc;
 
-    namespace {
-        std::string leaf_of( const std::string &path )
-        {
-            std::string::const_reverse_iterator b(path.rbegin( ));
-            std::string::const_reverse_iterator e(path.rend( ));
-            for( ; b!=e ;++b ) {
-                if( *b == '/' || *b == '\\' ) {
-                    return std::string( b.base( ), path.end( ) );
-                }
-            }
-            return path;
-       }
-    }
 
     void pull_file( client::vtrc_client_sptr client,
                     vtrc::shared_ptr<interfaces::remote_fs> &impl,
