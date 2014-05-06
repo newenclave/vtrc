@@ -276,14 +276,14 @@ int main( int argc, char **argv ) try
 
     /// connecting client to server
     if( argc < 3 ) {
-        std::cout << "connecting to '" << argv[1] << "'...";
+        std::cout << "connecting to local '" << argv[1] << "'...";
         client->connect( argv[1] );
-        std::cout << "success\n";
+        std::cout << "Ok\n";
     } else {
-        std::cout << "connecting to '"
+        std::cout << "connecting to tcp '"
                   << argv[1] << ":" << argv[2] << "'...";
         client->connect( argv[1], argv[2] );
-        std::cout << "success\n";
+        std::cout << "Ok\n";
     }
 
     /// set rpc handler for local variable

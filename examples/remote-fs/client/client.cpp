@@ -128,7 +128,7 @@ int start( const po::variables_map &params )
     client->get_on_ready( ).connect( vtrc::bind( on_client_ready,
                             vtrc::ref( ready_cond ) ) );
 
-    std::cout << "success\n";
+    std::cout << "Ok\n";
 
     std::string path;
 
@@ -164,7 +164,7 @@ int start( const po::variables_map &params )
         std::string pi(params["info"].as<std::string>( ));
         std::cout << "Trying get info about '" << pi << "'...";
         interfaces::fs_info inf = impl->info( pi );
-        std::cout << "success.\nInfo:\n";
+        std::cout << "Ok.\nInfo:\n";
         std::cout << "\texists:\t\t"
                   << (inf.is_exist_ ? "true" : "false") << "\n";
         std::cout << "\tdirectory:\t"

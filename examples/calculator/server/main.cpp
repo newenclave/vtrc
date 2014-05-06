@@ -233,7 +233,7 @@ int main( int argc, char **argv ) try
 
     main_listener->start( );
 
-    std::cout << "success\n";
+    std::cout << "Ok\n";
 
     pp.join_all( );
 
