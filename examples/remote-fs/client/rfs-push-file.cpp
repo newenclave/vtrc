@@ -29,7 +29,7 @@ namespace rfs_examples {
                   << std::endl;
 
         std::ifstream f;
-        f.open(local_path.c_str( ), std::ofstream::in );
+        f.open(local_path.c_str( ), std::ifstream::in );
 
         std::string block(block_size, 0);
         size_t total = 0;
