@@ -42,7 +42,7 @@ namespace rfs_examples {
                 total += w;
                 shift += w;
                 r -= w;
-                std::cout << "Post " << total << " bytes\r";
+                std::cout << "Push " << total << " bytes\r";
             }
             r = f.readsome( &block[0], block_size );
         }
