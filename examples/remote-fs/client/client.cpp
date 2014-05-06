@@ -219,7 +219,10 @@ int start( const po::variables_map &params )
                                  "Use --help for details");
     }
 
-    common::pool_pair pp(1, 1);
+    /// will use onle one thread for io.
+    /// because we don't have callbacks or events from server-side
+    common::pool_pair pp( 1 );
+
     client::vtrc_client_sptr client = client::vtrc_client::create( pp );
 
     /// connect slot to 'on_ready'
