@@ -119,10 +119,11 @@ int start( const po::variables_map &params )
     /// because we don't have callbacks or events from server-side
     common::pool_pair pp( 1 );
 
+    std::cout << "Creating client ... " ;
+
     client::vtrc_client_sptr client = client::vtrc_client::create( pp );
 
     /// connect slot to 'on_ready'
-    std::cout << "Creating client ... " ;
     vtrc::condition_variable ready_cond;
     client->get_on_ready( ).connect( vtrc::bind( on_client_ready,
                             vtrc::ref( ready_cond ) ) );
