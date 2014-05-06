@@ -211,9 +211,10 @@ namespace {
                 vtrc::shared_lock l( fs_inst_lock_ );
                 path_map::const_iterator f(fs_inst_.find( hdl ));
 
-                if( f == fs_inst_.end( ) )
+                if( f == fs_inst_.end( ) ) {
                     throw vtrc::common::exception(
-                            vtrc_errors::ERR_NOT_FOUND, "Bad file handle" );
+                            vtrc_errors::ERR_NOT_FOUND, "Bad fs handle" );
+                }
 
                 p = f->second;
                 p /= request->path( );
@@ -268,13 +269,31 @@ namespace {
             response->set_path( p.string( ) );
         }
 
-//        void cd(::google::protobuf::RpcController* controller,
-//             const ::vtrc_example::fs_handle_path* request,
-//             ::vtrc_example::fs_handle_path* response,
-//             ::google::protobuf::Closure* done)
-//        {
-//            common::closure_holder holder( done );
-//        }
+        void cd(::google::protobuf::RpcController* controller,
+             const ::vtrc_example::fs_handle_path* request,
+             ::vtrc_example::fs_handle_path* response,
+             ::google::protobuf::Closure* done)
+        {
+            common::closure_holder holder( done );
+
+            vtrc::upgradable_lock ul( fs_inst_lock_ );
+
+            gpb::uint32 hdl(request->handle( ).value( ));
+
+            path_map::iterator f(fs_inst_.find( hdl ));
+
+            if( f == fs_inst_.end( ) ) {
+                throw vtrc::common::exception(
+                        vtrc_errors::ERR_NOT_FOUND, "Bad fs handle" );
+            }
+
+            fs::path p(f->second / request->path( ));
+            p.normalize( );
+
+            /// set new path
+            vtrc::upgrade_to_unique utul( ul );
+            f->second = p;
+        }
 
         void pwd(::google::protobuf::RpcController* controller,
              const ::vtrc_example::fs_handle_path* request,
@@ -283,15 +302,10 @@ namespace {
         {
             common::closure_holder holder( done );
 
-            gpb::uint32 hdl = request->handle( ).value( );
+            gpb::uint32 hdl;
+            fs::path p(path_from_request( request, hdl ));
 
-            vtrc::upgradable_lock l( fs_inst_lock_ );
-            path_map::const_iterator f(fs_inst_.find( hdl ));
-
-            if( f == fs_inst_.end( ) )
-                throw vtrc::common::exception(
-                        vtrc_errors::ERR_NOT_FOUND, "Bad handle" );
-            response->set_path( f->second.string( ) );
+            response->set_path( p.string( ) );
         }
 
         void exists(::google::protobuf::RpcController* controller,
@@ -353,6 +367,30 @@ namespace {
             gpb::uint32 hdl;
             fs::path p(path_from_request( request, hdl ));
             fill_info( p, response );
+        }
+
+        void mkdir(::google::protobuf::RpcController* controller,
+             const ::vtrc_example::fs_handle_path* request,
+             ::vtrc_example::fs_handle_path* response,
+             ::google::protobuf::Closure* done)
+        {
+            common::closure_holder holder( done );
+            gpb::uint32 hdl(0);
+            fs::path p(path_from_request( request, hdl ));
+            fs::create_directories( p );
+            response->mutable_handle( )->set_value( hdl );
+        }
+
+        void del(::google::protobuf::RpcController* controller,
+             const ::vtrc_example::fs_handle_path* request,
+             ::vtrc_example::fs_handle_path* response,
+             ::google::protobuf::Closure* done)
+        {
+            common::closure_holder holder( done );
+            gpb::uint32 hdl(0);
+            fs::path p(path_from_request( request, hdl ));
+            fs::remove_all( p );
+            response->mutable_handle( )->set_value( hdl );
         }
 
         void iter_begin(::google::protobuf::RpcController* controller,

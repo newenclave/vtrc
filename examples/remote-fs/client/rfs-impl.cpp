@@ -294,6 +294,33 @@ namespace {
             return file_size( "" );
         }
 
+        void mkdir( std::string const &path ) const
+        {
+            vtrc_example::fs_handle_path hp;
+            hp.mutable_handle( )->set_value( fs_handle_ );
+            hp.set_path( path );
+            stub_.mkdir( NULL, &hp, &hp, NULL );
+        }
+
+        void mkdir( ) const
+        {
+            mkdir( "" );
+        }
+
+        void del( std::string const &path ) const
+        {
+            vtrc_example::fs_handle_path hp;
+            hp.mutable_handle( )->set_value( fs_handle_ );
+            hp.set_path( path );
+            stub_.del( NULL, &hp, &hp, NULL );
+        }
+
+        void del( ) const
+        {
+            del( "" );
+        }
+
+
         vtrc::shared_ptr<interfaces::remote_fs_iterator>
                                   begin_iterator(const std::string &path) const
         {

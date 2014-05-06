@@ -40,6 +40,9 @@ void get_options( po::options_description& desc )
         ("block-size,b", po::value<unsigned>( ), "Block size for pull and push"
                                                  "; 1-44000")
 
+        ("mkdir,m", po::value<std::string>( ), "Create remote directory")
+        ("del,d",   po::value<std::string>( ), "Remove remote directory"
+                                               " with content")
         ;
 }
 
@@ -94,6 +97,14 @@ namespace rfs_examples {
     void pull_file( client::vtrc_client_sptr client,
                     vtrc::shared_ptr<interfaces::remote_fs> &impl,
                     const std::string &remote_path, size_t block_size );
+
+    /// rfs-mkdir-del.cpp
+    void make_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl,
+                   const std::string &path);
+    void make_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl );
+    void del( vtrc::shared_ptr<interfaces::remote_fs> &impl,
+                   const std::string &path);
+    void del( vtrc::shared_ptr<interfaces::remote_fs> &impl );
 }
 
 
@@ -104,7 +115,7 @@ int start( const po::variables_map &params )
                                  "Use --help for details");
     }
 
-    /// will use onle one thread for io.
+    /// will use only one thread for io operations.
     /// because we don't have callbacks or events from server-side
     common::pool_pair pp( 1 );
 
@@ -127,8 +138,8 @@ int start( const po::variables_map &params )
 
     vtrc::mutex                    ready_mutex;
     vtrc::unique_lock<vtrc::mutex> ready_lock(ready_mutex);
-    ready_cond.wait( ready_lock, vtrc::bind( &client::vtrc_client::ready,
-                                              client ) );
+    ready_cond.wait( ready_lock,
+                     vtrc::bind( &client::vtrc_client::ready, client ) );
 
     if( params.count( "path" ) ) {
         path = params["path"].as<std::string>( );
@@ -187,6 +198,24 @@ int start( const po::variables_map &params )
         std::string path = params["push"].as<std::string>( );
         std::cout << "push file '" << path << "'\n";
         rfs_examples::push_file( client, path, bs );
+    }
+
+    if( params.count( "mkdir" ) ) {
+        std::string path = params["mkdir"].as<std::string>( );
+        if( path.empty( ) ) {
+            rfs_examples::make_dir( impl );
+        } else {
+            rfs_examples::make_dir( impl, path );
+        }
+    }
+
+    if( params.count( "del" ) ) {
+        std::string path = params["del"].as<std::string>( );
+        if( path.empty( ) ) {
+            rfs_examples::del( impl );
+        } else {
+            rfs_examples::del( impl, path );
+        }
     }
 
     impl.reset( ); // close fs instance

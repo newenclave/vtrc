@@ -52,6 +52,12 @@ service remote_fs {
     // get path info
     rpc info(fs_handle_path)        returns (fs_element_info);
 
+    // make directory
+    rpc mkdir(fs_handle_path)       returns (fs_handle_path);
+
+    // del fs element
+    rpc del(fs_handle_path)         returns (fs_handle_path);
+
     // iterate directory
     rpc iter_begin( fs_handle_path ) returns(fs_iterator_info);
     rpc iter_next (fs_iterator_info) returns(fs_iterator_info);

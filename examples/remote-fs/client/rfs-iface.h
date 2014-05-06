@@ -65,6 +65,12 @@ namespace interfaces {
         virtual size_t file_size( std::string const &path ) const = 0;
         virtual size_t file_size( ) const = 0;
 
+        virtual void mkdir( std::string const &path ) const = 0;
+        virtual void mkdir( ) const = 0;
+
+        virtual void del( std::string const &path ) const = 0;
+        virtual void del( ) const = 0;
+
         /// iterator start
         virtual vtrc::shared_ptr<remote_fs_iterator> begin_iterator(
                                               const std::string &path) const =0;
