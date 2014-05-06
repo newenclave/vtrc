@@ -15,7 +15,6 @@ namespace rfs_examples {
 
     using namespace vtrc;
 
-
     void pull_file( client::vtrc_client_sptr client,
                     vtrc::shared_ptr<interfaces::remote_fs> &impl,
                     const std::string &remote_path, size_t block_size )
