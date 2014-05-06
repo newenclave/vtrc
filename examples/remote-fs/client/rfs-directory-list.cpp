@@ -18,11 +18,18 @@ namespace rfs_examples {
 
     void list_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl )
     {
+        size_t dirs(0);
+        size_t files(0);
+
         vtrc::shared_ptr<interfaces::remote_fs_iterator> i
                                                     (impl->begin_iterator( ));
         std::string lstring( 2, ' ' );
         for( ; !i->end( ); i->next( )) {
             bool is_dir( i->info( ).is_directory_ );
+
+            dirs    += is_dir ? 1 : 0;
+            files   += is_dir ? 0 : 1;
+
             std::cout << lstring
                       << ( i->info( ).is_empty_ ? " " : "+" );
             std::cout << ( is_dir ? "[" : " " )
@@ -30,6 +37,11 @@ namespace rfs_examples {
                       << ( is_dir ? "]" : " " )
                       << "\n";
         }
+
+        std::cout << "==================================================\n"
+                  << "Total dirs:  " << dirs  << "\n"
+                  << "Total files: " << files << "\n"
+                  ;
     }
 
 }
