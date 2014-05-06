@@ -1,4 +1,4 @@
-#include "remote-fs-iface.h"
+#include "rfs-iface.h"
 #include "vtrc-client-base/vtrc-rpc-channel-c.h"
 #include "vtrc-client-base/vtrc-client.h"
 #include "protocol/remotefs.pb.h"

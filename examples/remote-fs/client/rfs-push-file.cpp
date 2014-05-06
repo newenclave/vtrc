@@ -6,7 +6,7 @@
 #include "vtrc-client-base/vtrc-client.h"
 #include "vtrc-common/vtrc-exception.h"
 
-#include "remote-fs-iface.h"
+#include "rfs-iface.h"
 
 #include "vtrc-memory.h"
 

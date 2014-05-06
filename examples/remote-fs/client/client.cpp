@@ -12,7 +12,7 @@
 #include "vtrc-common/vtrc-pool-pair.h"
 #include "vtrc-common/vtrc-exception.h"
 
-#include "remote-fs-iface.h"
+#include "rfs-iface.h"
 
 #include "vtrc-condition-variable.h"
 #include "vtrc-mutex.h"
