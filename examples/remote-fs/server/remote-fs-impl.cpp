@@ -389,7 +389,7 @@ namespace {
             common::closure_holder holder( done );
             gpb::uint32 hdl(0);
             fs::path p(path_from_request( request, hdl ));
-            fs::remove_all( p );
+            fs::remove( p );
             response->mutable_handle( )->set_value( hdl );
         }
 
