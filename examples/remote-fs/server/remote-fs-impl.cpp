@@ -114,13 +114,16 @@ namespace {
             file_ptr f(file_from_hdl( request->hdl( ).value( ) ));
 
             int pos = fseek( f.get( ), request->position( ),
-                                        request->whence( ) );
+                                       request->whence( ) );
+
+            gpb::uint64 file_pos = static_cast<gpb::uint64>(ftell( f.get( ) ));
+
             if( -1 == pos ) {
                 throw vtrc::common::exception(
                             errno, vtrc_errors::CATEGORY_SYSTEM,
                             "fseek failed");
             }
-            response->set_position( request->position( ) );
+            response->set_position( file_pos );
         }
 
         void read(::google::protobuf::RpcController* controller,

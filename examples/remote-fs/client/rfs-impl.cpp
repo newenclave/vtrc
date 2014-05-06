@@ -147,7 +147,8 @@ namespace {
             return pos.position( );
         }
 
-        void seek( google::protobuf::uint64 position, unsigned whence ) const
+        gpb::uint64 seek( google::protobuf::uint64 position,
+                          unsigned whence ) const
         {
             vtrc_example::file_set_position set_pos;
             vtrc_example::file_position pos;
@@ -156,14 +157,15 @@ namespace {
             set_pos.set_position( position );
             set_pos.set_whence( whence );
             stub_.seek( NULL, &set_pos, &pos, NULL);
+            return pos.position( );
         }
 
-        void seek_begin( google::protobuf::uint64 pos ) const
+        gpb::uint64 seek_begin( google::protobuf::uint64 pos ) const
         {
             seek( pos, vtrc_example::POS_SEEK_SET );
         }
 
-        void seek_end( google::protobuf::uint64 pos )   const
+        gpb::uint64 seek_end( google::protobuf::uint64 pos )   const
         {
             seek( pos, vtrc_example::POS_SEEK_END );
         }

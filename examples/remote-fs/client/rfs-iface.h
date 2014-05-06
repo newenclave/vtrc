@@ -38,10 +38,13 @@ namespace interfaces {
         virtual void close( )                    const = 0;
 
         virtual google::protobuf::uint64 tell( ) const = 0;
-        virtual void seek( google::protobuf::uint64 pos,
-                           unsigned whence )     const = 0;
-        virtual void seek_begin( google::protobuf::uint64 pos ) const = 0;
-        virtual void seek_end( google::protobuf::uint64 pos )   const = 0;
+
+        virtual google::protobuf::uint64 seek( google::protobuf::uint64 pos,
+                            unsigned whence )     const = 0;
+        virtual google::protobuf::uint64 seek_begin(
+                            google::protobuf::uint64 pos ) const = 0;
+        virtual google::protobuf::uint64 seek_end(
+                            google::protobuf::uint64 pos )   const = 0;
 
         virtual size_t read( std::string &data, size_t max_len ) const = 0;
 
