@@ -162,12 +162,12 @@ namespace {
 
         gpb::uint64 seek_begin( google::protobuf::uint64 pos ) const
         {
-            seek( pos, vtrc_example::POS_SEEK_SET );
+            return seek( pos, vtrc_example::POS_SEEK_SET );
         }
 
         gpb::uint64 seek_end( google::protobuf::uint64 pos )   const
         {
-            seek( pos, vtrc_example::POS_SEEK_END );
+            return seek( pos, vtrc_example::POS_SEEK_END );
         }
 
         size_t read( std::string &data, size_t max_len )  const
