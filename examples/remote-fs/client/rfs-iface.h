@@ -65,8 +65,9 @@ namespace interfaces {
         virtual fs_info info( std::string const &path ) const = 0;
         virtual fs_info info( ) const = 0;
 
-        virtual size_t file_size( std::string const &path ) const = 0;
-        virtual size_t file_size( ) const = 0;
+        virtual google::protobuf::uint64 file_size(
+                                            std::string const &path ) const = 0;
+        virtual google::protobuf::uint64 file_size( ) const = 0;
 
         virtual void mkdir( std::string const &path ) const = 0;
         virtual void mkdir( ) const = 0;

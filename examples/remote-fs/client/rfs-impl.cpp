@@ -140,7 +140,7 @@ namespace {
             close_impl( );
         }
 
-        google::protobuf::uint64 tell( ) const
+        gpb::uint64 tell( ) const
         {
             vtrc_example::file_position pos;
             stub_.tell( NULL, &fhdl_, &pos, NULL);
@@ -281,7 +281,7 @@ namespace {
             return info( "" );
         }
 
-        size_t file_size( std::string const &path ) const
+        gpb::uint64 file_size( std::string const &path ) const
         {
             vtrc_example::fs_handle_path hp;
             vtrc_example::file_position  pos;
@@ -291,7 +291,7 @@ namespace {
             return pos.position( );
         }
 
-        size_t file_size( ) const
+        gpb::uint64 file_size( ) const
         {
             return file_size( "" );
         }
