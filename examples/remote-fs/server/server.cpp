@@ -44,6 +44,9 @@ public:
             return vtrc::make_shared<common::rpc_service_wrapper>
                     (remote_file::create(connection));
         }
+
+        /// empty service
+        return vtrc::shared_ptr<common::rpc_service_wrapper>( );
     }
 
     void on_new_connection( server::listener_sptr l,
