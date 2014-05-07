@@ -14,12 +14,13 @@
 namespace rfs_examples {
 
     using namespace vtrc;
+    namespace gpb = google::protobuf;
 
     void pull_file( client::vtrc_client_sptr client,
                     vtrc::shared_ptr<interfaces::remote_fs> &impl,
                     const std::string &remote_path, size_t block_size )
     {
-        size_t remote_size = -1;
+        gpb::uint64 remote_size = -1;
         try {
             remote_size = impl->file_size( remote_path );
             std::cout << "Remote file size is: " << remote_size << "\n";
