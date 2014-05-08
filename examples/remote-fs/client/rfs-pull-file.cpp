@@ -48,7 +48,7 @@ namespace rfs_examples {
 
         while( rem_f->read( block, block_size ) ) {
             total += block.size( );
-            std::cout << "Pull " << total << " bytes\r";
+            std::cout << "Pull " << total << " bytes\r" << std::flush;
             f.write( block.c_str( ), block.size( ) );
         }
         std::cout << "\nDownload complete\n";
