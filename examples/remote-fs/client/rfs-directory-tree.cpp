@@ -25,7 +25,7 @@ namespace {
 
         std::string lstring( level * 2, ' ' );
 
-        for( iterator i(impl->begin_iterator( path )); !i->end( ); i->next( )) {
+        for( iterator i(impl->begin_iterator(path)); !i->end( ); i->next( )) {
 
             bool is_dir( i->info( ).is_directory_ );
 
