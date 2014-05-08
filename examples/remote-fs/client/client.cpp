@@ -84,7 +84,7 @@ void on_client_ready( vtrc::condition_variable &cond )
 namespace rfs_examples {
 
     /// rfs-directory-list.cpp
-    void list_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl );
+    void list_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl);
 
     /// rfs-directory-tree.cpp
     void tree_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl );
