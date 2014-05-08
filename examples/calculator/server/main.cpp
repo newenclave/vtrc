@@ -12,8 +12,7 @@
 #include "protocol/calculator.pb.h"
 
 #include "vtrc-listener-tcp.h"
-#include "vtrc-listener-unix-local.h"
-#include "vtrc-listener-win-pipe.h"
+#include "vtrc-listener-local.h"
 
 #include "vtrc-memory.h"
 #include "vtrc-bind.h"
@@ -218,10 +217,8 @@ int main( int argc, char **argv ) try
     if( argc < 3 ) {
 #ifndef _WIN32
         ::unlink( argv[1] );
-        main_listener = listeners::unix_local::create(app, argv[1]);
-#else
-        main_listener = listeners::win_pipe::create(app, argv[1]);
 #endif
+        main_listener = listeners::local::create(app, argv[1]);
     } else {
         main_listener = listeners::tcp::create(app, argv[1],
                 boost::lexical_cast<unsigned short>(argv[2]));

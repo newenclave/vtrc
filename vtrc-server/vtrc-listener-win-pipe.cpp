@@ -1,4 +1,3 @@
-#include "vtrc-listener-win-pipe.h"
 
 #ifdef _WIN32
 
@@ -41,7 +40,7 @@ namespace {
             ,name_(name)
         { }
 
-        std::string name(  ) const 
+        std::string name(  ) const
         {
             return name_;
         }
@@ -73,8 +72,8 @@ namespace {
         {
             vtrc::shared_ptr<this_type> new_inst
                     (vtrc::make_shared<this_type>(vtrc::ref(listnr),
-                                        sock, 
-                                        vtrc::ref(on_close_cb), 
+                                        sock,
+                                        vtrc::ref(on_close_cb),
                                         vtrc::ref(name)));
 
             new_inst->init( );

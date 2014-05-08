@@ -18,8 +18,7 @@
 #include "vtrc-server/vtrc-application.h"
 #include "vtrc-server/vtrc-listener.h"
 #include "vtrc-server/vtrc-listener-tcp.h"
-#include "vtrc-server/vtrc-listener-unix-local.h"
-#include "vtrc-server/vtrc-listener-win-pipe.h"
+#include "vtrc-server/vtrc-listener-local.h"
 
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-pool-pair.h"
@@ -287,21 +286,15 @@ int main( ) try {
     std::string file_name("/tmp/test.socket");
 
     ::unlink( file_name.c_str( ) );
-
-    vtrc::shared_ptr<vtrc::server::listener> local_listen
-            (vtrc::server::listeners::unix_local::create(app, file_name));
-
-    ::chmod(file_name.c_str( ), 0xFFFFFF );
-
-
 #else
-
     std::string file_name("\\\\.\\pipe\\test_pipe");
 
-    vtrc::shared_ptr<vtrc::server::listener> local_listen
-            (vtrc::server::listeners::win_pipe::create(app, file_name));
-
 #endif
+
+    vtrc::shared_ptr<vtrc::server::listener> local_listen
+            (vtrc::server::listeners::local::create(app, file_name));
+
+    ::chmod(file_name.c_str( ), 0xFFFFFF );
 
     app.attach_listener( tcp4_ep );
     app.attach_listener( tcp6_ep );
@@ -336,3 +329,7 @@ int main( ) try {
     std::cout << "general error: " << ex.what( ) << "\n";
     return 0;
 }
+
+//////////
+
+

@@ -12,8 +12,7 @@
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"
 
 #include "vtrc-server/vtrc-listener-tcp.h"
-#include "vtrc-server/vtrc-listener-unix-local.h"
-#include "vtrc-server/vtrc-listener-win-pipe.h"
+#include "vtrc-server/vtrc-listener-local.h"
 
 #include "vtrc-bind.h"
 #include "vtrc-ref.h"
@@ -120,10 +119,9 @@ server::listener_sptr create_from_string( const std::string &name,
     if( params.size( ) == 1 ) { // local name
 #ifndef _WIN32
         ::unlink( params[0].c_str( ) );
-        result = server::listeners::unix_local::create( app, params[0] );
-#else
-        result = server::listeners::win_pipe::create( app, params[0] );
 #endif
+        result = server::listeners::local::create( app, params[0] );
+
     } else if( params.size( ) == 2 ) {
         result = server::listeners::tcp::create( app, params[0],
                 boost::lexical_cast<unsigned short>(params[1]));
