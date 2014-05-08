@@ -282,13 +282,9 @@ int main( ) try {
             (vtrc::server::listeners::tcp::create(app, "::", 44668, true));
 
 #ifndef _WIN32
-
     std::string file_name("/tmp/test.socket");
-
-    ::unlink( file_name.c_str( ) );
 #else
     std::string file_name("\\\\.\\pipe\\test_pipe");
-
 #endif
 
     vtrc::shared_ptr<vtrc::server::listener> local_listen
