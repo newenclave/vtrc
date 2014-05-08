@@ -21,10 +21,11 @@ namespace {
                    const std::string &path, int level,
                    size_t &dirs, size_t &files )
     {
-        vtrc::shared_ptr<interfaces::remote_fs_iterator> i
-                                                (impl->begin_iterator( path ));
+        typedef vtrc::shared_ptr<interfaces::remote_fs_iterator> iterator;
+
         std::string lstring( level * 2, ' ' );
-        for( ; !i->end( ); i->next( )) {
+
+        for( iterator i(impl->begin_iterator( path )); !i->end( ); i->next( )) {
 
             bool is_dir( i->info( ).is_directory_ );
 
