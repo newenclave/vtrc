@@ -294,8 +294,6 @@ int main( ) try {
     vtrc::shared_ptr<vtrc::server::listener> local_listen
             (vtrc::server::listeners::local::create(app, file_name));
 
-    ::chmod(file_name.c_str( ), 0xFFFFFF );
-
     app.attach_listener( tcp4_ep );
     app.attach_listener( tcp6_ep );
     app.attach_listener( local_listen );
