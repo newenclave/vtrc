@@ -3,10 +3,7 @@
 
 #include <fstream>
 
-
 #include "boost/program_options.hpp"
-#include "boost/algorithm/string.hpp"
-#include "boost/lexical_cast.hpp"
 
 #include "vtrc-client-base/vtrc-client.h"
 #include "vtrc-common/vtrc-pool-pair.h"
