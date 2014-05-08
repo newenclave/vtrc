@@ -42,7 +42,7 @@ void get_options( po::options_description& desc )
 
         ("mkdir,m", po::value<std::string>( ), "Create remote directory")
         ("del,d",   po::value<std::string>( ), "Remove remote directory"
-                                               " with content")
+                                               " if it is empty")
         ;
 }
 
