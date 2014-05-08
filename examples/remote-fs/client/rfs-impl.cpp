@@ -7,6 +7,7 @@ namespace {
 
     namespace gpb = google::protobuf;
     typedef vtrc_example::remote_fs_Stub stub_type;
+    const size_t max_block_length = (640 * 1024);
 
     interfaces::fs_info fill_info( vtrc_example::fs_element_info const &info,
                                    std::string const &path)
@@ -192,8 +193,8 @@ namespace {
         {
             vtrc_example::file_data_block block;
 
-            size_t len = (lenght > (44 * 1024))
-                    ? (44 * 1024)
+            size_t len = (lenght > max_block_length)
+                    ? max_block_length
                     : lenght;
 
             block.mutable_hdl( )->CopyFrom( fhdl_ );

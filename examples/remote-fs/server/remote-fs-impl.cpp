@@ -28,6 +28,8 @@ namespace {
     typedef std::map<gpb::uint32, fs::directory_iterator> iterator_map;
     typedef std::map<gpb::uint32, file_ptr >              files_map;
 
+    const size_t max_block_length = (640 * 1024);
+
     class remote_file_impl: public vtrc_example::remote_file {
 
         vtrc::common::connection_iface *connection_;
@@ -133,8 +135,8 @@ namespace {
         {
             common::closure_holder holder(done);
 
-            size_t len = request->length( ) > (44 * 1024)
-                    ? (44 * 1024)
+            size_t len = request->length( ) > max_block_length
+                    ? max_block_length
                     : request->length( );
 
             if( !len ) {

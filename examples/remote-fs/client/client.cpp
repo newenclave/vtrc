@@ -38,7 +38,7 @@ void get_options( po::options_description& desc )
         ("push,u", po::value<std::string>( ), "Upload local file")
 
         ("block-size,b", po::value<unsigned>( ), "Block size for pull and push"
-                                                 "; 1-44000")
+                                                 "; 1-640000")
 
         ("mkdir,m", po::value<std::string>( ), "Create remote directory")
         ("del,d",   po::value<std::string>( ), "Remove remote directory"
