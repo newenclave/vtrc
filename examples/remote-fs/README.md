@@ -69,11 +69,11 @@ Server side:
 	    ......
 	    if( params.size( ) == 1 ) {         /// local endpoint
 
-		result = server::listeners::local::create( app, params[0] );
+		    result = server::listeners::local::create( app, params[0] );
 
 	    } else if( params.size( ) == 2 ) {  /// TCP
 
-		result = server::listeners::tcp::create( app,
+		    result = server::listeners::tcp::create( app,
                         params[0],
                         boost::lexical_cast<unsigned short>(params[1]));
 
