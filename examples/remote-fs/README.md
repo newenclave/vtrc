@@ -1,7 +1,7 @@
 Remote filesystem example
 ===============
 
-Operations supported: 
+Operations supported [protocol definition file](https://github.com/newenclave/vtrc/blob/master/examples/remote-fs/protocol/remotefs.proto "remotefs.proto"): 
 
     exists:	Checks if the path exists
     
