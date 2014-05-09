@@ -3,16 +3,16 @@ Remote filesystem example
 
 Operations supported: 
 
-    exists:	    Checks if path exists
+    exists:	Checks if the path exists
     
-    file_size:  Returns size of remote file
+    file_size:	Returns size of the remote file
     
-    info:	    Returns information about remote FS object;
+    info:	Returns information about remote FS object;
                 is_exist, is_directory, is_empty, is_regular, is_symlink
     
-    mkdir:	    Ror making remote directory
+    mkdir:	Ror making remote directory
     
-    del:	    For removing remote directory if it is empty
+    del:	For removing remote directory if it is empty
     
 Remote directory iteration is also supported:
 
