@@ -79,7 +79,7 @@ Server side:
 
 	    }
 
-	and (function 'start' in server.cpp )
+	and (function 'start' in server.cpp [an example](https://github.com/newenclave/vtrc/blob/master/examples/remote-fs/server/server.cpp "server.cpp")  )
 	    
 	    std::vector<std::string> servers; /// contains all '-s' params from command line
 	    ........  
