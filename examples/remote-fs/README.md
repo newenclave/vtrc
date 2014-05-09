@@ -49,5 +49,9 @@ Server side:
 -------
     Command line option '--server' (or '-s') sets endpoint for server-side application. 
     There are 2 family of transport supported by library: TCP and Local system transport 
-    (UNIX sockets for unixes and Pipes for Windows); 
+    (UNIX sockets for UNIXes and Pipes for Windows); 
+	Example: 
+	    # open 2 andpoints tcp for 44555 and unix socket for /home/sandbox/fs.sock
+	    remote_fs_server -s 0.0.0.0:44555 -s /home/sandbox/fs.sock
+	    
 
