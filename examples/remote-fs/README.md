@@ -18,7 +18,7 @@ Remote directory iteration is also supported:
 
     iter_begin: Starts iteration
 
-    iter_next:  Move iterator to next object ( boost::filesystem::directory_iterator.operator ++ )
+    iter_next:  Moves iterator to next object ( boost::filesystem::directory_iterator::operator ++ )
 
     iter_info:  Returns info about iteator FS object (similar to info)
 
