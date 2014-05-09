@@ -63,7 +63,7 @@ Server side:
 	    #	endpoint for 192.168.1.101:10100 and windows pipe endpoint for pipe\\fs_local_pipe
 	    remote_fs_server -s :::44556 -s 192.168.1.101:10100 -s \\\\.\\pipe\\fs_local_pipe
 
-	For C++: ( function create_from_stringin in server.cpp )
+	For C++: ( function 'create_from_string' in server.cpp )
 	    std::vector<std::string> params;    // contains local_name (size( )==1) 
                                                 // or tcp address and port (size( ) == 2)
 	    ......
@@ -79,7 +79,7 @@ Server side:
 
 	    }
 
-	and (function start in server.cpp )
+	and (function 'start' in server.cpp )
 	    
 	    std::vector<std::string> servers; /// contains all '-s' params from command line
 	    ........  
