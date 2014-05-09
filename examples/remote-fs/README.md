@@ -35,7 +35,6 @@ Remote file operation:
 
         seek:       Sets the remote file position
         
-        
         read:       Reads block of data from the remote file; 
                     In example blocks from 1 to 640000 bytes arte supported
                     Returns the number of bytes read or 0 is end of the remote file  was reached
