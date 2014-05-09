@@ -83,13 +83,12 @@ Server side:
 	    
 	    std::vector<std::string> servers; /// contains all '-s' params from command line
 	    ........  
-	    for( const auto &s : servers  )
-	    {
-		std::cout << "Starting listener at '" << s << "'...";
-		server::listener_sptr new_listener = create_from_string( s, app );
-		listeners.push_back(new_listener);
-		app.attach_listener( new_listener );
-		new_listener->start( );
-		std::cout << "Ok\n";
+	    for( const auto &s : servers  ) {
+	        std::cout << "Starting listener at '" << s << "'...";
+	        server::listener_sptr new_listener = create_from_string( s, app );
+	        listeners.push_back(new_listener);
+	        app.attach_listener( new_listener );
+	        new_listener->start( );
+	        std::cout << "Ok\n";
 	    }
     
