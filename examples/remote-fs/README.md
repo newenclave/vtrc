@@ -55,16 +55,16 @@ There are 2 family of transport supported by library: TCP and Local system trans
 
 Example: 
 
-# open 2 endpoints tcp for 44555 and unix socket for /home/sandbox/fs.sock
+*open 2 endpoints tcp for 44555 and unix socket for /home/sandbox/fs.sock
 
     remote_fs_server -s 0.0.0.0:44555 -s /home/sandbox/fs.sock
 
-# tcp6 is also supported; 
+*tcp6 is also supported; 
 
     remote_fs_server -s :::44556  
 
-# or for windows; opens tcp6 endpoint for [::]:44556,
-#	tcp endpoint for 192.168.1.101:10100 and windows pipe endpoint for pipe\\fs_local_pipe
+*or for windows; opens tcp6 endpoint for [::]:44556,
+*tcp endpoint for 192.168.1.101:10100 and windows pipe endpoint for pipe\\fs_local_pipe
 
     remote_fs_server -s :::44556 -s 192.168.1.101:10100 -s \\\\.\\pipe\\fs_local_pipe
 
