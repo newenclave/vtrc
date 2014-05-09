@@ -63,7 +63,7 @@ Server side:
 	    #	endpoint for 192.168.1.101:10100 and windows pipe endpoint for pipe\\fs_local_pipe
 	    remote_fs_server -s :::44556 -s 192.168.1.101:10100 -s \\\\.\\pipe\\fs_local_pipe
 
-	For C++:
+	For C++: ( function create_from_stringin in server.cpp )
 	    std::vector<std::string> params;    // contains local_name (size( )==1) 
                                                 // or tcp address and port (size( ) == 2)
 	    ......
@@ -78,5 +78,18 @@ Server side:
                         boost::lexical_cast<unsigned short>(params[1]));
 
 	    }
+
+	and (function start in server.cpp )
 	    
+	    std::vector<std::string> servers; /// contains all '-s' params from command line
+	    ........  
+	    for( const auto &s : servers  )
+	    {
+		std::cout << "Starting listener at '" << s << "'...";
+		server::listener_sptr new_listener = create_from_string( s, app );
+		listeners.push_back(new_listener);
+		app.attach_listener( new_listener );
+		new_listener->start( );
+		std::cout << "Ok\n";
+	    }
     
