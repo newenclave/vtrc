@@ -42,3 +42,10 @@ Remote file operations:
     write:      Writes portion of data.
                 Returns the number of bytes written.
 
+Command example usage
+=====================
+
+Server side:
+-------
+
+
