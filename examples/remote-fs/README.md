@@ -27,7 +27,7 @@ Remote directory iteration is also supported:
 Remote file operations:
         
     open:       Opens remote file. fopen-style open mode is supported
-                ("rb", "wb", "a", ... etc; read man fopen )
+                ("rb", "wb", "a", ... etc; for more detailed information, read 'man fopen' )
 
     close:      For close file
 
