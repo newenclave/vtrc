@@ -154,7 +154,7 @@ int start( const po::variables_map &params )
     }
 
     typedef std::vector<std::string> string_vector;
-    string_vector servers = params["server"].as< string_vector >( );
+    string_vector servers = params["server"].as<string_vector>( );
 
     common::pool_pair pp( io_size, rpc_size );
     fs_application app( pp );
