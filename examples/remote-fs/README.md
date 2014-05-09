@@ -65,10 +65,10 @@ Example:
     #	endpoint for 192.168.1.101:10100 and windows pipe endpoint for pipe\\fs_local_pipe
     remote_fs_server -s :::44556 -s 192.168.1.101:10100 -s \\\\.\\pipe\\fs_local_pipe
 
-For C++: ( function 'create_from_string' in server.cpp )
+For C++: ( function 'create_from_string' in [server.cpp](https://github.com/newenclave/vtrc/blob/master/examples/remote-fs/server/server.cpp#L95 "GITHUB file server.cpp") )
 
     std::vector<std::string> params;    // contains local_name (size( )==1) 
-                                    // or tcp address and port (size( ) == 2)
+                                        // or tcp address and port (size( ) == 2)
     ......
     if( params.size( ) == 1 ) {         /// local endpoint
 
@@ -82,7 +82,7 @@ For C++: ( function 'create_from_string' in server.cpp )
 
     }
 
-and (function 'start' in [server.cpp](https://github.com/newenclave/vtrc/blob/master/examples/remote-fs/server/server.cpp "GITHUB file server.cpp")  )
+and (function 'start' in [server.cpp](https://github.com/newenclave/vtrc/blob/master/examples/remote-fs/server/server.cpp#L166 "GITHUB file server.cpp")  )
 	    
     std::vector<std::string> servers; /// contains all '-s' params from command line
     ........  
