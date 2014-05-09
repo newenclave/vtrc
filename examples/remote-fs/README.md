@@ -1,7 +1,7 @@
 Remote filesystem example
 ===============
 
-Operation support: 
+Operations supported: 
 
     exists:	    Checks if path exists
     
@@ -14,7 +14,7 @@ Operation support:
     
     del:	    For removing remote directory if it is empty
     
-Remote directory iteration is also support:
+Remote directory iteration is also supported:
 
     iter_begin: Starts iteration
 
@@ -24,7 +24,7 @@ Remote directory iteration is also support:
 
     iter_clone: Returns new iterator object
 
-Remote file operation:
+Remote file operations:
         
     open:       Opens remote file. fopen-style open mode is supported
                 ("rb", "wb", "a", ... etc; read man fopen )
