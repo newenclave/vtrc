@@ -44,7 +44,7 @@ public:
                     (remote_file::create(connection));
         }
 
-        /// empty service
+        /// empty service;
         return vtrc::shared_ptr<common::rpc_service_wrapper>( );
     }
 
@@ -52,7 +52,7 @@ public:
                             const common::connection_iface *c )
     {
         std::cout << "New connection: "
-                  << "\n\tep: "     << l->name( ) << "; "
+                  << "\n\tep:     " << l->name( )
                   << "\n\tclient: " << c->name( )
                   << "\n"
                     ;
