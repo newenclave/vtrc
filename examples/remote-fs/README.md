@@ -47,48 +47,48 @@ Example usage
 
 Server side:
 -------
-    Command line options:
+Command line options:
     
-     '--server' (or '-s') sets endpoint for server-side application. 
-    There are 2 family of transport supported by library: TCP and Local system transport 
-    (UNIX sockets for UNIXes and Pipes for Windows); 
-	Example: 
-	    # open 2 endpoints tcp for 44555 and unix socket for /home/sandbox/fs.sock
-	   remote_fs_server -s 0.0.0.0:44555 -s /home/sandbox/fs.sock
+'--server' (or '-s') sets endpoint for server-side application. 
+There are 2 family of transport supported by library: TCP and Local system transport 
+(UNIX sockets for UNIXes and Pipes for Windows); 
+Example: 
+    # open 2 endpoints tcp for 44555 and unix socket for /home/sandbox/fs.sock
+   remote_fs_server -s 0.0.0.0:44555 -s /home/sandbox/fs.sock
 
-	    # tcp6 is also supported; 
-	    remote_fs_server -s :::44556  
+    # tcp6 is also supported; 
+    remote_fs_server -s :::44556  
 
-	    # or for windows; opens tcp6 endpoint for [::]:44556 tcp 
-	    #	endpoint for 192.168.1.101:10100 and windows pipe endpoint for pipe\\fs_local_pipe
-	    remote_fs_server -s :::44556 -s 192.168.1.101:10100 -s \\\\.\\pipe\\fs_local_pipe
+    # or for windows; opens tcp6 endpoint for [::]:44556 tcp 
+    #	endpoint for 192.168.1.101:10100 and windows pipe endpoint for pipe\\fs_local_pipe
+    remote_fs_server -s :::44556 -s 192.168.1.101:10100 -s \\\\.\\pipe\\fs_local_pipe
 
-	For C++: ( function 'create_from_string' in server.cpp )
-	    std::vector<std::string> params;    // contains local_name (size( )==1) 
-                                            // or tcp address and port (size( ) == 2)
-	    ......
-	    if( params.size( ) == 1 ) {         /// local endpoint
+For C++: ( function 'create_from_string' in server.cpp )
+    std::vector<std::string> params;    // contains local_name (size( )==1) 
+                                    // or tcp address and port (size( ) == 2)
+    ......
+    if( params.size( ) == 1 ) {         /// local endpoint
 
-	        result = server::listeners::local::create( app, params[0] );
+        result = server::listeners::local::create( app, params[0] );
 
-	    } else if( params.size( ) == 2 ) {  /// TCP
+    } else if( params.size( ) == 2 ) {  /// TCP
 
-	        result = server::listeners::tcp::create( app,
-                        params[0],
-                        boost::lexical_cast<unsigned short>(params[1]));
+        result = server::listeners::tcp::create( app,
+                params[0],
+                boost::lexical_cast<unsigned short>(params[1]));
 
-	    }
+    }
 
-	and (function 'start' in server.cpp [an example](https://github.com/newenclave/vtrc/blob/master/examples/remote-fs/server/server.cpp "server.cpp")  )
+and (function 'start' in server.cpp [an example](https://github.com/newenclave/vtrc/blob/master/examples/remote-fs/server/server.cpp "server.cpp")  )
 	    
-	    std::vector<std::string> servers; /// contains all '-s' params from command line
-	    ........  
-	    for( const auto &s : servers  ) {
-	        std::cout << "Starting listener at '" << s << "'...";
-	        server::listener_sptr new_listener = create_from_string( s, app );
-	        listeners.push_back(new_listener);
-	        app.attach_listener( new_listener );
-	        new_listener->start( );
-	        std::cout << "Ok\n";
-	    }
-    
+    std::vector<std::string> servers; /// contains all '-s' params from command line
+    ........  
+    for( const auto &s : servers  ) {
+        std::cout << "Starting listener at '" << s << "'...";
+        server::listener_sptr new_listener = create_from_string( s, app );
+        listeners.push_back(new_listener);
+        app.attach_listener( new_listener );
+        new_listener->start( );
+        std::cout << "Ok\n";
+    }
+
