@@ -98,3 +98,7 @@ and (function 'start' in [server.cpp](https://github.com/newenclave/vtrc/blob/ma
         std::cout << "Ok\n";
     }
 
+Client side:
+-----------
+
+
