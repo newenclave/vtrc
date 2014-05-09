@@ -42,10 +42,12 @@ Remote file operations:
     write:      Writes portion of data.
                 Returns the number of bytes written.
 
-Command example usage
+Example usage
 =====================
 
 Server side:
 -------
-
+    Command line option '--server' (or '-s') sets endpoint for server-side application. 
+    There are 2 family of transport supported by library: TCP and Local system transport 
+    (UNIX sockets for unixes and Pipes for Windows); 
 
