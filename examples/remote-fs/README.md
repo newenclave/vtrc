@@ -15,6 +15,7 @@ Operation support:
         del:	    For removing remote directory if it is empty
     
 Remote directory iteration is also support:
+
         iter_begin: Starts iteration
 
         iter_next:  Move iterator to next object ( boost::filesystem::directory_iterator.operator ++ )
