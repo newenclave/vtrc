@@ -8,7 +8,7 @@ Operation support:
         file_size:  Returns size of remote file
     
         info:	    Returns information about remote FS object (is_exist, is_directory,
-		    is_empty, is_regular, is_symlink)
+                    is_empty, is_regular, is_symlink)
     
         mkdir:	    Ror making remote directory
     
