@@ -64,16 +64,16 @@ Server side:
 	    remote_fs_server -s :::44556 -s 192.168.1.101:10100 -s \\\\.\\pipe\\fs_local_pipe
 
 	For C++:
-	    std::vector<std::string> params;	// contains local_name (size( )==1) 
-						// or tcp adre4ss and port (size( ) == 2)
+	    std::vector<std::string> params;    // contains local_name (size( )==1) 
+                                                // or tcp address and port (size( ) == 2)
 	    ......
 	    if( params.size( ) == 1 ) {         /// local endpoint
 
-		    result = server::listeners::local::create( app, params[0] );
+	        result = server::listeners::local::create( app, params[0] );
 
 	    } else if( params.size( ) == 2 ) {  /// TCP
 
-		    result = server::listeners::tcp::create( app,
+	        result = server::listeners::tcp::create( app,
                         params[0],
                         boost::lexical_cast<unsigned short>(params[1]));
 
