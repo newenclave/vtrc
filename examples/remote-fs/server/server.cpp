@@ -95,36 +95,37 @@ void get_options( po::options_description& desc )
 server::listener_sptr create_from_string( const std::string &name,
                                           server::application &app)
 {
-
+    /// result endpoint
     server::listener_sptr result;
 
     std::vector<std::string> params;
 
-    std::string::const_reverse_iterator b(name.rbegin( ));
-    std::string::const_reverse_iterator e(name.rend( ));
-    for( ; b!=e ;++b ) {
-        if( *b == ':' ) {
-            std::string::const_reverse_iterator bb(b);
-            ++bb;
-            params.push_back( std::string( name.begin( ), bb.base( )) );
-            params.push_back( std::string( b.base( ), name.end( )));
+    size_t delim_pos = name.find_last_of( ':' );
+    if( delim_pos == std::string::npos ) {
 
-            break;
-        }
-    }
-    if( params.empty( ) ) {
+        /// local: <localname>
         params.push_back( name );
+
+    } else {
+
+        /// tcp: <addres>:<port>
+        params.push_back( std::string( name.begin( ),
+                                       name.begin( ) + delim_pos ) );
+
+        params.push_back( std::string( name.begin( ) + delim_pos + 1,
+                                       name.end( ) ) );
     }
 
-    if( params.size( ) == 1 ) { // local name
-#ifndef _WIN32
-        ::unlink( params[0].c_str( ) );
-#endif
+    if( params.size( ) == 1 ) {         /// local endpoint
+
         result = server::listeners::local::create( app, params[0] );
 
-    } else if( params.size( ) == 2 ) {
-        result = server::listeners::tcp::create( app, params[0],
-                boost::lexical_cast<unsigned short>(params[1]));
+    } else if( params.size( ) == 2 ) {  /// TCP
+
+        result = server::listeners::tcp::create( app,
+                        params[0],
+                        boost::lexical_cast<unsigned short>(params[1]));
+
     }
     return result;
 }

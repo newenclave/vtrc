@@ -23,11 +23,10 @@ namespace vtrc { namespace client {
         { }
 
         void connect( const std::string &address,
-                      const std::string &service )
+                      unsigned short     service )
         {
             basio::ip::tcp::endpoint ep
-                    (basio::ip::address::from_string(address),
-                     boost::lexical_cast<unsigned short>(service) );
+                    (basio::ip::address::from_string(address), service );
             get_socket( ).connect( ep );
             connection_setup( );
             start_reading( );
@@ -40,12 +39,11 @@ namespace vtrc { namespace client {
         }
 
         void async_connect( const std::string &address,
-                            const std::string &service,
+                            unsigned short     service,
                             common::system_closure_type closure )
         {
             basio::ip::tcp::endpoint ep
-                    (basio::ip::address::from_string(address),
-                     boost::lexical_cast<unsigned short>(service) );
+                    (basio::ip::address::from_string(address), service );
             get_socket( ).async_connect( ep,
                     vtrc::bind( &this_type::on_connect, this,
                                  basio::placeholders::error, closure,
@@ -81,14 +79,14 @@ namespace vtrc { namespace client {
     }
 
     void client_tcp::connect( const std::string &address,
-                              const std::string &service )
+                              unsigned short service )
     {
         impl_->connect( address, service );
     }
 
     void client_tcp::async_connect(const std::string &address,
-                                    const std::string &service,
-                                    common::system_closure_type closure )
+                                   unsigned short service,
+                                   common::system_closure_type closure )
     {
         impl_->async_connect( address, service, closure );
     }

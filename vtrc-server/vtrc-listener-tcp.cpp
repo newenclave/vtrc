@@ -63,7 +63,7 @@ namespace vtrc { namespace server { namespace listeners {
     namespace tcp {
 
         listener_sptr create(application &app, const listener_options &opts,
-                            const std::string &address, unsigned short service,
+                             const std::string &address, unsigned short service,
                              bool tcp_nodelay)
         {
 

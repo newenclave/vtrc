@@ -41,11 +41,11 @@ namespace client {
         const std::string &id( ) const;
 
         void connect( const std::string &address,
-                      const std::string &service );
+                      unsigned short     service );
 
-        void async_connect( const std::string &address,
-                            const std::string &service,
-                            common::system_closure_type closure );
+        void async_connect(const std::string &address,
+                           unsigned short service,
+                           common::system_closure_type closure );
 
         void on_write_error( const boost::system::error_code &err );
 

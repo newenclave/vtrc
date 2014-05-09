@@ -1,5 +1,7 @@
 #include <iostream>
 
+#include "boost/lexical_cast.hpp"
+
 #include "vtrc-client-base/vtrc-client.h"
 #include "vtrc-common/vtrc-pool-pair.h"
 #include "vtrc-common/vtrc-exception.h"
@@ -282,7 +284,7 @@ int main( int argc, char **argv ) try
     } else {
         std::cout << "connecting to tcp '"
                   << argv[1] << ":" << argv[2] << "'...";
-        client->connect( argv[1], argv[2] );
+        client->connect( argv[1], boost::lexical_cast<unsigned short>(argv[2]));
         std::cout << "Ok\n";
     }
 

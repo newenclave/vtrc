@@ -110,7 +110,7 @@ namespace vtrc { namespace client {
 
 
         void connect( const std::string &address,
-                      const std::string &service, bool tcp_nodelay )
+                      unsigned short service, bool tcp_nodelay )
         {
             vtrc::shared_ptr<client_tcp> client(create_client_tcp(tcp_nodelay));
             client->connect( address, service );
@@ -192,7 +192,7 @@ namespace vtrc { namespace client {
         }
 
         void async_connect( const std::string &address,
-                            const std::string &service,
+                            unsigned short     service,
                             bool tcp_nodelay,
                             common::system_closure_type &closure )
         {
@@ -422,8 +422,8 @@ namespace vtrc { namespace client {
     }
 #endif
 
-    void vtrc_client::connect( const std::string &address,
-                               const std::string &service, bool tcp_nodelay )
+    void vtrc_client::connect(const std::string &address,
+                              unsigned short service, bool tcp_nodelay )
     {
         impl_->connect( address, service, tcp_nodelay );
     }
@@ -445,7 +445,7 @@ namespace vtrc { namespace client {
 #endif
 
     void vtrc_client::async_connect(const std::string &address,
-                            const std::string &service,
+                            unsigned short service,
                             common::system_closure_type closure,
                             bool tcp_nodelay )
     {

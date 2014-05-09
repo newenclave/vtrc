@@ -112,14 +112,14 @@ namespace client {
         void connect( const std::string &local_name );
 
         void connect( const std::string &address,
-                      const std::string &service,
+                      unsigned short service,
                       bool tcp_nodelay = false );
 
         void async_connect( const std::string &local_name,
                             common::system_closure_type closure);
 
         void async_connect( const std::string &address,
-                            const std::string &service,
+                            unsigned short     service,
                             common::system_closure_type closure,
                             bool tcp_nodelay = false );
 #ifdef _WIN32

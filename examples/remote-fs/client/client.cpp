@@ -4,6 +4,7 @@
 #include <fstream>
 
 #include "boost/program_options.hpp"
+#include "boost/lexical_cast.hpp"
 
 #include "vtrc-client-base/vtrc-client.h"
 #include "vtrc-common/vtrc-pool-pair.h"
@@ -47,27 +48,27 @@ void connect_to( client::vtrc_client_sptr client, std::string const &name )
 {
     std::vector<std::string> params;
 
-    std::string::const_reverse_iterator b(name.rbegin( ));
-    std::string::const_reverse_iterator e(name.rend( ));
-    for( ; b!=e ;++b ) {
-        if( *b == ':' ) {
-            std::string::const_reverse_iterator bb(b);
-            ++bb;
-            params.push_back( std::string( name.begin( ), bb.base( )) );
-            params.push_back( std::string( b.base( ), name.end( )));
+    size_t delim_pos = name.find_last_of( ':' );
+    if( delim_pos == std::string::npos ) {
 
-            break;
-        }
-    }
-
-    if( params.empty( ) ) {
+        /// local: <localname>
         params.push_back( name );
+
+    } else {
+
+        /// tcp: <addres>:<port>
+        params.push_back( std::string( name.begin( ),
+                                       name.begin( ) + delim_pos ) );
+
+        params.push_back( std::string( name.begin( ) + delim_pos + 1,
+                                       name.end( ) ) );
     }
 
     if( params.size( ) == 1 ) {        /// local name
         client->connect( params[0] );
     } else if( params.size( ) == 2 ) { /// tcp
-        client->connect( params[0], params[1]);
+        client->connect( params[0],
+                         boost::lexical_cast<unsigned short>(params[1]));
     }
 
 }
