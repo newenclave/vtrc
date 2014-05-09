@@ -65,7 +65,7 @@ Server side:
 
 	For C++: ( function 'create_from_string' in server.cpp )
 	    std::vector<std::string> params;    // contains local_name (size( )==1) 
-                                                // or tcp address and port (size( ) == 2)
+                                            // or tcp address and port (size( ) == 2)
 	    ......
 	    if( params.size( ) == 1 ) {         /// local endpoint
 
