@@ -34,8 +34,7 @@ namespace rfs_examples {
         std::string block(block_size, 0);
         size_t total = 0;
 
-        size_t r = f.readsome( &block[0], block_size );
-        while( r ) {
+        while( size_t r = f.readsome( &block[0], block_size ) ) {
             size_t shift = 0;
             while ( r ) {
                 size_t w = rem_f->write( block.c_str( ) + shift, r );
@@ -44,7 +43,6 @@ namespace rfs_examples {
                 r -= w;
                 std::cout << "Push " << total << " bytes\r";
             }
-            r = f.readsome( &block[0], block_size );
         }
 
         std::cout << "\nUpload complete\n";

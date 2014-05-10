@@ -117,7 +117,9 @@ server::listener_sptr create_from_string( const std::string &name,
     }
 
     if( params.size( ) == 1 ) {         /// local endpoint
-
+#ifndef _WIN32
+        ::unlink( params[0].c_str( ) ); /// unlink old file socket
+#endif
         result = server::listeners::local::create( app, params[0] );
 
     } else if( params.size( ) == 2 ) {  /// TCP
