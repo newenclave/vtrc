@@ -85,7 +85,7 @@ For C++: ( function 'create_from_string' in [server.cpp](https://github.com/newe
 
     }
 
-and (function 'start' in [server.cpp](https://github.com/newenclave/vtrc/blob/master/examples/remote-fs/server/server.cpp#L166 "GITHUB file server.cpp")  )
+and (function 'start' in [server.cpp](https://github.com/newenclave/vtrc/blob/master/examples/remote-fs/server/server.cpp#L168 "GITHUB file server.cpp")  )
 	    
     std::vector<std::string> servers; /// contains all '-s' params from command line
     ........  
