@@ -16,7 +16,7 @@ namespace rfs_examples {
 
     using namespace vtrc;
 
-    void push_file( client::vtrc_client_sptr client,
+    void push_file( client::vtrc_client_sptr &client,
                     const std::string &local_path, size_t block_size )
     {
         std::string name = leaf_of( local_path );

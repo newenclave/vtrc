@@ -82,27 +82,25 @@ void on_client_ready( vtrc::condition_variable &cond )
 namespace rfs_examples {
 
     /// rfs-directory-list.cpp
-    void list_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl);
+    void list_dir( interfaces::remote_fs &impl);
 
     /// rfs-directory-tree.cpp
-    void tree_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl );
+    void tree_dir( interfaces::remote_fs &impl );
 
     /// rfs-push-file.cpp
-    void push_file( client::vtrc_client_sptr client,
+    void push_file( client::vtrc_client_sptr &client,
                 const std::string &local_path, size_t block_size );
 
     /// rfs-pull-file.cpp
-    void pull_file( client::vtrc_client_sptr client,
-                    vtrc::shared_ptr<interfaces::remote_fs> &impl,
+    void pull_file( client::vtrc_client_sptr &client,
+                    interfaces::remote_fs    &impl,
                     const std::string &remote_path, size_t block_size );
 
     /// rfs-mkdir-del.cpp
-    void make_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl,
-                   const std::string &path);
-    void make_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl );
-    void del( vtrc::shared_ptr<interfaces::remote_fs> &impl,
-                   const std::string &path);
-    void del( vtrc::shared_ptr<interfaces::remote_fs> &impl );
+    void make_dir( interfaces::remote_fs &impl, const std::string &path);
+    void make_dir( interfaces::remote_fs &impl );
+    void del( interfaces::remote_fs &impl, const std::string &path);
+    void del( interfaces::remote_fs &impl );
 }
 
 
@@ -175,12 +173,12 @@ int start( const po::variables_map &params )
 
     if( params.count( "list" ) ) {
         std::cout << "List dir:\n";
-        rfs_examples::list_dir( impl );
+        rfs_examples::list_dir( *impl );
     }
 
     if( params.count( "tree" ) ) {
         std::cout << "Tree dir:\n";
-        rfs_examples::tree_dir( impl );
+        rfs_examples::tree_dir( *impl );
     }
 
     size_t bs = params.count( "block-size" )
@@ -190,7 +188,7 @@ int start( const po::variables_map &params )
     if( params.count( "pull" ) ) {
         std::string path = params["pull"].as<std::string>( );
         std::cout << "pull file '" << path << "'\n";
-        rfs_examples::pull_file( client, impl, path, bs );
+        rfs_examples::pull_file( client, *impl, path, bs );
     }
 
     if( params.count( "push" ) ) {
@@ -202,18 +200,18 @@ int start( const po::variables_map &params )
     if( params.count( "mkdir" ) ) {
         std::string path = params["mkdir"].as<std::string>( );
         if( path.empty( ) ) {
-            rfs_examples::make_dir( impl );
+            rfs_examples::make_dir( *impl );
         } else {
-            rfs_examples::make_dir( impl, path );
+            rfs_examples::make_dir( *impl, path );
         }
     }
 
     if( params.count( "del" ) ) {
         std::string path = params["del"].as<std::string>( );
         if( path.empty( ) ) {
-            rfs_examples::del( impl );
+            rfs_examples::del( *impl );
         } else {
-            rfs_examples::del( impl, path );
+            rfs_examples::del( *impl, path );
         }
     }
 

@@ -17,7 +17,7 @@ namespace rfs_examples {
     using namespace vtrc;
 
 namespace {
-    void tree_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl,
+    void tree_dir( interfaces::remote_fs &impl,
                    const std::string &path, int level,
                    size_t &dirs, size_t &files )
     {
@@ -25,7 +25,7 @@ namespace {
 
         std::string lstring( level * 2, ' ' );
 
-        for( iterator i(impl->begin_iterator(path)); !i->end( ); i->next( ) ) {
+        for( iterator i(impl.begin_iterator(path)); !i->end( ); i->next( ) ) {
 
             bool is_dir( i->info( ).is_directory_ );
 
@@ -52,8 +52,7 @@ namespace {
     }
 }
 
-    void tree_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl,
-                   const std::string &path )
+    void tree_dir( interfaces::remote_fs &impl, const std::string &path )
     {
         size_t dirs(0);
         size_t files(0);
@@ -64,7 +63,7 @@ namespace {
                   ;
     }
 
-    void tree_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl )
+    void tree_dir( interfaces::remote_fs &impl )
     {
         tree_dir( impl, "" );
     }

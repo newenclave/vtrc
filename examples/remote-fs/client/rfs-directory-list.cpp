@@ -16,7 +16,7 @@ namespace rfs_examples {
 
     using namespace vtrc;
 
-    void list_dir( vtrc::shared_ptr<interfaces::remote_fs> &impl)
+    void list_dir( interfaces::remote_fs &impl)
     {
         typedef vtrc::shared_ptr<interfaces::remote_fs_iterator> iterator;
 
@@ -24,7 +24,7 @@ namespace rfs_examples {
         size_t files(0);
         std::string lstring( 2, ' ' );
 
-        for( iterator i(impl->begin_iterator( )); !i->end( ); i->next( ) ) {
+        for( iterator i(impl.begin_iterator( )); !i->end( ); i->next( ) ) {
             bool is_dir( i->info( ).is_directory_ );
 
             dirs  += is_dir ? 1 : 0;
