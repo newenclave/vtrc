@@ -50,7 +50,7 @@ Server side:
 Command line options:
     
 '--server' (or '-s') sets endpoint for server-side application. 
-There are 2 family of transport supported by library: TCP and Local system transport 
+There are 2 families of transport supported by library: TCP and Local system transport 
 (UNIX sockets for UNIXes and Pipes for Windows); 
 
 Example: 
