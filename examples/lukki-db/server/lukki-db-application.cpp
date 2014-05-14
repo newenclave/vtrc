@@ -84,9 +84,9 @@ namespace lukki_db {
 
             }
 
-            static void get_closure( bool success, const std::string &mess,
-                     vtrc::shared_ptr<vtrc_example::lukki_string_list> res,
-                     ::vtrc_example::lukki_string_list* response,
+            template <typename ResType>
+            static void mess_closure( bool success, const std::string &mess,
+                     vtrc::shared_ptr<ResType> res, ResType* response,
                      ::google::protobuf::RpcController* controller,
                      vtrc::shared_ptr<common::closure_holder> holder )
             {
@@ -104,26 +104,15 @@ namespace lukki_db {
             {
                 vtrc::shared_ptr<common::closure_holder> holder(
                             common::closure_holder::create(done) );
-                vtrc::shared_ptr<vtrc_example::lukki_string_list> res
-                                        (new vtrc_example::lukki_string_list);
+
+                typedef vtrc_example::lukki_string_list res_type;
+
+                vtrc::shared_ptr<res_type> res(new res_type);
 
                 app_.get( request->name( ), res,
-                      vtrc::bind( &this_type::get_closure,
-                          _1, _2,
-                          res, response, controller, holder) );
-            }
-
-            static void stat_closure( bool success, const std::string &mess,
-                     vtrc::shared_ptr<vtrc_example::db_stat> res,
-                     ::vtrc_example::db_stat* response,
-                     ::google::protobuf::RpcController* controller,
-                     vtrc::shared_ptr<common::closure_holder> holder )
-            {
-                if( !success ) {
-                    controller->SetFailed( mess );
-                } else {
-                    response->Swap( res.get( ) );
-                }
+                           vtrc::bind( &this_type::mess_closure<res_type>,
+                                  _1, _2,
+                                  res, response, controller, holder) );
             }
 
             void stat(::google::protobuf::RpcController* controller,
@@ -131,14 +120,33 @@ namespace lukki_db {
                          ::vtrc_example::db_stat* response,
                          ::google::protobuf::Closure* done)
             {
+
                 vtrc::shared_ptr<common::closure_holder> holder(
                             common::closure_holder::create(done) );
-                vtrc::shared_ptr<vtrc_example::db_stat> res
-                                                    (new vtrc_example::db_stat);
-                app_.stat( res,
-                            vtrc::bind( &this_type::stat_closure,
+
+                typedef vtrc_example::db_stat res_type;
+
+                vtrc::shared_ptr<res_type> res(new res_type);
+                app_.stat( res, vtrc::bind( &this_type::mess_closure<res_type>,
                                          _1, _2,
                                          res, response, controller, holder) );
+            }
+
+            void exist(::google::protobuf::RpcController* controller,
+                     const ::vtrc_example::name_req* request,
+                     ::vtrc_example::exist_res* response,
+                     ::google::protobuf::Closure* done )
+            {
+                vtrc::shared_ptr<common::closure_holder> holder(
+                            common::closure_holder::create(done) );
+
+                typedef vtrc_example::exist_res res_type;
+                vtrc::shared_ptr<res_type> res (new res_type);
+                app_.exist( request->name( ), res,
+                            vtrc::bind( &this_type::mess_closure<res_type>,
+                                        _1, _2,
+                                        res, response, controller, holder ));
+
             }
         };
     }
@@ -230,6 +238,15 @@ namespace lukki_db {
             stat->CopyFrom( db_stat_ );
             if( closure ) closure( true, "Success" );
         }
+
+        void exist( const std::string &name,
+                    vtrc::shared_ptr<vtrc_example::exist_res> res,
+                    const operation_closure &closure)
+        {
+            res->set_value( db_.find( name ) != db_.end( ) );
+            if( closure ) closure( true, "Success" );
+        }
+
     };
 
     application::application( vtrc::common::pool_pair &pp )
@@ -305,6 +322,14 @@ namespace lukki_db {
     {
         impl_->db_thread_.get_io_service( ).post(
                vtrc::bind( &impl::stat, impl_, stat, closure));
+    }
+
+    void application::exist( const std::string &name,
+                vtrc::shared_ptr<vtrc_example::exist_res> res,
+                const operation_closure &closure)
+    {
+        impl_->db_thread_.get_io_service( ).post(
+               vtrc::bind( &impl::exist, impl_, name, res, closure));
     }
 
 }

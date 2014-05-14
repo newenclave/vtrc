@@ -25,11 +25,16 @@ message db_stat {
     optional uint32 del_requests  = 5;
 }
 
+message exist_res {
+    optional bool value = 1;
+}
+
 service lukki_db {
     rpc set(value_set_req) returns (empty);
     rpc upd(value_set_req) returns (empty);
     rpc del(name_req)      returns (empty);
     rpc get(name_req)      returns (lukki_string_list);
     rpc stat(empty)        returns (db_stat);
+    rpc exist(name_req)    returns (exist_res);
 }
 

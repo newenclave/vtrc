@@ -10,6 +10,7 @@
 namespace vtrc_example {
     class lukki_string_list;
     class db_stat;
+    class exist_res;
 }
 
 namespace lukki_db {
@@ -50,6 +51,9 @@ namespace lukki_db {
         void stat( vtrc::shared_ptr<vtrc_example::db_stat> stat,
                    const operation_closure &closure);
 
+        void exist( const std::string &name,
+                    vtrc::shared_ptr<vtrc_example::exist_res> res,
+                    const operation_closure &closure);
 
     };
 }
