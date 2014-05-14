@@ -81,7 +81,10 @@ namespace {
         {
             vtrc_example::name_req      req;
             vtrc_example::exist_res     res;
+
+            req.set_name( name );
             stub_.exist( NULL, &req, &res, NULL );
+
             return res.value( );
         }
 
