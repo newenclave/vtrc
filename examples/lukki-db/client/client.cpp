@@ -57,6 +57,7 @@ void get_options( po::options_description& desc )
 
         ( "stat,I",                             "get db status")
 
+        ( "exist,E", po::value<std::string>( ), "checks if record exist")
         ( "set,S",   po::value<std::string>( ), "set value; "
                                             "use --value options for values")
         ( "del,D",   po::value<std::string>( ), "delete value")
@@ -147,6 +148,15 @@ int start( const po::variables_map &params )
 
     if( params.count( "value" ) ) {
         values = params["value"].as< std::vector<std::string> >( );
+    }
+
+    if( params.count( "exist" ) ) {
+        std::string name(params["exists"].as<std::string>( ));
+        std::cout << "Check if '" << name << "' exist...\n";
+        work_time wt;
+        bool res = impl->exist( name );
+        wt.print_point( "exist" );
+        std::cout << "result: " << (res ? "true" : "false") << "\n";
     }
 
     if( params.count( "set" ) ) {

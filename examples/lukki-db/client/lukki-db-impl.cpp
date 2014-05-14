@@ -77,6 +77,14 @@ namespace {
             return res;
         }
 
+        bool exist( const std::string &name ) const
+        {
+            vtrc_example::name_req      req;
+            vtrc_example::exist_res     res;
+            stub_.exist( NULL, &req, &res, NULL );
+            return res.value( );
+        }
+
     };
 
 }
