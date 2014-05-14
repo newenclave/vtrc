@@ -151,7 +151,7 @@ int start( const po::variables_map &params )
     }
 
     if( params.count( "exist" ) ) {
-        std::string name(params["exists"].as<std::string>( ));
+        std::string name(params["exist"].as<std::string>( ));
         std::cout << "Check if '" << name << "' exist...\n";
         work_time wt;
         bool res = impl->exist( name );
