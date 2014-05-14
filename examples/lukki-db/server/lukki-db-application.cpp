@@ -25,13 +25,9 @@ namespace lukki_db {
         class lukki_db_impl: public vtrc_example::lukki_db {
 
             application             &app_;
-            boost::asio::io_service &db_ios_;
-
         public:
-            lukki_db_impl( application             &app,
-                           boost::asio::io_service &db_ios )
+            lukki_db_impl( application &app)
                 :app_(app)
-                ,db_ios_( db_ios )
             { }
 
         private:
@@ -124,8 +120,7 @@ namespace lukki_db {
     {
         if( service_name == lukki_db_impl::descriptor( )->full_name( ) ) {
             return vtrc::make_shared<common::rpc_service_wrapper>
-                   ( new lukki_db_impl( *this,
-                                        impl_->db_thread_.get_io_service( ) ) );
+                                            ( new lukki_db_impl( *this ) );
         }
         return vtrc::shared_ptr<common::rpc_service_wrapper>( );
     }
