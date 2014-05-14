@@ -221,8 +221,8 @@ int start( const po::variables_map &params )
         std::cout << "Get db stat\n";
         work_time wt;
         vtrc_example::db_stat s(impl->stat( ));
-        std::cout << "Ok\n";
         wt.print_point( "stat" );
+        std::cout << "Ok\n";
 
         std::cout << "Stat:\n"
                   << "\tRecords: \t" << s.total_records( ) << "\n"
