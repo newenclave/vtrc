@@ -122,6 +122,20 @@ int start( const po::variables_map &params )
         std::cout << "Ok\n";
     }
 
+    if( params.count( "get" ) ) {
+        std::string name(params["get"].as<std::string>( ));
+        std::cout << "Get '" << name << "'...";
+
+        std::vector<std::string> vals(impl->get( name ));
+
+        std::cout << "Ok\n";
+        std::cout << "vals.size( ) = " << vals.size( ) << "\n";
+        std::copy( vals.begin( ), vals.end( ),
+                   std::ostream_iterator<std::string>( std::cout, ", " ) );
+        std::cout << "\n";
+
+    }
+
     if( params.count( "del" ) ) {
         std::string name(params["del"].as<std::string>( ));
         std::cout << "Delete '" << name << "'...";

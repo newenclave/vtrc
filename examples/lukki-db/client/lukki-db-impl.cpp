@@ -43,6 +43,16 @@ namespace {
             stub_.set( NULL, &req, &res, NULL );
         }
 
+        std::vector<std::string> get(const std::string &name) const
+        {
+            vtrc_example::name_req          req;
+            vtrc_example::lukki_string_list res;
+            req.set_name( name );
+            stub_.get( NULL, &req, &res, NULL );
+            return std::vector<std::string>( res.value( ).begin( ),
+                                             res.value( ).end( ));
+        }
+
         void del( const std::string &name ) const
         {
             vtrc_example::name_req      req;
