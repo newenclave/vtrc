@@ -2,6 +2,10 @@
 package vtrc_example;
 option cc_generic_services = true;
 
+message lukki_string_list {
+    repeated bytes value = 1;
+}
+
 message value_set_req { }
 message value_set_res { }
 

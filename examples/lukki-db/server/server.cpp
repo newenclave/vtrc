@@ -5,16 +5,13 @@
 #include "boost/program_options.hpp"
 #include "boost/algorithm/string.hpp"
 
-#include "vtrc-server/vtrc-application.h"
 #include "vtrc-common/vtrc-pool-pair.h"
-#include "protocol/lukkidb.pb.h"
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"
 
 #include "vtrc-server/vtrc-listener-tcp.h"
 #include "vtrc-server/vtrc-listener-local.h"
 
-#include "vtrc-bind.h"
-#include "vtrc-ref.h"
+#include "lukki-db-application.h"
 
 namespace po = boost::program_options;
 using namespace vtrc;
@@ -102,23 +99,15 @@ int start( const po::variables_map &params )
     string_vector servers = params["server"].as<string_vector>( );
 
     common::pool_pair pp( io_size, rpc_size );
+    lukki_db::application app( pp );
 
-//    fs_application app( pp );
-
-//    std::vector<server::listener_sptr> listeners;
-
-//    listeners.reserve(servers.size( ));
-
-//    for( string_vector::const_iterator b(servers.begin( )), e(servers.end( ));
-//                    b != e; ++b)
-//    {
-//        std::cout << "Starting listener at '" <<  *b << "'...";
-//        server::listener_sptr new_listener = create_from_string( *b, app );
-//        listeners.push_back(new_listener);
-//        app.attach_listener( new_listener );
-//        new_listener->start( );
-//        std::cout << "Ok\n";
-//    }
+    for( string_vector::const_iterator b(servers.begin( )), e(servers.end( ));
+                    b != e; ++b)
+    {
+        std::cout << "Starting listener at '" <<  *b << "'...";
+        app.attach_start_listener( create_from_string( *b, app ) );
+        std::cout << "Ok\n";
+    }
 
     pp.join_all( );
 
