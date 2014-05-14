@@ -183,7 +183,7 @@ int start( const po::variables_map &params )
 
         std::cout << "Ok\n";
 
-        std::cout << "vals.size( ) = " << vals.size( )
+        std::cout << "values.size( ) = " << vals.size( )
                   << "\n==========\n";
 
         std::copy( vals.begin( ), vals.end( ),
