@@ -29,6 +29,10 @@ void get_options( po::options_description& desc )
         ( "upd,U", , po::value<std::string>( ), "update value; "
                                               "use --value options for values")
         ( "get,G", , po::value<std::string>( ), "get value")
+
+        ("value,V",  po::value<std::vector< std::string> >( ), "values for "
+                                                      " set or upd commands" )
+
         ;
 }
 
