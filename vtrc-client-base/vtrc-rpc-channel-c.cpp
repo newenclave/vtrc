@@ -44,6 +44,11 @@ namespace vtrc { namespace client {
             ,disable_wait_(select_message_wait(opts))
         { }
 
+        bool alive( ) const
+        {
+            return connection_.lock( ) != NULL;
+        }
+
         unsigned select_message_type (common::rpc_channel::options opts) const
         {
             return (opts & common::rpc_channel::USE_CONTEXT_CALL)
@@ -127,6 +132,11 @@ namespace vtrc { namespace client {
     rpc_channel_c::~rpc_channel_c( )
     {
         delete impl_;
+    }
+
+    bool rpc_channel_c::alive( ) const
+    {
+        return impl_->alive( );
     }
 
     void rpc_channel_c::configure_message_for(common::connection_iface_sptr c,

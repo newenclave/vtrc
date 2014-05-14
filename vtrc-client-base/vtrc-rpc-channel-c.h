@@ -41,6 +41,8 @@ namespace client {
 
         ~rpc_channel_c( );
 
+        bool alive( ) const;
+
     private:
 
         void configure_message_for( common::connection_iface_sptr c,

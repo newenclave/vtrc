@@ -7,6 +7,10 @@
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-closure-holder.h"
 
+#include "vtrc-common/vtrc-rpc-channel.h"
+
+#include "vtrc-server/vtrc-channels.h"
+
 #include "protocol/lukkidb.pb.h"
 
 #include "google/protobuf/descriptor.h"
@@ -153,14 +157,21 @@ namespace lukki_db {
 
     struct  application::impl {
 
-        common::thread_pool     db_thread_;
-        db_type                 db_;
-        vtrc_example::db_stat   db_stat_;
+        common::thread_pool             db_thread_;
+        db_type                         db_;
+        vtrc_example::db_stat           db_stat_;
+        boost::asio::io_service::strand event_queue_;
 
-        std::vector<server::listener_sptr> listeners_;
+        std::vector<server::listener_sptr>                listeners_;
 
-        impl( )
+        typedef vtrc::shared_ptr<common::rpc_channel> channel_sptr;
+        typedef std::list<channel_sptr> subscriber_list_type;
+
+        subscriber_list_type subscribers_;
+
+        impl( boost::asio::io_service &rpc_service )
             :db_thread_(1)
+            ,event_queue_(rpc_service)
         { }
 
         void on_new_connection( server::listener_sptr l,
@@ -247,11 +258,72 @@ namespace lukki_db {
             if( closure ) closure( true, "Success" );
         }
 
+        /// events
+
+        void send_subscribed( vtrc::shared_ptr<common::rpc_channel> channel )
+        {
+            try {
+                vtrc_example::lukki_events_Stub s(channel.get( ));
+                vtrc_example::empty r;
+                s.subscribed( NULL, &r, &r, NULL );
+            } catch( ... ) {
+                ;;;
+            }
+        }
+
+        void subscribe_impl( common::connection_iface_wptr conn )
+        {
+            common::connection_iface_sptr lck(conn.lock( ));
+            if( lck ) {
+                vtrc::shared_ptr<common::rpc_channel> channel
+                    (server::channels::unicast::create_event_channel
+                            ( lck, true ));
+                subscribers_.push_back( channel );
+            }
+        }
+
+        void send_event( vtrc::shared_ptr<common::rpc_channel> channel,
+                         const std::string &record, bool changed)
+        {
+            try {
+                vtrc_example::lukki_events_Stub s(channel.get( ));
+                vtrc_example::name_req req;
+                vtrc_example::empty    res;
+                req.set_name( record );
+                if(changed) {
+                    s.value_changed( NULL, &req, &res, NULL );
+                } else {
+                    s.value_removed( NULL, &req, &res, NULL );
+                }
+            } catch( ... ) {
+                ;;;
+            }
+        }
+
+        void send_event_impl( const std::string &record, bool changed )
+        {
+            subscriber_list_type::iterator b(subscribers_.begin( ));
+            while( b != subscribers_.end( ) ) {
+                if( (*b)->alive( ) ) {
+                    send_event( *b, record, changed );
+                    b++;
+                } else {
+                    b = subscribers_.erase( b );
+                }
+            }
+        }
+
+        void subscribe_client( vtrc::common::connection_iface* conn )
+        {
+            event_queue_.post( vtrc::bind(&impl::subscribe_impl, this,
+                               conn->weak_from_this( ) ));
+        }
+
     };
 
     application::application( vtrc::common::pool_pair &pp )
         :vtrc::server::application(pp)
-        ,impl_(new impl)
+        ,impl_(new impl(pp.get_rpc_service( )))
     {
 
     }
@@ -330,6 +402,11 @@ namespace lukki_db {
     {
         impl_->db_thread_.get_io_service( ).post(
                vtrc::bind( &impl::exist, impl_, name, res, closure));
+    }
+
+    void application::subscribe_client( vtrc::common::connection_iface* conn )
+    {
+        impl_->subscribe_client( conn );
     }
 
 }

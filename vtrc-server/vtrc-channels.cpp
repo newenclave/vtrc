@@ -46,6 +46,11 @@ namespace vtrc { namespace server {
                 ,disable_wait_(disable_wait)
             { }
 
+            bool alive( ) const
+            {
+                return client_.lock( ) != NULL;
+            }
+
             void send_message(lowlevel_unit_type &llu,
                         const google::protobuf::MethodDescriptor* method,
                               google::protobuf::RpcController*  controller,
@@ -119,6 +124,10 @@ namespace vtrc { namespace server {
             { }
 
 
+            bool alive( ) const
+            {
+                return clients_.lock( ) != NULL;
+            }
 
             bool send_to_client( common::connection_iface_sptr  next,
                                  const common::connection_iface_sptr &sender,

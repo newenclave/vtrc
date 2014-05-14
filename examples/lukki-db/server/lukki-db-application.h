@@ -55,6 +55,8 @@ namespace lukki_db {
                     vtrc::shared_ptr<vtrc_example::exist_res> res,
                     const operation_closure &closure);
 
+        void subscribe_client( vtrc::common::connection_iface* conn );
+
     };
 }
 

@@ -37,6 +37,8 @@ namespace vtrc { namespace common  {
 
     public:
 
+        virtual bool alive( ) const = 0;
+
         lowlevel_unit_sptr create_lowlevel(
                           const google::protobuf::MethodDescriptor* method,
                           const google::protobuf::Message* request,
