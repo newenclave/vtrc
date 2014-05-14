@@ -23,14 +23,19 @@ namespace lukki_db {
         typedef std::map<std::string, vtrc_example::lukki_string_list> db_type;
 
         class lukki_db_impl: public vtrc_example::lukki_db {
-            application &app_;
+
+            application             &app_;
+            boost::asio::io_service &db_ios_;
 
         public:
-            lukki_db_impl( application &app )
+            lukki_db_impl( application             &app,
+                           boost::asio::io_service &db_ios )
                 :app_(app)
+                ,db_ios_( db_ios )
             { }
 
         private:
+
             void set(::google::protobuf::RpcController* controller,
                          const ::vtrc_example::value_set_req* request,
                          ::vtrc_example::empty* response,
@@ -119,7 +124,8 @@ namespace lukki_db {
     {
         if( service_name == lukki_db_impl::descriptor( )->full_name( ) ) {
             return vtrc::make_shared<common::rpc_service_wrapper>
-                                                ( new lukki_db_impl( *this ) );
+                   ( new lukki_db_impl( *this,
+                                        impl_->db_thread_.get_io_service( ) ) );
         }
         return vtrc::shared_ptr<common::rpc_service_wrapper>( );
     }
