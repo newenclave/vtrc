@@ -157,7 +157,7 @@ int start( const po::variables_map &params )
         bool res = impl->exist( name );
         wt.print_point( "exist" );
 
-        std::cout << "'" << name << "'' "
+        std::cout << "'" << name << "' "
                   << (res ? "exists" : "doesn't exist") << "\n";
     }
 
