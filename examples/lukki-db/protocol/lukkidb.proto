@@ -18,14 +18,16 @@ message name_req {
 }
 
 message db_stat {
-    optional uint32 records       = 1;
-    optional uint32 get_requests  = 2;
-    optional uint32 set_records   = 3;
-    optional uint32 del_records   = 4;
+    optional uint32 total_records = 1;
+    optional uint32 set_requests  = 2;
+    optional uint32 upd_requests  = 3;
+    optional uint32 get_requests  = 4;
+    optional uint32 del_requests  = 5;
 }
 
 service lukki_db {
     rpc set(value_set_req) returns (empty);
+    rpc upd(value_set_req) returns (empty);
     rpc del(name_req)      returns (empty);
     rpc get(name_req)      returns (lukki_string_list);
     rpc stat(empty)        returns (db_stat);

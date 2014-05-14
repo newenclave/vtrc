@@ -24,6 +24,11 @@ void get_options( po::options_description& desc )
         ("help,?",   "help message")
         ("server,s", po::value<std::string>( ),
                      "server name; <tcp address>:<port> or <pipe/file name>")
+        ( "set,S", , po::value<std::string>( ), "set value; "
+                                              "use --value options for values")
+        ( "upd,U", , po::value<std::string>( ), "update value; "
+                                              "use --value options for values")
+        ( "get,G", , po::value<std::string>( ), "get value")
         ;
 }
 
