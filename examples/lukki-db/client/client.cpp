@@ -199,8 +199,9 @@ int start( const po::variables_map &params )
 
         work_time wt;
         impl->del( name );
-        std::cout << "Ok\n";
         wt.print_point( "delete" );
+
+        std::cout << "Ok\n";
     }
 
     if( params.count( "stat" ) ) {
