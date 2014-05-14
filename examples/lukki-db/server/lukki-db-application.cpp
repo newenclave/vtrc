@@ -290,7 +290,7 @@ namespace lukki_db {
     {
         impl_->db_thread_.get_io_service( ).post(
                     vtrc::bind( &impl::get, impl_, name,
-                                vtrc::ref(value), closure));
+                                value, closure));
     }
 
     void application::del( const std::string &name,

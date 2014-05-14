@@ -129,10 +129,10 @@ int start( const po::variables_map &params )
         std::vector<std::string> vals(impl->get( name ));
 
         std::cout << "Ok\n";
-        std::cout << "vals.size( ) = " << vals.size( ) << "\n";
+        std::cout << "vals.size( ) = " << vals.size( ) << "\n==========\n";
         std::copy( vals.begin( ), vals.end( ),
-                   std::ostream_iterator<std::string>( std::cout, ", " ) );
-        std::cout << "\n";
+                   std::ostream_iterator<std::string>( std::cout, "\n" ) );
+        std::cout << "==========\n";
 
     }
 
