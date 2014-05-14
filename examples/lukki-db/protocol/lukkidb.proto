@@ -1,0 +1,11 @@
+
+package vtrc_example;
+option cc_generic_services = true;
+
+message value_set_req { }
+message value_set_res { }
+
+service lukki_db {
+    rpc set(value_set_req) returns (value_set_res);
+}
+
