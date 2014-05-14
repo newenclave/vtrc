@@ -29,6 +29,7 @@ namespace lukki_db {
             typedef lukki_db_impl this_type;
 
             application             &app_;
+
         public:
             lukki_db_impl( application &app)
                 :app_(app)
@@ -142,17 +143,14 @@ namespace lukki_db {
 
     struct  application::impl {
 
-        common::pool_pair   &pool_;
-
         common::thread_pool     db_thread_;
         db_type                 db_;
         vtrc_example::db_stat   db_stat_;
 
         std::vector<server::listener_sptr> listeners_;
 
-        impl( common::pool_pair &p )
-            :pool_(p)
-            ,db_thread_(1)
+        impl( )
+            :db_thread_(1)
         { }
 
         void on_new_connection( server::listener_sptr l,
@@ -233,7 +231,8 @@ namespace lukki_db {
     };
 
     application::application( vtrc::common::pool_pair &pp )
-        :impl_(new impl(pp))
+        :vtrc::server::application(pp)
+        ,impl_(new impl)
     {
 
     }
