@@ -6,10 +6,14 @@ message lukki_string_list {
     repeated bytes value = 1;
 }
 
-message value_set_req { }
-message value_set_res { }
+message value_set_req {
+    optional bytes              name    = 1;
+    optional lukki_string_list  value   = 2;
+}
+
 
 service lukki_db {
     rpc set(value_set_req) returns (value_set_res);
+    rpc del(value_set_req) returns (value_set_res);
 }
 
