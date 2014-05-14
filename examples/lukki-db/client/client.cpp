@@ -16,8 +16,35 @@
 
 #include "lukki-db-iface.h"
 
+#include "vtrc-chrono.h"
+
 namespace po = boost::program_options;
 using namespace vtrc;
+
+struct work_time {
+
+    typedef vtrc::chrono::high_resolution_clock::time_point time_point;
+
+    time_point start_;
+    time_point total_;
+    work_time( )
+        :start_(vtrc::chrono::high_resolution_clock::now( ))
+        ,total_(start_)
+    { }
+
+    void print_point( const std::string &name )
+    {
+        time_point now(vtrc::chrono::high_resolution_clock::now( ));
+        time_point::duration stop( now - start_);
+        std::cout << "[" << name << "]"<< " call time: '" << stop
+                  << "' total: '" << (now - total_) << "'\n";
+        start_ = vtrc::chrono::high_resolution_clock::now( );
+    }
+
+    ~work_time( )
+    { }
+};
+
 
 void get_options( po::options_description& desc )
 {
@@ -29,12 +56,13 @@ void get_options( po::options_description& desc )
                                             "use --value options for values")
         ( "del,D",   po::value<std::string>( ), "delete value")
 
-        ( "upd,U",   po::value<std::string>( ), "update value; "
+        ( "upd,U",   po::value<std::string>( ), "update value if it exist; "
                                             "use --value options for values")
         ( "get,G",   po::value<std::string>( ), "get value")
 
-        ("value,V",  po::value<std::vector< std::string> >( ), "values for "
-                                                      " set or upd commands" )
+        ( "value,V", po::value<std::vector< std::string> >( ),  "values for "
+                                                      " set or upd commands;"
+                           " -V \"value1\", -V \"value2\", -V \"value3\" ...")
 
         ;
 }
@@ -110,6 +138,8 @@ int start( const po::variables_map &params )
                                         (interfaces::create_lukki_db(client));
 
     std::vector<std::string> values;
+
+
     if( params.count( "value" ) ) {
         values = params["value"].as< std::vector<std::string> >( );
     }
@@ -117,16 +147,33 @@ int start( const po::variables_map &params )
     if( params.count( "set" ) ) {
         std::string name(params["set"].as<std::string>( ));
         std::cout << "Set '" << name << "' to " << values.size( )
-                  << " values...";
+                  << " values...\n";
+
+        work_time wt;
         impl->set( name, values );
+        wt.print_point( "set" );
+
+        std::cout << "Ok\n";
+    }
+
+    if( params.count( "upd" ) ) {
+        std::string name(params["upd"].as<std::string>( ));
+        std::cout << "Update '" << name << "' to " << values.size( )
+                  << " values...\n";
+        work_time wt;
+        impl->upd( name, values );
+        wt.print_point( "update" );
+
         std::cout << "Ok\n";
     }
 
     if( params.count( "get" ) ) {
         std::string name(params["get"].as<std::string>( ));
-        std::cout << "Get '" << name << "'...";
+        std::cout << "Get '" << name << "'...\n";
 
+        work_time wt;
         std::vector<std::string> vals(impl->get( name ));
+        wt.print_point( "get" );
 
         std::cout << "Ok\n";
         std::cout << "vals.size( ) = " << vals.size( ) << "\n==========\n";
@@ -138,10 +185,14 @@ int start( const po::variables_map &params )
 
     if( params.count( "del" ) ) {
         std::string name(params["del"].as<std::string>( ));
-        std::cout << "Delete '" << name << "'...";
+        std::cout << "Delete '" << name << "'...\n";
+
+        work_time wt;
         impl->del( name );
         std::cout << "Ok\n";
+        wt.print_point( "delete" );
     }
+
 
     pp.stop_all( );
     pp.join_all( );

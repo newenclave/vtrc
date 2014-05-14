@@ -18,14 +18,6 @@ namespace {
             ,stub_(channel_.get( ))
         { }
 
-        void set( const std::string &name, const std::string &value ) const
-        {
-            vtrc_example::value_set_req req;
-            vtrc_example::empty         res;
-            req.set_name( name );
-            req.mutable_value( )->add_value( value );
-            stub_.set( NULL, &req, &res, NULL );
-        }
 
         void set( const std::string &name,
                   const std::vector<std::string> &value ) const
@@ -41,6 +33,22 @@ namespace {
             }
 
             stub_.set( NULL, &req, &res, NULL );
+        }
+
+        void upd( const std::string &name,
+                          const std::vector<std::string> &value ) const
+        {
+            vtrc_example::value_set_req req;
+            vtrc_example::empty         res;
+            req.set_name( name );
+
+            typedef std::vector<std::string>::const_iterator citer;
+
+            for(citer b(value.begin( )), e(value.end( )); b!=e; ++b ) {
+                req.mutable_value( )->add_value( *b );
+            }
+
+            stub_.upd( NULL, &req, &res, NULL );
         }
 
         std::vector<std::string> get(const std::string &name) const

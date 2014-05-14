@@ -16,9 +16,9 @@ namespace interfaces {
         virtual ~luki_db( ) { }
 
         virtual void set( const std::string &name,
-                          const std::string &value ) const = 0;
+                          const std::vector<std::string> &value ) const = 0;
 
-        virtual void set( const std::string &name,
+        virtual void upd( const std::string &name,
                           const std::vector<std::string> &value ) const = 0;
 
         virtual std::vector<std::string> get(const std::string &name) const = 0;
