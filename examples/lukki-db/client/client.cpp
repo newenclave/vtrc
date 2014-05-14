@@ -145,6 +145,7 @@ int start( const po::variables_map &params )
     }
 
     if( params.count( "set" ) ) {
+
         std::string name(params["set"].as<std::string>( ));
         std::cout << "Set '" << name << "' to " << values.size( )
                   << " values...\n";
@@ -154,9 +155,9 @@ int start( const po::variables_map &params )
         wt.print_point( "set" );
 
         std::cout << "Ok\n";
-    }
 
-    if( params.count( "upd" ) ) {
+    } else if( params.count( "upd" ) ) {
+
         std::string name(params["upd"].as<std::string>( ));
         std::cout << "Update '" << name << "' to " << values.size( )
                   << " values...\n";
@@ -165,9 +166,9 @@ int start( const po::variables_map &params )
         wt.print_point( "update" );
 
         std::cout << "Ok\n";
-    }
 
-    if( params.count( "get" ) ) {
+    } else if( params.count( "get" ) ) {
+
         std::string name(params["get"].as<std::string>( ));
         std::cout << "Get '" << name << "'...\n";
 
@@ -176,14 +177,17 @@ int start( const po::variables_map &params )
         wt.print_point( "get" );
 
         std::cout << "Ok\n";
-        std::cout << "vals.size( ) = " << vals.size( ) << "\n==========\n";
+
+        std::cout << "vals.size( ) = " << vals.size( )
+                  << "\n==========\n";
+
         std::copy( vals.begin( ), vals.end( ),
                    std::ostream_iterator<std::string>( std::cout, "\n" ) );
-        std::cout << "==========\n";
 
-    }
+        std::cout <<   "==========\n";
 
-    if( params.count( "del" ) ) {
+    } else if( params.count( "del" ) ) {
+
         std::string name(params["del"].as<std::string>( ));
         std::cout << "Delete '" << name << "'...\n";
 
