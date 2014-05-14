@@ -91,7 +91,7 @@ namespace {
         void subscribe( ) const
         {
             vtrc_example::empty r;
-            stub_.subscribe( NULL, &r, &r, NULL );
+            stub_.subscribe( NULL, NULL, NULL, NULL );
         }
 
     };

@@ -34,10 +34,13 @@ namespace vtrc { namespace common  {
         llu->mutable_call( )->set_service_id( serv_name );
         llu->mutable_call( )->set_method_id( meth_name );
 
-        llu->set_request( request->SerializeAsString( ) );
+        if( request ) {
+            llu->set_request( request->SerializeAsString( ) );
+        }
 
-        /// useless thing
-        //llu->set_response( response->SerializeAsString( ) );
+        if( response ) {
+            llu->mutable_response( );
+        }
 
         return llu;
     }
@@ -119,7 +122,9 @@ namespace vtrc { namespace common  {
             if( top->info( ).message_type( ) != mess_type ) {
                 cl->get_protocol( ).make_local_call( top );
             } else {
-                response->ParseFromString( top->response( ) );
+                if( response ) {
+                    response->ParseFromString( top->response( ) );
+                }
                 wait = false;
             }
         }

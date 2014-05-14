@@ -624,7 +624,12 @@ namespace vtrc { namespace common {
                           ->set_additional( holder->controller_->ErrorText( ));
 
             } else {
-                llu.set_response( holder->res_->SerializeAsString( ) );
+                if( llu.has_response( ) ) {
+                    //std::cout << "llu has response\n";
+                    llu.set_response( holder->res_->SerializeAsString( ) );
+                } else {
+                    //std::cout << "llu has not response\n";
+                }
             }
             send_message( llu );
         }
