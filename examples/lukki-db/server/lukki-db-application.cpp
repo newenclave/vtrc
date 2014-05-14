@@ -5,6 +5,7 @@
 #include "vtrc-common/vtrc-thread-pool.h"
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"
 #include "vtrc-common/vtrc-connection-iface.h"
+#include "vtrc-common/vtrc-closure-holder.h"
 
 #include "protocol/lukkidb.pb.h"
 
@@ -23,10 +24,48 @@ namespace lukki_db {
 
         class lukki_db_impl: public vtrc_example::lukki_db {
             application &app_;
+
         public:
             lukki_db_impl( application &app )
                 :app_(app)
             { }
+
+        private:
+            void set(::google::protobuf::RpcController* controller,
+                         const ::vtrc_example::value_set_req* request,
+                         ::vtrc_example::empty* response,
+                         ::google::protobuf::Closure* done)
+            {
+                vtrc::shared_ptr<common::closure_holder> holder(
+                            common::closure_holder::create(done) );
+            }
+
+            void del(::google::protobuf::RpcController* controller,
+                         const ::vtrc_example::name_req* request,
+                         ::vtrc_example::empty* response,
+                         ::google::protobuf::Closure* done)
+            {
+                vtrc::shared_ptr<common::closure_holder> holder(
+                            common::closure_holder::create(done) );
+            }
+
+            void get(::google::protobuf::RpcController* controller,
+                         const ::vtrc_example::name_req* request,
+                         ::vtrc_example::lukki_string_list* response,
+                         ::google::protobuf::Closure* done)
+            {
+                vtrc::shared_ptr<common::closure_holder> holder(
+                            common::closure_holder::create(done) );
+            }
+
+            void stat(::google::protobuf::RpcController* controller,
+                         const ::vtrc_example::empty* request,
+                         ::vtrc_example::db_stat* response,
+                         ::google::protobuf::Closure* done)
+            {
+                vtrc::shared_ptr<common::closure_holder> holder(
+                            common::closure_holder::create(done) );
+            }
         };
     }
 

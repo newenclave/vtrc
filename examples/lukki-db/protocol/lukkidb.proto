@@ -6,14 +6,28 @@ message lukki_string_list {
     repeated bytes value = 1;
 }
 
+message empty { }
+
 message value_set_req {
     optional bytes              name    = 1;
     optional lukki_string_list  value   = 2;
 }
 
+message name_req {
+    optional bytes name = 1;
+}
+
+message db_stat {
+    optional uint32 records       = 1;
+    optional uint32 get_requests  = 2;
+    optional uint32 set_records   = 3;
+    optional uint32 del_records   = 4;
+}
 
 service lukki_db {
-    rpc set(value_set_req) returns (value_set_res);
-    rpc del(value_set_req) returns (value_set_res);
+    rpc set(value_set_req) returns (empty);
+    rpc del(name_req)      returns (empty);
+    rpc get(name_req)      returns (lukki_string_list);
+    rpc stat(empty)        returns (db_stat);
 }
 
