@@ -1,7 +1,6 @@
 #include <vector>
 #include <string>
 
-#include <fstream>
 
 #include "boost/program_options.hpp"
 #include "boost/lexical_cast.hpp"
@@ -15,6 +14,8 @@
 #include "vtrc-bind.h"
 #include "vtrc-ref.h"
 
+#include "lukki-db-iface.h"
+
 namespace po = boost::program_options;
 using namespace vtrc;
 
@@ -24,11 +25,13 @@ void get_options( po::options_description& desc )
         ("help,?",   "help message")
         ("server,s", po::value<std::string>( ),
                      "server name; <tcp address>:<port> or <pipe/file name>")
-        ( "set,S", , po::value<std::string>( ), "set value; "
-                                              "use --value options for values")
-        ( "upd,U", , po::value<std::string>( ), "update value; "
-                                              "use --value options for values")
-        ( "get,G", , po::value<std::string>( ), "get value")
+        ( "set,S",   po::value<std::string>( ), "set value; "
+                                            "use --value options for values")
+        ( "del,D",   po::value<std::string>( ), "delete value")
+
+        ( "upd,U",   po::value<std::string>( ), "update value; "
+                                            "use --value options for values")
+        ( "get,G",   po::value<std::string>( ), "get value")
 
         ("value,V",  po::value<std::vector< std::string> >( ), "values for "
                                                       " set or upd commands" )
@@ -102,6 +105,29 @@ int start( const po::variables_map &params )
     vtrc::unique_lock<vtrc::mutex> ready_lock(ready_mutex);
     ready_cond.wait( ready_lock,
                      vtrc::bind( &client::vtrc_client::ready, client ) );
+
+    vtrc::shared_ptr<interfaces::luki_db> impl
+                                        (interfaces::create_lukki_db(client));
+
+    std::vector<std::string> values;
+    if( params.count( "value" ) ) {
+        values = params["value"].as< std::vector<std::string> >( );
+    }
+
+    if( params.count( "set" ) ) {
+        std::string name(params["set"].as<std::string>( ));
+        std::cout << "Set '" << name << "' to " << values.size( )
+                  << " values...";
+        impl->set( name, values );
+        std::cout << "Ok\n";
+    }
+
+    if( params.count( "del" ) ) {
+        std::string name(params["del"].as<std::string>( ));
+        std::cout << "Delete '" << name << "'...";
+        impl->del( name );
+        std::cout << "Ok\n";
+    }
 
     pp.stop_all( );
     pp.join_all( );

@@ -12,13 +12,16 @@ namespace vtrc { namespace client {
 
 namespace interfaces {
     struct luki_db {
-        virtual ~luki_db( );
-        void set( const std::string &name, const std::string &value ) const = 0;
 
-        void set( const std::string &name,
-                  const std::vector<std::string> &value ) const = 0;
+        virtual ~luki_db( ) { }
 
-        void del( const std::string &name ) const = 0;
+        virtual void set( const std::string &name,
+                          const std::string &value ) const = 0;
+
+        virtual void set( const std::string &name,
+                          const std::vector<std::string> &value ) const = 0;
+
+        virtual void del( const std::string &name ) const = 0;
     };
 
     luki_db *create_lukki_db(vtrc::shared_ptr<vtrc::client::vtrc_client> clnt);

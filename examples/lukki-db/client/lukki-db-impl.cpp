@@ -1,6 +1,8 @@
 #include "lukki-db-iface.h"
 #include "protocol/lukkidb.pb.h"
 
+#include "vtrc-client-base/vtrc-client.h"
+
 namespace {
 
     namespace gpb = google::protobuf;
@@ -46,7 +48,6 @@ namespace {
             vtrc_example::name_req      req;
             vtrc_example::empty         res;
             req.set_name( name );
-            req.mutable_value( )->add_value( value );
             stub_.del( NULL, &req, &res, NULL );
         }
 
