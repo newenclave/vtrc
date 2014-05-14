@@ -183,7 +183,8 @@ int start( const po::variables_map &params )
 
         std::cout << "Ok\n";
 
-        std::cout << "values.size( ) = " << vals.size( )
+        std::cout << "got " << vals.size( )
+                  << " value" << (vals.size( ) == 1 ? "" : "s")
                   << "\n==========\n";
 
         std::copy( vals.begin( ), vals.end( ),
