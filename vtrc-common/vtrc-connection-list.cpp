@@ -58,7 +58,7 @@ namespace vtrc { namespace common {
             }
         }
 
-        void drop ( common::connection_iface_sptr c )
+        void drop ( common::connection_iface_sptr &c )
         {
             drop( c.get( ) );
         }
