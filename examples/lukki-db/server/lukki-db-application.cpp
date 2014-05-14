@@ -104,7 +104,8 @@ namespace lukki_db {
             {
                 vtrc::shared_ptr<common::closure_holder> holder(
                             common::closure_holder::create(done) );
-                vtrc::shared_ptr<vtrc_example::lukki_string_list> res;
+                vtrc::shared_ptr<vtrc_example::lukki_string_list> res
+                                        (new vtrc_example::lukki_string_list);
 
                 app_.get( request->name( ), res,
                       vtrc::bind( &this_type::get_closure,
@@ -132,7 +133,8 @@ namespace lukki_db {
             {
                 vtrc::shared_ptr<common::closure_holder> holder(
                             common::closure_holder::create(done) );
-                vtrc::shared_ptr<vtrc_example::db_stat> res;
+                vtrc::shared_ptr<vtrc_example::db_stat> res
+                                                    (new vtrc_example::db_stat);
                 app_.stat( res,
                             vtrc::bind( &this_type::stat_closure,
                                          _1, _2,
