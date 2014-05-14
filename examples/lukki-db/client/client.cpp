@@ -16,6 +16,8 @@
 
 #include "lukki-db-iface.h"
 
+#include "protocol/lukkidb.pb.h"
+
 #include "vtrc-chrono.h"
 
 namespace po = boost::program_options;
@@ -52,6 +54,9 @@ void get_options( po::options_description& desc )
         ("help,?",   "help message")
         ("server,s", po::value<std::string>( ),
                      "server name; <tcp address>:<port> or <pipe/file name>")
+
+        ( "stat,I",                             "get db status")
+
         ( "set,S",   po::value<std::string>( ), "set value; "
                                             "use --value options for values")
         ( "del,D",   po::value<std::string>( ), "delete value")
@@ -197,6 +202,22 @@ int start( const po::variables_map &params )
         wt.print_point( "delete" );
     }
 
+    if( params.count( "stat" ) ) {
+
+        std::cout << "Get db stat\n";
+        work_time wt;
+        vtrc_example::db_stat s(impl->stat( ));
+        std::cout << "Ok\n";
+        wt.print_point( "stat" );
+
+        std::cout << "Stat:\n"
+                  << "\tRecords: \t" << s.total_records( ) << "\n"
+                  << "\t'set': \t\t" << s.set_requests( ) << "\n"
+                  << "\t'upd': \t\t" << s.upd_requests( ) << "\n"
+                  << "\t'get': \t\t" << s.get_requests( ) << "\n"
+                  << "\t'del': \t\t" << s.del_requests( ) << "\n"
+                  ;
+    }
 
     pp.stop_all( );
     pp.join_all( );

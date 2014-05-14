@@ -69,6 +69,14 @@ namespace {
             stub_.del( NULL, &req, &res, NULL );
         }
 
+        vtrc_example::db_stat stat( ) const
+        {
+            vtrc_example::empty         req;
+            vtrc_example::db_stat       res;
+            stub_.stat( NULL, &req, &res, NULL );
+            return res;
+        }
+
     };
 
 }

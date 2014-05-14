@@ -10,6 +10,10 @@ namespace vtrc { namespace client {
     class vtrc_client;
 }}
 
+namespace vtrc_example {
+    class db_stat;
+}
+
 namespace interfaces {
     struct luki_db {
 
@@ -24,6 +28,8 @@ namespace interfaces {
         virtual std::vector<std::string> get(const std::string &name) const = 0;
 
         virtual void del( const std::string &name ) const = 0;
+
+        virtual vtrc_example::db_stat stat( ) const = 0;
     };
 
     luki_db *create_lukki_db(vtrc::shared_ptr<vtrc::client::vtrc_client> clnt);
