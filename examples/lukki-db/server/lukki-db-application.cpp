@@ -32,11 +32,14 @@ namespace lukki_db {
 
             typedef lukki_db_impl this_type;
 
-            application             &app_;
+            application              &app_;
+            common::connection_iface *connection_;
 
         public:
-            lukki_db_impl( application &app)
+
+            lukki_db_impl( application &app, common::connection_iface *c)
                 :app_(app)
+                ,connection_(c)
             { }
 
         private:
@@ -152,6 +155,14 @@ namespace lukki_db {
                                         res, response, controller, holder ));
 
             }
+            void subscribe(::google::protobuf::RpcController* controller,
+                     const ::vtrc_example::empty* request,
+                     ::vtrc_example::empty* response,
+                     ::google::protobuf::Closure* done)
+            {
+                common::closure_holder holder(done);
+                app_.subscribe_client( connection_ );
+            }
         };
     }
 
@@ -165,7 +176,11 @@ namespace lukki_db {
         std::vector<server::listener_sptr>                listeners_;
 
         typedef vtrc::shared_ptr<common::rpc_channel> channel_sptr;
-        typedef std::list<channel_sptr> subscriber_list_type;
+        typedef std::pair<
+            common::connection_iface_wptr, channel_sptr
+        > connection_channel_pair;
+
+        typedef std::list<connection_channel_pair> subscriber_list_type;
 
         subscriber_list_type subscribers_;
 
@@ -198,6 +213,7 @@ namespace lukki_db {
             db_stat_.set_set_requests( db_stat_.set_requests( ) + 1 );
             db_[name] = value;
             db_stat_.set_total_records( db_.size( ) );
+            send_event( name , true );
             if( closure ) closure( true, "Success" );
         }
 
@@ -212,6 +228,7 @@ namespace lukki_db {
                 if( closure ) closure( false, "Record was not found" );
             } else {
                 f->second.CopyFrom( value );
+                send_event( name , true );
                 if( closure ) closure( true, "Success" );
             }
         }
@@ -239,6 +256,7 @@ namespace lukki_db {
                 if( closure ) closure( false, "Record was not found" );
             } else {
                 db_.erase( f );
+                send_event( name , false );
                 if( closure ) closure( true, "Success" );
             }
         }
@@ -260,26 +278,10 @@ namespace lukki_db {
 
         /// events
 
-        void send_subscribed( vtrc::shared_ptr<common::rpc_channel> channel )
+        void send_event( const std::string &record, bool changed )
         {
-            try {
-                vtrc_example::lukki_events_Stub s(channel.get( ));
-                vtrc_example::empty r;
-                s.subscribed( NULL, &r, &r, NULL );
-            } catch( ... ) {
-                ;;;
-            }
-        }
-
-        void subscribe_impl( common::connection_iface_wptr conn )
-        {
-            common::connection_iface_sptr lck(conn.lock( ));
-            if( lck ) {
-                vtrc::shared_ptr<common::rpc_channel> channel
-                    (server::channels::unicast::create_event_channel
-                            ( lck, true ));
-                subscribers_.push_back( channel );
-            }
+            event_queue_.post( vtrc::bind( &impl::send_event_impl, this,
+                                           record, changed) );
         }
 
         void send_event( vtrc::shared_ptr<common::rpc_channel> channel,
@@ -304,12 +306,36 @@ namespace lukki_db {
         {
             subscriber_list_type::iterator b(subscribers_.begin( ));
             while( b != subscribers_.end( ) ) {
-                if( (*b)->alive( ) ) {
-                    send_event( *b, record, changed );
+                common::connection_iface_sptr lck(b->first.lock( ));
+                if( lck ) {
+                    send_event( b->second, record, changed );
                     b++;
                 } else {
                     b = subscribers_.erase( b );
                 }
+            }
+        }
+
+        void send_subscribed( vtrc::shared_ptr<common::rpc_channel> channel )
+        {
+            try {
+                vtrc_example::lukki_events_Stub s(channel.get( ));
+                vtrc_example::empty r;
+                s.subscribed( NULL, &r, &r, NULL );
+            } catch( ... ) {
+                ;;;
+            }
+        }
+
+        void subscribe_impl( common::connection_iface_wptr conn )
+        {
+            common::connection_iface_sptr lck(conn.lock( ));
+            if( lck ) {
+                vtrc::shared_ptr<common::rpc_channel> channel
+                    (server::channels::unicast::create_event_channel
+                            ( lck, true ));
+                subscribers_.push_back( std::make_pair(conn, channel) );
+                send_subscribed( channel );
             }
         }
 
@@ -339,7 +365,7 @@ namespace lukki_db {
     {
         if( service_name == lukki_db_impl::descriptor( )->full_name( ) ) {
             return vtrc::make_shared<common::rpc_service_wrapper>
-                                            ( new lukki_db_impl( *this ) );
+                                        ( new lukki_db_impl( *this, conn ) );
         }
         return vtrc::shared_ptr<common::rpc_service_wrapper>( );
     }

@@ -88,6 +88,12 @@ namespace {
             return res.value( );
         }
 
+        void subscribe( ) const
+        {
+            vtrc_example::empty r;
+            stub_.subscribe( NULL, &r, &r, NULL );
+        }
+
     };
 
 }

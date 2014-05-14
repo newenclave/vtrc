@@ -56,6 +56,7 @@ void get_options( po::options_description& desc )
                      "server name; <tcp address>:<port> or <pipe/file name>")
 
         ( "stat,I",                             "get db status")
+        ( "events,e",                           "subscribe and show events")
 
         ( "exist,E", po::value<std::string>( ), "checks if record exist")
         ( "set,S",   po::value<std::string>( ), "set value; "
@@ -108,6 +109,35 @@ void on_client_ready( vtrc::condition_variable &cond )
     cond.notify_all( );
 }
 
+class lukki_events_impl: public vtrc_example::lukki_events {
+    void subscribed(::google::protobuf::RpcController* controller,
+                 const ::vtrc_example::empty* request,
+                 ::vtrc_example::empty* response,
+                 ::google::protobuf::Closure* done)
+    {
+        common::closure_holder ch(done);
+        std::cout << "Subscribed\n";
+    }
+
+    void value_changed(::google::protobuf::RpcController* controller,
+                 const ::vtrc_example::name_req* request,
+                 ::vtrc_example::empty* response,
+                 ::google::protobuf::Closure* done)
+    {
+        common::closure_holder ch(done);
+        std::cout << "Record " << request->name( ) << " was changed\n";
+    }
+
+    void value_removed(::google::protobuf::RpcController* controller,
+                 const ::vtrc_example::name_req* request,
+                 ::vtrc_example::empty* response,
+                 ::google::protobuf::Closure* done)
+    {
+        common::closure_holder ch(done);
+        std::cout << "Record " << request->name( ) << " was removed\n";
+    }
+};
+
 int start( const po::variables_map &params )
 {
     if( params.count( "server" ) == 0 ) {
@@ -144,7 +174,14 @@ int start( const po::variables_map &params )
                                         (interfaces::create_lukki_db(client));
 
     std::vector<std::string> values;
+    bool events = (params.count( "events" ) != 0);
 
+    if( events ) {
+        std::cout << "Subscribing to events...";
+        client->assign_rpc_handler( vtrc::make_shared<lukki_events_impl>( ) );
+        impl->subscribe( );
+        std::cout << "Ok\n";
+    }
 
     if( params.count( "value" ) ) {
         values = params["value"].as< std::vector<std::string> >( );
@@ -233,7 +270,11 @@ int start( const po::variables_map &params )
                   ;
     }
 
-    pp.stop_all( );
+    if( !events ) {
+        pp.stop_all( );
+    } else {
+        std::cout << "Waiting for events...\n";
+    }
     pp.join_all( );
 
     return 0;

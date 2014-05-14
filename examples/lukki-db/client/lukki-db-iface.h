@@ -31,6 +31,7 @@ namespace interfaces {
 
         virtual vtrc_example::db_stat stat( ) const = 0;
         virtual bool exist( const std::string &name ) const = 0;
+        virtual void subscribe( ) const = 0;
     };
 
     luki_db *create_lukki_db(vtrc::shared_ptr<vtrc::client::vtrc_client> clnt);
