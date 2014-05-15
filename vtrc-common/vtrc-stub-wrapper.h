@@ -64,20 +64,17 @@ namespace vtrc { namespace common {
             ,stub_(channel_)
         { }
 
-        template <typename StubFuncType>
+        template <typename StubFuncType, typename ReqType, typename ResType>
         void call( StubFuncType func,
                    google::protobuf::RpcController *controller,
-                   const typename call_args<StubFuncType>::req_type *request,
-                   typename call_args<StubFuncType>::res_type       *response,
+                   const ReqType *request, ResType *response,
                    google::protobuf::Closure *closure )
         {
             (stub_.*func)(controller, request, response, closure);
         }
 
-        template <typename StubFuncType>
-        void call( StubFuncType func,
-                   const typename call_args<StubFuncType>::req_type *request,
-                   typename call_args<StubFuncType>::res_type       *response)
+        template <typename StubFuncType, typename ReqType, typename ResType>
+        void call( StubFuncType func, const ReqType *request, ResType *response)
         {
             (stub_.*func)(NULL, request, response, NULL);
         }
@@ -88,16 +85,14 @@ namespace vtrc { namespace common {
             (stub_.*func)(NULL, NULL, NULL, NULL);
         }
 
-        template <typename StubFuncType>
-        void call_request( StubFuncType func,
-                     const typename call_args<StubFuncType>::req_type *request)
+        template <typename StubFuncType, typename RequestType>
+        void call_request( StubFuncType func, const RequestType *request)
         {
             (stub_.*func)(NULL, request, NULL, NULL);
         }
 
-        template <typename StubFuncType>
-        void call_response( StubFuncType func,
-                   typename call_args<StubFuncType>::res_type *response )
+        template <typename StubFuncType, typename ResponseType>
+        void call_response( StubFuncType func, ResponseType *response )
         {
             (stub_.*func)(NULL, NULL, response, NULL);
         }
