@@ -170,7 +170,7 @@ int start( const po::variables_map &params )
     ready_cond.wait( ready_lock,
                      vtrc::bind( &client::vtrc_client::ready, client ) );
 
-    vtrc::shared_ptr<interfaces::luki_db> impl
+    vtrc::shared_ptr<interfaces::lukki_db> impl
                                         (interfaces::create_lukki_db(client));
 
     std::vector<std::string> values;

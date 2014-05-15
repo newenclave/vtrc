@@ -15,9 +15,9 @@ namespace vtrc_example {
 }
 
 namespace interfaces {
-    struct luki_db {
+    struct lukki_db {
 
-        virtual ~luki_db( ) { }
+        virtual ~lukki_db( ) { }
 
         virtual void set( const std::string &name,
                           const std::vector<std::string> &value ) const = 0;
@@ -34,7 +34,7 @@ namespace interfaces {
         virtual void subscribe( ) const = 0;
     };
 
-    luki_db *create_lukki_db(vtrc::shared_ptr<vtrc::client::vtrc_client> clnt);
+    lukki_db *create_lukki_db(vtrc::shared_ptr<vtrc::client::vtrc_client> clnt);
 }
 
 #endif // LUKKIDBIFACE_H
