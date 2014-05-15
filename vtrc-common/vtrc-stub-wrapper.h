@@ -27,7 +27,6 @@ namespace vtrc { namespace common {
         google::protobuf::RpcChannel                    *channel_;
         stub_type                                        stub_;
 
-    public:
 
         template <typename ReqType, typename ResType>
         struct protobuf_call {
@@ -44,13 +43,15 @@ namespace vtrc { namespace common {
 
         template <typename RequestType, typename ResponseType>
         struct call_args <void (stub_type::*)
-              (google::protobuf::RpcController *,
-               const RequestType *, ResponseType *,
-               google::protobuf::Closure * )>
+                               (google::protobuf::RpcController *,
+                                const RequestType *, ResponseType *,
+                                google::protobuf::Closure * )>
         {
             typedef RequestType  req_type;
             typedef ResponseType res_type;
         };
+
+    public:
 
         stub_wrapper(google::protobuf::RpcChannel *channel)
             :channel_(channel)
