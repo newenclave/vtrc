@@ -97,11 +97,13 @@ namespace {
     };
 
     struct remote_file_impl: public interfaces::remote_file {
-        typedef vtrc_example::remote_file_Stub file_stub_type;
+
+        typedef vtrc_example::remote_file_Stub         stub_type;
+        typedef vtrc::common::stub_wrapper<stub_type>  stub_wrapper_type;
 
         std::string                                    path_;
         vtrc::shared_ptr<google::protobuf::RpcChannel> channel_;
-        mutable file_stub_type                         stub_;
+        mutable stub_wrapper_type                              stub_;
         vtrc_example::fs_handle                        fhdl_;
 
         void open( std::string const &mode )
@@ -109,7 +111,7 @@ namespace {
             vtrc_example::file_open_req req;
             req.set_path( path_ );
             req.set_mode( mode );
-            stub_.open( NULL, &req, &fhdl_, NULL );
+            stub_.call( &stub_type::open, &req, &fhdl_ );
         }
 
         remote_file_impl( const std::string &p, const std::string &mode,
@@ -124,8 +126,7 @@ namespace {
         void close_impl( ) const
         {
             try {
-                vtrc_example::fs_handle f;
-                stub_.close( NULL, &fhdl_, &f, NULL );
+                stub_.call_request( &stub_type::close, &fhdl_ );
             } catch( ... ) {
                 ;;;
             }
@@ -149,7 +150,7 @@ namespace {
         gpb::uint64 tell( ) const
         {
             vtrc_example::file_position pos;
-            stub_.tell( NULL, &fhdl_, &pos, NULL);
+            stub_.call( &stub_type::tell, &fhdl_, &pos );
             return pos.position( );
         }
 
@@ -162,7 +163,7 @@ namespace {
             set_pos.mutable_hdl( )->CopyFrom( fhdl_ );
             set_pos.set_position( position );
             set_pos.set_whence( whence );
-            stub_.seek( NULL, &set_pos, &pos, NULL);
+            stub_.call( &stub_type::seek, &set_pos, &pos );
             return pos.position( );
         }
 
@@ -183,7 +184,7 @@ namespace {
             block.mutable_hdl( )->CopyFrom( fhdl_ );
             block.set_length( max_len );
 
-            stub_.read( NULL, &block, &block, NULL );
+            stub_.call( &stub_type::read, &block, &block );
 
             data.swap( *(block.mutable_data( )) );
             return data.size( );
@@ -205,7 +206,7 @@ namespace {
             block.mutable_hdl( )->CopyFrom( fhdl_ );
             block.set_data( data, len );
 
-            stub_.write( NULL, &block, &block, NULL );
+            stub_.call( &stub_type::write, &block, &block );
             return block.length( );
         }
     };
