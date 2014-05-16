@@ -212,6 +212,7 @@ namespace {
     };
 
     struct remote_fs_impl: public interfaces::remote_fs {
+
         typedef remote_fs_impl this_type;
 
         vtrc::shared_ptr<google::protobuf::RpcChannel> channel_;
