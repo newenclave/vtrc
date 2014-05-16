@@ -38,8 +38,8 @@ namespace vtrc { namespace common  {
             llu->set_request( request->SerializeAsString( ) );
         }
 
-        if( response ) {
-            llu->mutable_response( );
+        if( !response ) {
+            llu->mutable_opt( )->set_accept_response( false );
         }
 
         return llu;

@@ -8,7 +8,7 @@ package vtrc_rpc;
 message options {
 
     /// client level "at least"
-    optional uint32     level           = 1;
+    optional uint32     level            = 1;
 
     /// other side waits answer
     optional bool       wait             = 2 [default = true];

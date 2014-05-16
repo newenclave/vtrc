@@ -624,7 +624,7 @@ namespace vtrc { namespace common {
                           ->set_additional( holder->controller_->ErrorText( ));
 
             } else {
-                if( llu.has_response( ) ) {
+                if( llu.opt( ).accept_response( ) ) {
                     //std::cout << "llu has response\n";
                     llu.set_response( holder->res_->SerializeAsString( ) );
                 } else {
