@@ -1,12 +1,17 @@
 #include "rfs-iface.h"
 #include "vtrc-client-base/vtrc-rpc-channel-c.h"
 #include "vtrc-client-base/vtrc-client.h"
+
+#include "vtrc-common/vtrc-stub-wrapper.h"
+
 #include "protocol/remotefs.pb.h"
 
 namespace {
 
     namespace gpb = google::protobuf;
     typedef vtrc_example::remote_fs_Stub stub_type;
+    typedef vtrc::common::stub_wrapper<stub_type> stub_wrapper_type;
+
     const size_t max_block_length = (640 * 1024);
 
     interfaces::fs_info fill_info( vtrc_example::fs_element_info const &info,
@@ -29,8 +34,8 @@ namespace {
 
     struct remote_fs_iterator_impl: public interfaces::remote_fs_iterator {
 
-        vtrc::shared_ptr<google::protobuf::RpcChannel> channel_;
-        mutable stub_type                              stub_;
+        vtrc::shared_ptr<gpb::RpcChannel>              channel_;
+        mutable stub_wrapper_type                      stub_;
         vtrc_example::fs_iterator_info                 iter_;
         interfaces::fs_info                            info_;
         bool                                           has_info_;
@@ -38,7 +43,7 @@ namespace {
         remote_fs_iterator_impl( vtrc::shared_ptr<gpb::RpcChannel> channel,
                                  const vtrc_example::fs_iterator_info &iter)
             :channel_(channel)
-            ,stub_(channel_.get( ))
+            ,stub_(channel)
             ,iter_(iter)
             ,has_info_(false)
         {
@@ -49,7 +54,7 @@ namespace {
         {
             vtrc_example::fs_handle h;
             h.set_value( iter_.handle( ).value( ) );
-            stub_.close( NULL, &h, &h, NULL );
+            stub_.call_request( &stub_type::close, &h );
 
         } catch( ... ) {
             ;;;
@@ -61,7 +66,7 @@ namespace {
                 vtrc_example::fs_iterator_info ii;
                 vtrc_example::fs_element_info  ei;
                 ii.mutable_handle( )->CopyFrom( iter_.handle( ) );
-                stub_.iter_info( NULL, &ii, &ei, NULL );
+                stub_.call( &stub_type::iter_info, &ii, &ei );
                 info_ = fill_info( ei, iter_.path( ));
             }
             return info_;
@@ -72,7 +77,7 @@ namespace {
             vtrc_example::fs_iterator_info ii;
             vtrc_example::fs_iterator_info ri;
             ii.mutable_handle( )->CopyFrom( iter_.handle( ) );
-            stub_.iter_next( NULL, &ii, &ri, NULL );
+            stub_.call( &stub_type::iter_next, &ii, &ri );
             iter_.CopyFrom( ri );
         }
 
@@ -86,7 +91,7 @@ namespace {
             vtrc_example::fs_iterator_info ii;
             vtrc_example::fs_iterator_info ri;
             ii.mutable_handle( )->CopyFrom( iter_.handle( ) );
-            stub_.iter_clone( NULL, &ii, &ri, NULL );
+            stub_.call( &stub_type::iter_clone, &ii, &ri );
             return vtrc::make_shared<remote_fs_iterator_impl>( channel_, ri );
         }
     };
