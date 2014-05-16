@@ -216,7 +216,7 @@ namespace {
         typedef remote_fs_impl this_type;
 
         vtrc::shared_ptr<google::protobuf::RpcChannel> channel_;
-        mutable stub_type                              stub_;
+        mutable stub_wrapper_type                      stub_;
         gpb::uint32                                    fs_handle_;
 
         ~remote_fs_impl( ) try
@@ -224,7 +224,7 @@ namespace {
             if( fs_handle_ ) {
                 vtrc_example::fs_handle h;
                 h.set_value( fs_handle_ );
-                stub_.close( NULL, &h, &h, NULL );
+                stub_.call_request( &stub_type::close, &h );
             }
 
         } catch ( ... ) {
@@ -239,7 +239,7 @@ namespace {
         {
             vtrc_example::fs_handle_path hp;
             hp.set_path( path );
-            stub_.open( NULL, &hp, &hp, NULL );
+            stub_.call( &stub_type::open, &hp, &hp );
             fs_handle_ = hp.handle( ).value( );
         }
 
@@ -248,14 +248,14 @@ namespace {
             vtrc_example::fs_handle_path hp;
             hp.set_path( new_path );
             hp.mutable_handle( )->set_value( fs_handle_ );
-            stub_.cd( NULL, &hp, &hp, NULL );
+            stub_.call_request( &stub_type::cd, &hp );
         }
 
         std::string pwd( ) const
         {
             vtrc_example::fs_handle_path hp;
             hp.mutable_handle( )->set_value( fs_handle_ );
-            stub_.pwd( NULL, &hp, &hp, NULL );
+            stub_.call( &stub_type::pwd, &hp, &hp );
             return hp.path( );
         }
 
@@ -265,7 +265,7 @@ namespace {
             vtrc_example::fs_element_info info;
             hp.mutable_handle( )->set_value( fs_handle_ );
             hp.set_path( path );
-            stub_.exists( NULL, &hp, &info, NULL );
+            stub_.call( &stub_type::exists, &hp, &info );
             return info.is_exist( );
         }
 
@@ -280,7 +280,7 @@ namespace {
             vtrc_example::fs_element_info info;
             hp.mutable_handle( )->set_value( fs_handle_ );
             hp.set_path( path );
-            stub_.info( NULL, &hp, &info, NULL );
+            stub_.call( &stub_type::info, &hp, &info );
             return fill_info( info );
         }
 
@@ -295,7 +295,7 @@ namespace {
             vtrc_example::file_position  pos;
             hp.mutable_handle( )->set_value( fs_handle_ );
             hp.set_path( path );
-            stub_.file_size( NULL, &hp, &pos, NULL );
+            stub_.call( &stub_type::file_size, &hp, &pos );
             return pos.position( );
         }
 
@@ -309,7 +309,7 @@ namespace {
             vtrc_example::fs_handle_path hp;
             hp.mutable_handle( )->set_value( fs_handle_ );
             hp.set_path( path );
-            stub_.mkdir( NULL, &hp, &hp, NULL );
+            stub_.call_request( &stub_type::mkdir, &hp );
         }
 
         void mkdir( ) const
@@ -322,14 +322,13 @@ namespace {
             vtrc_example::fs_handle_path hp;
             hp.mutable_handle( )->set_value( fs_handle_ );
             hp.set_path( path );
-            stub_.del( NULL, &hp, &hp, NULL );
+            stub_.call_request( &stub_type::del, &hp );
         }
 
         void del( ) const
         {
             del( "" );
         }
-
 
         vtrc::shared_ptr<interfaces::remote_fs_iterator>
                                   begin_iterator(const std::string &path) const
@@ -338,7 +337,7 @@ namespace {
             vtrc_example::fs_handle_path   hp;
             hp.mutable_handle( )->set_value( fs_handle_ );
             hp.set_path( path );
-            stub_.iter_begin( NULL, &hp, &ri, NULL );
+            stub_.call( &stub_type::iter_begin, &hp, &ri );
             return vtrc::make_shared<remote_fs_iterator_impl>( channel_, ri );
         }
 
