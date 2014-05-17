@@ -158,8 +158,6 @@ namespace vtrc { namespace common {
         options_map_type             options_map_;
         mutable vtrc::shared_mutex   options_map_lock_;
 
-        //const lowlevel_unit_type     empty_done_;
-
         mutable vtrc::mutex          ready_lock_;
         bool                         ready_;
         vtrc::condition_variable     ready_var_;
@@ -174,7 +172,6 @@ namespace vtrc { namespace common {
             ,revertor_(common::transformers::none::create( ))
             ,queue_(size_policy_ns::create_parser(mess_len))
             ,rpc_index_(oddside ? 101 : 100)
-            //,empty_done_(make_fake_mess( ))
             ,ready_(false)
             ,level_(0)
         { }
@@ -765,7 +762,8 @@ namespace vtrc { namespace common {
             } else {
                 /// yeah ... write - write - read;
                 /// but maybe it is better to set up TCP_NODELAY ... hm
-                /// send_message( empty_done_ );
+                ///
+                /// rmvd send_message  empty_done
             }
 
         }
