@@ -276,8 +276,9 @@ int start( const po::variables_map &params )
         std::cout << "Waiting for events...\n";
     }
 
-    std::cout << "Waiting for stop...\n";
+    std::cout << "Waiting for stop...";
     pp.join_all( );
+    std::cout << "Ok\n";
 
     return 0;
 }
