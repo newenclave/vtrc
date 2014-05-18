@@ -70,7 +70,7 @@ namespace vtrc { namespace server {
 
         std::string              client_id_;
 
-        common::delayed_call     keepalive_calls_;
+        vtrc::unique_ptr<common::delayed_call>  keepalive_calls_;
 
         typedef vtrc::function<void (void)> stage_function_type;
         stage_function_type  stage_function_;
@@ -85,15 +85,15 @@ namespace vtrc { namespace server {
             ,ready_(false)
             ,current_calls_(0)
             ,maximum_calls_(maximum_calls)
-            ,keepalive_calls_(a.get_io_service( ))
+            ,keepalive_calls_(new common::delayed_call(a.get_io_service( )))
         {
             stage_function_ =
                     vtrc::bind( &this_type::on_client_selection, this );
 
             /// client has only 10 seconds for init connection
             /// todo: think about setting  for this timeout value
-            keepalive_calls_.call_from_now(
-                        vtrc::bind( &this_type::on_keepavive, this, _1 ),
+            keepalive_calls_->call_from_now(
+                        vtrc::bind( &this_type::on_init_timeout, this, _1 ),
                         boost::posix_time::seconds( 10 ));
         }
 
@@ -121,12 +121,7 @@ namespace vtrc { namespace server {
             return client_id_;
         }
 
-        bool pop_check_init_message(  )
-        {
-
-        }
-
-        void on_keepavive( const boost::system::error_code &error )
+        void on_init_timeout( const boost::system::error_code &error )
         {
             if( !error ) {
                 /// timeout for client init
@@ -135,6 +130,7 @@ namespace vtrc { namespace server {
                 cap.set_ready( false );
                 send_and_close( cap );
             }
+            keepalive_calls_.reset( );
         }
 
         void send_proto_message( const gpb::MessageLite &mess )
@@ -160,7 +156,7 @@ namespace vtrc { namespace server {
 
         void set_client_ready(  )
         {
-            keepalive_calls_.cancel( );
+            keepalive_calls_->cancel( );
             stage_function_ =
                     vtrc::bind( &this_type::on_rcp_call_ready, this );
             parent_->set_ready( true );
