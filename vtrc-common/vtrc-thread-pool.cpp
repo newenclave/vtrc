@@ -7,6 +7,7 @@
 #include "vtrc-memory.h"
 #include "vtrc-bind.h"
 #include "vtrc-thread.h"
+#include "vtrc-atomic.h"
 
 namespace vtrc { namespace common {
 
@@ -35,6 +36,7 @@ namespace vtrc { namespace common {
         basio::io_service       *ios_;
         basio::io_service::work *wrk_;
         bool                     own_ios_;
+        //vtrc::atomic<size_t>     count_;
 
         std::list<thread_context::shared_type>  threads_;
         mutable shared_mutex                    threads_lock_;
@@ -47,12 +49,13 @@ namespace vtrc { namespace common {
             :ios_(ios)
             ,wrk_(new basio::io_service::work(*ios_))
             ,own_ios_(own_ios)
-        {}
+        { }
 
         ~impl( )
         {
             try {
                 stop( );
+                join_all( );
             } catch( ... ) {
                 ;;;
             }
@@ -122,13 +125,13 @@ namespace vtrc { namespace common {
             context->in_use_ = false;
         }
 
-        void run_impl( thread_context * /*context*/ )
+        bool run_impl( thread_context * /*context*/ )
         {
             while ( true  ) {
                 try {
                     while ( true ) {
                         const size_t count = ios_->run_one();
-                        if( !count ) return;
+                        if( !count ) return true; /// stopped;
                     }
                 } catch( const interrupt & ) {
                     break;
@@ -138,13 +141,20 @@ namespace vtrc { namespace common {
                     ;;;
                 }
             }
+            return false; /// interruped by interrupt::raise or
+                          ///               boost::thread_interrupted
+        }
+
+        bool attach( )
+        {
+            return run_impl( NULL );
         }
 
     };
 
     thread_pool::thread_pool( )
         :impl_(new impl(new basio::io_service, true))
-    {}
+    { }
 
     thread_pool::thread_pool( size_t init_count )
         :impl_(new impl(new basio::io_service, true))
@@ -160,7 +170,7 @@ namespace vtrc { namespace common {
 
     thread_pool::thread_pool( boost::asio::io_service &ios )
         :impl_(new impl(&ios, false))
-    {}
+    { }
 
     thread_pool::~thread_pool( )
     {
@@ -185,6 +195,11 @@ namespace vtrc { namespace common {
     void thread_pool::join_all( )
     {
         impl_->join_all( );
+    }
+
+    bool thread_pool::attach( )
+    {
+        return impl_->attach( );
     }
 
     void thread_pool::add_thread( )

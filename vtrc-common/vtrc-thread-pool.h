@@ -34,6 +34,12 @@ namespace vtrc { namespace common {
 
         void join_all( );
 
+        /// for attach current thread
+        /// retrurns:
+        ///     false if interrupted
+        ///     true  if stopped
+        bool attach(  );
+
         boost::asio::io_service       &get_io_service( );
         const boost::asio::io_service &get_io_service( ) const;
     };
