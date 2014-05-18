@@ -759,11 +759,6 @@ namespace vtrc { namespace common {
                     if( done )
                         done( llu->error( ) );
                 }
-            } else {
-                /// yeah ... write - write - read;
-                /// but maybe it is better to set up TCP_NODELAY ... hm
-                ///
-                /// rmvd send_message  empty_done
             }
 
         }
