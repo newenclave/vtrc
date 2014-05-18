@@ -210,11 +210,15 @@ namespace lukki_db {
                   const vtrc_example::lukki_string_list &value,
                   const operation_closure &closure)
         {
-            db_stat_.set_set_requests( db_stat_.set_requests( ) + 1 );
-            db_[name] = value;
-            db_stat_.set_total_records( db_.size( ) );
-            send_event( name , true );
-            if( closure ) closure( true, "Success" );
+            if( db_.find( name ) != db_.end( ) ) {
+                if( closure ) closure( false, "Record already exists" );
+            } else {
+                db_stat_.set_set_requests( db_stat_.set_requests( ) + 1 );
+                db_[name] = value;
+                db_stat_.set_total_records( db_.size( ) );
+                send_event( name , true );
+                if( closure ) closure( true, "Success" );
+            }
         }
 
         void upd( const std::string &name,

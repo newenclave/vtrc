@@ -263,6 +263,7 @@ int start( const po::variables_map &params )
 
         std::cout << "Stat:\n"
                   << "\tRecords: \t" << s.total_records( ) << "\n"
+                  << "Requests:\n"
                   << "\t'set': \t\t" << s.set_requests( ) << "\n"
                   << "\t'upd': \t\t" << s.upd_requests( ) << "\n"
                   << "\t'get': \t\t" << s.get_requests( ) << "\n"
