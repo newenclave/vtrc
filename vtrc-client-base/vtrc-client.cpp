@@ -120,7 +120,7 @@ namespace vtrc { namespace client {
             cond.notify_all( );
         }
 
-        static void on_init_error( bool &failed, std::string &res,
+        static void on_init_error( unsigned &failed, std::string &res,
                               vtrc::condition_variable &cond,
                               const vtrc_errors::container &,
                               const char *message  )
@@ -130,7 +130,7 @@ namespace vtrc { namespace client {
             cond.notify_all( );
         }
 
-        bool on_ready_diconnect( bool &failed )
+        bool on_ready_diconnect( unsigned &failed )
         {
             return failed || ready( );
         }
@@ -138,7 +138,7 @@ namespace vtrc { namespace client {
         template <typename FuncType>
         void connect_impl( FuncType conn_func )
         {
-            bool                     failed = false;
+            unsigned                 failed = 0;
             std::string              failed_message;
             vtrc::condition_variable cond;
             vtrc::mutex              cond_lock;
@@ -166,7 +166,7 @@ namespace vtrc { namespace client {
                 throw vtrc::common::exception( vtrc_errors::ERR_TIMEOUT );
             }
 
-            if( failed ) {
+            if( failed != 0 ) {
                 throw vtrc::common::exception( vtrc_errors::ERR_INTERNAL,
                                                failed_message);
             }
