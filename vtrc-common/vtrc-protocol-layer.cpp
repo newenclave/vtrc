@@ -622,10 +622,10 @@ namespace vtrc { namespace common {
 
             } else {
                 if( llu.opt( ).accept_response( ) ) {
-                    std::cout << "llu has response\n";
+                    // std::cout << "llu has response\n";
                     llu.set_response( holder->res_->SerializeAsString( ) );
                 } else {
-                    std::cout << "llu has not response\n";
+                    // std::cout << "llu has not response\n";
                 }
             }
             send_message( llu );
