@@ -118,10 +118,14 @@ namespace vtrc { namespace common {
         void join_all( )
         {
             typedef thread_set_type::iterator iterator;
+            thread_set_type tmp;
+            {
+                unique_shared_lock lck(threads_lock_);
+                tmp.swap( threads_ );
+                stopped_threads_.clear( );
+            }
 
-            shared_lock lck(threads_lock_);
-
-            for(iterator b(threads_.begin( )), e(threads_.end( )); b!=e; ++b ) {
+            for(iterator b(tmp.begin( )), e(tmp.end( )); b!=e; ++b ) {
                 if( (*b)->thread_->joinable( ) )
                     (*b)->thread_->join( );
             }
