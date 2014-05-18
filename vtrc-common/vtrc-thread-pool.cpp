@@ -58,8 +58,6 @@ namespace vtrc { namespace common {
                 ;;;
             }
 
-            delete wrk_;
-
             if( own_ios_ ) {
                 delete ios_;
             }
@@ -138,6 +136,10 @@ namespace vtrc { namespace common {
 
         void stop( )
         {
+
+            delete wrk_;
+            wrk_ = NULL;
+
             ios_->stop( );
             unique_shared_lock lck(threads_lock_);
             stopped_threads_.clear( );
