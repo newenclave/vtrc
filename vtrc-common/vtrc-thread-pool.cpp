@@ -89,7 +89,7 @@ namespace vtrc { namespace common {
             thread_context::shared_type n(create_thread( ));
             unique_shared_lock lck( threads_lock_ );
             threads_.insert( n );
-            stopped_threads_.clear( ); /// must not remove it here
+            stopped_threads_.clear( );
         }
 
         thread_context::shared_type create_thread(  )
@@ -120,15 +120,20 @@ namespace vtrc { namespace common {
             typedef thread_set_type::iterator iterator;
             thread_set_type tmp;
             {
+                /// own threads
                 unique_shared_lock lck(threads_lock_);
                 tmp.swap( threads_ );
-                stopped_threads_.clear( );
             }
 
+            /// join
             for(iterator b(tmp.begin( )), e(tmp.end( )); b!=e; ++b ) {
                 if( (*b)->thread_->joinable( ) )
                     (*b)->thread_->join( );
             }
+
+            /// clean stopped
+            unique_shared_lock lck(threads_lock_);
+            stopped_threads_.clear( );
         }
 
         void stop( )
@@ -141,7 +146,8 @@ namespace vtrc { namespace common {
         void run( thread_context::shared_type thread )
         {
             run_impl( thread.get( ) );
-            move_to_stopped( thread );
+            move_to_stopped( thread ); /// must not remove it here;
+                                       /// moving to stopped_thread_
         }
 
         bool run_impl( thread_context * /*context*/ )
