@@ -114,7 +114,6 @@ namespace vtrc { namespace common {
         void stop( )
         {
             ios_->stop( );
-            join_all( );
         }
 
         void run( thread_context *context )
