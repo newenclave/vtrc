@@ -142,6 +142,21 @@ class lukki_events_impl: public vtrc_example::lukki_events {
     }
 };
 
+void on_connect( )
+{
+    std::cout << "connect...";
+}
+
+void on_ready( )
+{
+    std::cout << "ready...";
+}
+
+void on_disconnect( )
+{
+    std::cout << "disconnect...";
+}
+
 int start( const po::variables_map &params )
 {
     if( params.count( "server" ) == 0 ) {
@@ -157,12 +172,18 @@ int start( const po::variables_map &params )
 
     client::vtrc_client_sptr client = client::vtrc_client::create( pp );
 
+    client->get_on_connect(  )  .connect( on_connect );
+    client->get_on_ready(  )    .connect( on_ready );
+    client->get_on_disconnect( ).connect( on_disconnect );
+
     std::cout << "Ok\n";
+
+    std::cout << "Connecting to "
+              << params["server"].as<std::string>( ) << "...";
 
     connect_to( client, params["server"].as<std::string>( ) );
 
-    std::cout << "Connected to "
-              << params["server"].as<std::string>( ) << "\n";
+    std::cout << "Ok\n";
 
     vtrc::shared_ptr<interfaces::lukki_db> impl
                                         (interfaces::create_lukki_db(client));
@@ -267,6 +288,7 @@ int start( const po::variables_map &params )
     }
 
     if( !events ) {
+        client->disconnect( );
         pp.stop_all( );
         std::cout << "Waiting for stop...";
     } else {

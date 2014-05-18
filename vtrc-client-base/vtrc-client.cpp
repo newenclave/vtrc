@@ -130,14 +130,6 @@ namespace vtrc { namespace client {
             cond.notify_all( );
         }
 
-        static void on_disconnect( bool &failed, std::string &res,
-                                   vtrc::condition_variable &cond )
-        {
-            failed = true;
-            res.assign( "Disconnected." );
-            cond.notify_all( );
-        }
-
         bool on_ready_diconnect( bool &failed )
         {
             return failed || ready( );
