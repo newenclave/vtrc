@@ -168,12 +168,14 @@ namespace lukki_db {
 
     struct  application::impl {
 
+        enum { RECORD_DELETED, RECORD_ADDED, RECORD_CHANGED };
+
         common::thread_pool             db_thread_;
         db_type                         db_;
         vtrc_example::db_stat           db_stat_;
         boost::asio::io_service::strand event_queue_;
 
-        std::vector<server::listener_sptr>                listeners_;
+        std::vector<server::listener_sptr>  listeners_;
 
         typedef vtrc::shared_ptr<common::rpc_channel> channel_sptr;
         typedef std::pair<
@@ -216,7 +218,7 @@ namespace lukki_db {
                 db_stat_.set_set_requests( db_stat_.set_requests( ) + 1 );
                 db_[name] = value;
                 db_stat_.set_total_records( db_.size( ) );
-                send_event( name , true );
+                send_event( name , RECORD_ADDED );
                 if( closure ) closure( true, "Success" );
             }
         }
@@ -232,7 +234,7 @@ namespace lukki_db {
                 if( closure ) closure( false, "Record was not found" );
             } else {
                 f->second.CopyFrom( value );
-                send_event( name , true );
+                send_event( name , RECORD_CHANGED );
                 if( closure ) closure( true, "Success" );
             }
         }
@@ -260,7 +262,7 @@ namespace lukki_db {
                 if( closure ) closure( false, "Record was not found" );
             } else {
                 db_.erase( f );
-                send_event( name , false );
+                send_event( name , RECORD_DELETED );
                 if( closure ) closure( true, "Success" );
             }
         }
@@ -281,32 +283,41 @@ namespace lukki_db {
         }
 
         /// events
-
-        void send_event( const std::string &record, bool changed )
+        void send_event( const std::string &record, unsigned changed )
         {
             event_queue_.post( vtrc::bind( &impl::send_event_impl, this,
-                                           record, changed) );
+                                           record, changed ) );
         }
 
         void send_event( vtrc::shared_ptr<common::rpc_channel> channel,
-                         const std::string &record, bool changed)
+                         const std::string &record, unsigned changed)
         {
             try {
+
                 vtrc_example::lukki_events_Stub s(channel.get( ));
                 vtrc_example::name_req req;
                 vtrc_example::empty    res;
+
                 req.set_name( record );
-                if(changed) {
-                    s.value_changed( NULL, &req, &res, NULL );
-                } else {
+                switch (changed) {
+                case RECORD_DELETED:
                     s.value_removed( NULL, &req, &res, NULL );
+                    break;
+                case RECORD_CHANGED:
+                    s.value_changed( NULL, &req, &res, NULL );
+                    break;
+                case RECORD_ADDED:
+                    s.new_value( NULL, &req, &res, NULL );
+                    break;
+                default:
+                    break;
                 }
             } catch( ... ) {
                 ;;;
             }
         }
 
-        void send_event_impl( const std::string &record, bool changed )
+        void send_event_impl( const std::string &record, unsigned changed )
         {
             subscriber_list_type::iterator b(subscribers_.begin( ));
             while( b != subscribers_.end( ) ) {

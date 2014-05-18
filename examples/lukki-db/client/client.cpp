@@ -110,6 +110,7 @@ void on_client_ready( vtrc::condition_variable &cond )
 }
 
 class lukki_events_impl: public vtrc_example::lukki_events {
+
     void subscribed(::google::protobuf::RpcController* controller,
                  const ::vtrc_example::empty* request,
                  ::vtrc_example::empty* response,
@@ -117,6 +118,15 @@ class lukki_events_impl: public vtrc_example::lukki_events {
     {
         common::closure_holder ch(done);
         std::cout << "Subscribed\n";
+    }
+
+    void new_value(::google::protobuf::RpcController* controller,
+                 const ::vtrc_example::name_req* request,
+                 ::vtrc_example::empty* response,
+                 ::google::protobuf::Closure* done)
+    {
+        common::closure_holder ch(done);
+        std::cout << "New record: " << request->name( ) << "\n";
     }
 
     void value_changed(::google::protobuf::RpcController* controller,
@@ -273,13 +283,13 @@ int start( const po::variables_map &params )
 
     if( !events ) {
         pp.stop_all( );
+        std::cout << "Waiting for stop...";
     } else {
         std::cout << "Waiting for events...\n";
     }
 
-    std::cout << "Waiting for stop...";
     pp.join_all( );
-    std::cout << "Ok\n";
+    std::cout << "Stopped\n";
 
     google::protobuf::ShutdownProtobufLibrary( );
     return 0;
