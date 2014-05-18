@@ -163,11 +163,11 @@ int start( const po::variables_map &params )
 
     client::vtrc_client_sptr client = client::vtrc_client::create( pp );
 
-    client->set_session_key( "sd" );
+    //client->set_session_key( "sd" );
     /// connect slot to 'on_ready'
-    vtrc::condition_variable ready_cond;
-    client->get_on_ready( ).connect( vtrc::bind( on_client_ready,
-                            vtrc::ref( ready_cond ) ) );
+//    vtrc::condition_variable ready_cond;
+//    client->get_on_ready( ).connect( vtrc::bind( on_client_ready,
+//                            vtrc::ref( ready_cond ) ) );
 
     std::cout << "Ok\n";
 
@@ -176,10 +176,10 @@ int start( const po::variables_map &params )
     std::cout << "Connected to "
               << params["server"].as<std::string>( ) << "\n";
 
-    vtrc::mutex                    ready_mutex;
-    vtrc::unique_lock<vtrc::mutex> ready_lock(ready_mutex);
-    ready_cond.wait( ready_lock,
-                     vtrc::bind( &client::vtrc_client::ready, client ) );
+//    vtrc::mutex                    ready_mutex;
+//    vtrc::unique_lock<vtrc::mutex> ready_lock(ready_mutex);
+//    ready_cond.wait( ready_lock,
+//                     vtrc::bind( &client::vtrc_client::ready, client ) );
 
     vtrc::shared_ptr<interfaces::lukki_db> impl
                                         (interfaces::create_lukki_db(client));

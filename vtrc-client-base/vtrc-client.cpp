@@ -9,12 +9,18 @@
 #include "vtrc-client-tcp.h"
 #include "vtrc-client-unix-local.h"
 #include "vtrc-client-win-pipe.h"
-
 #include "vtrc-rpc-channel-c.h"
-#include "vtrc-bind.h"
 
+#include "vtrc-bind.h"
+#include "vtrc-ref.h"
+#include "vtrc-condition-variable.h"
+#include "vtrc-chrono.h"
+
+#include "vtrc-common/vtrc-exception.h"
 #include "vtrc-common/vtrc-mutex-typedefs.h"
 #include "vtrc-common/vtrc-pool-pair.h"
+
+#include "protocol/vtrc-errors.pb.h"
 
 namespace vtrc { namespace client {
 
@@ -108,29 +114,110 @@ namespace vtrc { namespace client {
             return c;
         }
 
+        static void on_ready( vtrc::condition_variable &cond )
+        {
+            cond.notify_all( );
+        }
+
+        static void on_init_error( bool &failed, std::string &res,
+                              vtrc::condition_variable &cond,
+                              const vtrc_errors::container &,
+                              const char *message  )
+        {
+            failed = true;
+            res.assign( message );
+            cond.notify_all( );
+        }
+
+        static void on_disconnect( bool &failed, std::string &res,
+                                   vtrc::condition_variable &cond )
+        {
+            failed = true;
+            res.assign( "Disconnected." );
+            cond.notify_all( );
+        }
+
+        bool on_ready_diconnect( bool &failed )
+        {
+            return failed || ready( );
+        }
+
+        template <typename FuncType>
+        void connect_impl( FuncType conn_func )
+        {
+            bool                     failed = false;
+            std::string              failed_message;
+            vtrc::condition_variable cond;
+            vtrc::mutex              cond_lock;
+
+
+            struct connection_keep {
+                boost::signals2::connection c_;
+                connection_keep( const boost::signals2::connection &c )
+                    :c_(c)
+                {}
+                ~connection_keep( )
+                {
+                    c_.disconnect( );
+                }
+            };
+
+            connection_keep rc(parent_->on_ready_.connect(
+                        vtrc::bind( impl::on_ready, vtrc::ref( cond ) )));
+
+            connection_keep  fc(parent_->on_init_error_.connect(
+                        vtrc::bind( impl::on_init_error,
+                                  vtrc::ref(failed), vtrc::ref(failed_message),
+                                  vtrc::ref(cond), _1, _2 ))
+                        );
+
+            /// call connect
+            conn_func( );
+
+            parent_->on_connect_( );
+
+            vtrc::unique_lock<vtrc::mutex> ul(cond_lock);
+            bool ok = cond.wait_for( ul,
+                         vtrc::chrono::seconds( 10 ),
+                         vtrc::bind( &impl::on_ready_diconnect, this,
+                                     vtrc::ref(failed) ));
+
+            if( !ok ) {
+                throw vtrc::common::exception( vtrc_errors::ERR_TIMEOUT );
+            }
+
+            if( failed ) {
+                throw vtrc::common::exception( vtrc_errors::ERR_INTERNAL,
+                                               failed_message);
+            }
+
+        }
 
         void connect( const std::string &address,
                       unsigned short service, bool tcp_nodelay )
         {
             vtrc::shared_ptr<client_tcp> client(create_client_tcp(tcp_nodelay));
-            client->connect( address, service );
+            connect_impl(vtrc::bind( &client_tcp::connect, client,
+                                     address, service));
             if( tcp_nodelay )
                 client->set_no_delay( true );
-            parent_->on_connect_( );
         }
+
 
         void connect( const std::string &local_name )
         {
+
 #ifndef _WIN32
             vtrc::shared_ptr<client_unix_local>
-                                   client(create_client<client_unix_local>( ));
-            client->connect( local_name );
+                               client(create_client<client_unix_local>( ));
+            connect_impl(vtrc::bind( &client_unix_local::connect, client,
+                                     local_name));
 #else
             vtrc::shared_ptr<client_win_pipe>
-                                    client(create_client<client_win_pipe>( ));
-            client->connect( local_name );
+                                client(create_client<client_win_pipe>( ));
+            connect_impl(vtrc::bind( &client_win_pipe::connect, client,
+                                     local_name));
 #endif
-            parent_->on_connect_( );
         }
 
         common::connection_iface_sptr connection( )
@@ -151,7 +238,8 @@ namespace vtrc { namespace client {
         {
             vtrc::shared_ptr<client_win_pipe>
                          new_client(create_client<client_win_pipe>( ));
-            new_client->connect( local_name );
+            connect_impl(vtrc::bind( &client_win_pipe::connect, client,
+                                     local_name));
         }
 
         void async_connect(const std::wstring &local_name,
