@@ -132,11 +132,11 @@ namespace vtrc { namespace client {
 
         bool on_ready_diconnect( unsigned &failed )
         {
-            return failed || ready( );
+            return (failed != 0) || ready( );
         }
 
         template <typename FuncType>
-        void connect_impl( FuncType conn_func )
+        void connect_impl( const FuncType &conn_func )
         {
             unsigned                 failed = 0;
             std::string              failed_message;
