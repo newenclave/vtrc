@@ -126,7 +126,7 @@ class lukki_events_impl: public vtrc_example::lukki_events {
                  ::google::protobuf::Closure* done)
     {
         common::closure_holder ch(done);
-        std::cout << "New record: " << request->name( ) << "\n";
+        std::cout << "New record: '" << request->name( ) << "'\n";
     }
 
     void value_changed(::google::protobuf::RpcController* controller,
@@ -135,7 +135,7 @@ class lukki_events_impl: public vtrc_example::lukki_events {
                  ::google::protobuf::Closure* done)
     {
         common::closure_holder ch(done);
-        std::cout << "Record " << request->name( ) << " was changed\n";
+        std::cout << "Record '" << request->name( ) << "' was changed\n";
     }
 
     void value_removed(::google::protobuf::RpcController* controller,
@@ -144,7 +144,7 @@ class lukki_events_impl: public vtrc_example::lukki_events {
                  ::google::protobuf::Closure* done)
     {
         common::closure_holder ch(done);
-        std::cout << "Record " << request->name( ) << " was removed\n";
+        std::cout << "Record '" << request->name( ) << "' was removed\n";
     }
 };
 
