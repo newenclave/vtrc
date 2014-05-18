@@ -280,5 +280,6 @@ int start( const po::variables_map &params )
     pp.join_all( );
     std::cout << "Ok\n";
 
+    google::protobuf::ShutdownProtobufLibrary( );
     return 0;
 }
