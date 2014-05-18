@@ -36,8 +36,8 @@ namespace vtrc { namespace common {
 
         /// for attach current thread
         /// retrurns:
-        ///     false if interrupted
-        ///     true  if stopped
+        ///     false if interrupted by interrupt_one( )
+        ///     true  if stopped by stop( )
         bool attach(  );
 
         boost::asio::io_service       &get_io_service( );

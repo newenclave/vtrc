@@ -1,4 +1,5 @@
 #include <list>
+#include <set>
 
 #include "boost/asio.hpp"
 
@@ -13,33 +14,30 @@ namespace vtrc { namespace common {
 
     namespace basio = boost::asio;
 
+    typedef vtrc::shared_ptr<vtrc::thread> thread_sptr;
+
+    struct thread_context {
+        typedef vtrc::shared_ptr<thread_context> shared_type;
+        thread_sptr thread_;
+    };
+
+    inline bool operator < ( const thread_context &l, const thread_context &r )
+    {
+        return  l.thread_.get( ) < r.thread_.get( );
+    }
+
+    typedef std::set<thread_context::shared_type>  thread_set_type;
+
     struct thread_pool::impl {
-
-        struct thread_context {
-
-            typedef vtrc::shared_ptr<thread_context> shared_type;
-            vtrc::thread  *thread_;
-            bool           in_use_;
-
-            thread_context()
-                :thread_(NULL)
-                ,in_use_(true)
-            { }
-
-            ~thread_context()
-            {
-                if( thread_ )
-                    delete thread_;
-            }
-        };
 
         basio::io_service       *ios_;
         basio::io_service::work *wrk_;
         bool                     own_ios_;
-        //vtrc::atomic<size_t>     count_;
 
-        std::list<thread_context::shared_type>  threads_;
-        mutable shared_mutex                    threads_lock_;
+        thread_set_type          threads_;
+        thread_set_type          stopped_threads_;
+
+        mutable shared_mutex     threads_lock_;
 
         struct interrupt {
             static void raise ( ) { throw interrupt( ); }
@@ -67,30 +65,43 @@ namespace vtrc { namespace common {
             }
         }
 
+        void move_to_stopped( thread_context::shared_type &thread )
+        {
+            unique_shared_lock lck(threads_lock_);
+
+            stopped_threads_.insert( thread );
+            threads_.erase( thread );
+        }
+
         void add( size_t count )
         {
             std::list<thread_context::shared_type> tmp;
             while( count-- ) {
-                tmp.push_back(create_new_context( ));
+                tmp.push_back(create_thread( ));
             }
             unique_shared_lock lck(threads_lock_);
-            threads_.insert(threads_.end(), tmp.begin(), tmp.end());
+            threads_.insert( tmp.begin( ), tmp.end( ) );
+            stopped_threads_.clear( );
         }
 
         void inc( )
         {
-            thread_context::shared_type n(create_new_context( ));
-            unique_shared_lock lck(threads_lock_);
-            threads_.push_back(n);
+            thread_context::shared_type n(create_thread( ));
+            unique_shared_lock lck( threads_lock_ );
+            threads_.insert( n );
+            stopped_threads_.clear( ); /// must not remove it here
         }
 
-        thread_context::shared_type create_new_context( )
+        thread_context::shared_type create_thread(  )
         {
-            thread_context::shared_type
-                    new_context(vtrc::make_shared<thread_context>());
-            new_context->thread_ = new vtrc::thread(
-                        vtrc::bind(&impl::run, this, new_context.get( )) );
-            return new_context;
+
+            thread_context::shared_type new_inst(
+                        vtrc::make_shared<thread_context>( ));
+
+            new_inst->thread_.reset(
+                     new vtrc::thread(vtrc::bind(&impl::run, this, new_inst)));
+
+            return new_inst;
         }
 
         void interrupt_one( )
@@ -106,9 +117,11 @@ namespace vtrc { namespace common {
 
         void join_all( )
         {
-            typedef std::list<thread_context::shared_type>::iterator iterator;
+            typedef thread_set_type::iterator iterator;
+
             shared_lock lck(threads_lock_);
-            for(iterator b(threads_.begin()), e(threads_.end()); b!=e; ++b ) {
+
+            for(iterator b(threads_.begin( )), e(threads_.end( )); b!=e; ++b ) {
                 if( (*b)->thread_->joinable( ) )
                     (*b)->thread_->join( );
             }
@@ -117,12 +130,14 @@ namespace vtrc { namespace common {
         void stop( )
         {
             ios_->stop( );
+            unique_shared_lock lck(threads_lock_);
+            stopped_threads_.clear( );
         }
 
-        void run( thread_context *context )
+        void run( thread_context::shared_type thread )
         {
-            run_impl( context );
-            context->in_use_ = false;
+            run_impl( thread.get( ) );
+            move_to_stopped( thread );
         }
 
         bool run_impl( thread_context * /*context*/ )
