@@ -103,12 +103,6 @@ void connect_to( client::vtrc_client_sptr client, std::string const &name )
 
 }
 
-void on_client_ready( vtrc::condition_variable &cond )
-{
-    std::cout << "Connection is ready...\n";
-    cond.notify_all( );
-}
-
 class lukki_events_impl: public vtrc_example::lukki_events {
 
     void subscribed(::google::protobuf::RpcController* controller,
@@ -157,17 +151,11 @@ int start( const po::variables_map &params )
 
     /// will use only one thread for io operations.
     /// because we don't have callbacks or events from server-side
-    common::pool_pair pp( 1 );
+    common::pool_pair pp( 1, 0 );
 
     std::cout << "Creating client ... " ;
 
     client::vtrc_client_sptr client = client::vtrc_client::create( pp );
-
-    //client->set_session_key( "sd" );
-    /// connect slot to 'on_ready'
-//    vtrc::condition_variable ready_cond;
-//    client->get_on_ready( ).connect( vtrc::bind( on_client_ready,
-//                            vtrc::ref( ready_cond ) ) );
 
     std::cout << "Ok\n";
 
@@ -175,11 +163,6 @@ int start( const po::variables_map &params )
 
     std::cout << "Connected to "
               << params["server"].as<std::string>( ) << "\n";
-
-//    vtrc::mutex                    ready_mutex;
-//    vtrc::unique_lock<vtrc::mutex> ready_lock(ready_mutex);
-//    ready_cond.wait( ready_lock,
-//                     vtrc::bind( &client::vtrc_client::ready, client ) );
 
     vtrc::shared_ptr<interfaces::lukki_db> impl
                                         (interfaces::create_lukki_db(client));
@@ -189,6 +172,7 @@ int start( const po::variables_map &params )
 
     if( events ) {
         std::cout << "Subscribing to events...";
+        pp.get_rpc_pool( ).add_thread( );
         client->assign_rpc_handler( vtrc::make_shared<lukki_events_impl>( ) );
         impl->subscribe( );
         std::cout << "Ok\n";
