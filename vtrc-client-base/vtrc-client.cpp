@@ -27,6 +27,7 @@ namespace vtrc { namespace client {
     namespace basio = boost::asio;
     namespace bsys  = boost::system;
     namespace gpb   = google::protobuf;
+    namespace bs2   = boost::signals2;
 
     namespace {
 
@@ -150,23 +151,11 @@ namespace vtrc { namespace client {
             vtrc::condition_variable cond;
             vtrc::mutex              cond_lock;
 
+            bs2::scoped_connection rc( parent_->on_ready_.connect(
+                            vtrc::bind( impl::on_ready, vtrc::ref( cond ) )));
 
-            struct connection_keep {
-                boost::signals2::connection c_;
-                connection_keep( const boost::signals2::connection &c )
-                    :c_(c)
-                {}
-                ~connection_keep( )
-                {
-                    c_.disconnect( );
-                }
-            };
-
-            connection_keep rc(parent_->on_ready_.connect(
-                        vtrc::bind( impl::on_ready, vtrc::ref( cond ) )));
-
-            connection_keep  fc(parent_->on_init_error_.connect(
-                        vtrc::bind( impl::on_init_error,
+            bs2::scoped_connection fc( parent_->on_init_error_.connect(
+                            vtrc::bind( impl::on_init_error,
                                   vtrc::ref(failed), vtrc::ref(failed_message),
                                   vtrc::ref(cond), _1, _2 ))
                         );
