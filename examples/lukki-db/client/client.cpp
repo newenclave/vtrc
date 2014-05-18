@@ -163,6 +163,7 @@ int start( const po::variables_map &params )
 
     client::vtrc_client_sptr client = client::vtrc_client::create( pp );
 
+    client->set_session_key( "sd" );
     /// connect slot to 'on_ready'
     vtrc::condition_variable ready_cond;
     client->get_on_ready( ).connect( vtrc::bind( on_client_ready,
