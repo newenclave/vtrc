@@ -160,7 +160,7 @@ namespace vtrc { namespace client {
             bool ok = cond.wait_for( ul,
                          vtrc::chrono::seconds( 10 ),
                          vtrc::bind( &impl::on_ready_diconnect, this,
-                                     vtrc::ref(failed) ));
+                                      vtrc::ref(failed) ));
 
             if( !ok ) {
                 throw vtrc::common::exception( vtrc_errors::ERR_TIMEOUT );
