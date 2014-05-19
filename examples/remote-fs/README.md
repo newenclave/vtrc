@@ -128,5 +128,5 @@ Client uses this option as a server point.
 Every client' command can use an absolute or relative paths. For example:
     
     remote_fs_client -s 192.168.1.100:55555 --path=/home/sandbox --mkdir=test 
-    will make /home/sandbox/test directory
+will make /home/sandbox/test directory
 
