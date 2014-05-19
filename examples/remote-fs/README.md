@@ -101,4 +101,26 @@ and (function 'start' in [server.cpp](https://github.com/newenclave/vtrc/blob/ma
 Client side:
 -----------
 
+Client can be used for access to the remote filesystem. There are several commands:
+
+    ./remote_fs_client --help shows help for client;
+    
+    Allowed options:
+    -? [ --help ]           help message
+    -s [ --server ] arg     server name; <tcp address>:<port> or <pipe/file name>
+    -p [ --path ] arg       Init remote path for client
+    -w [ --pwd ]            Show current remote path
+    -i [ --info ] arg       Show info about remote path
+    -l [ --list ]           list remote directory
+    -t [ --tree ]           show remote directory as tree
+    -g [ --pull ] arg       Download remote file
+    -u [ --push ] arg       Upload local file
+    -b [ --block-size ] arg Block size for pull and push; 1-640000
+    -m [ --mkdir ] arg      Create remote directory
+    -d [ --del ] arg        Remove remote directory if it is empty
+    
+    option '--server' or '-s' has the same format as shown early: -s 127.0.0.1:55555 or --server=/home/sandbox/fs.sock or -s \\\\.\\pipe\\remote_fs_pipe
+    
+    Client uses this option as a server point.
+
 
