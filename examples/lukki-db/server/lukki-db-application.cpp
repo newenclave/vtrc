@@ -296,18 +296,17 @@ namespace lukki_db {
 
                 vtrc_example::lukki_events_Stub s(channel.get( ));
                 vtrc_example::name_req req;
-                vtrc_example::empty    res;
 
                 req.set_name( record );
                 switch (changed) {
                 case RECORD_DELETED:
-                    s.value_removed( NULL, &req, &res, NULL );
+                    s.value_removed( NULL, &req, NULL, NULL );
                     break;
                 case RECORD_CHANGED:
-                    s.value_changed( NULL, &req, &res, NULL );
+                    s.value_changed( NULL, &req, NULL, NULL );
                     break;
                 case RECORD_ADDED:
-                    s.new_value( NULL, &req, &res, NULL );
+                    s.new_value( NULL, &req, NULL, NULL );
                     break;
                 default:
                     break;
