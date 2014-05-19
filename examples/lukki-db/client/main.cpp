@@ -32,7 +32,6 @@ void show_help( po::options_description const &desc )
 }
 
 
-
 int main( int argc, char *argv[] )
 {
     po::options_description description("Allowed options");
