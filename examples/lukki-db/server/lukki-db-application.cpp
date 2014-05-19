@@ -324,7 +324,7 @@ namespace lukki_db {
                 common::connection_iface_sptr lck(b->first.lock( ));
                 if( lck ) {
                     send_event( b->second, record, changed );
-                    b++;
+                    ++b;
                 } else {
                     b = subscribers_.erase( b );
                 }
