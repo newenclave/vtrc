@@ -44,7 +44,7 @@ service lukki_db {
 }
 
 service lukki_events {
-    rpc subscribed(empty)       returns(empty);
+    rpc subscribed   (empty)    returns(empty);
     rpc new_value    (name_req) returns(empty);
     rpc value_changed(name_req) returns(empty);
     rpc value_removed(name_req) returns(empty);
