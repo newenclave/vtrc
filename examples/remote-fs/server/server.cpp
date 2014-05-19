@@ -158,7 +158,7 @@ int start( const po::variables_map &params )
     typedef std::vector<std::string> string_vector;
     string_vector servers = params["server"].as<string_vector>( );
 
-    common::pool_pair pp( io_size, rpc_size );
+    common::pool_pair pp( io_size, rpc_size - 1 );
     fs_application app( pp );
 
     std::vector<server::listener_sptr> listeners;
@@ -176,6 +176,7 @@ int start( const po::variables_map &params )
         std::cout << "Ok\n";
     }
 
+    pp.get_rpc_pool( ).attach( );
     pp.join_all( );
 
     return 0;
