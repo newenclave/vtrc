@@ -2,6 +2,7 @@
 #define VTRC_MONOTONIC_TIMER_H
 
 #include "boost/asio/steady_timer.hpp"
+#include "boost/asio/deadline_timer.hpp"
 #include "vtrc-chrono.h"
 
 namespace vtrc { namespace common { namespace timer {

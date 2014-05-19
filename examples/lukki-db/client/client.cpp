@@ -19,6 +19,7 @@
 #include "protocol/lukkidb.pb.h"
 
 #include "vtrc-chrono.h"
+#include "vtrc-common/vtrc-delayed-call.h"
 
 namespace po = boost::program_options;
 using namespace vtrc;
@@ -142,19 +143,21 @@ class lukki_events_impl: public vtrc_example::lukki_events {
     }
 };
 
-void on_connect( )
-{
-    std::cout << "connect...";
-}
+namespace {
+    void on_connect( )
+    {
+        std::cout << "connect...";
+    }
 
-void on_ready( )
-{
-    std::cout << "ready...";
-}
+    void on_ready( )
+    {
+        std::cout << "ready...";
+    }
 
-void on_disconnect( )
-{
-    std::cout << "disconnect...";
+    void on_disconnect( )
+    {
+        std::cout << "disconnect...";
+    }
 }
 
 int start( const po::variables_map &params )
@@ -193,7 +196,6 @@ int start( const po::variables_map &params )
 
     if( events ) {
         std::cout << "Subscribing to events...";
-        pp.get_rpc_pool( ).add_thread( );
         client->assign_rpc_handler( vtrc::make_shared<lukki_events_impl>( ) );
         impl->subscribe( );
         std::cout << "Ok\n";
@@ -293,6 +295,8 @@ int start( const po::variables_map &params )
         std::cout << "Waiting for stop...";
     } else {
         std::cout << "Waiting for events...\n";
+        /// ok we can have some events. Wait for them!
+        pp.get_rpc_pool( ).attach( );
     }
 
     pp.join_all( );
