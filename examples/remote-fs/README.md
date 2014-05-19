@@ -102,8 +102,9 @@ Client side:
 -----------
 
 Client can be used for access to the remote filesystem. There are several commands:
-
-    ./remote_fs_client --help shows help for client;
+    
+    Client help:
+    ./remote_fs_client --help
     
     Allowed options:
     -? [ --help ]           help message
@@ -123,4 +124,9 @@ option '--server' or '-s' has the same format as shown early: -s 127.0.0.1:55555
     
 Client uses this option as a server point.
 
+'--path' is init directory for client. Server will use it as start point for relative paths. 
+Every client' command can use an absolute or relative paths. For example:
+    
+    remote_fs_client -s 192.168.1.100:55555 --path=/home/sandbox --mkdir=test 
+    will make /home/sandbox/test directory
 
