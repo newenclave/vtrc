@@ -14,11 +14,11 @@ namespace vtrc { namespace common {
 
     namespace basio = boost::asio;
 
-    typedef vtrc::shared_ptr<vtrc::thread> thread_sptr;
+    typedef vtrc::unique_ptr<vtrc::thread> thread_ptr;
 
     struct thread_context {
         typedef vtrc::shared_ptr<thread_context> shared_type;
-        thread_sptr thread_;
+        thread_ptr thread_;
     };
 
     inline bool operator < ( const thread_context &l, const thread_context &r )
