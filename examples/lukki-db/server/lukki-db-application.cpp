@@ -387,12 +387,11 @@ namespace lukki_db {
     void application::attach_start_listener( server::listener_sptr listen )
     {
         listen->get_on_new_connection( ).connect(
-                    vtrc::bind( &impl::on_new_connection, impl_,
-                                listen, _1 ));
+                    vtrc::bind( &impl::on_new_connection, impl_, listen, _1 ));
 
         listen->get_on_stop_connection( ).connect(
-                    vtrc::bind( &impl::on_stop_connection, impl_,
-                                listen, _1 ));
+                    vtrc::bind( &impl::on_stop_connection, impl_, listen, _1 ));
+
         listen->start( );
         impl_->listeners_.push_back( listen );
     }
