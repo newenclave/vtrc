@@ -330,10 +330,10 @@ namespace lukki_db {
             }
         }
 
-        void send_subscribed( vtrc::shared_ptr<common::rpc_channel> channel )
+        void send_subscribed( common::rpc_channel &channel )
         {
             try {
-                vtrc_example::lukki_events_Stub s(channel.get( ));
+                vtrc_example::lukki_events_Stub s(&channel);
                 vtrc_example::empty r;
                 s.subscribed( NULL, &r, &r, NULL );
             } catch( ... ) {
@@ -349,7 +349,7 @@ namespace lukki_db {
                     (server::channels::unicast::create_event_channel
                             ( lck, true ));
                 subscribers_.push_back( std::make_pair(conn, channel) );
-                send_subscribed( channel );
+                send_subscribed( *channel );
             }
         }
 
