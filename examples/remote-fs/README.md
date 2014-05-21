@@ -1,4 +1,4 @@
-Remote filesystem example
+
 ===============
 
 Operations supported ([protocol definition file](https://github.com/newenclave/vtrc/blob/master/examples/remote-fs/protocol/remotefs.proto "remotefs.proto")): 
@@ -138,5 +138,12 @@ Client uses this option as a server point.
 Every client' command can use an absolute or relative paths. For example:
     
     remote_fs_client -s 192.168.1.100:55555 --path=/home/sandbox --mkdir=test 
+
 will make /home/sandbox/test directory
+
+    remote_fs_client -s 192.168.1.100:55555 --mkdir=/home/sandbox/test 
+
+will make the same
+
+
 
