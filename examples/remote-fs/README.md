@@ -120,7 +120,17 @@ Client can be used for access to the remote filesystem. There are several comman
     -m [ --mkdir ] arg      Create remote directory
     -d [ --del ] arg        Remove remote directory if it is empty
     
-option '--server' or '-s' has the same format as shown early: -s 127.0.0.1:55555 or --server=/home/sandbox/fs.sock or -s \\\\.\\pipe\\remote_fs_pipe
+option '--server' or '-s' has the same format as shown early: 
+
+    -s 127.0.0.1:55555 
+
+or 
+
+    --server=/home/sandbox/fs.sock 
+
+or 
+
+    -s \\\\.\\pipe\\remote_fs_pipe
     
 Client uses this option as a server point.
 
