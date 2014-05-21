@@ -342,8 +342,8 @@ namespace vtrc { namespace server {
                         vtrc::bind( &this_type::push_call, this,
                                     llu, connection_->shared_from_this( )));
             } else {
-                --current_calls_;
                 send_busy( *llu );
+                --current_calls_;
             }
         }
 
