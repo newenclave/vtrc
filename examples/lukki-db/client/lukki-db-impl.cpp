@@ -15,8 +15,9 @@ namespace {
 
         lukki_db_impl( vtrc::shared_ptr<vtrc::client::vtrc_client> c )
             :wrap_stub_(c->create_channel( ))
-        { }
-
+        {
+            wrap_stub_.call( &stub_type::init );
+        }
 
         void set( const std::string &name,
                   const std::vector<std::string> &value ) const

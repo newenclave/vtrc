@@ -31,6 +31,8 @@ message exist_res {
 
 service lukki_db {
 
+    rpc init(empty)        returns (empty);
+
     rpc set(value_set_req) returns (empty);
     rpc upd(value_set_req) returns (empty);
     rpc del(name_req)      returns (empty);

@@ -53,6 +53,14 @@ namespace lukki_db {
                 }
             }
 
+            void init(::google::protobuf::RpcController* /*controller*/,
+                         const ::vtrc_example::empty* /*request*/,
+                         ::vtrc_example::empty* /*response*/,
+                         ::google::protobuf::Closure* done)
+            {
+                done->Run( );
+            }
+
             void set(::google::protobuf::RpcController* controller,
                          const ::vtrc_example::value_set_req* request,
                          ::vtrc_example::empty* response,
