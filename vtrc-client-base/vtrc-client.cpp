@@ -181,7 +181,7 @@ namespace vtrc { namespace client {
             connect_impl(vtrc::bind( &client_tcp::connect, new_client,
                                      address, service));
             if( tcp_nodelay )
-                client->set_no_delay( true );
+                new_client->set_no_delay( true );
         }
 
 #ifdef _WIN32
