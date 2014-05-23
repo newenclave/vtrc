@@ -8,6 +8,7 @@
 #include "vtrc-common/vtrc-pool-pair.h"
 #include "vtrc-common/vtrc-closure-holder.h"
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"
+#include "vtrc-common/vtrc-stub-wrapper.h"
 
 #include "protocol/calculator.pb.h"
 
@@ -28,17 +29,20 @@ using namespace vtrc::common;
 /// calculator implementation
 class calculator_impl: public vtrc_example::calculator {
 
-    application      &app_;
-    connection_iface *client_;
-    vtrc::unique_ptr<rpc_channel> client_channel_;
+    typedef vtrc_example::variable_pool_Stub stub_type;
+    typedef stub_wrapper<stub_type>          stub_wrapper_type;
 
-    static rpc_channel *client_channel( connection_iface *client )
+    application                   &app_;
+    connection_iface              *client_;
+    mutable stub_wrapper_type      stub_;
+
+    static vtrc::shared_ptr<rpc_channel> client_channel( connection_iface *c )
     {
         /// create CALLBACK channel.
         /// so, all calls will be made in client-call thread context
-        return channels
-                ::unicast
-                ::create_callback_channel(client->shared_from_this( ));
+        return vtrc::shared_ptr<rpc_channel>(
+                    channels::unicast
+                    ::create_callback_channel( c->shared_from_this( )));
     }
 
 public:
@@ -46,7 +50,7 @@ public:
     calculator_impl( application &app, connection_iface *client )
         :app_(app)
         ,client_(client)
-        ,client_channel_(client_channel(client_))
+        ,stub_(client_channel(client_))
     { }
 
 private:
@@ -56,10 +60,9 @@ private:
     /// callback to client
     double request_client_variable( const std::string &name ) const
     {
-        vtrc_example::variable_pool_Stub stub(client_channel_.get( ));
         vtrc_example::number num;
         num.set_name( name );
-        stub.get_variable( NULL, &num, &num, NULL );
+        stub_.call( &stub_type::get_variable, &num, &num );
         return num.value( );
     }
 
