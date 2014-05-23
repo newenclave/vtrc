@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/PR-SVG-20010719/DTD/svg10.dtd">
+<svg width="25cm" height="11cm" viewBox="60 -220 500 220" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g>
+    <rect style="fill: #ffffff" x="60" y="-220" width="500" height="220"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2.35099e-37; stroke: #000000" x="60" y="-220" width="500" height="220"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="310" y="-106.1">
+      <tspan x="310" y="-106.1"></tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="200" y1="-200" x2="200.946" y2="-29.7359"/>
+    <polygon style="fill: #000000" points="200.988,-22.236 195.932,-32.2081 200.946,-29.7359 205.932,-32.2637 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="200.988,-22.236 195.932,-32.2081 200.946,-29.7359 205.932,-32.2637 "/>
+  </g>
+  <text font-size="12.7998" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="100" y="-180">
+    <tspan x="100" y="-180">Client process</tspan>
+  </text>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="380" y1="-200" x2="380.946" y2="-29.7359"/>
+    <polygon style="fill: #000000" points="380.988,-22.236 375.932,-32.2081 380.946,-29.7359 385.932,-32.2637 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="380.988,-22.236 375.932,-32.2081 380.946,-29.7359 385.932,-32.2637 "/>
+  </g>
+  <text font-size="12.7998" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="400" y="-180">
+    <tspan x="400" y="-180">Server process</tspan>
+  </text>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #0000ff" points="181,-140 400,-140 400,-80 185.472,-80 "/>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #0000ff" points="193.236,-85 183.236,-80 193.236,-75 "/>
+  </g>
+  <text font-size="18.0619" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="240" y="-180">
+    <tspan x="240" y="-180">Direct call</tspan>
+  </text>
+  <g>
+    <rect style="fill: #ffffff" x="80" y="-140" width="100" height="60"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 0.4; stroke: #000000" x="80" y="-140" width="100" height="60"/>
+  </g>
+  <text font-size="12.7998" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="80" y="-143.05">
+    <tspan x="80" y="-143.05">call</tspan>
+  </text>
+  <text font-size="12.7998" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="80" y="-68.1">
+    <tspan x="80" y="-68.1">return</tspan>
+  </text>
+  <text font-size="12.7998" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="400" y="-143.05">
+    <tspan x="400" y="-143.05">Accept client request</tspan>
+  </text>
+  <text font-size="12.7998" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="400" y="-68.1">
+    <tspan x="400" y="-68.1">Sent response to client</tspan>
+  </text>
+  <text font-size="12.7998" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="404" y="-115.575">
+    <tspan x="404" y="-115.575">Process </tspan>
+    <tspan x="404" y="-99.575">request</tspan>
+  </text>
+  <text font-size="12.7998" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="80" y="-110">
+    <tspan x="80" y="-110">  Blocking call</tspan>
+  </text>
+</svg>
