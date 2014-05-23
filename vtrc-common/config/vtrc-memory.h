@@ -15,11 +15,48 @@ namespace vtrc {
     using boost::make_shared;
     using boost::enable_shared_from_this;
 
+    template<typename T>
+    class ptr_keeper {
+
+        T *ptr_;
+
+        ptr_keeper( ptr_keeper const & );
+        ptr_keeper &operator = ( ptr_keeper const & );
+
+        typedef ptr_keeper<T> this_type;
+
+        void operator == ( ptr_keeper const& ) const;
+        void operator != ( ptr_keeper const& ) const;
+
+    public:
+
+        explicit ptr_keeper( T *p = NULL ) // throws( )
+            :ptr_( p )
+        { }
+
+        ~ptr_keeper( ) // throws( )
+        {
+            if( ptr_ ) delete ptr_;
+        }
+
+        T *get( ) const
+        {
+            return ptr_;
+        }
+
+        T *release(  )
+        {
+            T *t = ptr_;
+            ptr_ = NULL;
+            return t;
+        }
+    };
+
 /// will be add to config.h soon;
 #ifndef STD_HAS_UNIQUE_PTR_IMPL
 
     /// implementation for internal use only
-    template<class T>
+    template<typename T>
     class unique_ptr // noncopyable
     {
         T *ptr_;

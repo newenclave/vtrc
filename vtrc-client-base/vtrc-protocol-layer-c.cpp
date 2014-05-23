@@ -300,10 +300,8 @@ namespace vtrc { namespace client {
 
             create_key( key, s1, s2, key );
 
-            common::transformer_iface *new_transformer =
-                                erseefor::create( key.c_str( ), key.size( ) );
-
-            parent_->change_transformer( new_transformer );
+            parent_->change_transformer( erseefor::create(
+                                                 key.c_str( ), key.size( ) ) );
 
             key.assign( client_->get_session_key( ) );
             generate_key_infos( key, s1, s2, key );
@@ -311,10 +309,8 @@ namespace vtrc { namespace client {
             tsetup.set_salt1( s1 );
             tsetup.set_salt2( s2 );
 
-            common::transformer_iface *new_reverter =
-                                erseefor::create( key.c_str( ), key.size( ) );
-
-            parent_->change_revertor( new_reverter );
+            parent_->change_revertor( erseefor::create(
+                                            key.c_str( ), key.size( ) ) );
 
             capsule.set_ready( true );
             capsule.set_body( tsetup.SerializeAsString( ) );

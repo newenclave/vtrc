@@ -196,11 +196,9 @@ namespace vtrc { namespace server {
                         tsetup.salt2( ),    // input
                         key );              // output
 
-            common::transformer_iface *new_transformer =
-                                erseefor::create( key.c_str( ), key.size( ) );
-
             // client revertor is my transformer
-            parent_->change_transformer( new_transformer );
+            parent_->change_transformer( erseefor::create(
+                                                key.c_str( ), key.size( ) ) );
 
             capsule.Clear( );
             capsule.set_ready( true );
@@ -237,11 +235,9 @@ namespace vtrc { namespace server {
                                    *ts.mutable_salt2( ), // output
                                     key );               // output
 
-                common::transformer_iface *new_reverter =
-                                erseefor::create( key.c_str( ), key.size( ) );
-
                 // client transformer is my revertor
-                parent_->change_revertor( new_reverter );
+                parent_->change_revertor( erseefor::create(
+                                              key.c_str( ), key.size( ) ) );
 
                 capsule.set_ready( true );
                 capsule.set_body( ts.SerializeAsString( ) );
