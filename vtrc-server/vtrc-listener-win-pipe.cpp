@@ -11,7 +11,6 @@
 
 #include "vtrc-connection-impl.h"
 
-#include "vtrc-atomic.h"
 #include "vtrc-common/vtrc-closure.h"
 
 namespace vtrc { namespace server { namespace listeners {
@@ -86,7 +85,6 @@ namespace {
     struct pipe_listener: public listener {
 
         typedef pipe_listener this_type;
-        typedef vtrc::shared_ptr< vtrc::atomic<size_t> > shared_counter_type;
 
         basio::io_service       &ios_;
 
