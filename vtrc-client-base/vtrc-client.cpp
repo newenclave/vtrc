@@ -176,7 +176,7 @@ namespace vtrc { namespace client {
         void connect( const std::string &address,
                       unsigned short service, bool tcp_nodelay )
         {
-            vtrc::shared_ptr<client_tcp> 
+            vtrc::shared_ptr<client_tcp>
                             new_client(create_client_tcp(tcp_nodelay));
             connect_impl(vtrc::bind( &client_tcp::connect, new_client,
                                      address, service));
@@ -185,13 +185,13 @@ namespace vtrc { namespace client {
         }
 
 #ifdef _WIN32
-        static 
+        static
         void win_connect( vtrc::shared_ptr<client_win_pipe> &new_client,
                           const std::string &local_name)
         {
             new_client->connect( local_name );
         }
-        
+
         static
         void win_connect_w( vtrc::shared_ptr<client_win_pipe> &new_client,
                             const std::wstring &local_name)
@@ -206,12 +206,12 @@ namespace vtrc { namespace client {
 #ifndef _WIN32
             vtrc::shared_ptr<client_unix_local>
                             new_client(create_client<client_unix_local>( ));
-            connect_impl(vtrc::bind( &client_unix_local::connect, client,
+            connect_impl(vtrc::bind( &client_unix_local::connect, new_client,
                                      local_name));
 #else
             vtrc::shared_ptr<client_win_pipe>
                              new_client(create_client<client_win_pipe>( ));
-            connect_impl(vtrc::bind( &impl::win_connect, 
+            connect_impl(vtrc::bind( &impl::win_connect,
                                       vtrc::ref(new_client),
                                       vtrc::ref(local_name)));
 #endif
@@ -235,7 +235,7 @@ namespace vtrc { namespace client {
         {
             vtrc::shared_ptr<client_win_pipe>
                          new_client(create_client<client_win_pipe>( ));
-            connect_impl(vtrc::bind( &impl::win_connect_w, 
+            connect_impl(vtrc::bind( &impl::win_connect_w,
                                       vtrc::ref(new_client),
                                       vtrc::ref(local_name)));
         }
