@@ -8,7 +8,6 @@
 #include "vtrc-memory.h"
 #include "vtrc-bind.h"
 #include "vtrc-thread.h"
-#include "vtrc-atomic.h"
 
 namespace vtrc { namespace common {
 

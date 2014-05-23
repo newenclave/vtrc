@@ -73,10 +73,10 @@ namespace vtrc { namespace server {
         common::delayed_call     keepalive_calls_;
 
         typedef vtrc::function<void (void)> stage_function_type;
-        stage_function_type  stage_function_;
+        stage_function_type      stage_function_;
 
-        vtrc::atomic<unsigned>              current_calls_;
-        const unsigned                      maximum_calls_;
+        vtrc::atomic<unsigned>   current_calls_;
+        const unsigned           maximum_calls_;
 
         impl( application &a, common::transport_iface *c,
               unsigned maximum_calls)

@@ -11,7 +11,6 @@
 
 #include "vtrc-ref.h"
 #include "vtrc-bind.h"
-#include "vtrc-atomic.h"
 #include "vtrc-common/vtrc-closure.h"
 
 #include "vtrc-common/vtrc-enviroment.h"
