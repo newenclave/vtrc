@@ -32,9 +32,9 @@ class calculator_impl: public vtrc_example::calculator {
     typedef vtrc_example::variable_pool_Stub stub_type;
     typedef stub_wrapper<stub_type>          stub_wrapper_type;
 
-    application                   &app_;
-    connection_iface              *client_;
-    mutable stub_wrapper_type      stub_;
+    application                &app_;
+    connection_iface           *client_;
+    mutable stub_wrapper_type   stub_;
 
     static vtrc::shared_ptr<rpc_channel> client_channel( connection_iface *c )
     {
