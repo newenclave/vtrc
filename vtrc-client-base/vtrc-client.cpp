@@ -176,27 +176,44 @@ namespace vtrc { namespace client {
         void connect( const std::string &address,
                       unsigned short service, bool tcp_nodelay )
         {
-            vtrc::shared_ptr<client_tcp> client(create_client_tcp(tcp_nodelay));
-            connect_impl(vtrc::bind( &client_tcp::connect, client,
+            vtrc::shared_ptr<client_tcp> 
+                            new_client(create_client_tcp(tcp_nodelay));
+            connect_impl(vtrc::bind( &client_tcp::connect, new_client,
                                      address, service));
             if( tcp_nodelay )
                 client->set_no_delay( true );
         }
 
+#ifdef _WIN32
+        static 
+        void win_connect( vtrc::shared_ptr<client_win_pipe> &new_client,
+                          const std::string &local_name)
+        {
+            new_client->connect( local_name );
+        }
+        
+        static
+        void win_connect_w( vtrc::shared_ptr<client_win_pipe> &new_client,
+                            const std::wstring &local_name)
+        {
+            new_client->connect( local_name );
+        }
+#endif
 
         void connect( const std::string &local_name )
         {
 
 #ifndef _WIN32
             vtrc::shared_ptr<client_unix_local>
-                               client(create_client<client_unix_local>( ));
+                            new_client(create_client<client_unix_local>( ));
             connect_impl(vtrc::bind( &client_unix_local::connect, client,
                                      local_name));
 #else
             vtrc::shared_ptr<client_win_pipe>
-                                client(create_client<client_win_pipe>( ));
-            connect_impl(vtrc::bind( &client_win_pipe::connect, client,
-                                     local_name));
+                             new_client(create_client<client_win_pipe>( ));
+            connect_impl(vtrc::bind( &impl::win_connect, 
+                                      vtrc::ref(new_client),
+                                      vtrc::ref(local_name)));
 #endif
         }
 
@@ -218,8 +235,9 @@ namespace vtrc { namespace client {
         {
             vtrc::shared_ptr<client_win_pipe>
                          new_client(create_client<client_win_pipe>( ));
-            connect_impl(vtrc::bind( &client_win_pipe::connect, client,
-                                     local_name));
+            connect_impl(vtrc::bind( &impl::win_connect_w, 
+                                      vtrc::ref(new_client),
+                                      vtrc::ref(local_name)));
         }
 
         void async_connect(const std::wstring &local_name,

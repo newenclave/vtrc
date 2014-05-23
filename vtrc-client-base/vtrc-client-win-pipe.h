@@ -42,6 +42,7 @@ namespace client {
 
         void connect( const std::string &address );
         void connect( const std::wstring &address );
+
         void async_connect( const std::string &address,
                             common::system_closure_type closure );
         void async_connect( const std::wstring &address,
