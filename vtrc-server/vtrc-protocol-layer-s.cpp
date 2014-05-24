@@ -276,24 +276,20 @@ namespace vtrc { namespace server {
             vtrc_auth::client_selection cs;
             cs.ParseFromString( capsule.body( ) );
 
-            common::hash_iface *new_checker(
+            vtrc::ptr_keeper<common::hash_iface> new_checker (
                         common::hash::create_by_index( cs.hash( ) ) );
 
-            common::hash_iface *new_maker(
+            vtrc::ptr_keeper<common::hash_iface> new_maker(
                         common::hash::create_by_index( cs.hash( ) ) );
 
-            if( !new_maker ) {
-                delete new_checker;
-            }
-
-            if( !new_maker || !new_checker ) {
+            if( !new_maker.get( ) || !new_checker.get( ) ) {
                 connection_->close( );
                 return;
             }
 
             client_id_.assign( cs.id( ) );
-            parent_->change_hash_checker( new_checker );
-            parent_->change_hash_maker( new_maker );
+            parent_->change_hash_checker( new_checker.release( ) );
+            parent_->change_hash_maker( new_maker.release( ) );
 
             setup_transformer( cs.transform( ) );
 
