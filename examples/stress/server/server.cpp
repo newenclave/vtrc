@@ -25,6 +25,9 @@ void get_options( po::options_description& desc )
                                                     "; default = 1")
         ("rpc-pool-size,r",  po::value<unsigned>( ), "threads for rpc calls"
                                                     "; default = 1")
+        ("tcp-nodelay,t",    po::value<unsigned>( ), "sets TCP_NODELAY flag"
+                                                     " for tcp sockets")
+
         ;
 }
 
