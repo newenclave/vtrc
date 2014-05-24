@@ -1,4 +1,6 @@
 
+#include <algorithm>
+
 #include "boost/asio.hpp"
 #include "google/protobuf/service.h"
 #include "google/protobuf/descriptor.h"
@@ -93,7 +95,7 @@ namespace vtrc { namespace client {
             switch ( stage_ ) {
             case STAGE_HELLO:
                 parent_->on_init_error(
-                            create_error( vtrc_errors::ERR_INTERNAL, "" ),
+                            create_error( vtrc_errors::ERR_BUSY, "" ),
                             "Server in not ready");
                 break;
             case STAGE_SETUP:
