@@ -14,7 +14,6 @@
 namespace po = boost::program_options;
 using namespace vtrc;
 
-
 void get_options( po::options_description& desc )
 {
     desc.add_options( )
@@ -23,6 +22,8 @@ void get_options( po::options_description& desc )
                      "endpoint name; <tcp address>:<port> or <pipe/file name>")
 
         ("io-pool-size,i",  po::value<unsigned>( ), "threads for io operations"
+                                                    "; default = 1")
+        ("rpc-pool-size,r",  po::value<unsigned>( ), "threads for rpc calls"
                                                     "; default = 1")
         ;
 }
@@ -74,8 +75,6 @@ int start( const po::variables_map &params )
                                  "Use --help for details");
     }
 
-    /// as far as we use only ONE thread for DB access
-    /// we don't need rpc-pool anymore
     unsigned io_size = params.count( "io-pool-size" )
             ? params["io-pool-size"].as<unsigned>( )
             : 1;
@@ -84,10 +83,18 @@ int start( const po::variables_map &params )
         throw std::runtime_error( "io-pool-size must be at least 1" );
     }
 
+    unsigned rpc_size = params.count( "rpc-pool-size" )
+            ? params["rpc-pool-size"].as<unsigned>( )
+            : 1;
+
+    if( rpc_size < 1 ) {
+        throw std::runtime_error( "rpc-pool-size must be at least 1" );
+    }
+
 //    typedef std::vector<std::string> string_vector;
 //    string_vector servers = params["server"].as<string_vector>( );
 
-    common::pool_pair pp( io_size - 1 );
+    common::pool_pair pp( io_size - 1, rpc_size );
 //    lukki_db::application app( pp );
 
 //    for( string_vector::const_iterator b(servers.begin( )), e(servers.end( ));
