@@ -185,16 +185,14 @@ namespace vtrc { namespace client {
         }
 
 #ifdef _WIN32
-        static
-        void win_connect( client_win_pipe &new_client,
-                          const std::string &local_name)
+        static void win_connect( client_win_pipe &new_client,
+                                 const std::string &local_name)
         {
             new_client.connect( local_name );
         }
 
-        static
-        void win_connect_w( client_win_pipe &new_client,
-                            const std::wstring &local_name)
+        static void win_connect_w( client_win_pipe &new_client,
+                                   const std::wstring &local_name)
         {
             new_client.connect( local_name );
         }
@@ -247,8 +245,7 @@ namespace vtrc { namespace client {
                          new_client(create_client<client_win_pipe>( ));
 
             new_client->async_connect( local_name,
-                vtrc::bind( &this_type::async_connect_success,
-                            this,
+                vtrc::bind( &this_type::async_connect_success, this,
                             basio::placeholders::error,
                             closure ));
         }
