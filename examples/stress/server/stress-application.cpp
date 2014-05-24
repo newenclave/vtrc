@@ -7,6 +7,7 @@
 #include "vtrc-server/vtrc-application.h"
 #include "vtrc-server/vtrc-listener-tcp.h"
 #include "vtrc-server/vtrc-listener-local.h"
+#include "vtrc-server/vtrc-listener.h"
 
 #include "boost/program_options.hpp"
 #include "boost/algorithm/string.hpp"
@@ -46,15 +47,19 @@ namespace stress {
                                                name.end( ) ) );
             }
 
+            server::listener_options def_opts(
+                                        server::listeners::default_options( ));
+
             if( params.size( ) == 1 ) {         /// local endpoint
         #ifndef _WIN32
                 ::unlink( params[0].c_str( ) ); /// unlink old file socket
         #endif
-                result = server::listeners::local::create( app, params[0] );
+                result = server::listeners::local::create( app, def_opts,
+                                                           params[0] );
 
             } else if( params.size( ) == 2 ) {  /// TCP
 
-                result = server::listeners::tcp::create( app,
+                result = server::listeners::tcp::create( app, def_opts,
                                 params[0],
                                 boost::lexical_cast<unsigned short>(params[1]),
                                 tcp_nodelay);
