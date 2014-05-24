@@ -54,12 +54,11 @@ namespace stress {
 #ifndef _WIN32
                 ::unlink( params[0].c_str( ) ); /// unlink old file socket
 #endif
-                result = server::listeners::local::create( app, def_opts,
-                                                           params[0] );
+                result = server::listeners::local::create(app, opts, params[0]);
 
             } else if( params.size( ) == 2 ) {  /// TCP
 
-                result = server::listeners::tcp::create( app, def_opts,
+                result = server::listeners::tcp::create( app, opts,
                                 params[0],
                                 boost::lexical_cast<unsigned short>(params[1]),
                                 tcp_nodelay);
