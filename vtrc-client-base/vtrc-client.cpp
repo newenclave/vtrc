@@ -186,17 +186,17 @@ namespace vtrc { namespace client {
 
 #ifdef _WIN32
         static
-        void win_connect( vtrc::shared_ptr<client_win_pipe> &new_client,
+        void win_connect( client_win_pipe &new_client,
                           const std::string &local_name)
         {
-            new_client->connect( local_name );
+            new_client.connect( local_name );
         }
 
         static
-        void win_connect_w( vtrc::shared_ptr<client_win_pipe> &new_client,
+        void win_connect_w( client_win_pipe &new_client,
                             const std::wstring &local_name)
         {
-            new_client->connect( local_name );
+            new_client.connect( local_name );
         }
 #endif
 
@@ -212,7 +212,7 @@ namespace vtrc { namespace client {
             vtrc::shared_ptr<client_win_pipe>
                              new_client(create_client<client_win_pipe>( ));
             connect_impl(vtrc::bind( &impl::win_connect,
-                                      vtrc::ref(new_client),
+                                      vtrc::ref(*new_client),
                                       vtrc::ref(local_name)));
 #endif
         }
@@ -236,7 +236,7 @@ namespace vtrc { namespace client {
             vtrc::shared_ptr<client_win_pipe>
                          new_client(create_client<client_win_pipe>( ));
             connect_impl(vtrc::bind( &impl::win_connect_w,
-                                      vtrc::ref(new_client),
+                                      vtrc::ref(*new_client),
                                       vtrc::ref(local_name)));
         }
 
