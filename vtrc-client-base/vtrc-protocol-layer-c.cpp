@@ -329,6 +329,16 @@ namespace vtrc { namespace client {
             }
         }
 
+        static bool server_has_transformer( vtrc_auth::init_capsule const &cap,
+                                            unsigned transformer_type )
+        {
+            vtrc_auth::init_protocol init;
+            init.ParseFromString( cap.body( ) );
+            return std::find( init.transform_supported( ).begin( ),
+                      init.transform_supported( ).end( ),
+                      transformer_type) != init.transform_supported( ).end( );
+        }
+
         void on_hello_call( )
         {
             vtrc_auth::init_capsule capsule;
@@ -356,11 +366,13 @@ namespace vtrc { namespace client {
 
             bool key_set = client_->is_key_set( );
 
-            if( !key_set ) {
-                init.set_transform( vtrc_auth::TRANSFORM_NONE );
-            } else {
+            const unsigned basic_transform = vtrc_auth::TRANSFORM_ERSEEFOR;
+
+            if( key_set && server_has_transformer( capsule, basic_transform )) {
                 init.set_transform( vtrc_auth::TRANSFORM_ERSEEFOR );
                 init.set_id( client_->get_session_id( ) );
+            } else {
+                init.set_transform( vtrc_auth::TRANSFORM_NONE );
             }
 
             init.set_hash( vtrc_auth::HASH_CRC_32 );
