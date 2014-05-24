@@ -1,0 +1,4 @@
+
+package vtrc_example;
+option cc_generic_services = true;
+
