@@ -25,8 +25,9 @@ namespace stress {
     namespace {
 
         server::listener_sptr create_from_string( const std::string &name,
-                                                  server::application &app,
-                                                  bool tcp_nodelay)
+                                  server::application &app,
+                                  const server::listener_options &opts,
+                                  bool tcp_nodelay)
         {
             /// result endpoint
             server::listener_sptr result;
@@ -48,9 +49,6 @@ namespace stress {
                 params.push_back( std::string( name.begin( ) + delim_pos + 1,
                                                name.end( ) ) );
             }
-
-            server::listener_options def_opts(
-                                        server::listeners::default_options( ));
 
             if( params.size( ) == 1 ) {         /// local endpoint
 #ifndef _WIN32
@@ -129,18 +127,24 @@ namespace stress {
         void run( const po::variables_map &params )
         {
             typedef std::vector<std::string> string_vector;
+            typedef string_vector::const_iterator citer;
+
             string_vector ser = params["server"].as<string_vector>( );
 
             bool use_only_pool = !!params.count( "only-pool" );
             bool tcp_nodelay   = !!params.count( "tcp-nodelay" );
 
-            for( string_vector::const_iterator b(ser.begin( )), e(ser.end( ));
-                                                                    b != e; ++b)
-            {
+            using server::listeners::default_options;
+
+            server::listener_options opts( default_options( ) );
+
+            for( citer b(ser.begin( )), e(ser.end( )); b != e; ++b) {
+
                 std::cout << "Starting listener at '" <<  *b << "'...";
-                attach_start_listener( create_from_string( *b, app_,
+                attach_start_listener( create_from_string( *b, app_, opts,
                                                            tcp_nodelay) );
                 std::cout << "Ok\n";
+
             }
 
             if( use_only_pool ) {
