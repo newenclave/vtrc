@@ -4,6 +4,8 @@
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-closure-holder.h"
 
+#include "google/protobuf/descriptor.h"
+
 namespace gpb = google::protobuf;
 using namespace vtrc;
 
@@ -37,6 +39,11 @@ namespace stress {
     gpb::Service *create_service( common::connection_iface *c )
     {
         return new stress_service_impl( c );
+    }
+
+    std::string service_name( )
+    {
+        return stress_service_impl::descriptor( )->full_name( );
     }
 
 }

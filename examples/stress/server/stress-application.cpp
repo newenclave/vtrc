@@ -9,6 +9,8 @@
 #include "vtrc-server/vtrc-listener-local.h"
 #include "vtrc-server/vtrc-listener.h"
 
+#include "stress-service-impl.h"
+
 #include "boost/program_options.hpp"
 #include "boost/algorithm/string.hpp"
 
@@ -51,9 +53,9 @@ namespace stress {
                                         server::listeners::default_options( ));
 
             if( params.size( ) == 1 ) {         /// local endpoint
-        #ifndef _WIN32
+#ifndef _WIN32
                 ::unlink( params[0].c_str( ) ); /// unlink old file socket
-        #endif
+#endif
                 result = server::listeners::local::create( app, def_opts,
                                                            params[0] );
 
@@ -78,6 +80,13 @@ namespace stress {
                      get_service_by_name( common::connection_iface* conn,
                                           const std::string &service_name )
             {
+                if( service_name == stress::service_name( ) ) {
+                    google::protobuf::Service *stress_serv =
+                            stress::create_service( conn );
+                    return vtrc::shared_ptr<common::rpc_service_wrapper>(
+                                vtrc::make_shared<common::rpc_service_wrapper>(
+                                                                stress_serv ) );
+                }
                 return vtrc::shared_ptr<common::rpc_service_wrapper>( );
             }
 
