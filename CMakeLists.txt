@@ -35,7 +35,7 @@ add_subdirectory(vtrc-test-client)
 add_subdirectory(examples/calculator)
 add_subdirectory(examples/remote-fs)
 add_subdirectory(examples/lukki-db)
-add_subdirectory(examples/stress-test)
+add_subdirectory(examples/stress)
 
 
 
