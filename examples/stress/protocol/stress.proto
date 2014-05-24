@@ -2,3 +2,10 @@
 package vtrc_example;
 option cc_generic_services = true;
 
+message ping_req { }
+message ping_res { }
+
+service stress_service {
+    rpc ping(ping_req) returns (ping_res);
+}
+
