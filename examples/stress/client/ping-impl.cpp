@@ -29,7 +29,7 @@ namespace stress {
 
 
         try {
-            std::cout << "Send pind with " << payload << " bytes as payload...";
+            std::cout << "Send ping with " << payload << " bytes as payload...";
             iface.ping( payload );
             time_point stop = chrono::high_resolution_clock::now( );
 
