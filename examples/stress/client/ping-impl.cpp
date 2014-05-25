@@ -37,7 +37,7 @@ namespace stress {
 
         } catch ( const std::exception &ex )  {
             std::cout << "ping error: " << ex.what( ) << "\n";
-            return;
+            throw;
         }
     }
 
