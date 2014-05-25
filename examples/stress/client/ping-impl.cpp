@@ -14,6 +14,12 @@ namespace stress {
     using namespace vtrc;
     typedef chrono::high_resolution_clock::time_point time_point;
 
+    template <typename TT>
+    chrono::microseconds cast( const TT& point )
+    {
+        return chrono::duration_cast<chrono::microseconds>( point );
+    }
+
     void ping_impl( boost::system::error_code const &err,
                     interface &iface, unsigned count, unsigned payload,
                     vtrc::shared_ptr<common::delayed_call> dc,
@@ -21,21 +27,20 @@ namespace stress {
     {
         time_point start = chrono::high_resolution_clock::now( );
 
-        std::cout << "Send pind with " << payload << " bytes as payload ...";
 
         try {
+            std::cout << "Send pind with " << payload << " bytes as payload...";
             iface.ping( payload );
+            time_point stop = chrono::high_resolution_clock::now( );
+
+            std::cout << "ok; " << cast(stop - start).count( )
+                      << " microseconds\n";
+
         } catch ( const std::exception &ex )  {
             std::cout << "ping error: " << ex.what( ) << "\n";
             pp.stop_all( );
             return;
         }
-
-        time_point stop = chrono::high_resolution_clock::now( );
-
-        std::cout << "ok; "
-        << chrono::duration_cast<chrono::microseconds>( stop - start ).count( )
-        << " mictoseconds\n";
 
         if( --count == 0 ) {
             pp.stop_all( );
