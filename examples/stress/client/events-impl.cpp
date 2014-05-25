@@ -51,7 +51,7 @@ namespace {
                       << "; "
                       << "previous: "
                       << get_micro( last_event_point_, this_event_point )
-                      << " microseconds ago;"
+                      << " microseconds ago"
                       << "; thread " << this_thread::get_id( )
                       << "\n";
 
