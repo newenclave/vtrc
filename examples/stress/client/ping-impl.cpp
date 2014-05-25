@@ -17,28 +17,23 @@ namespace stress {
     using namespace vtrc::common;
 
     template <typename TT>
-    chrono::microseconds cast( const TT& point )
+    size_t cast( const TT& point )
     {
-        return chrono::duration_cast<chrono::microseconds>( point );
+        return chrono::duration_cast<chrono::microseconds>( point ).count( );
     }
 
     void ping_impl( interface &iface, unsigned payload )
     {
         time_point start = chrono::high_resolution_clock::now( );
 
-        try {
-            std::cout << "Send ping with " << payload << " bytes as payload...";
-            iface.ping( payload );
-            time_point stop = chrono::high_resolution_clock::now( );
+        std::cout << "Send ping with " << payload << " bytes as payload...";
 
-            std::cout << "ok; " << cast(stop - start).count( )
-                      << " microseconds\n";
+        iface.ping( payload );
 
+        time_point stop = chrono::high_resolution_clock::now( );
 
-        } catch ( const std::exception &ex )  {
-            std::cout << "ping error: " << ex.what( ) << "\n";
-            throw;
-        }
+        std::cout << "ok; " << cast(stop - start)
+                  << " microseconds\n";
     }
 
     void ping(interface &iface, unsigned count, unsigned payload)
