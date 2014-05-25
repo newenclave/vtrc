@@ -135,6 +135,19 @@ namespace stress {
                       << "\n";
         }
 
+        server::listener_options options( const po::variables_map &params )
+        {
+            using server::listeners::default_options;
+            server::listener_options opts( default_options( ) );
+
+            if( params.count( "message-size" ) ) {
+                opts.maximum_message_length =
+                        params["message-size"].as<unsigned>( );
+            }
+
+            return opts;
+        }
+
         void run( const po::variables_map &params )
         {
             typedef std::vector<std::string> string_vector;
@@ -147,7 +160,7 @@ namespace stress {
 
             using server::listeners::default_options;
 
-            server::listener_options opts( default_options( ) );
+            server::listener_options opts( options( params ) );
 
             for( citer b(ser.begin( )), e(ser.end( )); b != e; ++b) {
 

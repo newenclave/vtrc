@@ -19,7 +19,7 @@ void get_options( po::options_description& desc )
         ("io-pool-size,i",  po::value<unsigned>( ),
             "threads for io operations; default = 1")
 
-        ("rpc-pool-size,r",  po::value<unsigned>( ),
+        ("rpc-pool-size,r", po::value<unsigned>( ),
             "threads for rpc calls; default = 1")
 
         ("tcp-nodelay,t",
@@ -27,6 +27,9 @@ void get_options( po::options_description& desc )
 
         ("only-pool,o",
             "use io pool for io operatoration and rpc calls")
+
+        ("message-size,M", po::value<unsigned>( ),
+            "maximum message size for protocol")
 
         ;
 }
