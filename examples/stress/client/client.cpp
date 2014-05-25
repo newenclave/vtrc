@@ -51,7 +51,11 @@ void get_options( po::options_description& desc )
     desc.add_options( )
         ("help,?",   "help message")
         ("server,s", po::value<std::string>( ),
-                     "server name; <tcp address>:<port> or <pipe/file name>")
+            "server name; <tcp address>:<port> or <pipe/file name>")
+        ("ping,p", po::value<unsigned>( ), "make ping [arg] time")
+
+        ("payload,l", po::value<unsigned>( ),
+            "payload in bytes for commands such as ping")
 
         ;
 }

@@ -22,6 +22,16 @@ namespace  {
         { }
 
     private:
+
+        void init(::google::protobuf::RpcController* controller,
+                 const ::vtrc_example::empty* request,
+                 ::vtrc_example::empty* response,
+                 ::google::protobuf::Closure* done)
+        {
+            common::closure_holder holder(done);
+        }
+
+
         void ping(::google::protobuf::RpcController* controller,
                  const ::vtrc_example::ping_req* request,
                  ::vtrc_example::ping_res* response,

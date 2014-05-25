@@ -23,7 +23,7 @@ void get_options( po::options_description& desc )
             "threads for rpc calls; default = 1")
 
         ("tcp-nodelay,t",
-            "sets TCP_NODELAY flag for tcp sockets")
+            "set TCP_NODELAY flag for tcp sockets")
 
         ("only-pool,o",
             "use io pool for io operatoration and rpc calls")
