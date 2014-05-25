@@ -15,14 +15,20 @@
 
 #include "protocol/stress.pb.h"
 
-#include "stress-iface.h"
-#include "ping-impl.h"
-
 #include "vtrc-chrono.h"
 #include "vtrc-common/vtrc-delayed-call.h"
 
+#include "stress-iface.h"
+#include "ping-impl.h"
+#include "events-impl.h"
+
+
 namespace po = boost::program_options;
+namespace gpb = google::protobuf;
+
 using namespace vtrc;
+
+
 
 struct work_time {
 
@@ -69,9 +75,11 @@ void get_options( po::options_description& desc )
 
         ("ping,p", po::value<unsigned>( ), "make ping [arg] time")
 
+        ("gen-events,e", po::value<unsigned>( ),
+            "ask server for generate [arg] events")
+
         ("payload,l", po::value<unsigned>( ),
-            "payload in bytes for commands such as ping; "
-            "dafault = 64")
+            "payload in bytes for commands such as ping; default = 64")
 
         ;
 }
@@ -146,7 +154,7 @@ int start( const po::variables_map &params )
         throw std::runtime_error( "rpc-pool-size must be at least 1" );
     }
 
-    common::pool_pair pp( io_size, rpc_size );
+    common::pool_pair pp( io_size, rpc_size - 1 );
 
     std::cout << "Creating client ... " ;
 
@@ -175,9 +183,20 @@ int start( const po::variables_map &params )
     if( params.count( "ping" ) ) {
         unsigned times = params["ping"].as<unsigned>( );
         stress::ping( *impl, times, payload, pp );
+    } else if( params.count( "gen-events" ) ) {
+
+        std::cout << "Ask server fo events\n";
+        vtrc::shared_ptr<gpb::Service> events(stress::create_events( client ));
+        client->assign_rpc_handler( events );
+
+        unsigned event_count = params["gen-events"].as<unsigned>( );
+        impl->generate_events( event_count, true, false );
+        std::cout << "Ok\n";
     }
 
+    pp.get_rpc_pool( ).attach( );
     pp.join_all( );
+
     std::cout << "Stopped\n";
 
     google::protobuf::ShutdownProtobufLibrary( );

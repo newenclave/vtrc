@@ -16,6 +16,9 @@ namespace stress {
         virtual ~interface( ) { }
 
         virtual void ping( unsigned payload ) = 0;
+        virtual void generate_events( unsigned count,
+                                      bool insert,
+                                      bool wait ) = 0;
 
     };
 

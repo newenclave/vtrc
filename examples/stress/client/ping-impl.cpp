@@ -57,8 +57,7 @@ namespace stress {
                 unsigned count, unsigned payload,
                 vtrc::common::pool_pair &pp)
     {
-
-        std::cout << "Ping start:\n";
+        std::cout << "Start pinging...\n";
         vtrc::shared_ptr<common::delayed_call> dc
              (vtrc::make_shared<common::delayed_call>
                                 ( vtrc::ref(pp.get_rpc_service( ))));
@@ -66,9 +65,6 @@ namespace stress {
         dc->call_from_now( vtrc::bind( ping_impl, _1,
                      vtrc::ref(iface), count, payload, dc,
                      vtrc::ref(pp) ), timer::seconds( 0 ) );
-
-        pp.get_rpc_pool( ).attach( );
-        std::cout << "Ping complete\n";
     }
 
 }

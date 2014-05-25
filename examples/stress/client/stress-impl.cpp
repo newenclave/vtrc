@@ -34,6 +34,15 @@ namespace {
             stub_.call_request( &stub_type::ping, &req );
         }
 
+        void generate_events( unsigned count, bool insert, bool wait )
+        {
+            vtrc_example::generate_events_req req;
+            req.set_count( count );
+            req.set_callback( insert );
+            req.set_wait( wait );
+            stub_.call_request( &stub_type::generate_event, &req );
+        }
+
     };
 }
 

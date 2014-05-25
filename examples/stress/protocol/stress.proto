@@ -13,7 +13,9 @@ message ping_res {
 }
 
 message generate_events_req {
-    optional uint32 count = 1;
+    optional uint32 count       = 1;
+    optional bool   callback    = 2;
+    optional bool   wait        = 3;
 }
 
 message generate_events_res {
