@@ -69,6 +69,9 @@ namespace  {
 
             stub_type stub( channel.get( ) );
             vtrc_example::event_req req;
+
+            req.set_is_event( dis_wait );
+
             for( unsigned i=0; i<request->count( ); ++i ) {
                 req.set_id( i );
                 stub.event( NULL, &req, NULL, NULL );

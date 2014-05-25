@@ -47,13 +47,18 @@ namespace {
 
             time_point this_event_point = high_resolution_clock::now( );
 
-            std::cout << "Event id '" << request->id( ) << "'"
-                      << "; "
+            std::string name( request->is_event( ) ? "Event" : "Callback" );
+
+            std::cout << name << " id '" << request->id( ) << "'"
+                      << "; ";
+            if( request->id( ) > 0 ) {
+                std::cout
                       << "previous: "
                       << get_micro( last_event_point_, this_event_point )
                       << " microseconds ago"
-                      << "; thread " << this_thread::get_id( )
-                      << "\n";
+                      << "; thread " << this_thread::get_id( );
+            }
+            std::cout << "\n";
 
             last_event_point_ = this_event_point;
         }

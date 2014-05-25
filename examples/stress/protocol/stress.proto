@@ -31,12 +31,13 @@ service stress_service {
 /// ============== events or callbacks ================== ///
 
 message event_req {
-    optional uint32 id = 1;
+    optional uint32 id       = 1;
+    optional bool   is_event = 2;
 }
 
 message event_res { }
 
 service stress_events {
-    rpc event ( event_req ) returns ( event_res );
+    rpc event    ( event_req ) returns ( event_res );
 }
 

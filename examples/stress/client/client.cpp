@@ -74,6 +74,9 @@ void get_options( po::options_description& desc )
 
         ("ping,p", po::value<unsigned>( ), "make ping [arg] time")
 
+        ("gen-callbacks,c", po::value<unsigned>( ),
+            "ask server for generate [arg] callbacks")
+
         ("gen-events,e", po::value<unsigned>( ),
             "ask server for generate [arg] events")
 
@@ -195,6 +198,19 @@ int start( const po::variables_map &params )
 
         unsigned event_count = params["gen-events"].as<unsigned>( );
         impl->generate_events( event_count, true, false );
+        std::cout << "Ok\n";
+
+    } else if ( params.count( "gen-callbacks" ) ) {
+
+        std::cout << "Ask server fo callbacks\n";
+        std::cout << "Current thread is: "
+                  << this_thread::get_id( ) << "\n";
+
+        vtrc::shared_ptr<gpb::Service> events(stress::create_events( client ));
+        client->assign_rpc_handler( events );
+
+        unsigned event_count = params["gen-callbacks"].as<unsigned>( );
+        impl->generate_events( event_count, true, true );
         std::cout << "Ok\n";
     }
 
