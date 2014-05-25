@@ -13,6 +13,7 @@ namespace stress {
 
     using namespace vtrc;
     typedef chrono::high_resolution_clock::time_point time_point;
+    using namespace vtrc::common;
 
     template <typename TT>
     chrono::microseconds cast( const TT& point )
@@ -47,7 +48,7 @@ namespace stress {
         } else {
             dc->call_from_now( vtrc::bind( ping_impl, _1,
                          vtrc::ref(iface), count, payload, dc,
-                         vtrc::ref(pp) ), boost::posix_time::seconds( 1 ) );
+                         vtrc::ref(pp) ), timer::seconds( 1 ) );
         }
     }
 
@@ -63,7 +64,7 @@ namespace stress {
 
         dc->call_from_now( vtrc::bind( ping_impl, _1,
                      vtrc::ref(iface), count, payload, dc,
-                     vtrc::ref(pp) ), boost::posix_time::seconds( 0 ) );
+                     vtrc::ref(pp) ), timer::seconds( 0 ) );
 
         pp.get_rpc_pool( ).attach( );
         std::cout << "Ping complete\n";

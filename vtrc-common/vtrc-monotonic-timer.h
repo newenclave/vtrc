@@ -7,6 +7,12 @@
 
 namespace vtrc { namespace common { namespace timer {
 
+    using boost::posix_time::milliseconds;
+    using boost::posix_time::microseconds;
+    using boost::posix_time::seconds;
+    using boost::posix_time::minutes;
+    using boost::posix_time::hours;
+
     struct monotonic_traits {
 
         typedef vtrc::chrono::steady_clock::time_point time_type;
