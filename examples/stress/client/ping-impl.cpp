@@ -37,6 +37,7 @@ namespace stress {
             std::cout << "ok; " << cast(stop - start).count( )
                       << " microseconds\n";
 
+
         } catch ( const std::exception &ex )  {
             std::cout << "ping error: " << ex.what( ) << "\n";
             pp.stop_all( );
