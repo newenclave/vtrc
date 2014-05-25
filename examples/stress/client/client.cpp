@@ -22,13 +22,12 @@
 #include "ping-impl.h"
 #include "events-impl.h"
 
+#include "vtrc-thread.h"
 
 namespace po = boost::program_options;
 namespace gpb = google::protobuf;
 
 using namespace vtrc;
-
-
 
 struct work_time {
 
@@ -181,11 +180,16 @@ int start( const po::variables_map &params )
             : 64;
 
     if( params.count( "ping" ) ) {
+
         unsigned times = params["ping"].as<unsigned>( );
-        stress::ping( *impl, times, payload, pp );
+        stress::ping( *impl, times, payload );
+
     } else if( params.count( "gen-events" ) ) {
 
         std::cout << "Ask server fo events\n";
+        std::cout << "Current thread is: "
+                  << this_thread::get_id( ) << "\n";
+
         vtrc::shared_ptr<gpb::Service> events(stress::create_events( client ));
         client->assign_rpc_handler( events );
 
@@ -194,7 +198,8 @@ int start( const po::variables_map &params )
         std::cout << "Ok\n";
     }
 
-    pp.get_rpc_pool( ).attach( );
+    //pp.get_rpc_pool( ).attach( );
+    pp.stop_all( );
     pp.join_all( );
 
     std::cout << "Stopped\n";

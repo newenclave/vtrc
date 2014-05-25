@@ -7,6 +7,7 @@
 #include "vtrc-chrono.h"
 #include "vtrc-bind.h"
 #include "vtrc-ref.h"
+#include "vtrc-thread.h"
 
 
 namespace stress {
@@ -21,13 +22,9 @@ namespace stress {
         return chrono::duration_cast<chrono::microseconds>( point );
     }
 
-    void ping_impl( boost::system::error_code const &err,
-                    interface &iface, unsigned count, unsigned payload,
-                    vtrc::shared_ptr<common::delayed_call> dc,
-                    vtrc::common::pool_pair &pp)
+    void ping_impl( interface &iface, unsigned payload )
     {
         time_point start = chrono::high_resolution_clock::now( );
-
 
         try {
             std::cout << "Send ping with " << payload << " bytes as payload...";
@@ -40,31 +37,17 @@ namespace stress {
 
         } catch ( const std::exception &ex )  {
             std::cout << "ping error: " << ex.what( ) << "\n";
-            pp.stop_all( );
             return;
-        }
-
-        if( --count == 0 ) {
-            pp.stop_all( );
-        } else {
-            dc->call_from_now( vtrc::bind( ping_impl, _1,
-                         vtrc::ref(iface), count, payload, dc,
-                         vtrc::ref(pp) ), timer::seconds( 1 ) );
         }
     }
 
-    void ping(  interface &iface,
-                unsigned count, unsigned payload,
-                vtrc::common::pool_pair &pp)
+    void ping(interface &iface, unsigned count, unsigned payload)
     {
         std::cout << "Start pinging...\n";
-        vtrc::shared_ptr<common::delayed_call> dc
-             (vtrc::make_shared<common::delayed_call>
-                                ( vtrc::ref(pp.get_rpc_service( ))));
-
-        dc->call_from_now( vtrc::bind( ping_impl, _1,
-                     vtrc::ref(iface), count, payload, dc,
-                     vtrc::ref(pp) ), timer::seconds( 0 ) );
+        while( count-- ) {
+            ping_impl( iface, payload );
+            if( count ) this_thread::sleep_for( chrono::seconds( 1 ) );
+        }
     }
 
 }

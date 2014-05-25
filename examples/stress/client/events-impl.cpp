@@ -7,6 +7,8 @@
 #include "vtrc-common/vtrc-call-context.h"
 
 #include "vtrc-chrono.h"
+#include "vtrc-thread.h"
+
 
 namespace stress {
 
@@ -45,11 +47,13 @@ namespace {
 
             time_point this_event_point = high_resolution_clock::now( );
 
-            std::cout << "Event with id '" << request->id( ) << "' "
-                      << "is received; "
-                      << "previous events was "
+            std::cout << "Event id '" << request->id( ) << "'"
+                      << "; "
+                      << "previous: "
                       << get_micro( last_event_point_, this_event_point )
-                      << " microseconds ago\n";
+                      << " microseconds ago;"
+                      << "; thread " << this_thread::get_id( )
+                      << "\n";
 
             last_event_point_ = this_event_point;
         }
