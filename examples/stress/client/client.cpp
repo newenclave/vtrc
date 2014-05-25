@@ -52,7 +52,9 @@ struct work_time {
 void get_options( po::options_description& desc )
 {
     desc.add_options( )
-        ("help,?",   "help message")
+
+        ("help,?", "help message")
+
         ("server,s", po::value<std::string>( ),
             "server name; <tcp address>:<port> or <pipe/file name>")
 
