@@ -15,6 +15,9 @@
 
 #include "protocol/stress.pb.h"
 
+#include "stress-iface.h"
+#include "ping-impl.h"
+
 #include "vtrc-chrono.h"
 #include "vtrc-common/vtrc-delayed-call.h"
 
@@ -52,10 +55,21 @@ void get_options( po::options_description& desc )
         ("help,?",   "help message")
         ("server,s", po::value<std::string>( ),
             "server name; <tcp address>:<port> or <pipe/file name>")
+
+        ("io-pool-size,i",  po::value<unsigned>( ),
+            "threads for io operations; default = 1")
+
+        ("rpc-pool-size,r",  po::value<unsigned>( ),
+            "threads for rpc calls; default = 1")
+
+        ("tcp-nodelay,t",
+            "set TCP_NODELAY flag for tcp sockets")
+
         ("ping,p", po::value<unsigned>( ), "make ping [arg] time")
 
         ("payload,l", po::value<unsigned>( ),
-            "payload in bytes for commands such as ping")
+            "payload in bytes for commands such as ping; "
+            "dafault = 64")
 
         ;
 }
@@ -114,9 +128,23 @@ int start( const po::variables_map &params )
                                  "Use --help for details");
     }
 
-    /// will use only one thread for io operations.
-    /// because we don't have callbacks or events from server-side
-    common::pool_pair pp( 1, 0 );
+    unsigned io_size = params.count( "io-pool-size" )
+            ? params["io-pool-size"].as<unsigned>( )
+            : 1;
+
+    if( io_size < 1 ) {
+        throw std::runtime_error( "io-pool-size must be at least 1" );
+    }
+
+    unsigned rpc_size = params.count( "rpc-pool-size" )
+            ? params["rpc-pool-size"].as<unsigned>( )
+            : 1;
+
+    if( rpc_size < 1 ) {
+        throw std::runtime_error( "rpc-pool-size must be at least 1" );
+    }
+
+    common::pool_pair pp( io_size, rpc_size );
 
     std::cout << "Creating client ... " ;
 
@@ -135,9 +163,17 @@ int start( const po::variables_map &params )
 
     std::cout << "Ok\n";
 
+    vtrc::shared_ptr<stress::interface> impl(
+                stress::create_stress_client( client ));
 
-//    vtrc::shared_ptr<interfaces::lukki_db> impl
-//                                        (interfaces::create_lukki_db(client));
+    unsigned payload = params.count( "payload" )
+            ? params["payload"].as<unsigned>( )
+            : 64;
+
+    if( params.count( "ping" ) ) {
+        unsigned times = params["ping"].as<unsigned>( );
+        stress::ping( *impl, times, payload, pp );
+    }
 
     pp.join_all( );
     std::cout << "Stopped\n";

@@ -42,7 +42,7 @@ int start( const po::variables_map &params )
 
     unsigned io_size = params.count( "io-pool-size" )
             ? params["io-pool-size"].as<unsigned>( )
-            : 0;
+            : ( use_only_pool ? 0 : 1 );
 
     unsigned rpc_size = params.count( "rpc-pool-size" )
             ? params["rpc-pool-size"].as<unsigned>( )
