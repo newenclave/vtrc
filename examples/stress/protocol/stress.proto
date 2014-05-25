@@ -12,8 +12,29 @@ message ping_res {
     optional bytes payload = 1;
 }
 
+message generate_events_req {
+    optional uint32 count = 1;
+}
+
+message generate_events_res {
+    optional uint32 count = 1;
+}
+
 service stress_service {
     rpc init (empty) returns (empty);
     rpc ping (ping_req) returns (ping_res);
+    rpc generate_event (generate_events_req) returns (generate_events_res);
+}
+
+/// ============== events or callbacks ================== ///
+
+message event_req {
+    optional uint32 id = 1;
+}
+
+message event_res { }
+
+service stress_events {
+    rpc event ( event_req ) returns ( event_res );
 }
 
