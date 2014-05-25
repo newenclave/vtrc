@@ -26,16 +26,17 @@ find_package( Boost 1.50 COMPONENTS
 find_package( Protobuf REQUIRED)
 
 add_subdirectory(vtrc-common)
+
 add_subdirectory(vtrc-server)
-add_subdirectory(vtrc-test-server)
-
 add_subdirectory(vtrc-client-base)
-add_subdirectory(vtrc-test-client)
 
-add_subdirectory(examples/calculator)
-add_subdirectory(examples/remote-fs)
-add_subdirectory(examples/lukki-db)
-add_subdirectory(examples/stress)
+if(WITHOUT_EXAMPLES)
+else(WITHOUT_EXAMPLES)
+    add_subdirectory(examples/calculator)
+    add_subdirectory(examples/remote-fs)
+    add_subdirectory(examples/lukki-db)
+    add_subdirectory(examples/stress)
+endif(WITHOUT_EXAMPLES)
 
 
 
