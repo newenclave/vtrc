@@ -3,6 +3,8 @@
 
 #include "vtrc-memory.h"
 
+#include "vtrc-common/vtrc-rpc-channel.h"
+
 namespace vtrc { namespace client {
     class vtrc_client;
 }}
@@ -18,7 +20,11 @@ namespace stress {
     };
 
     interface *create_stress_client(
-            vtrc::shared_ptr<vtrc::client::vtrc_client> client );
+            vtrc::shared_ptr<vtrc::client::vtrc_client> c,
+            vtrc::common::rpc_channel::options opts);
+
+    interface *create_stress_client(
+            vtrc::shared_ptr<vtrc::client::vtrc_client> c); /// default options
 
 }
 

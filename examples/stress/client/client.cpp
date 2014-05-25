@@ -135,6 +135,7 @@ int start( const po::variables_map &params )
 
     std::cout << "Ok\n";
 
+
 //    vtrc::shared_ptr<interfaces::lukki_db> impl
 //                                        (interfaces::create_lukki_db(client));
 
