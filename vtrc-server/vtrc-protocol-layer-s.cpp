@@ -350,6 +350,11 @@ namespace vtrc { namespace server {
             parent_->push_rpc_message( llu->id( ), llu );
         }
 
+        void process_event_insert( lowlevel_unit_sptr &llu )
+        {
+            parent_->push_rpc_message( llu->target_id( ), llu );
+        }
+
         void on_rcp_call_ready( )
         {
             typedef vtrc_rpc::message_info message_info;
@@ -362,13 +367,22 @@ namespace vtrc { namespace server {
                 }
 
                 if( llu->has_info( ) ) {
+
                     switch (llu->info( ).message_type( )) {
+
+                    /// CALL = request; do not change id
                     case message_info::MESSAGE_CALL:
                         process_call( llu );
                         break;
+
+                    /// INSERTION_CALL = request; must use target_id
+                    case message_info::MESSAGE_INSERTION_CALL:
+                        process_event_insert( llu );
+                        break;
+
+                    /// answers;
                     case message_info::MESSAGE_EVENT:
                     case message_info::MESSAGE_CALLBACK:
-                    case message_info::MESSAGE_INSERTION_CALL:
                         process_event_cb( llu );
                         break;
                     default:

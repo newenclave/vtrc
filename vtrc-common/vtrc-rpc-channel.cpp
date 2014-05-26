@@ -72,22 +72,22 @@ namespace vtrc { namespace common  {
     {
         const common::call_context *cc(common::call_context::get(c));
 
+        llu.set_id(c->get_protocol( ).next_index( ));
+
         if( mess_type == callback_type_ ) {
 
             if( cc && can_accept_callbacks( cc ) ) {
 
                 llu.mutable_info( )->set_message_type( mess_type );
-                llu.set_id( cc->get_lowlevel_message( )->id( ) );
+                llu.set_target_id( cc->get_lowlevel_message( )->id( ) );
 
             } else {
 
                 llu.mutable_info( )->set_message_type( direct_call_type_ );
-                llu.set_id(c->get_protocol( ).next_index( ));
 
             }
         } else {
             llu.mutable_info( )->set_message_type( mess_type );
-            llu.set_id(c->get_protocol( ).next_index( ));
         }
     }
 

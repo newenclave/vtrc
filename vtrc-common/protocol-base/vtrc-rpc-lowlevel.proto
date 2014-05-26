@@ -39,10 +39,11 @@ message lowlevel_unit {
 
     // --- header --- //
     optional uint64                         id =  1;
-    optional message_info                 info =  2;
-    optional call_info                    call =  3;
-    optional vtrc_errors.container       error =  4;
-    optional unit_options                  opt =  5;
+    optional uint64                  target_id =  2;
+    optional message_info                 info =  3;
+    optional call_info                    call =  4;
+    optional vtrc_errors.container       error =  5;
+    optional unit_options                  opt =  6;
 
     // --- //
     optional bytes  request = 20;

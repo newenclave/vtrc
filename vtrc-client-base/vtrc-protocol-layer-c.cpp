@@ -183,7 +183,7 @@ namespace vtrc { namespace client {
 
         void process_callback( lowlevel_unit_sptr &llu )
         {
-            parent_->push_rpc_message( llu->id( ), llu );
+            parent_->push_rpc_message( llu->target_id( ), llu );
         }
 
         void process_invalid( lowlevel_unit_sptr &llu )
@@ -222,18 +222,24 @@ namespace vtrc { namespace client {
 
                 switch( llu->info( ).message_type( ) ) {
 
+                /// EVENT = request; do not use id
                 case vtrc_rpc::message_info::MESSAGE_EVENT:
                     process_event( llu );
                     break;
+                /// CALLBACK = request; use target_id
                 case vtrc_rpc::message_info::MESSAGE_CALLBACK:
                     process_callback( llu );
                     break;
+
+                /// internals; not implemented yet
                 case vtrc_rpc::message_info::MESSAGE_SERVICE:
                     process_service( llu );
                     break;
                 case vtrc_rpc::message_info::MESSAGE_INTERNAL:
                     process_internal( llu );
                     break;
+
+                /// answers; use id
                 case vtrc_rpc::message_info::MESSAGE_CALL:
                 case vtrc_rpc::message_info::MESSAGE_INSERTION_CALL:
                     process_call( llu );
