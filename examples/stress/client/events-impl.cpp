@@ -154,25 +154,24 @@ namespace {
 
             std::string stack(get_stack( ));
 
-            if( request->balance( ) == 0 ) {
-                std::cout << "Last recursive_callback\n";
-                std::cout << "last stack: " << stack
-                          << "\n";
-            } else {
-                std::cout << "[IN ] balance: " << request->balance( )
-                          << "; stack: " << stack
-                          << "\n";
-                client::vtrc_client_sptr locked(client_.lock( ));
-                if( locked ) {
-                    vtrc::shared_ptr<interface> impl(
-                        create_stress_client(locked,
-                            common::rpc_channel::USE_CONTEXT_CALL));
-                    impl->recursive_call( request->balance( ) - 1 );
-                }
-                std::cout << "[OUT] balance: " << request->balance( )
-                          << "; stack: " << stack
-                          << "\n";
+            std::cout << "[IN ] balance: " << request->balance( )
+                      << "; stack: " << stack
+                      << "\n";
+
+            client::vtrc_client_sptr locked(client_.lock( ));
+
+            if( locked ) {
+                vtrc::shared_ptr<interface> impl(
+                    create_stress_client(locked,
+                        common::rpc_channel::USE_CONTEXT_CALL));
+                impl->recursive_call( request->balance( ) - 1 );
             }
+            if( request->balance( ) == 1 ) {
+                std::cout << "============= EXIT =============\n";
+            }
+            std::cout << "[OUT] balance: " << request->balance( )
+                      << "; stack: " << stack
+                      << "\n";
         }
 
 
