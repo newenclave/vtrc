@@ -161,9 +161,13 @@ namespace vtrc { namespace client {
 
         void process_event( lowlevel_unit_sptr &llu )
         {
-            client_->get_rpc_service( ).post(
-                vtrc::bind( &this_type::process_event_impl, this,
+            if ( llu->has_id( ) ) {
+                client_->get_rpc_service( ).post(
+                    vtrc::bind( &this_type::process_event_impl, this,
                              client_->weak_from_this( ), llu));
+            } else {
+                parent_->push_rpc_message_all( llu );
+            }
         }
 
         void process_service( lowlevel_unit_sptr &llu )

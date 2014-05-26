@@ -37,6 +37,7 @@ namespace server {
         const std::string &client_id( ) const;
 
         void close( );
+        void send_and_close( const google::protobuf::MessageLite &mess );
 
         common::rpc_service_wrapper_sptr get_service_by_name(
                                                     const std::string &name );

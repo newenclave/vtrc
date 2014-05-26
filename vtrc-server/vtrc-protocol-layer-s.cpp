@@ -460,6 +460,11 @@ namespace vtrc { namespace server {
 
     }
 
+    void protocol_layer_s::send_and_close(const gpb::MessageLite &mess)
+    {
+        impl_->send_and_close( mess );
+    }
+
     const std::string &protocol_layer_s::client_id( ) const
     {
         return impl_->client_id( );
