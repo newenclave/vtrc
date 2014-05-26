@@ -98,10 +98,7 @@ namespace  {
                                                    false ));
 
             stub_wrapper_type stub( channel.get( ) );
-            vtrc_example::recursive_call_req req;
-
-            req.set_balance( request->balance( ) - 1 );
-            stub.call_request( &stub_type::recursive_callback, &req );
+            stub.call_request( &stub_type::recursive_callback, request );
         }
 
     };

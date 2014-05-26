@@ -76,14 +76,31 @@ namespace {
 
                 const common::call_context *cc(locked->get_call_context( ));
                 std::ostringstream oss;
+                size_t deep = 0;
+                while( cc ) {
+                    ++deep;
+                    cc = cc->next( );
+                }
+                oss << "deep: " << deep;
+                return oss.str( );
+            }
+
+            return "<>failed<>?";
+        }
+
+        std::string get_stack1( )
+        {
+            client::vtrc_client_sptr locked( client_.lock( ) );
+
+            if( locked ) { /// just on case;
+
+                const common::call_context *cc(locked->get_call_context( ));
+                std::ostringstream oss;
                 bool from_server = true;
                 while( cc ) {
                     oss << (from_server ? ">" : "<");
                     from_server = !from_server;
                     cc = cc->next( );
-                    if( cc ) {
-                        oss << ":";
-                    }
                 }
                 return oss.str( );
             }
