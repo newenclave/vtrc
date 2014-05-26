@@ -176,7 +176,7 @@ namespace vtrc { namespace server {
 
         }
 
-        void close_client( const bsys::error_code & /*err*/,
+        void close_client( const bsys::error_code &      /*err */,
                            common::connection_iface_sptr /*inst*/)
         {
             connection_->close( );

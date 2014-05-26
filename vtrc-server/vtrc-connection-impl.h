@@ -168,9 +168,9 @@ namespace vtrc { namespace server { namespace listeners {
                         ->set_code( vtrc_errors::ERR_PROTOCOL );
                 llu.mutable_error( )
                         ->set_additional( mess );
+
                 protocol_->send_and_close( llu );
 
-                //this->close( );
                 app_.get_clients( )->drop(this); // delete
             }
 
