@@ -192,7 +192,9 @@ int start( const po::variables_map &params )
 
     } else if( params.count( "gen-events" ) ) {
 
-        std::cout << "Ask server for events\n";
+        std::cout << "Ask server for events; "
+                  << "payload: " << payload
+                  << "\n";
         std::cout << "Current thread is: "
                   << this_thread::get_id( ) << "\n";
 
@@ -200,12 +202,14 @@ int start( const po::variables_map &params )
         client->assign_rpc_handler( events );
 
         unsigned event_count = params["gen-events"].as<unsigned>( );
-        impl->generate_events( event_count, true, false );
+        impl->generate_events( event_count, true, false, payload );
         std::cout << "Ok\n";
 
     } else if ( params.count( "gen-callbacks" ) ) {
 
-        std::cout << "Ask server for callbacks\n";
+        std::cout << "Ask server for callbacks; "
+                  << "payload: " << payload
+                  << "\n";
         std::cout << "Current thread is: "
                   << this_thread::get_id( ) << "\n";
 
@@ -213,7 +217,7 @@ int start( const po::variables_map &params )
         client->assign_rpc_handler( events );
 
         unsigned event_count = params["gen-callbacks"].as<unsigned>( );
-        impl->generate_events( event_count, true, true );
+        impl->generate_events( event_count, true, true, payload );
         std::cout << "Ok\n";
 
     } else if ( params.count( "recursive" ) ) {

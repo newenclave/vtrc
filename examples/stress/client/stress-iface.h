@@ -18,7 +18,8 @@ namespace stress {
         virtual void ping( unsigned payload ) = 0;
         virtual void generate_events( unsigned count,
                                       bool insert,
-                                      bool wait ) = 0;
+                                      bool wait,
+                                      unsigned payload ) = 0;
 
         virtual void recursive_call( unsigned count) = 0;
 
