@@ -428,10 +428,11 @@ namespace vtrc { namespace server {
 
     protocol_layer_s::protocol_layer_s( application &a,
                                         common::transport_iface *connection,
-                                        unsigned maximym_calls,
-                                        size_t mess_len)
-        :common::protocol_layer(connection, false, mess_len)
-        ,impl_(new impl(a, connection, maximym_calls))
+                                        unsigned maximum_calls,
+                                        size_t mess_len,
+                                        size_t maximum_stack_size)
+        :common::protocol_layer(connection, false, mess_len, maximum_stack_size)
+        ,impl_(new impl(a, connection, maximum_calls))
     {
         impl_->parent_ = this;
     }

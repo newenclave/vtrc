@@ -36,6 +36,7 @@ enum errors_numbers { // CATEGORY_INTERNAL
     ERR_CALL_FAILED   = 1001 [(description) = "Call failed"];
     ERR_INTERNAL      = 1002 [(description) = "Internal error"];
     ERR_CHANNEL       = 1003 [(description) = "Channel error"];
+    ERR_OVERFLOW      = 1004 [(description) = "Stack overflow"];
 
 }
 

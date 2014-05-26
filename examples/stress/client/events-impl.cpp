@@ -75,13 +75,24 @@ namespace {
             if( locked ) { /// just on case;
 
                 const common::call_context *cc(locked->get_call_context( ));
+                size_t depth = cc->depth( );
                 std::ostringstream oss;
-                size_t deep = 0;
+
+                size_t from_server = 0;
+                size_t from_client = 0;
+
+                bool is_server = true;
                 while( cc ) {
-                    ++deep;
+
+                    from_server += is_server ? 1 : 0;
+                    from_client += is_server ? 0 : 1;
+
+                    is_server = !is_server;
                     cc = cc->next( );
                 }
-                oss << "deep: " << deep;
+                oss << "depth: "        << depth        << "; "
+                    << "client depth: " << from_client  << "; "
+                    << "server depth: " << from_server;
                 return oss.str( );
             }
 

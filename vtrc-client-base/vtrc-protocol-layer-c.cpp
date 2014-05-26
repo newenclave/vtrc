@@ -405,7 +405,7 @@ namespace vtrc { namespace client {
 
     };
 
-    protocol_layer_c::protocol_layer_c( common::transport_iface *connection,
+    protocol_layer_c::protocol_layer_c( common::transport_iface   *connection,
                                         vtrc::client::vtrc_client *client )
         :common::protocol_layer(connection, true)
         ,impl_(new impl(connection, client))

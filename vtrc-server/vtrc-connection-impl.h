@@ -55,7 +55,8 @@ namespace vtrc { namespace server { namespace listeners {
             {
                 protocol_.reset(new protocol_layer_s( vtrc::ref(app_), this,
                             endpoint_.get_options( ).maximum_active_calls,
-                            endpoint_.get_options( ).maximum_message_length));
+                            endpoint_.get_options( ).maximum_message_length,
+                            endpoint_.get_options( ).maximum_stack_size));
             }
 
             void set_name( std::string const &name )

@@ -31,6 +31,9 @@ void get_options( po::options_description& desc )
         ("message-size,M", po::value<unsigned>( ),
             "maximum message size for protocol")
 
+        ("stack-size,S", po::value<unsigned>( ),
+            "maximum recursion depth for both side")
+
         ;
 }
 

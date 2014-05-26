@@ -145,6 +145,11 @@ namespace stress {
                         params["message-size"].as<unsigned>( );
             }
 
+            if( params.count( "stack-size" ) ) {
+                opts.maximum_stack_size =
+                        params["stack-size"].as<unsigned>( );
+            }
+
             return opts;
         }
 

@@ -48,6 +48,8 @@ namespace vtrc { namespace common {
         google::protobuf::Closure *get_done_closure(  );
         const google::protobuf::Closure *get_done_closure(  ) const;
 
+        const size_t depth( ) const;
+
     };
 
     typedef vtrc::shared_ptr<call_context> call_context_sptr;

@@ -14,11 +14,13 @@ namespace vtrc { namespace common {
         const vtrc_rpc::options    *opts_;
         bool                        impersonated_;
         google::protobuf::Closure  *done_;
+        size_t                      depth_;
         impl(lowlevel_unit *llu)
             :llu_(llu)
             ,opts_(NULL)
             ,impersonated_(false)
             ,done_(NULL)
+            ,depth_(1)
         { }
     };
 
@@ -30,7 +32,6 @@ namespace vtrc { namespace common {
     {
         delete impl_;
     }
-
 
     const call_context *call_context::get( connection_iface *iface )
     {
@@ -65,6 +66,7 @@ namespace vtrc { namespace common {
     void call_context::set_next( call_context *parent )
     {
         impl_->parent_context_ = parent;
+        impl_->depth_          = parent ? parent->depth( ) + 1 : 1;
     }
 
     const lowlevel_unit *call_context::get_lowlevel_message( ) const
@@ -110,6 +112,11 @@ namespace vtrc { namespace common {
     const google::protobuf::Closure *call_context::get_done_closure( ) const
     {
         return impl_->done_;
+    }
+
+    const size_t call_context::depth( ) const
+    {
+        return impl_->depth_;
     }
 
 }}

@@ -79,7 +79,14 @@ namespace vtrc { namespace server {
 
         listener_options default_options( )
         {
-            listener_options def_opts = { 5, 1024 * 1024, 20, 4096 };
+            listener_options def_opts = { 0 };
+
+            def_opts.maximum_active_calls   = 5;
+            def_opts.maximum_message_length = 1024 * 1024;
+            def_opts.maximum_total_calls    = 20;
+            def_opts.read_buffer_size       = 4096;
+            def_opts.maximum_stack_size     = 64;
+
             return def_opts;
         }
 

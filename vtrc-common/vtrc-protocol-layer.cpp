@@ -64,6 +64,7 @@ namespace vtrc { namespace common {
         }
 
         static const size_t default_max_message_length = 1024 * 1024;
+        static const size_t default_stack_size         = 128;
 
         struct rpc_unit_index {
             uint64_t     id_;
@@ -163,8 +164,10 @@ namespace vtrc { namespace common {
         vtrc::condition_variable     ready_var_;
 
         unsigned                     level_;
+        size_t                       stack_size_;
 
-        impl( transport_iface *c, bool oddside, size_t mess_len )
+        impl( transport_iface *c, bool oddside,
+              size_t mess_len, size_t stack_size )
             :connection_(c)
             ,hash_maker_(common::hash::create_default( ))
             ,hash_checker_(common::hash::create_default( ))
@@ -174,6 +177,7 @@ namespace vtrc { namespace common {
             ,rpc_index_(oddside ? 101 : 100)
             ,ready_(false)
             ,level_(0)
+            ,stack_size_(stack_size)
         { }
 
         ~impl( )
@@ -668,6 +672,10 @@ namespace vtrc { namespace common {
         {
             protocol_layer::context_holder ch( parent_, llu.get( ) );
 
+            if( ch.ctx_->depth( ) > stack_size_ ) {
+                throw vtrc::common::exception( vtrc_errors::ERR_OVERFLOW );
+            }
+
             common::rpc_service_wrapper_sptr
                     service(get_service(llu->call( ).service_id( )));
 
@@ -784,15 +792,23 @@ namespace vtrc { namespace common {
     };
 
     protocol_layer::protocol_layer( transport_iface *connection, bool oddside )
-        :impl_(new impl(connection, oddside, default_max_message_length))
+        :impl_(new impl(connection, oddside,
+                        default_max_message_length,
+                        default_stack_size))
     {
+        std::cout << "Create proto " << default_stack_size << "\n";
         impl_->parent_ = this;
     }
 
      protocol_layer::protocol_layer(transport_iface *connection,
-                                    bool oddside, size_t maximum_mess_len)
-         :impl_(new impl(connection, oddside, maximum_mess_len))
+                                    bool oddside,
+                                    size_t maximum_mess_len,
+                                    size_t maximum_stack_size)
+         :impl_(new impl(connection, oddside,
+                         maximum_mess_len,
+                         maximum_stack_size))
      {
+         std::cout << "Create proto " << maximum_stack_size << "\n";
          impl_->parent_ = this;
      }
 
