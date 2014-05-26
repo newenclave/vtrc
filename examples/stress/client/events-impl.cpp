@@ -1,10 +1,13 @@
 #include "events-impl.h"
 
 #include "protocol/stress.pb.h"
+#include "protocol/vtrc-rpc-lowlevel.pb.h"
+
 #include "vtrc-client-base/vtrc-client.h"
 
 #include "vtrc-common/vtrc-closure-holder.h"
 #include "vtrc-common/vtrc-call-context.h"
+
 
 #include "vtrc-chrono.h"
 #include "vtrc-thread.h"
@@ -62,6 +65,60 @@ namespace {
 
             last_event_point_ = this_event_point;
         }
+
+        std::string get_stack( )
+        {
+            client::vtrc_client_sptr locked( client_.lock( ) );
+
+            if( locked ) { /// just on case;
+
+                const common::call_context *cc(locked->get_call_context( ));
+                std::ostringstream oss;
+                bool from_server = true;
+                while( cc ) {
+                    oss << (from_server ? "S>" : "C<") << ":"
+                        << cc->get_lowlevel_message( )->call( ).service_id( )
+                        << "::"
+                        << cc->get_lowlevel_message( )->call( ).method_id( );
+                    cc = cc->next( );
+                    from_server = !from_server;
+                    if( cc ) {
+                        oss << "->";
+                    }
+                }
+                return oss.str( );
+            }
+
+            return "<>failed<>?";
+        }
+
+        void recursive_callback(::google::protobuf::RpcController* controller,
+                 const ::vtrc_example::recursive_call_req* request,
+                 ::vtrc_example::recursive_call_res* response,
+                 ::google::protobuf::Closure* done)
+        {
+            common::closure_holder holder( done );
+
+            std::string stack(get_stack( ));
+
+            if( request->balance( ) == 0 ) {
+                std::cout << "Last recursive_callback\n";
+                std::cout << "last stack: " << stack
+                          << "\n";
+            } else {
+                std::cout << "balance: " << request->balance( )
+                          << "; stack: " << stack
+                          << "\n";
+                client::vtrc_client_sptr locked(client_.lock( ));
+                if( locked ) {
+                    vtrc::shared_ptr<interface> impl(
+                        create_stress_client(locked,
+                            common::rpc_channel::USE_CONTEXT_CALL));
+                    impl->recursive_call( request->balance( ) - 1 );
+                }
+            }
+        }
+
 
     };
 }

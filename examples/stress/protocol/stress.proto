@@ -22,10 +22,20 @@ message generate_events_res {
     optional uint32 count = 1;
 }
 
+message recursive_call_req {
+    optional uint32 balance = 1;
+}
+
+message recursive_call_res { }
+
 service stress_service {
+
     rpc init (empty) returns (empty);
     rpc ping (ping_req) returns (ping_res);
     rpc generate_event (generate_events_req) returns (generate_events_res);
+
+    /// make recursive_callback is balance != 0
+    rpc recursive_call (recursive_call_req) returns (recursive_call_res);
 }
 
 /// ============== events or callbacks ================== ///
@@ -38,6 +48,10 @@ message event_req {
 message event_res { }
 
 service stress_events {
-    rpc event    ( event_req ) returns ( event_res );
+
+    rpc event              (event_req)         returns (event_res);
+
+    /// make recursive_call is balance != 0
+    rpc recursive_callback (recursive_call_req) returns (recursive_call_res);
 }
 

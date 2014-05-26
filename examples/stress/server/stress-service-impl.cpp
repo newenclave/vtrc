@@ -6,6 +6,7 @@
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-closure-holder.h"
 #include "vtrc-server/vtrc-channels.h"
+#include "vtrc-common/vtrc-stub-wrapper.h"
 
 #include "google/protobuf/descriptor.h"
 
@@ -13,6 +14,11 @@ namespace gpb = google::protobuf;
 using namespace vtrc;
 
 namespace  {
+
+    typedef vtrc_example::stress_events_Stub stub_type;
+    typedef common::stub_wrapper<stub_type>  stub_wrapper_type;
+
+    using namespace server::channels;
 
     class stress_service_impl: public vtrc_example::stress_service {
 
@@ -31,6 +37,7 @@ namespace  {
                  ::vtrc_example::empty* response,
                  ::google::protobuf::Closure* done)
         {
+            /// do nothing
             common::closure_holder holder(done);
         }
 
@@ -40,6 +47,7 @@ namespace  {
                  ::vtrc_example::ping_res* response,
                  ::google::protobuf::Closure* done)
         {
+            /// do nothing
             common::closure_holder holder(done);
         }
 
@@ -48,8 +56,6 @@ namespace  {
                  ::vtrc_example::generate_events_res* response,
                  ::google::protobuf::Closure* done)
         {
-
-            using namespace server::channels;
             typedef vtrc_example::stress_events_Stub stub_type;
 
             common::closure_holder holder(done);
@@ -67,17 +73,37 @@ namespace  {
                                                         c_sptr, dis_wait ));
             }
 
-            stub_type stub( channel.get( ) );
+            stub_wrapper_type stub(channel.get( ));
             vtrc_example::event_req req;
 
             req.set_is_event( dis_wait );
 
             for( unsigned i=0; i<request->count( ); ++i ) {
                 req.set_id( i );
-                stub.event( NULL, &req, NULL, NULL );
+                stub.call_request( &stub_type::event, &req );
             }
 
         }
+
+        void recursive_call(::google::protobuf::RpcController* controller,
+                 const ::vtrc_example::recursive_call_req* request,
+                 ::vtrc_example::recursive_call_res* response,
+                 ::google::protobuf::Closure* done)
+        {
+            common::closure_holder holder(done);
+            if( request->balance( ) == 0 ) return;
+
+            vtrc::unique_ptr<common::rpc_channel> channel
+                (unicast::create_callback_channel( c_->shared_from_this( ),
+                                                   false ));
+
+            stub_wrapper_type stub( channel.get( ) );
+            vtrc_example::recursive_call_req req;
+
+            req.set_balance( request->balance( ) - 1 );
+            stub.call_request( &stub_type::recursive_callback, &req );
+        }
+
     };
 
 }

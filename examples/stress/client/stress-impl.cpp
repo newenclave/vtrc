@@ -43,6 +43,13 @@ namespace {
             stub_.call_request( &stub_type::generate_event, &req );
         }
 
+        void recursive_call( unsigned count )
+        {
+            vtrc_example::recursive_call_req req;
+            req.set_balance( count );
+            stub_.call_request( &stub_type::recursive_call, &req );
+        }
+
     };
 }
 

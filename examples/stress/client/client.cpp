@@ -80,6 +80,9 @@ void get_options( po::options_description& desc )
         ("gen-events,e", po::value<unsigned>( ),
             "ask server for generate [arg] events")
 
+        ("recursive,R", po::value<unsigned>( ),
+            "ask server for generate [arg] events")
+
         ("payload,l", po::value<unsigned>( ),
             "payload in bytes for commands such as ping; default = 64")
 
@@ -189,7 +192,7 @@ int start( const po::variables_map &params )
 
     } else if( params.count( "gen-events" ) ) {
 
-        std::cout << "Ask server fo events\n";
+        std::cout << "Ask server for events\n";
         std::cout << "Current thread is: "
                   << this_thread::get_id( ) << "\n";
 
@@ -202,7 +205,7 @@ int start( const po::variables_map &params )
 
     } else if ( params.count( "gen-callbacks" ) ) {
 
-        std::cout << "Ask server fo callbacks\n";
+        std::cout << "Ask server for callbacks\n";
         std::cout << "Current thread is: "
                   << this_thread::get_id( ) << "\n";
 
@@ -211,6 +214,17 @@ int start( const po::variables_map &params )
 
         unsigned event_count = params["gen-callbacks"].as<unsigned>( );
         impl->generate_events( event_count, true, true );
+        std::cout << "Ok\n";
+
+    } else if ( params.count( "recursive" ) ) {
+
+        std::cout << "Ask server for recursive call\n";
+
+        vtrc::shared_ptr<gpb::Service> events(stress::create_events( client ));
+        client->assign_rpc_handler( events );
+
+        unsigned call_count = params["recursive"].as<unsigned>( );
+        impl->recursive_call( call_count );
         std::cout << "Ok\n";
     }
 

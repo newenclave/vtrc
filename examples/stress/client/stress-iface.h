@@ -20,6 +20,8 @@ namespace stress {
                                       bool insert,
                                       bool wait ) = 0;
 
+        virtual void recursive_call( unsigned count) = 0;
+
     };
 
     interface *create_stress_client(

@@ -13,11 +13,11 @@ namespace unicast {
 
     common::rpc_channel
         *create_event_channel( common::connection_iface_sptr c,
-                                          bool disable_wait = false);
+                                          bool disable_wait = true );
 
     common::rpc_channel
         *create_callback_channel( common::connection_iface_sptr c,
-                                             bool disable_wait = false);
+                                             bool disable_wait = false );
 }
 
 namespace broadcast {
