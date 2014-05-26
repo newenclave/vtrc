@@ -192,7 +192,6 @@ namespace vtrc { namespace common {
 
         static protocol_layer::lowlevel_unit_type make_fake_mess( )
         {
-
             random_device rd(true);
             std::string s1( rd.generate_block( 4 ) );
             //std::string s2( rd.generate_block( 4 ) );
@@ -584,6 +583,11 @@ namespace vtrc { namespace common {
         }
 
         void cancel_all_slots( )
+        {
+            rpc_queue_.cancel_all( );
+        }
+
+        void cancel_all_slots( std::string )
         {
             rpc_queue_.cancel_all( );
         }
