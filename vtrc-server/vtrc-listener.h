@@ -6,6 +6,10 @@
 #include "vtrc-common/vtrc-signal-declaration.h"
 #include "vtrc-memory.h"
 
+namespace vtrc_rpc {
+    class session_options;
+}
+
 namespace vtrc {
 
     namespace common {
@@ -16,14 +20,6 @@ namespace vtrc {
 namespace server {
 
     class application;
-
-    struct listener_options {
-        unsigned maximum_active_calls;
-        unsigned maximum_message_length;
-        unsigned maximum_total_calls;
-        unsigned maximum_stack_size;
-        unsigned read_buffer_size;
-    };
 
     class listener: public vtrc::enable_shared_from_this<listener> {
 
@@ -43,14 +39,14 @@ namespace server {
 
     public:
 
-        listener( application & app, const listener_options &opts );
+        listener( application & app, const vtrc_rpc::session_options &opts );
         virtual ~listener( );
 
     public:
 
-        application             &get_application( );
-        common::enviroment      &get_enviroment( );
-        const listener_options  &get_options( ) const;
+        application                      &get_application( );
+        common::enviroment               &get_enviroment( );
+        const vtrc_rpc::session_options  &get_options( ) const;
         size_t clients_count( ) const;
 
         vtrc::weak_ptr<listener>       weak_from_this( );
@@ -72,7 +68,7 @@ namespace server {
     typedef vtrc::shared_ptr<listener> listener_sptr;
 
     namespace listeners {
-        listener_options default_options( );
+        vtrc_rpc::session_options default_options( );
     }
 }}
 

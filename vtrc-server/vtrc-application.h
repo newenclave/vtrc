@@ -16,6 +16,10 @@ namespace vtrc_errors {
     class container;
 }
 
+namespace vtrc_rpc {
+    class session_options;
+}
+
 namespace vtrc {
 
     namespace common {
@@ -58,6 +62,9 @@ namespace server {
         boost::asio::io_service &get_rpc_service( );
 
         vtrc::shared_ptr<common::connection_list>  get_clients( );
+
+        virtual void configure_session( common::connection_iface* connection,
+                                        vtrc_rpc::session_options &opts );
 
         virtual vtrc::shared_ptr<common::rpc_service_wrapper>
                  get_service_by_name( common::connection_iface* connection,

@@ -1,5 +1,6 @@
 
 import "vtrc-errors.proto";
+import "vtrc-rpc-lowlevel.proto";
 
 //option optimize_for = LITE_RUNTIME;
 
@@ -26,19 +27,23 @@ enum transformer_variant {
 };
 
 message init_protocol {
-    repeated uint32 hash_supported             = 1; // @hash_variant
-    repeated uint32 transform_supported        = 2; // @transformer_variant
+    repeated uint32 hash_supported             =  1; // @hash_variant
+    repeated uint32 transform_supported        =  2; // @transformer_variant
 }
 
 message client_selection {
-    optional uint32     hash                   = 1 [default = 2]; // CRC_32
-    optional uint32     transform              = 2; // default TRANSFORM_NONE
-    optional bytes      id                     = 3;
+    optional uint32     hash                   =  1 [default = 2]; // CRC_32
+    optional uint32     transform              =  2; // default TRANSFORM_NONE
+    optional bytes      id                     =  3;
 }
 
 message transformer_setup {
-    optional bytes  salt1                      = 1;
-    optional bytes  salt2                      = 2;
+    optional bytes  salt1                      =  1;
+    optional bytes  salt2                      =  2;
+}
+
+message session_setup {
+    optional vtrc_rpc.session_options options = 1;
 }
 
 message init_capsule {

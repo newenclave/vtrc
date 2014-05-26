@@ -16,8 +16,9 @@ namespace vtrc { namespace server {
 #else
     namespace unix_local {
         listener_sptr create( application &app, const std::string &name );
-        listener_sptr create( application &app, const listener_options &opts,
-                                const std::string &name );
+        listener_sptr create( application &app,
+                              const vtrc_rpc::session_options &opts,
+                              const std::string &name );
     }
     namespace local_namespace = unix_local;
 #endif
@@ -28,8 +29,9 @@ namespace vtrc { namespace server {
             return local_namespace::create( app, name );
         }
 
-        listener_sptr create( application &app, const listener_options &opts,
-                                const std::string &name )
+        listener_sptr create(application &app,
+                             const vtrc_rpc::session_options &opts,
+                             const std::string &name )
         {
             return local_namespace::create( app, opts, name );
         }

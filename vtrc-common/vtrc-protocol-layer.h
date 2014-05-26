@@ -23,6 +23,7 @@ namespace google { namespace protobuf {
 namespace vtrc_rpc {
     class lowlevel_unit;
     class options;
+    class session_options;
 }
 
 namespace vtrc_errors {
@@ -64,8 +65,8 @@ namespace vtrc { namespace common {
         typedef std::deque<std::string> message_queue_type;
 
         protocol_layer( transport_iface *connection, bool oddside );
-        protocol_layer(transport_iface *connection, bool oddside,
-                        size_t maximum_message_len, size_t maximum_stack_size);
+        protocol_layer( transport_iface *connection, bool oddside,
+                        const vtrc_rpc::session_options &opts );
         virtual ~protocol_layer( );
 
     public:
@@ -113,6 +114,8 @@ namespace vtrc { namespace common {
 
         const vtrc_rpc::options &get_method_options(
                             const google::protobuf::MethodDescriptor* method );
+
+        const vtrc_rpc::session_options &session_options( ) const;
 
     protected:
 
@@ -170,6 +173,8 @@ namespace vtrc { namespace common {
         const call_context *get_call_context( ) const;
 
     protected:
+
+        void configure_session( const vtrc_rpc::session_options &opts );
 
         void push_rpc_message( uint64_t slot_id, lowlevel_unit_sptr mess);
 

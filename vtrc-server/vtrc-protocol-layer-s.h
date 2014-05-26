@@ -27,9 +27,7 @@ namespace server {
 
         protocol_layer_s(application &app,
                           common::transport_iface *connection,
-                          unsigned maximum_calls,
-                          size_t maximum_message_length,
-                          size_t maximum_stack_size);
+                          const vtrc_rpc::session_options &opts );
 
         ~protocol_layer_s( );
 

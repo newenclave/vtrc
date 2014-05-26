@@ -4,17 +4,19 @@
 #include "vtrc-common/vtrc-enviroment.h"
 #include "vtrc-atomic.h"
 
+#include "protocol/vtrc-rpc-lowlevel.pb.h"
+
 namespace vtrc { namespace server {
 
     struct listener::impl {
-        application         &app_;
-        common::enviroment   env_;
-        listener_options     opts_;
+        application              &app_;
+        common::enviroment        env_;
+        vtrc_rpc::session_options opts_;
 
         listener            *parent_;
         vtrc::atomic<size_t> client_count_;
 
-        impl( application &app, const listener_options &opts )
+        impl( application &app, const vtrc_rpc::session_options &opts )
             :app_(app)
             ,env_(app_.get_enviroment( ))
             ,opts_(opts)
@@ -22,7 +24,7 @@ namespace vtrc { namespace server {
         { }
     };
 
-    listener::listener(application & app, const listener_options &opts)
+    listener::listener(application & app, const vtrc_rpc::session_options &opts)
         :impl_(new impl(app, opts))
     {
         impl_->parent_ = this;
@@ -43,7 +45,7 @@ namespace vtrc { namespace server {
         return impl_->env_;
     }
 
-    const listener_options &listener::get_options( ) const
+    const vtrc_rpc::session_options &listener::get_options( ) const
     {
         return impl_->opts_;
     }
@@ -76,20 +78,11 @@ namespace vtrc { namespace server {
     }
 
     namespace listeners {
-
-        listener_options default_options( )
+        vtrc_rpc::session_options default_options( )
         {
-            listener_options def_opts = { 0 };
-
-            def_opts.maximum_active_calls   = 5;
-            def_opts.maximum_message_length = 1024 * 1024;
-            def_opts.maximum_total_calls    = 20;
-            def_opts.read_buffer_size       = 4096;
-            def_opts.maximum_stack_size     = 64;
-
+            vtrc_rpc::session_options def_opts;
             return def_opts;
         }
-
     }
 
 }}

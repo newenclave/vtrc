@@ -1,72 +1,11 @@
-import "google/protobuf/descriptor.proto";
-import "vtrc-errors.proto";
-import "vtrc-rpc-lowlevel.proto";
-import "vtrc-rpc-options.proto";
-import "vtrc-types.proto";
+//import "google/protobuf/descriptor.proto";
+//import "vtrc-errors.proto";
+//import "vtrc-rpc-lowlevel.proto";
+//import "vtrc-rpc-options.proto";
+//import "vtrc-types.proto";
 
 package vtrc_service;
 
 // index 54000
 
 option cc_generic_services = true;
-
-message test_message {
-    optional uint32 id  = 1;
-    optional bytes  b   = 2;
-}
-
-service test_rpc {
-
-    option (vtrc_rpc.service_options ) = {
-        level:   1,
-        timeout: 13000000,
-        wait:    true
-    };
-
-    rpc test( test_message ) returns ( test_message )
-    {   option (vtrc_rpc.method_options) = {
-            level: 2,
-            wait:  true
-    };  };
-
-    rpc test2( test_message ) returns ( test_message )
-    { option (vtrc_rpc.method_options) = {
-            level: 2,
-            wait:  true
-    }; };
-}
-
-service test_events {
-    option ( vtrc_rpc.service_options ) = {
-        level:   1,
-        timeout: 10000, // 10 milliseconds =)
-        wait:    true
-    };
-    rpc test(vtrc_rpc.message_info) returns ( vtrc_rpc.message_info );
-}
-
-/// +++++++++++ service internal +++++++++++ ///
-message ping_req { }
-message pong_res { }
-
-message sync_env_req {
-
-    optional bytes name     = 1;
-    optional bytes value    = 2;
-    optional bool  replace  = 3;
-
-    message list {
-        optional sync_env_req value = 1;
-    }
-}
-
-message sync_env_res {
-    optional bool success   = 1;
-    optional bool replaced  = 2;
-}
-
-service internal {
-    rpc ping(ping_req) returns (pong_res);
-    rpc sync_env(sync_env_req) returns (sync_env_res);
-}
-

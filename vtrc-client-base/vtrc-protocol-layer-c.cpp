@@ -269,6 +269,11 @@ namespace vtrc { namespace client {
                                        "Server is not ready; stage: 'Ready'");
             }
 
+            vtrc_auth::session_setup ss;
+            ss.ParseFromString( capsule.body( ) );
+
+            parent_->configure_session( ss.options( ) );
+
             change_stage( STAGE_RPC );
 
             on_ready( true );

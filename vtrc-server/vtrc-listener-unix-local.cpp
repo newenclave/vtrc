@@ -77,7 +77,7 @@ namespace vtrc { namespace server { namespace listeners {
         struct listener_unix: public super_type {
 
             listener_unix( application &app,
-                           const listener_options &opts,
+                           const vtrc_rpc::session_options &opts,
                            const std::string &name )
                 :super_type(app, opts, endpoint_type(name))
             { }
@@ -123,7 +123,7 @@ namespace vtrc { namespace server { namespace listeners {
     namespace unix_local {
 
         listener_sptr create(application &app,
-                               const listener_options &opts,
+                               const vtrc_rpc::session_options &opts,
                                const std::string &name)
         {
             vtrc::shared_ptr<listener_unix>new_l
@@ -135,7 +135,7 @@ namespace vtrc { namespace server { namespace listeners {
 
         listener_sptr create( application &app, const std::string &name )
         {
-            const listener_options def_opts(default_options( ));
+            const vtrc_rpc::session_options def_opts(default_options( ));
             return create( app, def_opts, name );
         }
 

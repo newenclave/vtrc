@@ -48,7 +48,8 @@ namespace {
         vtrc::unique_ptr<acceptor_type> acceptor_;
 
         listener_impl( application &app,
-                       const listener_options &opts, const endpoint_type &ep)
+                       const vtrc_rpc::session_options &opts,
+                       const endpoint_type &ep)
             :listener(app, opts)
             ,ios_(app.get_io_service( ))
             ,endpoint_(ep)

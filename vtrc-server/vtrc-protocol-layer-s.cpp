@@ -76,15 +76,12 @@ namespace vtrc { namespace server {
         stage_function_type      stage_function_;
 
         vtrc::atomic<unsigned>   current_calls_;
-        const unsigned           maximum_calls_;
 
-        impl( application &a, common::transport_iface *c,
-              unsigned maximum_calls)
+        impl( application &a, common::transport_iface *c )
             :app_(a)
             ,connection_(c)
             ,ready_(false)
             ,current_calls_(0)
-            ,maximum_calls_(maximum_calls)
             ,keepalive_calls_(a.get_io_service( ))
         {
             stage_function_ =
@@ -153,12 +150,29 @@ namespace vtrc { namespace server {
                                 true );
         }
 
-        void set_client_ready(  )
+        void set_client_ready( vtrc_auth::init_capsule &capsule )
         {
             keepalive_calls_.cancel( );
             stage_function_ =
                     vtrc::bind( &this_type::on_rcp_call_ready, this );
+
+            capsule.set_ready( true );
+            capsule.set_text( "Kiva nahda sinut!" );
+
+            vtrc_auth::session_setup session_setup;
+
+            session_setup.mutable_options( )
+                         ->CopyFrom( parent_->session_options( ) );
+
+            app_.configure_session( connection_,
+                                   *session_setup.mutable_options( ) );
+
+            capsule.set_body( session_setup.SerializeAsString( ) );
+
             parent_->set_ready( true );
+
+            send_proto_message( capsule );
+
         }
 
         void close_client( const bsys::error_code & /*err*/,
@@ -201,13 +215,8 @@ namespace vtrc { namespace server {
                                                 key.c_str( ), key.size( ) ) );
 
             capsule.Clear( );
-            capsule.set_ready( true );
-            capsule.set_text( "Kiva nahda sinut!" );
 
-            set_client_ready(  );
-
-            send_proto_message( capsule );
-
+            set_client_ready( capsule );
         }
 
         void setup_transformer( unsigned id )
@@ -219,12 +228,7 @@ namespace vtrc { namespace server {
 
             if( id == vtrc_auth::TRANSFORM_NONE ) {
 
-                capsule.set_ready( true );
-                capsule.set_text( "Kiva nahda sinut!" );
-
-                set_client_ready(  );
-
-                send_proto_message( capsule );
+                set_client_ready( capsule );
 
             } else if( id == vtrc_auth::TRANSFORM_ERSEEFOR ) {
 
@@ -327,9 +331,14 @@ namespace vtrc { namespace server {
             }
         }
 
+        unsigned max_calls( ) const
+        {
+            return parent_->session_options( ).max_active_calls( );
+        }
+
         void process_call( lowlevel_unit_sptr &llu )
         {
-            if( ++current_calls_ <= maximum_calls_ ) {
+            if( ++current_calls_ <= max_calls( ) ) {
                 app_.get_rpc_service( ).post(
                         vtrc::bind( &this_type::push_call, this,
                                     llu, connection_->shared_from_this( )));
@@ -428,11 +437,9 @@ namespace vtrc { namespace server {
 
     protocol_layer_s::protocol_layer_s( application &a,
                                         common::transport_iface *connection,
-                                        unsigned maximum_calls,
-                                        size_t mess_len,
-                                        size_t maximum_stack_size)
-        :common::protocol_layer(connection, false, mess_len, maximum_stack_size)
-        ,impl_(new impl(a, connection, maximum_calls))
+                                        const vtrc_rpc::session_options &opts )
+        :common::protocol_layer(connection, false, opts )
+        ,impl_(new impl(a, connection ))
     {
         impl_->parent_ = this;
     }

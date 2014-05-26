@@ -1,5 +1,7 @@
 #include "stress-application.h"
 
+#include "protocol/vtrc-rpc-lowlevel.pb.h"
+
 #include "vtrc-common/vtrc-pool-pair.h"
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"
 #include "vtrc-common/vtrc-connection-iface.h"
@@ -27,7 +29,7 @@ namespace stress {
 
         server::listener_sptr create_from_string( const std::string &name,
                                   server::application &app,
-                                  const server::listener_options &opts,
+                                  const vtrc_rpc::session_options &opts,
                                   bool tcp_nodelay)
         {
             /// result endpoint
@@ -135,19 +137,19 @@ namespace stress {
                       << "\n";
         }
 
-        server::listener_options options( const po::variables_map &params )
+        vtrc_rpc::session_options options( const po::variables_map &params )
         {
             using server::listeners::default_options;
-            server::listener_options opts( default_options( ) );
+            vtrc_rpc::session_options opts( default_options( ) );
 
             if( params.count( "message-size" ) ) {
-                opts.maximum_message_length =
-                        params["message-size"].as<unsigned>( );
+                opts.set_max_message_length(
+                        params["message-size"].as<unsigned>( ));
             }
 
             if( params.count( "stack-size" ) ) {
-                opts.maximum_stack_size =
-                        params["stack-size"].as<unsigned>( );
+                opts.set_max_stack_size(
+                        params["stack-size"].as<unsigned>( ));
             }
 
             return opts;
@@ -165,7 +167,7 @@ namespace stress {
 
             using server::listeners::default_options;
 
-            server::listener_options opts( options( params ) );
+            vtrc_rpc::session_options opts( options( params ) );
 
             for( citer b(ser.begin( )), e(ser.end( )); b != e; ++b) {
 

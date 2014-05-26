@@ -10,6 +10,8 @@
 #include "vtrc-protocol-layer-s.h"
 #include "vtrc-common/vtrc-enviroment.h"
 
+#include "protocol/vtrc-rpc-lowlevel.pb.h"
+
 #include <memory>
 
 namespace vtrc { namespace server { namespace listeners {
@@ -50,13 +52,12 @@ namespace vtrc { namespace server { namespace listeners {
                 ,app_(endpoint_.get_application( ))
                 ,ios_(app_.get_io_service( ))
                 ,env_(endpoint_.get_enviroment( ))
-                ,read_buff_(endpoint_.get_options( ).read_buffer_size)
+                ,read_buff_(endpoint_.get_options( ).read_buffer_size( ))
                 ,close_closure_(on_close_cb)
             {
+                vtrc_rpc::session_options const &opts(endpoint_.get_options( ));
                 protocol_.reset(new protocol_layer_s( vtrc::ref(app_), this,
-                            endpoint_.get_options( ).maximum_active_calls,
-                            endpoint_.get_options( ).maximum_message_length,
-                            endpoint_.get_options( ).maximum_stack_size));
+                                                      opts));
             }
 
             void set_name( std::string const &name )

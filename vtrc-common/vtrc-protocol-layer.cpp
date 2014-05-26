@@ -164,25 +164,30 @@ namespace vtrc { namespace common {
         vtrc::condition_variable     ready_var_;
 
         unsigned                     level_;
-        size_t                       stack_size_;
+
+        vtrc_rpc::session_options    session_opts_;
 
         impl( transport_iface *c, bool oddside,
-              size_t mess_len, size_t stack_size )
+              const vtrc_rpc::session_options &opts )
             :connection_(c)
             ,hash_maker_(common::hash::create_default( ))
             ,hash_checker_(common::hash::create_default( ))
             ,transformer_(common::transformers::none::create( ))
             ,revertor_(common::transformers::none::create( ))
-            ,queue_(size_policy_ns::create_parser(mess_len))
+            ,queue_(size_policy_ns::create_parser(opts.max_message_length( )))
             ,rpc_index_(oddside ? 101 : 100)
             ,ready_(false)
             ,level_(0)
-            ,stack_size_(stack_size)
+            ,session_opts_(opts)
         { }
 
         ~impl( )
         { }
 
+        void configure_session( const vtrc_rpc::session_options &opts )
+        {
+            session_opts_.CopyFrom( opts );
+        }
 
         static protocol_layer::lowlevel_unit_type make_fake_mess( )
         {
@@ -672,7 +677,7 @@ namespace vtrc { namespace common {
         {
             protocol_layer::context_holder ch( parent_, llu.get( ) );
 
-            if( ch.ctx_->depth( ) > stack_size_ ) {
+            if( ch.ctx_->depth( ) > session_opts_.max_stack_size( ) ) {
                 throw vtrc::common::exception( vtrc_errors::ERR_OVERFLOW );
             }
 
@@ -792,20 +797,15 @@ namespace vtrc { namespace common {
     };
 
     protocol_layer::protocol_layer( transport_iface *connection, bool oddside )
-        :impl_(new impl(connection, oddside,
-                        default_max_message_length,
-                        default_stack_size))
+        :impl_(new impl(connection, oddside, vtrc_rpc::session_options( )))
     {
         impl_->parent_ = this;
     }
 
      protocol_layer::protocol_layer(transport_iface *connection,
                                     bool oddside,
-                                    size_t maximum_mess_len,
-                                    size_t maximum_stack_size)
-         :impl_(new impl(connection, oddside,
-                         maximum_mess_len,
-                         maximum_stack_size))
+                                    const vtrc_rpc::session_options &opts)
+         :impl_(new impl(connection, oddside, opts ))
      {
          impl_->parent_ = this;
      }
@@ -897,9 +897,19 @@ namespace vtrc { namespace common {
         return impl_->get_method_options( method );
     }
 
+    const vtrc_rpc::session_options &protocol_layer::session_options( ) const
+    {
+        return impl_->session_opts_;
+    }
+
     const call_context *protocol_layer::get_call_context( ) const
     {
         return impl_->get_call_context( );
+    }
+
+    void protocol_layer::configure_session( const vtrc_rpc::session_options &o )
+    {
+        impl_->configure_session( o );
     }
 
     call_context *protocol_layer::top_call_context( )
