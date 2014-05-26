@@ -460,7 +460,6 @@ namespace vtrc { namespace common {
 
         void change_sign_maker( hash_iface *new_signer )
         {
-
             hash_maker_.reset(new_signer);
         }
 
