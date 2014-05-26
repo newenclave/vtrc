@@ -77,22 +77,9 @@ namespace {
                 const common::call_context *cc(locked->get_call_context( ));
                 size_t depth = cc->depth( );
                 std::ostringstream oss;
-
-                size_t from_server = 0;
-                size_t from_client = 0;
-
-                bool is_server = true;
-                while( cc ) {
-
-                    from_server += is_server ? 1 : 0;
-                    from_client += is_server ? 0 : 1;
-
-                    is_server = !is_server;
-                    cc = cc->next( );
-                }
                 oss << "depth: "        << depth        << "; "
-                    << "client depth: " << from_client  << "; "
-                    << "server depth: " << from_server;
+                    << "client depth: " << (depth >> 1)  << "; "
+                    << "server depth: " << (depth >> 1);
                 return oss.str( );
             }
 
