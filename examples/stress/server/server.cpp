@@ -26,7 +26,7 @@ void get_options( po::options_description& desc )
             "set TCP_NODELAY flag for tcp sockets")
 
         ("only-pool,o",
-            "use io pool for io operatoration and rpc calls")
+            "use io pool for io operations and rpc calls")
 
         ("message-size,M", po::value<unsigned>( ),
             "maximum message size for protocol")
