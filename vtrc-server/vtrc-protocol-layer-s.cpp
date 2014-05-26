@@ -362,7 +362,7 @@ namespace vtrc { namespace server {
 
                 lowlevel_unit_sptr llu(vtrc::make_shared<lowlevel_unit_type>());
 
-                if(!get_pop_message( *llu )) {
+                if( !get_pop_message( *llu ) ) {
                     return;
                 }
 
@@ -390,7 +390,6 @@ namespace vtrc { namespace server {
                     }
                 }
             }
-
         }
 
         std::string first_message( )

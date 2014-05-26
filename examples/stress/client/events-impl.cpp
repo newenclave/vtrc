@@ -1,3 +1,5 @@
+#include <stack>
+
 #include "events-impl.h"
 
 #include "protocol/stress.pb.h"
@@ -76,6 +78,29 @@ namespace {
                 std::ostringstream oss;
                 bool from_server = true;
                 while( cc ) {
+                    oss << (from_server ? ">" : "<");
+                    from_server = !from_server;
+                    cc = cc->next( );
+                    if( cc ) {
+                        oss << ":";
+                    }
+                }
+                return oss.str( );
+            }
+
+            return "<>failed<>?";
+        }
+
+        std::string get_stack2( )
+        {
+            client::vtrc_client_sptr locked( client_.lock( ) );
+
+            if( locked ) { /// just on case;
+
+                const common::call_context *cc(locked->get_call_context( ));
+                std::ostringstream oss;
+                bool from_server = true;
+                while( cc ) {
                     oss << (from_server ? "S>" : "C<") << ":"
                         << cc->get_lowlevel_message( )->call( ).service_id( )
                         << "::"
@@ -106,7 +131,7 @@ namespace {
                 std::cout << "last stack: " << stack
                           << "\n";
             } else {
-                std::cout << "balance: " << request->balance( )
+                std::cout << "[IN ] balance: " << request->balance( )
                           << "; stack: " << stack
                           << "\n";
                 client::vtrc_client_sptr locked(client_.lock( ));
@@ -116,6 +141,9 @@ namespace {
                             common::rpc_channel::USE_CONTEXT_CALL));
                     impl->recursive_call( request->balance( ) - 1 );
                 }
+                std::cout << "[OUT] balance: " << request->balance( )
+                          << "; stack: " << stack
+                          << "\n";
             }
         }
 
