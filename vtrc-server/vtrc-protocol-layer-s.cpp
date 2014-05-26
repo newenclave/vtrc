@@ -205,10 +205,10 @@ namespace vtrc { namespace server {
 
             std::string key(app_.get_session_key( connection_, client_id_ ));
 
-            create_key( key,                // input
-                        tsetup.salt1( ),    // input
-                        tsetup.salt2( ),    // input
-                        key );              // output
+            create_key( key,             // input
+                        tsetup.salt1( ), // input
+                        tsetup.salt2( ), // input
+                        key );           // output
 
             // client revertor is my transformer
             parent_->change_transformer( erseefor::create(
