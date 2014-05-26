@@ -796,7 +796,6 @@ namespace vtrc { namespace common {
                         default_max_message_length,
                         default_stack_size))
     {
-        std::cout << "Create proto " << default_stack_size << "\n";
         impl_->parent_ = this;
     }
 
@@ -808,7 +807,6 @@ namespace vtrc { namespace common {
                          maximum_mess_len,
                          maximum_stack_size))
      {
-         std::cout << "Create proto " << maximum_stack_size << "\n";
          impl_->parent_ = this;
      }
 
