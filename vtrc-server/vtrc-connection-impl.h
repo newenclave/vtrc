@@ -155,6 +155,7 @@ namespace vtrc { namespace server { namespace listeners {
                 app_.get_clients( )->drop(this); // delete
             }
 
+#if 0
             void close_drop( const std::string &mess )
             {
                 vtrc_rpc::lowlevel_unit llu;
@@ -173,7 +174,7 @@ namespace vtrc { namespace server { namespace listeners {
 
                 app_.get_clients( )->drop(this); // delete
             }
-
+#endif
             void start_reading( )
             {
 #if 0
@@ -205,8 +206,9 @@ namespace vtrc { namespace server { namespace listeners {
                 if( !error ) {
                     try {
                         protocol_->process_data( &read_buff_[0], bytes );
-                    } catch( const std::exception &ex ) {
-                        close_drop( ex.what( ) );
+                    } catch( const std::exception & /*ex*/ ) {
+                        //close_drop( ex.what( ) );
+                        close_drop(  );
                         return;
                     }
                     start_reading( );
