@@ -14,7 +14,7 @@ namespace vtrc { namespace common { namespace data_queue {
 
         impl( size_t max_valid_length )
             :max_valid_length_(max_valid_length)
-        {}
+        { }
 
         void append( const char *data, size_t length )
         {
@@ -81,7 +81,7 @@ namespace vtrc { namespace common { namespace data_queue {
 
     queue_base::queue_base( size_t max_valid_length )
         :impl_(new impl(max_valid_length))
-    {}
+    { }
 
     queue_base::~queue_base( )
     {
@@ -193,6 +193,9 @@ namespace vtrc { namespace common { namespace data_queue {
                     }
 
                     size_t len = SPP::unpack(data.begin( ), data.end( ));
+
+                    size_t maxval = get_maximum_length( );
+                    (void)(maxval);
 
                     if( len > get_maximum_length( ) ) {
                         //std::cout << "Message is too long " << len << "\n";

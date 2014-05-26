@@ -187,6 +187,7 @@ namespace vtrc { namespace common {
         void configure_session( const vtrc_rpc::session_options &opts )
         {
             session_opts_.CopyFrom( opts );
+            queue_->set_maximum_length( opts.max_message_length( ) );
         }
 
         static protocol_layer::lowlevel_unit_type make_fake_mess( )

@@ -46,10 +46,11 @@ namespace {
             stub_.call_request( &stub_type::generate_event, &req );
         }
 
-        void recursive_call( unsigned count )
+        void recursive_call( unsigned count, unsigned payload )
         {
             vtrc_example::recursive_call_req req;
             req.set_balance( count );
+            req.set_payload( std::string( payload, '+' ) );
             stub_.call_request( &stub_type::recursive_call, &req );
         }
 

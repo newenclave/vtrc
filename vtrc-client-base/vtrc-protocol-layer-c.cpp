@@ -434,6 +434,7 @@ namespace vtrc { namespace client {
     void protocol_layer_c::close( )
     {
         impl_->check_disconnect_stage( );
+        cancel_all_slots( );
         impl_->client_->on_disconnect_( );
     }
 

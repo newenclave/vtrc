@@ -25,6 +25,7 @@ message generate_events_res {
 
 message recursive_call_req {
     optional uint32 balance = 1;
+    optional bytes  payload = 2;
 }
 
 message recursive_call_res { }

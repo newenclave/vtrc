@@ -14,7 +14,8 @@ namespace vtrc { namespace client {
 
 namespace stress {
     google::protobuf::Service *create_events(
-                               vtrc::shared_ptr<vtrc::client::vtrc_client> c );
+                               vtrc::shared_ptr<vtrc::client::vtrc_client> c,
+                               unsigned payload );
 }
 
 #endif // EVENTS_IMPL_H

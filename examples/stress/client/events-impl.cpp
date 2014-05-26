@@ -34,12 +34,15 @@ namespace {
 
         client::vtrc_client_wptr client_;
 
-        time_point last_event_point_;
+        time_point  last_event_point_;
+        unsigned    payload_;
 
     public:
-        events_impl( vtrc::shared_ptr<vtrc::client::vtrc_client> c )
+        events_impl( vtrc::shared_ptr<vtrc::client::vtrc_client> c,
+                     unsigned payload )
             :client_(c)
             ,last_event_point_(high_resolution_clock::now( ))
+            ,payload_(payload)
         { }
     private:
 
@@ -151,11 +154,15 @@ namespace {
                 vtrc::shared_ptr<interface> impl(
                     create_stress_client(locked,
                         common::rpc_channel::USE_CONTEXT_CALL));
-                impl->recursive_call( request->balance( ) - 1 );
+
+                impl->recursive_call( request->balance( ) - 1, payload_ );
+
             }
+
             if( request->balance( ) == 1 ) {
                 std::cout << "============= EXIT =============\n";
             }
+
             std::cout << "[OUT] balance: " << request->balance( )
                       << "; stack: " << stack
                       << "\n";
@@ -165,9 +172,10 @@ namespace {
     };
 }
 
-    gpb::Service *create_events( vtrc::shared_ptr<client::vtrc_client> c )
+    gpb::Service *create_events( vtrc::shared_ptr<client::vtrc_client> c,
+                                 unsigned payload)
     {
-        return new events_impl( c );
+        return new events_impl( c, payload );
     }
 
 }

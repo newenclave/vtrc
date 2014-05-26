@@ -21,7 +21,7 @@ namespace stress {
                                       bool wait,
                                       unsigned payload ) = 0;
 
-        virtual void recursive_call( unsigned count) = 0;
+        virtual void recursive_call( unsigned count, unsigned payload ) = 0;
 
     };
 

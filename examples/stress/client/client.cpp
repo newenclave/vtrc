@@ -198,7 +198,8 @@ int start( const po::variables_map &params )
         std::cout << "Current thread is: "
                   << this_thread::get_id( ) << "\n";
 
-        vtrc::shared_ptr<gpb::Service> events(stress::create_events( client ));
+        vtrc::shared_ptr<gpb::Service> events(stress::create_events(
+                                                            client, payload ));
         client->assign_rpc_handler( events );
 
         unsigned event_count = params["gen-events"].as<unsigned>( );
@@ -213,7 +214,8 @@ int start( const po::variables_map &params )
         std::cout << "Current thread is: "
                   << this_thread::get_id( ) << "\n";
 
-        vtrc::shared_ptr<gpb::Service> events(stress::create_events( client ));
+        vtrc::shared_ptr<gpb::Service> events(stress::create_events( client,
+                                                                     payload ));
         client->assign_rpc_handler( events );
 
         unsigned event_count = params["gen-callbacks"].as<unsigned>( );
@@ -224,11 +226,12 @@ int start( const po::variables_map &params )
 
         std::cout << "Ask server for recursive call\n";
 
-        vtrc::shared_ptr<gpb::Service> events(stress::create_events( client ));
+        vtrc::shared_ptr<gpb::Service> events(stress::create_events( client,
+                                                                     payload ));
         client->assign_rpc_handler( events );
 
         unsigned call_count = params["recursive"].as<unsigned>( );
-        impl->recursive_call( call_count );
+        impl->recursive_call( call_count, payload  );
         std::cout << "Ok\n";
     }
 
