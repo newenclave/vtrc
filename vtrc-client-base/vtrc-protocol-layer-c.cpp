@@ -24,7 +24,6 @@
 #include "protocol/vtrc-auth.pb.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
 
-
 namespace vtrc { namespace client {
 
     namespace gpb = google::protobuf;

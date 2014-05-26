@@ -60,6 +60,8 @@ namespace  {
 
             common::closure_holder holder(done);
 
+            std::string payload(request->payload_size( ), '?');
+
             vtrc::unique_ptr<common::rpc_channel> channel;
             common::connection_iface_sptr c_sptr = c_->shared_from_this( );
 
@@ -75,6 +77,7 @@ namespace  {
 
             stub_wrapper_type stub(channel.get( ));
             vtrc_example::event_req req;
+            req.set_payload( payload );
 
             req.set_is_event( dis_wait );
 
