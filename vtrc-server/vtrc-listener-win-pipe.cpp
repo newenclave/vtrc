@@ -9,6 +9,8 @@
 #include "vtrc-common/vtrc-transport-win-pipe.h"
 #include "vtrc-common/vtrc-connection-list.h"
 
+#include "protocol/vtrc-rpc-lowlevel.pb.h"
+
 #include "vtrc-connection-impl.h"
 
 #include "vtrc-common/vtrc-closure.h"
@@ -97,14 +99,15 @@ namespace {
         bool                     working_;
 
         pipe_listener( application &app,
-                const listener_options &opts, const std::string pipe_name,
+                const vtrc_rpc::session_options &opts, 
+                const std::string pipe_name,
                 size_t max_inst)
             :listener(app, opts)
             ,ios_(app.get_io_service( ))
             ,endpoint_(pipe_name)
             ,pipe_max_inst_(max_inst)
-            ,in_buf_size_(opts.read_buffer_size)
-            ,out_buf_size_(opts.read_buffer_size)
+            ,in_buf_size_(opts.read_buffer_size( ))
+            ,out_buf_size_(opts.read_buffer_size( ))
             ,working_(false)
         { }
 
@@ -227,7 +230,7 @@ namespace {
 }
 
     namespace win_pipe {
-        listener_sptr create( application &app, const listener_options &opts,
+        listener_sptr create( application &app, const vtrc_rpc::session_options &opts,
                                 const std::string &name )
         {
             vtrc::shared_ptr<pipe_listener>new_l
@@ -240,7 +243,7 @@ namespace {
 
         listener_sptr create( application &app, const std::string &name )
         {
-            listener_options def_opts(default_options( ));
+            vtrc_rpc::session_options def_opts(default_options( ));
             return create( app, def_opts, name );
         }
 

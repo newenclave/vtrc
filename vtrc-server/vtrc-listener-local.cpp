@@ -9,8 +9,9 @@ namespace vtrc { namespace server {
 #ifdef  _WIN32
     namespace win_pipe {
         listener_sptr create( application &app, const std::string &name );
-        listener_sptr create( application &app, const listener_options &opts,
-                                const std::string &name );
+        listener_sptr create( application &app, 
+                              const vtrc_rpc::session_options &opts,
+                              const std::string &name );
     }
     namespace local_namespace = win_pipe;
 #else
