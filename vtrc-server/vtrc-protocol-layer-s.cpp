@@ -136,7 +136,8 @@ namespace vtrc { namespace server {
         }
 
         void send_proto_message( const gpb::MessageLite &mess,
-                             common::system_closure_type closure, bool on_send)
+                                 common::system_closure_type closure,
+                                 bool on_send)
         {
             std::string s(mess.SerializeAsString( ));
             connection_->write( s.c_str( ), s.size( ), closure, on_send );
