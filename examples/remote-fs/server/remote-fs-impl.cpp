@@ -28,7 +28,7 @@ namespace {
     typedef std::map<gpb::uint32, fs::directory_iterator> iterator_map;
     typedef std::map<gpb::uint32, file_ptr >              files_map;
 
-    const size_t max_block_length = (640 * 1024);
+    const size_t max_block_length = 65000;
 
     class remote_file_impl: public vtrc_example::remote_file {
 
