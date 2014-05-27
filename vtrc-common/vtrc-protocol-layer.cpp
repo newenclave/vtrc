@@ -336,7 +336,7 @@ namespace vtrc { namespace common {
 
         uint64_t next_index( )
         {
-            return (rpc_index_ += 2);
+            return ( rpc_index_ += 2 );
         }
 
         // --------------- sett ----------------- //

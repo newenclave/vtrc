@@ -35,6 +35,9 @@ void get_options( po::options_description& desc )
         ("pull,g", po::value<std::string>( ), "Download remote file")
         ("push,u", po::value<std::string>( ), "Upload local file")
 
+        ("pull-tree,G", po::value<std::string>( ), "Download remote fs tree")
+        ("push-tree,U", po::value<std::string>( ), "Upload local fs tree")
+
         ("block-size,b", po::value<unsigned>( ), "Block size for pull and push"
                                                  "; 1-640000")
 
