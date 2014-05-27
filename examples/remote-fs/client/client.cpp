@@ -40,6 +40,9 @@ void get_options( po::options_description& desc )
         ("pull-tree,G", po::value<std::string>( ), "Download remote fs tree")
         ("push-tree,U", po::value<std::string>( ), "Upload local fs tree")
 
+        ("output,o", po::value<std::string>( ),
+            "Target path; for pull-tree it means local directory")
+
         ("block-size,b", po::value<unsigned>( ), "Block size for pull and push"
                                                  "; 1-640000")
 
@@ -136,6 +139,13 @@ int start( const po::variables_map &params )
         std::cout << "PWD: " << impl->pwd( ) << "\n";
     }
 
+    std::string output;
+
+    if( params.count( "output" ) ) {
+        output = params["output"].as<std::string>( );
+    }
+
+
     if( params.count( "info" ) ) {
         std::string pi(params["info"].as<std::string>( ));
         std::cout << "Trying get info about '" << pi << "'...";
@@ -185,8 +195,16 @@ int start( const po::variables_map &params )
 
     if( params.count( "pull-tree" ) ) {
         std::string path = params["pull-tree"].as<std::string>( );
-        std::cout << "pull tree '" << path << "'\n";
-        rfs_examples::pull_tree( client, *impl, path);
+
+        if( !output.empty( ) ) {
+            std::cout << "pull tree '" << path << "'"
+                      << " to " << output << "\n";
+            rfs_examples::pull_tree( client, *impl, path, output );
+        } else {
+            std::cout << "pull tree '" << path << "'\n";
+            rfs_examples::pull_tree( client, *impl, path);
+        }
+
     }
 
     if( params.count( "mkdir" ) ) {

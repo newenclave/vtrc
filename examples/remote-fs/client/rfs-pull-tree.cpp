@@ -22,14 +22,16 @@ namespace rfs_examples {
 
     void pull_tree( vtrc::client::vtrc_client_sptr &client,
                 interfaces::remote_fs              &impl,
-                const std::string                  &local_path,
-                const std::string                  &remote_path )
+                const std::string                  &remote_path,
+                const std::string                  &local_path)
     {
         typedef vtrc::shared_ptr<interfaces::remote_fs_iterator> iterator;
 
         iterator i = impl.begin_iterator(remote_path);
 
+        std::cout << "Create dirs: " << local_path << "...";
         fs::create_directories( local_path );
+        std::cout << "Ok\n";
 
         for( ; !i->end( ); i->next( ) ) {
 
@@ -41,7 +43,7 @@ namespace rfs_examples {
 
             if( is_dir ) {
                 try {
-                    pull_tree( client, impl, next.string( ), i->info( ).path_ );
+                    pull_tree( client, impl, i->info( ).path_, next.string( ) );
                 } catch( ... ) {
                     std::cout << "<iteration failed>\n";
                 }
@@ -61,7 +63,7 @@ namespace rfs_examples {
                 const std::string                  &remote_path )
     {
         fs::path local_path( remote_path );
-        pull_tree( client, impl, local_path.leaf( ).string( ), remote_path );
+        pull_tree( client, impl, remote_path, local_path.leaf( ).string( ) );
     }
 
 
