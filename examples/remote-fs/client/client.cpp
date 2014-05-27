@@ -44,7 +44,7 @@ void get_options( po::options_description& desc )
             "Target path; for pull-tree it means local directory")
 
         ("block-size,b", po::value<unsigned>( ), "Block size for pull and push"
-                                                 "; 1-640000")
+                                                 "; 1-65000")
 
         ("mkdir,m", po::value<std::string>( ), "Create remote directory")
         ("del,d",   po::value<std::string>( ), "Remove remote directory"

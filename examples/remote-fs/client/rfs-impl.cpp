@@ -12,7 +12,7 @@ namespace {
     typedef vtrc_example::remote_fs_Stub stub_type;
     typedef vtrc::common::stub_wrapper<stub_type> stub_wrapper_type;
 
-    const size_t max_block_length = (640 * 1024);
+    const size_t max_block_length = 65000 ;
 
     interfaces::fs_info fill_info( vtrc_example::fs_element_info const &info,
                                    std::string const &path)
