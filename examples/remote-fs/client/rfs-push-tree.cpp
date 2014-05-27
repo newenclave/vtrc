@@ -28,10 +28,11 @@ namespace rfs_examples {
                          const fs::path           &root,
                          const fs::path           &path )
     {
-        fs::directory_iterator begin( root / path );
 
         /// create remote directory
         impl.mkdir( path.string( ) );
+
+        fs::directory_iterator begin( root / path );
 
         const fs::directory_iterator end;
         for( ;begin != end; ++begin ) {
