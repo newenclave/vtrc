@@ -103,7 +103,7 @@ namespace {
 
         std::string                                    path_;
         vtrc::shared_ptr<google::protobuf::RpcChannel> channel_;
-        mutable stub_wrapper_type                              stub_;
+        mutable stub_wrapper_type                      stub_;
         vtrc_example::fs_handle                        fhdl_;
 
         void open( std::string const &mode )
