@@ -105,7 +105,7 @@ Client can be used for access to the remote filesystem. There are several comman
     
     Client help:
     ./remote_fs_client --help
-    
+   
     Allowed options:
     -? [ --help ]           help message
     -s [ --server ] arg     server name; <tcp address>:<port> or <pipe/file name>
@@ -116,7 +116,10 @@ Client can be used for access to the remote filesystem. There are several comman
     -t [ --tree ]           show remote directory as tree
     -g [ --pull ] arg       Download remote file
     -u [ --push ] arg       Upload local file
-    -b [ --block-size ] arg Block size for pull and push; 1-640000
+    -G [ --pull-tree ] arg  Download remote fs tree
+    -U [ --push-tree ] arg  Upload local fs tree
+    -o [ --output ] arg     Target path; for pull-tree it means local directory
+    -b [ --block-size ] arg Block size for pull and push; 1-65000
     -m [ --mkdir ] arg      Create remote directory
     -d [ --del ] arg        Remove remote directory if it is empty
     
