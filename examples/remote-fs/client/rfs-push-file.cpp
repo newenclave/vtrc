@@ -16,12 +16,13 @@ namespace rfs_examples {
 
     using namespace vtrc;
 
-    void push_file( client::vtrc_client_sptr &client,
-                    const std::string &local_path, size_t block_size )
+    void push_file( vtrc::client::vtrc_client_sptr &client,
+                const std::string &local_path,
+                const std::string &remote_path,
+                size_t block_size )
     {
-        std::string name = leaf_of( local_path );
         vtrc::shared_ptr<interfaces::remote_file> rem_f
-                ( interfaces::create_remote_file( client, name, "wb" ) );
+                ( interfaces::create_remote_file( client, remote_path, "wb" ) );
 
         std::cout << "Open remote file success.\n"
                   << "Starting...\n"
@@ -44,9 +45,14 @@ namespace rfs_examples {
                 std::cout << "Push " << total << " bytes\r";
             }
         }
-
         std::cout << "\nUpload complete\n";
+    }
 
+    void push_file( client::vtrc_client_sptr &client,
+                    const std::string &local_path, size_t block_size )
+    {
+        std::string name = leaf_of( local_path );
+        push_file( client, local_path, name, block_size );
     }
 
 }

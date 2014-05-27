@@ -16,9 +16,11 @@ namespace rfs_examples {
     using namespace vtrc;
     namespace gpb = google::protobuf;
 
-    void pull_file( client::vtrc_client_sptr &client,
-                    interfaces::remote_fs &impl,
-                    const std::string &remote_path, size_t block_size )
+    void pull_file( vtrc::client::vtrc_client_sptr &client,
+                    interfaces::remote_fs          &impl,
+                    const std::string &remote_path,
+                    const std::string &local_path,
+                    size_t block_size )
     {
         gpb::uint64 remote_size = -1;
         try {
@@ -31,7 +33,6 @@ namespace rfs_examples {
                       << "\n";
         }
 
-        std::string name = leaf_of( remote_path );
         vtrc::shared_ptr<interfaces::remote_file> rem_f
                 ( interfaces::create_remote_file( client, remote_path, "rb" ) );
 
@@ -41,7 +42,7 @@ namespace rfs_examples {
                   << std::endl;
 
         std::ofstream f;
-        f.open(name.c_str( ), std::ofstream::out );
+        f.open(local_path.c_str( ), std::ofstream::out );
 
         std::string block;
         size_t total = 0;
@@ -52,6 +53,14 @@ namespace rfs_examples {
             f.write( block.c_str( ), block.size( ) );
         }
         std::cout << "\nDownload complete\n";
+    }
+
+    void pull_file( client::vtrc_client_sptr &client,
+                    interfaces::remote_fs &impl,
+                    const std::string &remote_path, size_t block_size )
+    {
+        std::string name = leaf_of( remote_path );
+        pull_file( client, impl, remote_path, name, block_size );
     }
 
 }

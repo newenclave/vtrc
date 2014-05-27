@@ -17,6 +17,8 @@
 #include "vtrc-bind.h"
 #include "vtrc-ref.h"
 
+#include "rfs-calls.h"
+
 namespace po = boost::program_options;
 using namespace vtrc;
 
@@ -81,31 +83,6 @@ void on_client_ready( vtrc::condition_variable &cond )
     std::cout << "Connection is ready...\n";
     cond.notify_all( );
 }
-
-namespace rfs_examples {
-
-    /// rfs-directory-list.cpp
-    void list_dir( interfaces::remote_fs &impl);
-
-    /// rfs-directory-tree.cpp
-    void tree_dir( interfaces::remote_fs &impl );
-
-    /// rfs-push-file.cpp
-    void push_file( client::vtrc_client_sptr &client,
-                const std::string &local_path, size_t block_size );
-
-    /// rfs-pull-file.cpp
-    void pull_file( client::vtrc_client_sptr &client,
-                    interfaces::remote_fs    &impl,
-                    const std::string &remote_path, size_t block_size );
-
-    /// rfs-mkdir-del.cpp
-    void make_dir( interfaces::remote_fs &impl, const std::string &path);
-    void make_dir( interfaces::remote_fs &impl );
-    void del( interfaces::remote_fs &impl, const std::string &path);
-    void del( interfaces::remote_fs &impl );
-}
-
 
 int start( const po::variables_map &params )
 {
@@ -198,6 +175,12 @@ int start( const po::variables_map &params )
         std::string path = params["push"].as<std::string>( );
         std::cout << "push file '" << path << "'\n";
         rfs_examples::push_file( client, path, bs );
+    }
+
+    if( params.count( "push-tree" ) ) {
+        std::string path = params["push-tree"].as<std::string>( );
+        std::cout << "push tree '" << path << "'\n";
+        rfs_examples::push_tree( client, *impl, path );
     }
 
     if( params.count( "mkdir" ) ) {
