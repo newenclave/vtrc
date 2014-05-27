@@ -183,6 +183,12 @@ int start( const po::variables_map &params )
         rfs_examples::push_tree( client, *impl, path );
     }
 
+    if( params.count( "pull-tree" ) ) {
+        std::string path = params["pull-tree"].as<std::string>( );
+        std::cout << "pull tree '" << path << "'\n";
+        rfs_examples::pull_tree( client, *impl, path);
+    }
+
     if( params.count( "mkdir" ) ) {
         std::string path = params["mkdir"].as<std::string>( );
         if( path.empty( ) ) {

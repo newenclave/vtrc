@@ -27,27 +27,36 @@ namespace rfs_examples {
                          const fs::path           &root,
                          const fs::path           &path )
     {
-        fs::directory_iterator begin( root / path);
+        fs::directory_iterator begin( root / path );
+
+        impl.mkdir( path.string( ) );
 
         const fs::directory_iterator end;
         for( ;begin != end; ++begin ) {
 
             if( fs::is_regular_file(*begin) ) {
 
+
                 fs::path remote_path( remote_root /
                                       path        /
                                       begin->path( ).leaf( ) );
 
-                make_dir( impl, path.string( ) );
+                std::cout << "Push file: "
+                             << "\"" << begin->path( ).string( ) << "\""
+                             << " -> "
+                             << "\"" << remote_path.string( ) << "\""
+                             << "\n";
+
                 push_file( client,
-                           begin->path( ).string( ),
-                           remote_path.string( ),
+                           begin->path( ).string( ), remote_path.string( ),
                            44000 );
-            } else {
+            } else if( fs::is_directory( *begin ) ) {
+
                 std::cout << "dir: " << begin->path( ) << "\n";
                 push_tree_impl( client, impl,
                                 remote_root, root,
                                 path / begin->path( ).leaf( ) );
+
             }
         }
     }
@@ -58,7 +67,6 @@ namespace rfs_examples {
     {
         fs::path path( local_path );
         fs::path remote_root( impl.pwd( ) );
-        std::cout << "Local path is: " << local_path << "\n";
         push_tree_impl( client, impl,
                         remote_root,
                         path.parent_path( ), path.leaf( ) );

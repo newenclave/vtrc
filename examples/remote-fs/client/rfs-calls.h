@@ -39,9 +39,8 @@ namespace rfs_examples {
                     size_t block_size );
 
     /// rfs-push-tree.cpp
-    void pull_tree( vtrc::client::vtrc_client_sptr &client,
+    void pull_tree(vtrc::client::vtrc_client_sptr &client,
                     interfaces::remote_fs          &impl,
-                    const std::string              &local_path,
                     const std::string              &remote_path );
 
     /// rfs-mkdir-del.cpp
