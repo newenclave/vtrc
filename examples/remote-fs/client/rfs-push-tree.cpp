@@ -38,7 +38,6 @@ namespace rfs_examples {
 
             if( fs::is_regular_file(*begin) ) {
 
-
                 fs::path remote_path( remote_root /
                                       path        /
                                       begin->path( ).leaf( ) );
