@@ -17,6 +17,7 @@ namespace google { namespace protobuf {
     class MessageLite;
     class RpcController;
     class Closure;
+    class ServiceDescriptor;
     class MethodDescriptor;
 }}
 
@@ -88,6 +89,14 @@ namespace vtrc { namespace common {
 
         virtual void on_write_error( const boost::system::error_code &err );
         virtual void on_read_error ( const boost::system::error_code &err );
+
+    public:
+
+        static std::string get_service_name(
+                                google::protobuf::Service *service );
+
+        static std::string get_service_name(
+                                const google::protobuf::ServiceDescriptor *sd );
 
         void make_local_call( lowlevel_unit_sptr llu );
         void make_local_call( lowlevel_unit_sptr llu,

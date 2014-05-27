@@ -1060,5 +1060,15 @@ namespace vtrc { namespace common {
         impl_->on_system_error( err, "Transport read error." );
     }
 
+    std::string protocol_layer::get_service_name( gpb::Service *service )
+    {
+        return get_service_name( service->GetDescriptor( ) );
+    }
+
+    std::string protocol_layer::get_service_name(
+                                            const gpb::ServiceDescriptor *sd )
+    {
+        return sd->full_name( );
+    }
 
 }}
