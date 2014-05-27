@@ -508,10 +508,8 @@ namespace vtrc { namespace common {
         void read_slot_for(uint64_t slot_id, lowlevel_unit_sptr &mess,
                                              uint64_t microsec)
         {
-            wait_result_codes qwr =
-                    rpc_queue_.read(
-                        slot_id, mess,
-                        vtrc::chrono::microseconds(microsec) );
+            wait_result_codes qwr = rpc_queue_.read( slot_id, mess,
+                                    vtrc::chrono::microseconds(microsec) );
 
             raise_wait_error( qwr );
         }
