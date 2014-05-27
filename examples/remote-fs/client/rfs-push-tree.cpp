@@ -21,6 +21,7 @@ namespace rfs_examples {
     namespace gpb = google::protobuf;
     namespace fs = boost::filesystem;
 
+    /// recursive
     void push_tree_impl( client::vtrc_client_sptr &client,
                          interfaces::remote_fs    &impl,
                          const fs::path           &remote_root,
@@ -29,6 +30,7 @@ namespace rfs_examples {
     {
         fs::directory_iterator begin( root / path );
 
+        /// create remote directory
         impl.mkdir( path.string( ) );
 
         const fs::directory_iterator end;
@@ -47,6 +49,7 @@ namespace rfs_examples {
                              << "\"" << remote_path.string( ) << "\""
                              << "\n";
 
+                /// upload file
                 push_file( client,
                            begin->path( ).string( ), remote_path.string( ),
                            44000 );
