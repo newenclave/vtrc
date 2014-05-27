@@ -37,7 +37,9 @@ void get_options( po::options_description& desc )
         ("pull,g", po::value<std::string>( ), "Download remote file")
         ("push,u", po::value<std::string>( ), "Upload local file")
 
-        ("pull-tree,G", po::value<std::string>( ), "Download remote fs tree")
+        ("pull-tree,G", po::value<std::string>( ),
+            "Download remote fs tree; "
+            "Use --output for target local directory. default is './'")
         ("push-tree,U", po::value<std::string>( ), "Upload local fs tree")
 
         ("output,o", po::value<std::string>( ),
