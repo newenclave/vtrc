@@ -13,6 +13,10 @@ namespace vtrc { namespace common  {
 
     namespace gpb = google::protobuf;
 
+    namespace {
+
+    }
+
     rpc_channel::rpc_channel(unsigned direct_call_type, unsigned callback_type)
         :direct_call_type_(direct_call_type)
         ,callback_type_(callback_type)
