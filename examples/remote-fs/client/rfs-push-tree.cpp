@@ -55,7 +55,7 @@ namespace rfs_examples {
                            44000 );
             } else if( fs::is_directory( *begin ) ) {
 
-                std::cout << "dir: " << begin->path( ) << "\n";
+                std::cout << "Next directory: " << begin->path( ) << "\n";
                 push_tree_impl( client, impl,
                                 remote_root, root,
                                 path / begin->path( ).leaf( ) );
