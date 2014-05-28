@@ -425,8 +425,7 @@ namespace lukki_db {
                        const operation_closure &closure)
     {
         impl_->db_thread_.get_io_service( ).post(
-                    vtrc::bind( &impl::get, impl_, name,
-                                value, closure));
+                    vtrc::bind( &impl::get, impl_, name, value, closure));
     }
 
     void application::del( const std::string &name,
