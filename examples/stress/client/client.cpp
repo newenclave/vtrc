@@ -81,7 +81,7 @@ void get_options( po::options_description& desc )
             "ask server for generate [arg] events")
 
         ("recursive,R", po::value<unsigned>( ),
-            "ask server for generate [arg] events")
+            "make recursion calls")
 
         ("payload,l", po::value<unsigned>( ),
             "payload in bytes for commands such as ping; default = 64")
