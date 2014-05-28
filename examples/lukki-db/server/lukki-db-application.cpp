@@ -298,13 +298,14 @@ namespace lukki_db {
                                            record, changed ) );
         }
 
+        typedef vtrc_example::lukki_events_Stub       event_stub_type;
+        typedef common::stub_wrapper<event_stub_type> stub_wrapper_type;
+
+
         void send_event( vtrc::shared_ptr<common::rpc_channel> channel,
                          const std::string &record, unsigned changed)
         {
             try {
-
-                typedef vtrc_example::lukki_events_Stub stub_type;
-                typedef common::stub_wrapper<stub_type> stub_wrapper_type;
 
                 stub_wrapper_type s( channel );
                 vtrc_example::name_req req;
@@ -312,13 +313,13 @@ namespace lukki_db {
                 req.set_name( record );
                 switch (changed) {
                 case RECORD_DELETED:
-                    s.call_request( &stub_type::value_removed, &req );
+                    s.call_request( &event_stub_type::value_removed, &req );
                     break;
                 case RECORD_CHANGED:
-                    s.call_request( &stub_type::value_changed, &req );
+                    s.call_request( &event_stub_type::value_changed, &req );
                     break;
                 case RECORD_ADDED:
-                    s.call_request( &stub_type::new_value, &req );
+                    s.call_request( &event_stub_type::new_value, &req );
                     break;
                 default:
                     break;
@@ -345,9 +346,8 @@ namespace lukki_db {
         void send_subscribed( common::rpc_channel &channel )
         {
             try {
-                vtrc_example::lukki_events_Stub s(&channel);
-                vtrc_example::empty r;
-                s.subscribed( NULL, &r, &r, NULL );
+                stub_wrapper_type stub(&channel);
+                stub.call( &event_stub_type::subscribed );
             } catch( ... ) {
                 ;;;
             }
