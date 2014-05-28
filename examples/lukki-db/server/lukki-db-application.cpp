@@ -8,6 +8,7 @@
 #include "vtrc-common/vtrc-closure-holder.h"
 
 #include "vtrc-common/vtrc-rpc-channel.h"
+#include "vtrc-common/vtrc-stub-wrapper.h"
 
 #include "vtrc-server/vtrc-channels.h"
 
@@ -302,19 +303,22 @@ namespace lukki_db {
         {
             try {
 
-                vtrc_example::lukki_events_Stub s(channel.get( ));
+                typedef vtrc_example::lukki_events_Stub stub_type;
+                typedef common::stub_wrapper<stub_type> stub_wrapper_type;
+
+                stub_wrapper_type s( channel );
                 vtrc_example::name_req req;
 
                 req.set_name( record );
                 switch (changed) {
                 case RECORD_DELETED:
-                    s.value_removed( NULL, &req, NULL, NULL );
+                    s.call_request( &stub_type::value_removed, &req );
                     break;
                 case RECORD_CHANGED:
-                    s.value_changed( NULL, &req, NULL, NULL );
+                    s.call_request( &stub_type::value_changed, &req );
                     break;
                 case RECORD_ADDED:
-                    s.new_value( NULL, &req, NULL, NULL );
+                    s.call_request( &stub_type::new_value, &req );
                     break;
                 default:
                     break;
