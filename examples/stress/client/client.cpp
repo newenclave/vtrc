@@ -72,7 +72,9 @@ void get_options( po::options_description& desc )
         ("tcp-nodelay,t",
             "set TCP_NODELAY flag for tcp sockets")
 
-        ("ping,p", po::value<unsigned>( ), "make ping [arg] time")
+        ("ping,p", po::value<unsigned>( ),  "make ping [arg] time")
+
+        ("flood,f", po::value<unsigned>( ), "make ping [arg] time; no pause")
 
         ("gen-callbacks,c", po::value<unsigned>( ),
             "ask server for generate [arg] callbacks")
@@ -188,7 +190,12 @@ int start( const po::variables_map &params )
     if( params.count( "ping" ) ) {
 
         unsigned times = params["ping"].as<unsigned>( );
-        stress::ping( *impl, times, payload );
+        stress::ping( *impl, false, times, payload );
+
+    } else if( params.count( "flood" ) ) {
+
+        unsigned times = params["flood"].as<unsigned>( );
+        stress::ping( *impl, true, times, payload );
 
     } else if( params.count( "gen-events" ) ) {
 

@@ -36,12 +36,14 @@ namespace stress {
                   << " microseconds\n";
     }
 
-    void ping(interface &iface, unsigned count, unsigned payload)
+    void ping(interface &iface, bool flood, unsigned count, unsigned payload)
     {
         std::cout << "Start pinging...\n";
         while( count-- ) {
             ping_impl( iface, payload );
-            if( count ) this_thread::sleep_for( chrono::seconds( 1 ) );
+            if( !flood && count ) {
+                this_thread::sleep_for( chrono::seconds( 1 ) );
+            }
         }
     }
 

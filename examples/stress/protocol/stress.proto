@@ -8,9 +8,7 @@ message ping_req {
     optional bytes payload = 1;
 }
 
-message ping_res {
-    optional bytes payload = 1;
-}
+message ping_res { }
 
 message generate_events_req {
     optional uint32 count         = 1;

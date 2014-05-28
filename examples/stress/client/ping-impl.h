@@ -9,7 +9,7 @@ namespace vtrc { namespace common {
 
 namespace stress {
 
-    void ping( stress::interface &iface,
+    void ping( stress::interface &iface, bool flood,
                unsigned count, unsigned payload );
 
 }

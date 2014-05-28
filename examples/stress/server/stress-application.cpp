@@ -152,6 +152,11 @@ namespace stress {
                         params["stack-size"].as<unsigned>( ));
             }
 
+            if( params.count( "read-size" ) ) {
+                opts.set_read_buffer_size(
+                        params["read-size"].as<unsigned>( ));
+            }
+
             return opts;
         }
 
