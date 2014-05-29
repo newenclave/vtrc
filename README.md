@@ -1,10 +1,8 @@
 RPC library
 ========
 
-Transport supported: 
 
-    tcp (v4, v6)
-    unix local sockets
-    windows pipes
+Documentation; Is not yet complete 
+https://github.com/newenclave/vtrc-docs 
 
 
