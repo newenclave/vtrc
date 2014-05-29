@@ -140,8 +140,7 @@ namespace {
                 start_accept( );
             } else {
                 if( working_ ) {
-                    vtrc::this_thread::sleep( common::timer::milliseconds(10));
-                    start_accept( );
+                    get_on_accept_failed(  )( error );
                 } else {
                     get_on_stop( )( );
                 }

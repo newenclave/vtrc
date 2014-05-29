@@ -5,6 +5,7 @@
 #include "vtrc-common/vtrc-pool-pair.h"
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"
 #include "vtrc-common/vtrc-connection-iface.h"
+#include "vtrc-common/vtrc-delayed-call.h"
 
 #include "vtrc-server/vtrc-application.h"
 #include "vtrc-server/vtrc-listener-tcp.h"
@@ -20,6 +21,8 @@
 #include "vtrc-ref.h"
 #include "vtrc-mutex.h"
 #include "vtrc-atomic.h"
+
+#include "boost/asio/error.hpp"
 
 namespace stress {
 
@@ -101,19 +104,20 @@ namespace stress {
         std::vector<server::listener_sptr>  listeners_;
 
         vtrc::atomic<size_t>                counter_;
-        //vtrc::mutex                         counter_lock_;
-
+        common::delayed_call                retry_timer_;
 
         impl( unsigned io_threads )
             :pp_(io_threads)
             ,app_(pp_)
             ,counter_(0)
+            ,retry_timer_(pp_.get_io_service( ))
         { }
 
         impl( unsigned io_threads, unsigned rpc_threads )
             :pp_(io_threads, rpc_threads)
             ,app_(pp_)
             ,counter_(0)
+            ,retry_timer_(pp_.get_io_service( ))
         { }
 
         void on_new_connection( server::listener_sptr l,
@@ -126,6 +130,38 @@ namespace stress {
                       << "\n\ttotal:  " << ++counter_
                       << "\n"
                         ;
+        }
+
+        void start_retry_accept( server::listener_sptr l, unsigned rto )
+        {
+            retry_timer_.call_from_now(
+                vtrc::bind( &impl::retry_timer_handler, this, l, rto, _1 ),
+                            common::timer::milliseconds( rto ));
+        }
+
+        void retry_timer_handler( server::listener_sptr l, unsigned retry_to,
+                                  const boost::system::error_code &code)
+        {
+            if( !code ) {
+                std::cout << "Restarting " << l->name( ) << "...";
+                try {
+                    l->start( );
+                    std::cout << "Ok;\n";
+                } catch( const std::exception &ex ) {
+                    std::cout << "failed; " << ex.what( )
+                              << "; Retrying...\n";
+                    start_retry_accept( l, retry_to );
+                };
+            }
+        }
+
+        void on_accept_failed( server::listener_sptr l, unsigned retry_to,
+                               const boost::system::error_code &code )
+        {
+            std::cout << "Accept failed at " << l->name( )
+                      << " due " << code.message( ) << "; Stop it\n";
+            l->stop( );
+            start_retry_accept( l, retry_to );
         }
 
         void on_stop_connection( server::listener_sptr l,
@@ -175,11 +211,15 @@ namespace stress {
 
             vtrc_rpc::session_options opts( options( params ) );
 
+            unsigned retry_to = (params.count( "accept-retry" ) != 0)
+                    ? params["accept-retry"].as<unsigned>( )
+                    : 1000;
+
             for( citer b(ser.begin( )), e(ser.end( )); b != e; ++b) {
 
                 std::cout << "Starting listener at '" <<  *b << "'...";
-                attach_start_listener( create_from_string( *b, app_, opts,
-                                                           tcp_nodelay) );
+                attach_start_listener( retry_to,
+                    create_from_string( *b, app_, opts, tcp_nodelay) );
                 std::cout << "Ok\n";
 
             }
@@ -192,13 +232,18 @@ namespace stress {
             pp_.join_all( );
         }
 
-        void attach_start_listener( vtrc::server::listener_sptr listen )
+        void attach_start_listener( unsigned retry_to,
+                                    vtrc::server::listener_sptr listen )
         {
             listen->get_on_new_connection( ).connect(
                    vtrc::bind( &impl::on_new_connection, this, listen, _1 ));
 
             listen->get_on_stop_connection( ).connect(
                    vtrc::bind( &impl::on_stop_connection, this, listen, _1 ));
+
+            listen->get_on_accept_failed( ).connect(
+                   vtrc::bind( &impl::on_accept_failed, this,
+                               listen, retry_to, _1 ));
 
             listeners_.push_back( listen );
             listen->start( );

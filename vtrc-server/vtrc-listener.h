@@ -10,6 +10,10 @@ namespace vtrc_rpc {
     class session_options;
 }
 
+namespace boost { namespace system {
+    class error_code;
+}}
+
 namespace vtrc {
 
     namespace common {
@@ -29,6 +33,9 @@ namespace server {
 
         VTRC_DECLARE_SIGNAL( on_start, void ( ) );
         VTRC_DECLARE_SIGNAL( on_stop,  void ( ) );
+
+        VTRC_DECLARE_SIGNAL( on_accept_failed,
+                             void ( const boost::system::error_code &err ) );
 
         VTRC_DECLARE_SIGNAL( on_new_connection,
                              void ( const common::connection_iface * ) );

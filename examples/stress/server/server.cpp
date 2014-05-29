@@ -25,6 +25,9 @@ void get_options( po::options_description& desc )
         ("tcp-nodelay,t",
             "set TCP_NODELAY flag for tcp sockets")
 
+        ("accept-retry,A", po::value<unsigned>( ),
+            "retry time out if accept is failed; milliseconds")
+
         ("only-pool,o",
             "use io pool for io operations and rpc calls")
 
