@@ -15,6 +15,9 @@
 
 #include "vtrc-common/vtrc-enviroment.h"
 
+#include "vtrc-thread.h"
+#include "vtrc-common/vtrc-monotonic-timer.h"
+
 namespace vtrc { namespace server { namespace listeners {
 
 namespace {
@@ -136,11 +139,11 @@ namespace {
                 }
                 start_accept( );
             } else {
-                std::cout << "Accept error: "
-                          << error.message( )
-                          << " work: " << working_
-                          << "\n";
                 get_on_stop( )( );
+                if( working_ ) {
+                    vtrc::this_thread::sleep( common::timer::milliseconds(10));
+                    start_accept( );
+                }
                 //delete sock;
             }
         }

@@ -19,6 +19,7 @@
 #include "vtrc-bind.h"
 #include "vtrc-ref.h"
 #include "vtrc-mutex.h"
+#include "vtrc-atomic.h"
 
 namespace stress {
 
@@ -99,8 +100,8 @@ namespace stress {
         app_impl                            app_;
         std::vector<server::listener_sptr>  listeners_;
 
-        size_t                              counter_;
-        vtrc::mutex                         counter_lock_;
+        vtrc::atomic<size_t>                counter_;
+        //vtrc::mutex                         counter_lock_;
 
 
         impl( unsigned io_threads )
@@ -118,7 +119,7 @@ namespace stress {
         void on_new_connection( server::listener_sptr l,
                                 const common::connection_iface *c )
         {
-            vtrc::unique_lock<vtrc::mutex> lock(counter_lock_);
+            //vtrc::unique_lock<vtrc::mutex> lock(counter_lock_);
             std::cout << "New connection: "
                       << "\n\tep:     " << l->name( )
                       << "\n\tclient: " << c->name( )
@@ -130,7 +131,7 @@ namespace stress {
         void on_stop_connection( server::listener_sptr l,
                                  const common::connection_iface *c )
         {
-            vtrc::unique_lock<vtrc::mutex> lock(counter_lock_);
+            //vtrc::unique_lock<vtrc::mutex> lock(counter_lock_);
             std::cout << "Close connection: "
                       << c->name( )
                       << "; count: " << --counter_
