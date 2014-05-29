@@ -83,7 +83,7 @@ namespace vtrc { namespace server {
                 configure_message( clnt, message_type_, llu );
                 const gpb::uint64 call_id = llu.id( );
 
-                if( llu.opt( ).wait( ) ) { /// WAITABLE CALL
+                if( llu.opt( ).wait( ) ) { /// Send and wait
 
                     rpc_channel::context_holder ch(&get_protocol(*clnt), &llu);
                     ch.ctx_->set_call_options( call_opt );
@@ -92,7 +92,7 @@ namespace vtrc { namespace server {
                     process_waitable_call( call_id, llu, response,
                                            clnt, call_opt );
 
-                } else {                  /// NON WAITABLE CALL
+                } else {                  /// Send and ... just send
                     get_protocol( *clnt ).call_rpc_method( llu );
                 }
             }
