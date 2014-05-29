@@ -1,7 +1,7 @@
 #ifndef VTRC_MEMORY_H
 #define VTRC_MEMORY_H
 
-#include "config.h"
+//#include "config.h"
 
 #include "boost/shared_ptr.hpp"
 #include "boost/weak_ptr.hpp"

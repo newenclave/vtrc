@@ -1,7 +1,7 @@
 #ifndef VTRC_STDINT_H
 #define VTRC_STDINT_H
 
-#include "config.h"
+//#include "config.h"
 
 #ifdef _WIN32
 

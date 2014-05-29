@@ -1,7 +1,7 @@
 #ifndef VTRCREF_H
 #define VTRCREF_H
 
-#include "config.h"
+//#include "config.h"
 
 #include "boost/ref.hpp"
 
