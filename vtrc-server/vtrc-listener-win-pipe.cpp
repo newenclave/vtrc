@@ -223,6 +223,7 @@ namespace {
                 start_accept( );
             } else {
                 if( working_ ) {
+                    stop( );
                     get_on_accept_failed(  )( error );
                 } else {
                     get_on_stop( )( );

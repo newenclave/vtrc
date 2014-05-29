@@ -163,8 +163,7 @@ namespace stress {
                                const boost::system::error_code &code )
         {
             std::cout << "Accept failed at " << l->name( )
-                      << " due " << code.message( ) << "; Stop it\n";
-            l->stop( );
+                      << " due " << code.message( ) << "\n";
             start_retry_accept( l, retry_to );
         }
 
