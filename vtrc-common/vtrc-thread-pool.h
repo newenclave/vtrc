@@ -9,8 +9,8 @@ namespace boost { namespace asio {
 
 namespace vtrc { namespace common {
 
-    class thread_pool
-    {
+    class thread_pool {
+
         struct impl;
         impl  *impl_;
 
