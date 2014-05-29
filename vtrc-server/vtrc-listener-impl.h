@@ -139,12 +139,12 @@ namespace {
                 }
                 start_accept( );
             } else {
-                get_on_stop( )( );
                 if( working_ ) {
                     vtrc::this_thread::sleep( common::timer::milliseconds(10));
                     start_accept( );
+                } else {
+                    get_on_stop( )( );
                 }
-                //delete sock;
             }
         }
 
