@@ -222,8 +222,11 @@ namespace {
                 }
                 start_accept( );
             } else {
-                get_on_stop( )( );
-                // delete sock;
+                if( working_ ) {
+                    get_on_accept_failed(  )( error );
+                } else {
+                    get_on_stop( )( );
+                }
             }
         }
 
