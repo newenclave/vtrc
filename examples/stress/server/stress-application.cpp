@@ -106,11 +106,14 @@ namespace stress {
         vtrc::atomic<size_t>                counter_;
         common::delayed_call                retry_timer_;
 
+        unsigned                            accept_errors_;
+
         impl( unsigned io_threads )
             :pp_(io_threads)
             ,app_(pp_)
             ,counter_(0)
             ,retry_timer_(pp_.get_io_service( ))
+            ,accept_errors_(0)
         { }
 
         impl( unsigned io_threads, unsigned rpc_threads )
@@ -155,7 +158,8 @@ namespace stress {
             }
         }
 
-        void on_accept_failed( server::listener_sptr l, unsigned retry_to,
+        void on_accept_failed( server::listener_sptr l,
+                               unsigned retry_to,
                                const boost::system::error_code &code )
         {
             std::cout << "Accept failed at " << l->name( )
@@ -249,6 +253,17 @@ namespace stress {
             listen->start( );
         }
 
+        void stop( )
+        {
+            typedef std::vector<server::listener_sptr>::const_iterator citer;
+            for( citer b(listeners_.begin( )), e(listeners_.end( )); b!=e; ++b){
+                (*b)->stop( );
+            }
+            retry_timer_.cancel( );
+            pp_.stop_all( );
+            pp_.join_all( );
+        }
+
     };
 
     application::application( unsigned io_threads )
@@ -277,6 +292,11 @@ namespace stress {
     void application::run( const po::variables_map &params )
     {
         impl_->run( params );
+    }
+
+    void application::stop( )
+    {
+        impl_->stop( );
     }
 
 }

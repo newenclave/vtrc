@@ -31,6 +31,8 @@ namespace stress {
         const vtrc::server::application &get_application( ) const;
 
         void run( const boost::program_options::variables_map &params );
+
+        void stop( );
     };
 
 }

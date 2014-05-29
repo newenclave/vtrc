@@ -112,6 +112,11 @@ namespace vtrc { namespace common {
             return threads_.size( );
         }
 
+        static bool is_this_id( const  thread_ptr &th )
+        {
+            return vtrc::this_thread::get_id( ) == th->get_id( );
+        }
+
         void join_all( )
         {
             typedef thread_set_type::iterator iterator;
@@ -124,7 +129,7 @@ namespace vtrc { namespace common {
 
             /// join
             for(iterator b(tmp.begin( )), e(tmp.end( )); b!=e; ++b ) {
-                if( (*b)->thread_->joinable( ) )
+                if( (*b)->thread_->joinable( ) && !is_this_id( (*b)->thread_) )
                     (*b)->thread_->join( );
             }
 
