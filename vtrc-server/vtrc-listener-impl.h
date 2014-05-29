@@ -46,6 +46,7 @@ namespace {
 
         endpoint_type                   endpoint_;
         vtrc::unique_ptr<acceptor_type> acceptor_;
+        bool                            working_;
 
         listener_impl( application &app,
                        const vtrc_rpc::session_options &opts,
@@ -53,6 +54,7 @@ namespace {
             :listener(app, opts)
             ,ios_(app.get_io_service( ))
             ,endpoint_(ep)
+            ,working_(false)
         { }
 
         virtual ~listener_impl( ) { }
@@ -89,6 +91,7 @@ namespace {
 
         void start( )
         {
+            working_ = true;
             acceptor_.reset(new acceptor_type(ios_, endpoint_));
             start_accept( );
             get_on_start( )( );
@@ -96,6 +99,7 @@ namespace {
 
         void stop ( )
         {
+            working_ = false;
             acceptor_->close( );
             stop_impl( );
         }
@@ -132,6 +136,10 @@ namespace {
                 }
                 start_accept( );
             } else {
+                std::cout << "Accept error: "
+                          << error.message( )
+                          << " work: " << working_
+                          << "\n";
                 get_on_stop( )( );
                 //delete sock;
             }

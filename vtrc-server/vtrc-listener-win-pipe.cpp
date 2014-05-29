@@ -222,6 +222,7 @@ namespace {
                 }
                 start_accept( );
             } else {
+                get_on_stop( )( );
                 // delete sock;
             }
         }

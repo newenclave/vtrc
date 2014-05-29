@@ -24,9 +24,10 @@ namespace stress {
 
     void ping_impl( interface &iface, unsigned payload )
     {
-        time_point start = chrono::high_resolution_clock::now( );
 
         std::cout << "Send ping with " << payload << " bytes as payload...";
+
+        time_point start = chrono::high_resolution_clock::now( );
 
         iface.ping( payload );
 
