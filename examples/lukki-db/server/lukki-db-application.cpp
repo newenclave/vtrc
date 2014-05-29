@@ -45,6 +45,8 @@ namespace lukki_db {
 
         private:
 
+            /// simple closure method; Sets fail message
+            /// if call was not success
             static void yks_closure( bool success, const std::string &mess,
                               ::google::protobuf::RpcController* controller,
                               vtrc::shared_ptr<common::closure_holder> holder)
@@ -100,6 +102,9 @@ namespace lukki_db {
 
             }
 
+            /// closure method with response message;
+            /// Fills response if success
+            /// Sets fail message if call was not success
             template <typename ResType>
             static void mess_closure( bool success, const std::string &mess,
                      vtrc::shared_ptr<ResType> res, ResType* response,
