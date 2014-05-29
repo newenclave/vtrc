@@ -413,6 +413,9 @@ namespace lukki_db {
         impl_->listeners_.push_back( listen );
     }
 
+    /// as far as we have only one thread for operations with our DB
+    /// we have to push call to this thread
+    /// so we don't need the locks for DB access :]
     void application::set( const std::string &name,
               const vtrc_example::lukki_string_list &value,
               const operation_closure &closure)
