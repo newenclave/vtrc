@@ -21,8 +21,7 @@ namespace vtrc { namespace common {  namespace hash {
                                   const void *  hash  ) const
             {
                 std::string h = get_data_hash( data, length );
-                return memcmp( h.c_str( ), hash,
-                               hash_size( ) ) == 0;
+                return memcmp( h.c_str( ), hash, hash_size( ) ) == 0;
             }
         };
 
