@@ -184,17 +184,17 @@ namespace stress {
 
             if( params.count( "message-size" ) ) {
                 opts.set_max_message_length(
-                        params["message-size"].as<unsigned>( ));
+                            params["message-size"].as<unsigned>( ));
             }
 
             if( params.count( "stack-size" ) ) {
                 opts.set_max_stack_size(
-                        params["stack-size"].as<unsigned>( ));
+                            params["stack-size"].as<unsigned>( ));
             }
 
             if( params.count( "read-size" ) ) {
                 opts.set_read_buffer_size(
-                        params["read-size"].as<unsigned>( ));
+                            params["read-size"].as<unsigned>( ));
             }
 
             return opts;
@@ -203,7 +203,7 @@ namespace stress {
         void run( const po::variables_map &params )
         {
             typedef std::vector<std::string> string_vector;
-            typedef string_vector::const_iterator citer;
+            typedef string_vector::const_iterator vec_citer;
 
             string_vector ser = params["server"].as<string_vector>( );
 
@@ -218,7 +218,7 @@ namespace stress {
                     ? params["accept-retry"].as<unsigned>( )
                     : 1000;
 
-            for( citer b(ser.begin( )), e(ser.end( )); b != e; ++b) {
+            for( vec_citer b(ser.begin( )), e(ser.end( )); b != e; ++b) {
 
                 std::cout << "Starting listener at '" <<  *b << "'...";
                 attach_start_listener( retry_to,
