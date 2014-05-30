@@ -52,7 +52,7 @@ namespace {
 //                                    get_socket( ).native_handle( ) );
 //            if( imp ) {
 //                common::call_context *c
-//                                    (get_protocol(  ).get_top_call_context( ));
+//                          (get_protocol(  ).get_top_call_context( ));
 //                if( c ) c->set_impersonated( true );
 //            }
 //            return !!imp;
@@ -235,8 +235,9 @@ namespace {
 }
 
     namespace win_pipe {
-        listener_sptr create( application &app, const vtrc_rpc::session_options &opts,
-                                const std::string &name )
+        listener_sptr create( application &app, 
+                              const vtrc_rpc::session_options &opts,
+                              const std::string &name )
         {
             vtrc::shared_ptr<pipe_listener>new_l
                     (vtrc::make_shared<pipe_listener>(
