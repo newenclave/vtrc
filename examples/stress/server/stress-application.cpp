@@ -28,6 +28,7 @@ namespace stress {
 
     using namespace vtrc;
     namespace po = boost::program_options;
+    namespace gpb = google::protobuf;
 
     namespace {
 
@@ -85,8 +86,9 @@ namespace stress {
                                           const std::string &service_name )
             {
                 if( service_name == stress::service_name( ) ) {
-                    google::protobuf::Service *stress_serv =
-                            stress::create_service( conn );
+
+                    gpb::Service *stress_serv = stress::create_service( conn );
+
                     return vtrc::shared_ptr<common::rpc_service_wrapper>(
                                 vtrc::make_shared<common::rpc_service_wrapper>(
                                                                 stress_serv ) );
