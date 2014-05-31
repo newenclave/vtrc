@@ -103,8 +103,7 @@ namespace vtrc { namespace client {
                 ch.ctx_->set_call_options( call_opt );
                 ch.ctx_->set_done_closure( done );
 
-                parent_->process_waitable_call( call_id, llu, response,
-                                                clk, call_opt );
+                parent_->call_and_wait( call_id, llu, response, clk, call_opt );
 
             } else {                    /// NOT WAITABLE CALL
                 get_protocol( clk ).call_rpc_method( llu );

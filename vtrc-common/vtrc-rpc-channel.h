@@ -44,7 +44,7 @@ namespace vtrc { namespace common  {
                           const google::protobuf::Message* request,
                                 google::protobuf::Message* response) const;
 
-        void process_waitable_call( google::protobuf::uint64 call_id,
+        void call_and_wait( google::protobuf::uint64 call_id,
                             const lowlevel_unit_type &llu,
                             google::protobuf::Message* response,
                             common::connection_iface_sptr &cl,

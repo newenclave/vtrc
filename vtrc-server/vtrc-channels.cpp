@@ -89,8 +89,7 @@ namespace vtrc { namespace server {
                     ch.ctx_->set_call_options( call_opt );
                     ch.ctx_->set_done_closure( done );
 
-                    process_waitable_call( call_id, llu, response,
-                                           clnt, call_opt );
+                    call_and_wait( call_id, llu, response, clnt, call_opt );
 
                 } else {                  /// Send and ... just send
                     get_protocol( *clnt ).call_rpc_method( llu );

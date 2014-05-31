@@ -95,7 +95,7 @@ namespace vtrc { namespace common  {
         }
     }
 
-    void rpc_channel::process_waitable_call(google::protobuf::uint64 call_id,
+    void rpc_channel::call_and_wait(google::protobuf::uint64 call_id,
                             const lowlevel_unit_type &llu,
                             google::protobuf::Message *response,
                             connection_iface_sptr &cl,
