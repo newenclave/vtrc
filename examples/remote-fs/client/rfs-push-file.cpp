@@ -52,7 +52,9 @@ namespace rfs_examples {
         size_t total = 0;
 
         while( size_t r = f.readsome( &block[0], block_size ) ) {
+
             size_t shift = 0;
+
             while ( r ) {
 
                 double percents = (file_size == -1)
