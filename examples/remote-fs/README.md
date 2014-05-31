@@ -70,33 +70,37 @@ tcp endpoint for 192.168.1.101:10100 and windows pipe endpoint for pipe\\fs_loca
 
 For C++: ( function 'create_from_string' in [server.cpp](https://github.com/newenclave/vtrc/blob/master/examples/remote-fs/server/server.cpp#L95 "GITHUB file server.cpp") )
 
-    std::vector<std::string> params;    // contains local_name (size( )==1) 
-                                        // or tcp address and port (size( ) == 2)
-    ......
-    if( params.size( ) == 1 ) {         /// local endpoint
+```cpp
+std::vector<std::string> params;    // contains local_name (size( )==1) 
+                                    // or tcp address and port (size( ) == 2)
+......
+if( params.size( ) == 1 ) {         /// local endpoint
 
-        result = server::listeners::local::create( app, params[0] );
+    result = server::listeners::local::create( app, params[0] );
 
-    } else if( params.size( ) == 2 ) {  /// TCP
+} else if( params.size( ) == 2 ) {  /// TCP
 
-        result = server::listeners::tcp::create( app,
-                params[0],
-                boost::lexical_cast<unsigned short>(params[1]));
+    result = server::listeners::tcp::create( app,
+            params[0],
+            boost::lexical_cast<unsigned short>(params[1]));
 
-    }
+}
+```
 
 and (function 'start' in [server.cpp](https://github.com/newenclave/vtrc/blob/master/examples/remote-fs/server/server.cpp#L168 "GITHUB file server.cpp")  )
 	    
-    std::vector<std::string> servers; /// contains all '-s' params from command line
-    ........  
-    for( const auto &s : servers  ) {
-        std::cout << "Starting listener at '" << s << "'...";
-        server::listener_sptr new_listener = create_from_string( s, app );
-        listeners.push_back(new_listener);
-        app.attach_listener( new_listener );
-        new_listener->start( );
-        std::cout << "Ok\n";
-    }
+```cpp
+std::vector<std::string> servers; /// contains all '-s' params from command line
+........  
+for( const auto &s : servers  ) {
+    std::cout << "Starting listener at '" << s << "'...";
+    server::listener_sptr new_listener = create_from_string( s, app );
+    listeners.push_back(new_listener);
+    app.attach_listener( new_listener );
+    new_listener->start( );
+    std::cout << "Ok\n";
+}
+```
 
 Client side:
 -----------
