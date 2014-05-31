@@ -22,8 +22,8 @@ namespace vtrc { namespace server {
 
         typedef vtrc_rpc::message_info message_info;
 
-        const unsigned direct_call_type = message_info::MESSAGE_EVENT;
-        const unsigned callback_type    = message_info::MESSAGE_CALLBACK;
+        const unsigned direct_call_type = message_info::MESSAGE_SERVER_CALL;
+        const unsigned callback_type    = message_info::MESSAGE_SERVER_CALLBACK;
 
         namespace gpb = google::protobuf;
 
@@ -197,7 +197,7 @@ namespace vtrc { namespace server {
                              common::connection_iface_sptr c, bool disable_wait)
         {
             static const unsigned message_type
-                (vtrc_rpc::message_info::MESSAGE_EVENT);
+                (vtrc_rpc::message_info::MESSAGE_SERVER_CALL);
             return new unicast_channel(c, message_type, disable_wait);
         }
 
@@ -205,7 +205,7 @@ namespace vtrc { namespace server {
                              common::connection_iface_sptr c, bool disable_wait)
         {
             static const unsigned message_type
-                (vtrc_rpc::message_info::MESSAGE_CALLBACK);
+                (vtrc_rpc::message_info::MESSAGE_SERVER_CALLBACK);
             return new unicast_channel(c, message_type, disable_wait);
         }
 
@@ -219,7 +219,7 @@ namespace vtrc { namespace server {
                                 common::connection_iface_sptr c )
         {
             static const unsigned message_type
-                (vtrc_rpc::message_info::MESSAGE_EVENT);
+                (vtrc_rpc::message_info::MESSAGE_SERVER_CALL);
 
             return new broadcast_channel(cl->weak_from_this( ),
                                          message_type, c->weak_from_this( ));
@@ -230,7 +230,7 @@ namespace vtrc { namespace server {
                                 vtrc::shared_ptr<common::connection_list> cl )
         {
             static const unsigned message_type
-                (vtrc_rpc::message_info::MESSAGE_EVENT);
+                (vtrc_rpc::message_info::MESSAGE_SERVER_CALL);
             return new broadcast_channel(cl->weak_from_this( ), message_type );
         }
 
@@ -239,7 +239,7 @@ namespace vtrc { namespace server {
                                common::connection_iface_sptr c )
         {
             static const unsigned message_type
-                (vtrc_rpc::message_info::MESSAGE_CALLBACK);
+                (vtrc_rpc::message_info::MESSAGE_SERVER_CALLBACK);
             return new broadcast_channel(cl->weak_from_this( ),
                                          message_type, c->weak_from_this( ));
         }
@@ -248,7 +248,7 @@ namespace vtrc { namespace server {
                                  vtrc::shared_ptr<common::connection_list> cl)
         {
             static const unsigned message_type
-                (vtrc_rpc::message_info::MESSAGE_CALLBACK);
+                (vtrc_rpc::message_info::MESSAGE_SERVER_CALLBACK);
             return new broadcast_channel(cl->weak_from_this( ), message_type );
 
         }

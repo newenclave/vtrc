@@ -380,19 +380,19 @@ namespace vtrc { namespace server {
 
                     switch ( llu->info( ).message_type( ) ) {
 
-                    /// CALL = request; do not change id
-                    case message_info::MESSAGE_CALL:
+                    /// CLIENT_CALL = request; do not change id
+                    case message_info::MESSAGE_CLIENT_CALL:
                         process_call( llu );
                         break;
 
-                    /// INSERTION_CALL = request; must use target_id
-                    case message_info::MESSAGE_INSERTION_CALL:
+                    /// CLIENT_CALLBACK = request; must use target_id
+                    case message_info::MESSAGE_CLIENT_CALLBACK:
                         process_insertion( llu );
                         break;
 
                     /// answers;
-                    case message_info::MESSAGE_EVENT:
-                    case message_info::MESSAGE_CALLBACK:
+                    case message_info::MESSAGE_SERVER_CALL:
+                    case message_info::MESSAGE_SERVER_CALLBACK:
                         process_event_cb( llu );
                         break;
                     default:

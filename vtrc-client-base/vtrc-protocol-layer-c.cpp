@@ -225,12 +225,13 @@ namespace vtrc { namespace client {
 
                 switch( llu->info( ).message_type( ) ) {
 
-                /// EVENT = request; do not use id
-                case vtrc_rpc::message_info::MESSAGE_EVENT:
+                /// SERVER_CALL = request; do not use id
+                case vtrc_rpc::message_info::MESSAGE_SERVER_CALL:
                     process_event( llu );
                     break;
-                /// CALLBACK = request; use target_id
-                case vtrc_rpc::message_info::MESSAGE_CALLBACK:
+
+                /// SERVER_CALLBACK = request; use target_id
+                case vtrc_rpc::message_info::MESSAGE_SERVER_CALLBACK:
                     process_callback( llu );
                     break;
 
@@ -243,8 +244,8 @@ namespace vtrc { namespace client {
                     break;
 
                 /// answers; use id
-                case vtrc_rpc::message_info::MESSAGE_CALL:
-                case vtrc_rpc::message_info::MESSAGE_INSERTION_CALL:
+                case vtrc_rpc::message_info::MESSAGE_CLIENT_CALL:
+                case vtrc_rpc::message_info::MESSAGE_CLIENT_CALLBACK:
                     process_call( llu );
                     break;
                 default:

@@ -25,11 +25,11 @@ message message_info {
 
         MESSAGE_NONE            = 0; // value for internal usage only
 
-        MESSAGE_CALL            = 1; // from client
-        MESSAGE_EVENT           = 2; // from server
+        MESSAGE_CLIENT_CALL     = 1; // from client
+        MESSAGE_SERVER_CALL     = 2; // from server
 
-        MESSAGE_INSERTION_CALL  = 3; // from client
-        MESSAGE_CALLBACK        = 4; // from server
+        MESSAGE_CLIENT_CALLBACK = 3; // from client
+        MESSAGE_SERVER_CALLBACK = 4; // from server
 
         MESSAGE_SERVICE         = 5; // intervals
         MESSAGE_INTERNAL        = 6; // intervals

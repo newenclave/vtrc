@@ -24,14 +24,14 @@ namespace vtrc { namespace client {
         > lowlevel_unit_sptr;
         typedef vtrc_rpc::message_info message_info;
 
-        const unsigned direct_call_type = message_info::MESSAGE_CALL;
-        const unsigned callback_type    = message_info::MESSAGE_INSERTION_CALL;
+        const unsigned direct_call_type = message_info::MESSAGE_CLIENT_CALL;
+        const unsigned callback_type    = message_info::MESSAGE_CLIENT_CALLBACK;
 
         unsigned select_message_type (common::rpc_channel::options opts)
         {
             return (opts & common::rpc_channel::USE_CONTEXT_CALL)
-                   ? message_info::MESSAGE_INSERTION_CALL
-                   : message_info::MESSAGE_CALL;
+                   ? message_info::MESSAGE_CLIENT_CALLBACK
+                   : message_info::MESSAGE_CLIENT_CALL;
         }
 
         bool select_message_wait (common::rpc_channel::options opts)
