@@ -21,9 +21,9 @@ namespace rfs_examples {
     namespace fs = boost::filesystem;
 
     void pull_tree( vtrc::client::vtrc_client_sptr &client,
-                interfaces::remote_fs              &impl,
-                const std::string                  &remote_path,
-                const std::string                  &local_path)
+                    interfaces::remote_fs          &impl,
+                    const std::string              &remote_path,
+                    const std::string              &local_path)
     {
         typedef vtrc::shared_ptr<interfaces::remote_fs_iterator> iterator;
 

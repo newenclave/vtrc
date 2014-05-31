@@ -43,7 +43,6 @@ namespace rfs_examples {
                   << "Block size = " << block_size
                   << std::endl;
 
-
         std::ifstream f;
         f.open(local_path.c_str( ), std::ifstream::in );
 
