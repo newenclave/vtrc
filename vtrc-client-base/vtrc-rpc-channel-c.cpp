@@ -97,7 +97,7 @@ namespace vtrc { namespace client {
             parent_->configure_message_for( clk, llu );
             uint64_t call_id = llu.id( );
 
-            if( llu.opt( ).wait( ) ) {  /// WAITABLE CALL
+            if( llu.opt( ).wait( ) ) {  /// Send and wait
 
                 rpc_channel::context_holder ch( &get_protocol( clk ), &llu );
                 ch.ctx_->set_call_options( call_opt );
@@ -105,7 +105,7 @@ namespace vtrc { namespace client {
 
                 parent_->call_and_wait( call_id, llu, response, clk, call_opt );
 
-            } else {                    /// NOT WAITABLE CALL
+            } else {                    /// Send and ... just send
                 get_protocol( clk ).call_rpc_method( llu );
             }
 
