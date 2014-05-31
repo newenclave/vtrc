@@ -24,8 +24,8 @@ namespace vtrc { namespace server {
         impl( )
             :ios_(new boost::asio::io_service)
             ,own_ios_(true)
-            ,rpc_ios_(new boost::asio::io_service)
-            ,own_rpc_ios_(true)
+            ,rpc_ios_(ios_)
+            ,own_rpc_ios_(false)
             ,clients_(common::connection_list::create( ))
         { }
 
@@ -45,8 +45,7 @@ namespace vtrc { namespace server {
             ,clients_(common::connection_list::create( ))
         { }
 
-        static
-        bool close_all_connection( common::connection_iface_sptr next )
+        static bool close_all_connection( common::connection_iface_sptr next )
         {
             next->close( );
             return true;
