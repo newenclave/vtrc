@@ -27,6 +27,17 @@ namespace vtrc { namespace client {
         const unsigned direct_call_type = message_info::MESSAGE_CALL;
         const unsigned callback_type    = message_info::MESSAGE_INSERTION_CALL;
 
+        unsigned select_message_type (common::rpc_channel::options opts)
+        {
+            return (opts & common::rpc_channel::USE_CONTEXT_CALL)
+                   ? message_info::MESSAGE_INSERTION_CALL
+                   : message_info::MESSAGE_CALL;
+        }
+
+        bool select_message_wait (common::rpc_channel::options opts)
+        {
+            return (opts & common::rpc_channel::DISABLE_WAIT);
+        }
     }
 
     struct rpc_channel_c::impl {
@@ -47,18 +58,6 @@ namespace vtrc { namespace client {
         bool alive( ) const
         {
             return connection_.lock( ) != NULL;
-        }
-
-        unsigned select_message_type (common::rpc_channel::options opts) const
-        {
-            return (opts & common::rpc_channel::USE_CONTEXT_CALL)
-                   ? message_info::MESSAGE_INSERTION_CALL
-                   : message_info::MESSAGE_CALL;
-        }
-
-        bool select_message_wait (common::rpc_channel::options opts) const
-        {
-            return (opts & common::rpc_channel::DISABLE_WAIT);
         }
 
         common::protocol_layer &get_protocol(common::connection_iface_sptr &clk)
