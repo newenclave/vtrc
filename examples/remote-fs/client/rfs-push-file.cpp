@@ -57,15 +57,16 @@ namespace rfs_examples {
 
             while ( r ) {
 
+                size_t w = rem_f->write( block.c_str( ) + shift, r );
+                total += w;
+                shift += w;
+                r -= w;
+
                 double percents = (file_size == -1)
                                 ? 100.0
                                 : 100.0 - (double(file_size - total )
                                           / (double(file_size) / 100));
 
-                size_t w = rem_f->write( block.c_str( ) + shift, r );
-                total += w;
-                shift += w;
-                r -= w;
                 std::cout << "Push " << total << " bytes "
                           << percents_string( percents, 100.0 ) << "\r"
                           << std::flush;
