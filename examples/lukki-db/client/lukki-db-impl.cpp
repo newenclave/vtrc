@@ -13,15 +13,6 @@ namespace {
 
         mutable vtrc::common::stub_wrapper<stub_type>  wrap_stub_;
 
-
-        ~lukki_db_impl( ) try
-        {
-            wrap_stub_.call( &stub_type::unsubscribe );
-
-        } catch( ... ) {
-
-        }
-
         lukki_db_impl( vtrc::shared_ptr<vtrc::client::vtrc_client> c )
             :wrap_stub_(c->create_channel( ))
         {
