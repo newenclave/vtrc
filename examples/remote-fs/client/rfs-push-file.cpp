@@ -12,9 +12,12 @@
 
 #include "utils.h"
 
+#include "boost/filesystem.hpp"
+
 namespace rfs_examples {
 
     using namespace vtrc;
+    namespace gpb = google::protobuf;
 
     void push_file( vtrc::client::vtrc_client_sptr &client,
                 const std::string &local_path,
@@ -24,13 +27,26 @@ namespace rfs_examples {
         vtrc::shared_ptr<interfaces::remote_file> rem_f
                 ( interfaces::create_remote_file( client, remote_path, "wb" ) );
 
+        gpb::uint64 file_size = -1;
+
+        try {
+            file_size = boost::filesystem::file_size( local_path );
+            std::cout << "File size is: " << file_size << "\n";
+        } catch( const std::exception &ex ) {
+            std::cout << "File size is unknown: "
+                      << local_path
+                      << " '" << ex.what( ) << "\n";
+        }
+
         std::cout << "Open remote file success.\n"
                   << "Starting...\n"
                   << "Block size = " << block_size
                   << std::endl;
 
+
         std::ifstream f;
         f.open(local_path.c_str( ), std::ifstream::in );
+
 
         std::string block(block_size, 0);
         size_t total = 0;
@@ -38,11 +54,19 @@ namespace rfs_examples {
         while( size_t r = f.readsome( &block[0], block_size ) ) {
             size_t shift = 0;
             while ( r ) {
+
+                double percents = (file_size == -1)
+                                ? 100.0
+                                : 100.0 - (double(file_size - total )
+                                          / (double(file_size) / 100));
+
                 size_t w = rem_f->write( block.c_str( ) + shift, r );
                 total += w;
                 shift += w;
                 r -= w;
-                std::cout << "Push " << total << " bytes\r";
+                std::cout << "Push " << total << " bytes "
+                          << percents_string( percents, 100.0 ) << "\r"
+                          << std::flush;
             }
         }
         std::cout << "\nUpload complete\n";

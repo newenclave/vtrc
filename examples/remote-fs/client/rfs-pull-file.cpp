@@ -48,8 +48,18 @@ namespace rfs_examples {
         size_t total = 0;
 
         while( rem_f->read( block, block_size ) ) {
+
             total += block.size( );
-            std::cout << "Pull " << total << " bytes\r" << std::flush;
+
+            double percents = (remote_size == -1)
+                            ? 100.0
+                            : 100.0 - (double(remote_size - total )
+                                      / (double(remote_size) / 100));
+
+            std::cout << "Pull " << total << " bytes "
+                      << percents_string( percents, 100.0 ) << "\r"
+                      << std::flush;
+
             f.write( block.c_str( ), block.size( ) );
         }
         std::cout << "\nDownload complete\n";
