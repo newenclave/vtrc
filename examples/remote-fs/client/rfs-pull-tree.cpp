@@ -1,5 +1,4 @@
 
-
 #include <iostream>
 #include <fstream>
 
@@ -21,7 +20,7 @@ namespace rfs_examples {
     namespace fs = boost::filesystem;
 
     void pull_tree( vtrc::client::vtrc_client_sptr &client,
-                    interfaces::remote_fs          &impl,
+                    const interfaces::remote_fs    &impl,
                     const std::string              &remote_path,
                     const std::string              &local_path)
     {
@@ -58,9 +57,9 @@ namespace rfs_examples {
         }
     }
 
-    void pull_tree( vtrc::client::vtrc_client_sptr &client,
-                interfaces::remote_fs              &impl,
-                const std::string                  &remote_path )
+    void pull_tree(vtrc::client::vtrc_client_sptr &client,
+                const interfaces::remote_fs       &impl,
+                const std::string                 &remote_path )
     {
         fs::path local_path( remote_path );
         pull_tree( client, impl, remote_path, local_path.leaf( ).string( ) );

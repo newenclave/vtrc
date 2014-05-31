@@ -17,7 +17,7 @@ namespace rfs_examples {
     namespace gpb = google::protobuf;
 
     void pull_file( vtrc::client::vtrc_client_sptr &client,
-                    interfaces::remote_fs          &impl,
+                    const interfaces::remote_fs    &impl,
                     const std::string &remote_path,
                     const std::string &local_path,
                     size_t block_size )
@@ -66,7 +66,7 @@ namespace rfs_examples {
     }
 
     void pull_file( client::vtrc_client_sptr &client,
-                    interfaces::remote_fs &impl,
+                    const interfaces::remote_fs &impl,
                     const std::string &remote_path, size_t block_size )
     {
         std::string name = leaf_of( remote_path );

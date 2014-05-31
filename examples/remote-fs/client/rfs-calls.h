@@ -30,23 +30,23 @@ namespace rfs_examples {
 
     /// rfs-pull-file.cpp
     void pull_file( vtrc::client::vtrc_client_sptr &client,
-                    interfaces::remote_fs          &impl,
+                    const interfaces::remote_fs    &impl,
                     const std::string &remote_path, size_t block_size );
     void pull_file( vtrc::client::vtrc_client_sptr &client,
-                    interfaces::remote_fs          &impl,
+                    const interfaces::remote_fs    &impl,
                     const std::string &remote_path,
                     const std::string &local_path,
                     size_t block_size );
 
     /// rfs-push-tree.cpp
     void pull_tree(vtrc::client::vtrc_client_sptr &client,
-                    interfaces::remote_fs          &impl,
-                    const std::string              &remote_path );
+                    const interfaces::remote_fs   &impl,
+                    const std::string             &remote_path );
 
     void pull_tree(vtrc::client::vtrc_client_sptr &client,
-                    interfaces::remote_fs          &impl,
-                    const std::string              &remote_path,
-                    const std::string              &local_path);
+                    const interfaces::remote_fs   &impl,
+                    const std::string             &remote_path,
+                    const std::string             &local_path);
 
     /// rfs-mkdir-del.cpp
     void make_dir( interfaces::remote_fs &impl, const std::string &path);
