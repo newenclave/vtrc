@@ -54,6 +54,9 @@ namespace vtrc { namespace common {
 
     private:
 
+        condition_queues( const condition_queues &other );
+        condition_queues& operator = (const condition_queues &other);
+
         typename map_type::iterator at( const key_type &key )
         {
             typename map_type::iterator f(store_.find( key ));
@@ -175,9 +178,6 @@ namespace vtrc { namespace common {
                           vtrc::bind( &this_type::queue_empty_predic, value ));
             return true;
         }
-
-        condition_queues( const condition_queues &other );
-        condition_queues& operator = (const condition_queues &other);
 
         static void cancel_value( hold_value_type &value )
         {
