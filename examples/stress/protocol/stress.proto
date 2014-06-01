@@ -18,7 +18,7 @@ message generate_events_req {
 }
 
 message generate_events_res {
-    optional uint32 count         = 1;
+    optional uint32 count   = 1;
 }
 
 message recursive_call_req {
