@@ -44,9 +44,12 @@ namespace server {
                              void ( const common::connection_iface * ) );
 
 
-    public:
+    protected:
 
         listener( application & app, const vtrc_rpc::session_options &opts );
+
+    public:
+
         virtual ~listener( );
 
     public:
