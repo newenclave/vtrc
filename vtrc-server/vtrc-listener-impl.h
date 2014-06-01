@@ -102,7 +102,7 @@ namespace {
             working_ = true;
             acceptor_.reset(new acceptor_type(ios_, endpoint_));
             start_accept( );
-            get_on_start( )( );
+            call_on_start( );
         }
 
         void stop ( )
@@ -146,9 +146,9 @@ namespace {
             } else {
                 if( working_ ) {
                     stop( );
-                    get_on_accept_failed(  )( error );
+                    call_on_accept_failed( error );
                 } else {
-                    get_on_stop( )( );
+                    call_on_stop( );
                 }
             }
         }

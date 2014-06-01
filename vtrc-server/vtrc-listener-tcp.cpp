@@ -43,12 +43,10 @@ namespace vtrc { namespace server { namespace listeners {
             {
                 std::ostringstream oss;
 
-                bip::tcp::acceptor *acc( acceptor( ) );
-
                 oss << "tcp://" << endpoint_.address( ).to_string( )
                     << ":"
-                    << (acc ? acc->local_endpoint( ).port( )
-                            : endpoint_.port( ));
+                    << endpoint_.port( );
+
                 return oss.str( );
             }
 

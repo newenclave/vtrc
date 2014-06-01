@@ -77,6 +77,21 @@ namespace vtrc { namespace server {
         on_stop_connection_( conn );
     }
 
+    void listener::call_on_accept_failed( const boost::system::error_code &err )
+    {
+        on_accept_failed_( err );
+    }
+
+    void listener::call_on_stop()
+    {
+        on_stop_( );
+    }
+
+    void listener::call_on_start( )
+    {
+        on_start_( );
+    }
+
     namespace listeners {
         vtrc_rpc::session_options default_options( )
         {

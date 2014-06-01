@@ -73,6 +73,10 @@ namespace server {
         void new_connection(  const common::connection_iface *conn );
         void stop_connection( const common::connection_iface *conn );
 
+        void call_on_accept_failed( const boost::system::error_code &err );
+        void call_on_stop( );
+        void call_on_start( );
+
     };
 
     typedef vtrc::shared_ptr<listener> listener_sptr;

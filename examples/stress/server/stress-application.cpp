@@ -248,7 +248,7 @@ namespace stress {
 
             listen->on_accept_failed_connect(
                    vtrc::bind( &impl::on_accept_failed, this,
-                               listen, retry_to, _1 ));
+                               listen, retry_to, _1 ) );
 
             listeners_.push_back( listen );
 
