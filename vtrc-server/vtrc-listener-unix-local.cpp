@@ -8,17 +8,19 @@
 #include "vtrc-listener-impl.h"
 #include "vtrc-connection-impl.h"
 
+#include <errno.h>
+
 namespace vtrc { namespace server { namespace listeners {
 
     namespace {
 
-        namespace basio   = boost::asio;
+        namespace basio = boost::asio;
         typedef basio::local::stream_protocol bstream;
 
         typedef common::transport_unix_local    transport_type;
         typedef connection_impl<transport_type> connection_type;
-        typedef bstream::endpoint       endpoint_type;
-        typedef bstream::acceptor       acceptor_type;
+        typedef bstream::endpoint               endpoint_type;
+        typedef bstream::acceptor               acceptor_type;
 
 #if 0
         struct unix_local_connenction_impl: public connection_type {
@@ -111,7 +113,7 @@ namespace vtrc { namespace server { namespace listeners {
                         << "]"
                         ;
                 } else {
-                    oss << "[get PEERCRED error]";
+                    oss << "[get PEERCRED error " << errno << "]";
                 }
 
                 con->set_name( oss.str( ) );
