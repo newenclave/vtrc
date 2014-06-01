@@ -107,8 +107,8 @@ int start( const po::variables_map &params )
 
     /// connect slot to 'on_ready'
     vtrc::condition_variable ready_cond;
-    client->get_on_ready( ).connect( vtrc::bind( on_client_ready,
-                            vtrc::ref( ready_cond ) ) );
+    client->on_ready_connect( vtrc::bind( on_client_ready,
+                                          vtrc::ref( ready_cond ) ) );
 
     std::cout << "Ok\n";
 

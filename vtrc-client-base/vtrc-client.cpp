@@ -143,10 +143,10 @@ namespace vtrc { namespace client {
             vtrc::condition_variable cond;
             vtrc::mutex              cond_lock;
 
-            bs2::scoped_connection rc( parent_->on_ready_.connect(
+            bs2::scoped_connection rc( parent_->on_ready_connect(
                             vtrc::bind( impl::on_ready, vtrc::ref( cond ) )) );
 
-            bs2::scoped_connection fc( parent_->on_init_error_.connect(
+            bs2::scoped_connection fc( parent_->on_init_error_connect(
                             vtrc::bind( impl::on_init_error,
                                   vtrc::ref(failed), vtrc::ref(failed_message),
                                   vtrc::ref(cond), _1, _2 )) );

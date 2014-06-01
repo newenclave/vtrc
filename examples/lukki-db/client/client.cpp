@@ -175,9 +175,9 @@ int start( const po::variables_map &params )
 
     client::vtrc_client_sptr client = client::vtrc_client::create( pp );
 
-    client->get_on_connect( )   .connect( on_connect );
-    client->get_on_ready( )     .connect( on_ready );
-    client->get_on_disconnect( ).connect( on_disconnect );
+    client->on_connect_connect   ( on_connect );
+    client->on_ready_connect     ( on_ready );
+    client->on_disconnect_connect( on_disconnect );
 
     std::cout << "Ok\n";
 
