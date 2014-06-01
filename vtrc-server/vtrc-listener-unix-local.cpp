@@ -103,9 +103,11 @@ namespace vtrc { namespace server { namespace listeners {
 
                 ucred cred = { 0 };
                 unsigned len = sizeof(cred);
-                if (getsockopt(con->get_socket( ).native_handle( ),
-                               SOL_SOCKET, SO_PEERCRED, &cred, &len) != -1)
-                {
+
+                int opt_res = getsockopt(con->get_socket( ).native_handle( ),
+                                         SOL_SOCKET, SO_PEERCRED, &cred, &len);
+
+                if ( opt_res != -1 ) {
                     oss << "["
                         << "p:" << cred.pid << ", "
                         << "g:" << cred.gid << ", "
