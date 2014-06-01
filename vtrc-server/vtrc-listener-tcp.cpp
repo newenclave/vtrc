@@ -79,8 +79,8 @@ namespace vtrc { namespace server { namespace listeners {
         }
 
         listener_sptr create( application &app,
-                                const std::string &address,
-                                unsigned short service, bool tcp_nodelay )
+                              const std::string &address,
+                              unsigned short service, bool tcp_nodelay )
         {
             const vtrc_rpc::session_options def_opts(default_options( ));
 

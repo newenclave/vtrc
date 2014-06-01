@@ -254,8 +254,6 @@ namespace stress {
 
             listen->start( );
 
-            std::cout << " " << listen->name( ) << " ";
-
         }
 
         void stop( )
