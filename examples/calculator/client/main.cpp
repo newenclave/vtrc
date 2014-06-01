@@ -252,11 +252,6 @@ void tests( vtrc::shared_ptr<vtrc_client> client,
 
 }
 
-void on_client_ready( vtrc::condition_variable &cond )
-{
-    cond.notify_all( );
-}
-
 int main( int argc, char **argv ) try
 {
 
@@ -270,11 +265,6 @@ int main( int argc, char **argv ) try
 
     /// create client
     vtrc::shared_ptr<vtrc_client> client(vtrc_client::create(pp));
-
-    /// connect slot to 'on_ready'
-    vtrc::condition_variable ready_cond;
-    client->get_on_ready( ).connect( vtrc::bind( on_client_ready,
-                            vtrc::ref( ready_cond ) ) );
 
     /// connecting client to server
     if( argc < 3 ) {
@@ -291,13 +281,6 @@ int main( int argc, char **argv ) try
     /// set rpc handler for local variable
     vtrc::shared_ptr<variable_pool> vars(vtrc::make_shared<variable_pool>());
     client->assign_weak_rpc_handler( vtrc::weak_ptr<variable_pool>(vars) );
-
-
-    /// wait for client ready;
-    /// There must be a better way. But anyway ... :)))
-    vtrc::mutex                    ready_mutex;
-    vtrc::unique_lock<vtrc::mutex> ready_lock(ready_mutex);
-    ready_cond.wait( ready_lock, vtrc::bind( &vtrc_client::ready, client ) );
 
     /// add some variables
     vars->set( "pi", 3.1415926 );
