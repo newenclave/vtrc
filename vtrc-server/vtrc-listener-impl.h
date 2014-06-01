@@ -92,6 +92,11 @@ namespace {
                              basio::placeholders::error, new_sock ));
         }
 
+        acceptor_type *acceptor( ) const
+        {
+            return acceptor_.get( );
+        }
+
         void start( )
         {
             working_ = true;

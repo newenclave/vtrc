@@ -13,7 +13,7 @@ namespace vtrc { namespace server { namespace listeners {
 
         typedef common::transport_tcp           transport_type;
         typedef connection_impl<transport_type> connection_type;
-        typedef bip::tcp::endpoint endpoint_type;
+        typedef bip::tcp::endpoint              endpoint_type;
 
         typedef listener_impl <
                 bip::tcp::acceptor,
@@ -42,9 +42,13 @@ namespace vtrc { namespace server { namespace listeners {
             virtual std::string name( ) const
             {
                 std::ostringstream oss;
+
+                bip::tcp::acceptor *acc( acceptor( ) );
+
                 oss << "tcp://" << endpoint_.address( ).to_string( )
                     << ":"
-                    << endpoint_.port( );
+                    << (acc ? acc->local_endpoint( ).port( )
+                            : endpoint_.port( ));
                 return oss.str( );
             }
 

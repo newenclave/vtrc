@@ -251,7 +251,11 @@ namespace stress {
                                listen, retry_to, _1 ));
 
             listeners_.push_back( listen );
+
             listen->start( );
+
+            std::cout << " " << listen->name( ) << " ";
+
         }
 
         void stop( )
