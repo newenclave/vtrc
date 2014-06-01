@@ -168,7 +168,7 @@ int start( const po::variables_map &params )
     }
 
     /// will use only one thread for io operations.
-    /// because we don't have callbacks or events from server-side
+    /// for events we gonna attach 'main' thread
     common::pool_pair pp( 1, 0 );
 
     std::cout << "Creating client ... " ;
