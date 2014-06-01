@@ -34,7 +34,6 @@
         BOOST_PP_CAT( name, _type ) BOOST_PP_CAT( name, _ )
 
 // ====== UNSAFE
-
 #define VTRC_DECLARE_SIGNAL_UNSAFE( name, sig_type )                           \
     public:                                                                    \
         typedef boost::signals2::signal_type<                                  \
