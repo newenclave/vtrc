@@ -37,7 +37,7 @@ service remote_fs {
     // open instance
     rpc open(fs_handle_path)        returns (fs_handle_path);
 
-    // cd instance path
+    // change instance path
     rpc cd  (fs_handle_path)        returns (fs_handle_path);
 
     // get path by handle
