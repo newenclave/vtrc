@@ -50,8 +50,8 @@ namespace client {
         vtrc_client & operator = ( const vtrc_client &other );
 
         VTRC_DECLARE_SIGNAL( on_init_error,
-                             void(const vtrc_errors::container &,
-                                  const char *message ) );
+                             void( const vtrc_errors::container &,
+                                   const char *message ) );
 
         VTRC_DECLARE_SIGNAL( on_connect,    void( ) );
 
