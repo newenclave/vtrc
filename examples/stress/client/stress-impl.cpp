@@ -4,6 +4,7 @@
 
 #include "vtrc-common/vtrc-stub-wrapper.h"
 #include "vtrc-client-base/vtrc-client.h"
+#include "vtrc-client-base/vtrc-rpc-channel-c.h"
 
 
 namespace stress {
@@ -16,14 +17,18 @@ namespace {
     typedef common::stub_wrapper<stub_type>    stub_wrapper_type;
     namespace gpb = google::protobuf;
 
+
     struct impl: public interface {
+
+        typedef client::rpc_channel_c channel_type;
 
         stub_wrapper_type stub_;
 
-        vtrc::shared_ptr<gpb::RpcChannel> get_channel( client::vtrc_client &c,
+        vtrc::shared_ptr<channel_type> get_channel( client::vtrc_client &c,
                                              common::rpc_channel::options opts)
         {
-            return vtrc::shared_ptr<gpb::RpcChannel>(c.create_channel( opts ));
+            vtrc::shared_ptr<channel_type> new_ch(c.create_channel( opts ));
+            return new_ch;
         }
 
         impl( vtrc::shared_ptr<client::vtrc_client> &c,

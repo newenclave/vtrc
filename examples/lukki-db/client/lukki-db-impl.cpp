@@ -3,6 +3,7 @@
 
 #include "vtrc-client-base/vtrc-client.h"
 #include "vtrc-common/vtrc-stub-wrapper.h"
+#include "vtrc-client-base/vtrc-rpc-channel-c.h"
 
 namespace {
 
@@ -12,11 +13,12 @@ namespace {
 
     struct lukki_db_impl: public interfaces::lukki_db {
 
+        typedef client::rpc_channel_c channel_type;
         mutable vtrc::common::stub_wrapper<stub_type>  wrap_stub_;
 
-        vtrc::shared_ptr<gpb::RpcChannel> get_channel( client::vtrc_client &c )
+        vtrc::shared_ptr<channel_type> get_channel( client::vtrc_client &c )
         {
-            return vtrc::shared_ptr<gpb::RpcChannel>(c.create_channel(  ));
+            return vtrc::shared_ptr<channel_type>(c.create_channel(  ));
         }
 
         lukki_db_impl( vtrc::shared_ptr<vtrc::client::vtrc_client> c )

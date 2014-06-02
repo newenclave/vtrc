@@ -301,13 +301,13 @@ namespace vtrc { namespace client {
             } catch( ... ) { };
         }
 
-        gpb::RpcChannel *create_channel( )
+        rpc_channel_c *create_channel( )
         {
             rpc_channel_c *new_ch( new rpc_channel_c( connection_ ) );
             return new_ch;
         }
 
-        gpb::RpcChannel *create_channel( common::rpc_channel::options opts )
+        rpc_channel_c *create_channel( common::rpc_channel::options opts )
         {
             rpc_channel_c *new_ch( new rpc_channel_c( connection_, opts ) );
             return new_ch;
@@ -442,12 +442,12 @@ namespace vtrc { namespace client {
         return impl_->rpc_ios_;
     }
 
-    gpb::RpcChannel *vtrc_client::create_channel( )
+    rpc_channel_c *vtrc_client::create_channel( )
     {
         return impl_->create_channel( );
     }
 
-    gpb::RpcChannel *vtrc_client::create_channel(
+    rpc_channel_c *vtrc_client::create_channel(
                                              common::rpc_channel::options opts)
     {
         return impl_->create_channel( opts );

@@ -37,6 +37,7 @@ namespace vtrc {
 namespace client {
 
     class protocol_layer_c;
+    class rpc_channel_c;
 
     class vtrc_client: public vtrc::enable_shared_from_this<vtrc_client> {
 
@@ -91,9 +92,8 @@ namespace client {
         boost::asio::io_service       &get_rpc_service( );
         const boost::asio::io_service &get_rpc_service( ) const;
 
-        google::protobuf::RpcChannel *create_channel( );
-        google::protobuf::RpcChannel *
-                            create_channel( common::rpc_channel::options opts );
+        rpc_channel_c *create_channel( );
+        rpc_channel_c *create_channel( common::rpc_channel::options opts );
 
         void set_session_key( const std::string &id, const std::string &key );
         void set_session_key( const std::string &key );
