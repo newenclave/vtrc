@@ -162,7 +162,7 @@ namespace vtrc { namespace server { namespace listeners {
                 typedef vtrc_rpc::message_info message_info;
 
                 llu.mutable_info( )
-                        ->set_message_type( message_info::MESSAGE_EVENT );
+                        ->set_message_type( message_info::MESSAGE_SERVER_CALL );
                 llu.mutable_error( )
                         ->set_category( vtrc_errors::CATEGORY_INTERNAL);
                 llu.mutable_error( )
