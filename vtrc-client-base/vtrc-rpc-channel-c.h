@@ -29,6 +29,9 @@ namespace client {
         friend struct impl;
         impl         *impl_;
 
+        typedef common::rpc_channel::lowlevel_unit_type lowlevel_unit_type;
+        typedef common::rpc_channel::lowlevel_unit_sptr lowlevel_unit_sptr;
+
         rpc_channel_c & operator = ( const rpc_channel_c & );
         rpc_channel_c( );
 
@@ -46,7 +49,7 @@ namespace client {
     private:
 
         void configure_message_for( common::connection_iface_sptr c,
-                                lowlevel_unit_type &llu ) const;
+                                    lowlevel_unit_type &llu ) const;
 
         void send_message( lowlevel_unit_type &llu,
                     const google::protobuf::MethodDescriptor* method,

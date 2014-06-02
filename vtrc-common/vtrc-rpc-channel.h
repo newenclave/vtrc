@@ -29,7 +29,7 @@ namespace vtrc { namespace common  {
             ,USE_CONTEXT_CALL   = 1 << 1
         };
 
-        typedef vtrc_rpc::lowlevel_unit     lowlevel_unit_type;
+        typedef vtrc_rpc::lowlevel_unit              lowlevel_unit_type;
         typedef vtrc::shared_ptr<lowlevel_unit_type> lowlevel_unit_sptr;
 
         rpc_channel(unsigned direct_call_type, unsigned callback_type);
