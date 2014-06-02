@@ -3,7 +3,6 @@
 
 #include "vtrc-client-base/vtrc-client.h"
 #include "vtrc-common/vtrc-stub-wrapper.h"
-#include "vtrc-client-base/vtrc-rpc-channel-c.h"
 
 namespace {
 

@@ -4,8 +4,6 @@
 
 #include "vtrc-common/vtrc-stub-wrapper.h"
 #include "vtrc-client-base/vtrc-client.h"
-#include "vtrc-client-base/vtrc-rpc-channel-c.h"
-
 
 namespace stress {
 
@@ -16,7 +14,6 @@ namespace {
     typedef vtrc_example::stress_service::Stub stub_type;
     typedef common::stub_wrapper<stub_type>    stub_wrapper_type;
     namespace gpb = google::protobuf;
-
 
     struct impl: public interface {
 

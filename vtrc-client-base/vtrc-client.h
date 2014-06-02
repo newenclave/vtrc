@@ -4,7 +4,8 @@
 #include "vtrc-common/vtrc-signal-declaration.h"
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-closure-holder.h"
-#include "vtrc-common/vtrc-rpc-channel.h"
+#include "vtrc-client-base/vtrc-rpc-channel-c.h"
+
 #include "vtrc-memory.h"
 
 namespace boost {
@@ -37,7 +38,6 @@ namespace vtrc {
 namespace client {
 
     class protocol_layer_c;
-    class rpc_channel_c;
 
     class vtrc_client: public vtrc::enable_shared_from_this<vtrc_client> {
 
