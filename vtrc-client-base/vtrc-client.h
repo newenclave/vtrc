@@ -91,8 +91,8 @@ namespace client {
         boost::asio::io_service       &get_rpc_service( );
         const boost::asio::io_service &get_rpc_service( ) const;
 
-        vtrc::shared_ptr<google::protobuf::RpcChannel> create_channel( );
-        vtrc::shared_ptr<google::protobuf::RpcChannel>
+        google::protobuf::RpcChannel *create_channel( );
+        google::protobuf::RpcChannel *
                             create_channel( common::rpc_channel::options opts );
 
         void set_session_key( const std::string &id, const std::string &key );

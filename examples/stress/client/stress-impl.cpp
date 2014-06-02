@@ -14,14 +14,21 @@ namespace {
 
     typedef vtrc_example::stress_service::Stub stub_type;
     typedef common::stub_wrapper<stub_type>    stub_wrapper_type;
+    namespace gpb = google::protobuf;
 
     struct impl: public interface {
 
         stub_wrapper_type stub_;
 
+        vtrc::shared_ptr<gpb::RpcChannel> get_channel( client::vtrc_client &c,
+                                             common::rpc_channel::options opts)
+        {
+            return vtrc::shared_ptr<gpb::RpcChannel>(c.create_channel( opts ));
+        }
+
         impl( vtrc::shared_ptr<client::vtrc_client> &c,
               common::rpc_channel::options opts )
-            :stub_(c->create_channel(opts))
+            :stub_(get_channel(*c, opts))
         {
             stub_.call( &stub_type::init );
         }

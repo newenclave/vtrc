@@ -301,19 +301,15 @@ namespace vtrc { namespace client {
             } catch( ... ) { };
         }
 
-        channel_sptr create_channel( )
+        gpb::RpcChannel *create_channel( )
         {
-            vtrc::shared_ptr<rpc_channel_c>
-               new_ch(vtrc::make_shared<rpc_channel_c>( connection_ ));
-
+            rpc_channel_c *new_ch( new rpc_channel_c( connection_ ) );
             return new_ch;
         }
 
-        channel_sptr create_channel( common::rpc_channel::options opts )
+        gpb::RpcChannel *create_channel( common::rpc_channel::options opts )
         {
-            vtrc::shared_ptr<rpc_channel_c>
-               new_ch(vtrc::make_shared<rpc_channel_c>( connection_, opts ));
-
+            rpc_channel_c *new_ch( new rpc_channel_c( connection_, opts ) );
             return new_ch;
         }
 
@@ -446,12 +442,13 @@ namespace vtrc { namespace client {
         return impl_->rpc_ios_;
     }
 
-    channel_sptr vtrc_client::create_channel( )
+    gpb::RpcChannel *vtrc_client::create_channel( )
     {
         return impl_->create_channel( );
     }
 
-    channel_sptr vtrc_client::create_channel(common::rpc_channel::options opts)
+    gpb::RpcChannel *vtrc_client::create_channel(
+                                             common::rpc_channel::options opts)
     {
         return impl_->create_channel( opts );
     }

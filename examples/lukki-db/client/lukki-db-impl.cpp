@@ -8,13 +8,19 @@ namespace {
 
     namespace gpb = google::protobuf;
     typedef vtrc_example::lukki_db_Stub stub_type;
+    using namespace vtrc;
 
     struct lukki_db_impl: public interfaces::lukki_db {
 
         mutable vtrc::common::stub_wrapper<stub_type>  wrap_stub_;
 
+        vtrc::shared_ptr<gpb::RpcChannel> get_channel( client::vtrc_client &c )
+        {
+            return vtrc::shared_ptr<gpb::RpcChannel>(c.create_channel(  ));
+        }
+
         lukki_db_impl( vtrc::shared_ptr<vtrc::client::vtrc_client> c )
-            :wrap_stub_(c->create_channel( ))
+            :wrap_stub_(get_channel( *c ))
         {
             wrap_stub_.call( &stub_type::init );
         }
