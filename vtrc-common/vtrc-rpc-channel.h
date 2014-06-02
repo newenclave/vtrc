@@ -67,7 +67,7 @@ namespace vtrc { namespace common  {
                         google::protobuf::Closure* done);
 
         ///
-        /// send implementation for children
+        /// 'send' implementation for children
         ///
         virtual void send_message( lowlevel_unit_type &llu,
                     const google::protobuf::MethodDescriptor* method,
