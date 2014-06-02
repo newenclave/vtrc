@@ -33,7 +33,7 @@ namespace vtrc { namespace common {
         call_context       *next( );
         const call_context *next( ) const;
 
-        void set_next(call_context *next);
+        void set_next( call_context *next );
 
         vtrc_rpc::lowlevel_unit       *get_lowlevel_message( );
         const vtrc_rpc::lowlevel_unit *get_lowlevel_message( ) const;
@@ -45,7 +45,8 @@ namespace vtrc { namespace common {
         void set_call_options(const vtrc_rpc::options &opts);
 
         void set_done_closure( google::protobuf::Closure *done );
-        google::protobuf::Closure *get_done_closure(  );
+
+        google::protobuf::Closure       *get_done_closure(  );
         const google::protobuf::Closure *get_done_closure(  ) const;
 
         const size_t depth( ) const;
