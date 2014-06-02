@@ -210,10 +210,10 @@ namespace vtrc { namespace server {
         }
 
         common::rpc_channel *create(common::connection_iface_sptr c,
-                                    common::rpc_channel::options opts)
+                                    unsigned flags )
         {
-            bool disable_wait = opts & common::rpc_channel::DISABLE_WAIT;
-            if( opts & common::rpc_channel::USE_CONTEXT_CALL ) {
+            bool disable_wait = (flags & common::rpc_channel::DISABLE_WAIT);
+            if( flags & common::rpc_channel::USE_CONTEXT_CALL ) {
                 create_callback_channel( c, disable_wait );
             } else {
                 create_event_channel( c, disable_wait );

@@ -307,7 +307,7 @@ namespace vtrc { namespace client {
             return new_ch;
         }
 
-        rpc_channel_c *create_channel( common::rpc_channel::options opts )
+        rpc_channel_c *create_channel( unsigned opts )
         {
             rpc_channel_c *new_ch( new rpc_channel_c( connection_, opts ) );
             return new_ch;
@@ -447,10 +447,9 @@ namespace vtrc { namespace client {
         return impl_->create_channel( );
     }
 
-    rpc_channel_c *vtrc_client::create_channel(
-                                             common::rpc_channel::options opts)
+    rpc_channel_c *vtrc_client::create_channel( unsigned flags )
     {
-        return impl_->create_channel( opts );
+        return impl_->create_channel( flags );
     }
 
     void vtrc_client::set_session_key(const std::string &id,

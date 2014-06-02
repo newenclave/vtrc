@@ -22,14 +22,14 @@ namespace {
         stub_wrapper_type stub_;
 
         vtrc::shared_ptr<channel_type> get_channel( client::vtrc_client &c,
-                                             common::rpc_channel::options opts)
+                                             common::rpc_channel::flags opts)
         {
             vtrc::shared_ptr<channel_type> new_ch(c.create_channel( opts ));
             return new_ch;
         }
 
         impl( vtrc::shared_ptr<client::vtrc_client> &c,
-              common::rpc_channel::options opts )
+              common::rpc_channel::flags opts )
             :stub_(get_channel(*c, opts))
         {
             stub_.call( &stub_type::init );
@@ -67,7 +67,7 @@ namespace {
 }
 
     interface *create_stress_client(vtrc::shared_ptr<client::vtrc_client> c,
-                                    common::rpc_channel::options opts)
+                                    common::rpc_channel::flags opts)
     {
         return new impl( c, opts );
     }

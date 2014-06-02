@@ -40,7 +40,7 @@ namespace client {
         explicit rpc_channel_c(vtrc::shared_ptr<common::connection_iface> conn);
 
         rpc_channel_c(vtrc::shared_ptr<common::connection_iface> conn,
-                      common::rpc_channel::options opts );
+                      unsigned flags );
 
         ~rpc_channel_c( );
 

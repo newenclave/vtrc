@@ -27,16 +27,16 @@ namespace vtrc { namespace client {
         const unsigned direct_call_type = message_info::MESSAGE_CLIENT_CALL;
         const unsigned callback_type    = message_info::MESSAGE_CLIENT_CALLBACK;
 
-        unsigned select_message_type (common::rpc_channel::options opts)
+        unsigned select_message_type ( unsigned flags )
         {
-            return (opts & common::rpc_channel::USE_CONTEXT_CALL)
+            return (flags & common::rpc_channel::USE_CONTEXT_CALL)
                    ? message_info::MESSAGE_CLIENT_CALLBACK
                    : message_info::MESSAGE_CLIENT_CALL;
         }
 
-        bool select_message_wait (common::rpc_channel::options opts)
+        bool select_message_wait ( unsigned flags )
         {
-            return (opts & common::rpc_channel::DISABLE_WAIT);
+            return (flags & common::rpc_channel::DISABLE_WAIT);
         }
     }
 
@@ -49,10 +49,10 @@ namespace vtrc { namespace client {
         const bool     disable_wait_;
 
         impl(vtrc::shared_ptr<common::connection_iface> c,
-                              common::rpc_channel::options opts)
+                              unsigned flags)
             :connection_(c)
-            ,mess_type_(select_message_type(opts))
-            ,disable_wait_(select_message_wait(opts))
+            ,mess_type_(select_message_type(flags))
+            ,disable_wait_(select_message_wait(flags))
         { }
 
         bool alive( ) const
@@ -120,7 +120,7 @@ namespace vtrc { namespace client {
     }
 
     rpc_channel_c::rpc_channel_c( common::connection_iface_sptr c,
-                                  common::rpc_channel::options opts )
+                                  unsigned opts )
         :common::rpc_channel(direct_call_type, callback_type)
         ,impl_(new impl(c, opts))
     {

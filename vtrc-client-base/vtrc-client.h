@@ -93,7 +93,7 @@ namespace client {
         const boost::asio::io_service &get_rpc_service( ) const;
 
         rpc_channel_c *create_channel( );
-        rpc_channel_c *create_channel( common::rpc_channel::options opts );
+        rpc_channel_c *create_channel( unsigned flags );
 
         void set_session_key( const std::string &id, const std::string &key );
         void set_session_key( const std::string &key );
