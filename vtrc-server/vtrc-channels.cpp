@@ -209,7 +209,16 @@ namespace vtrc { namespace server {
             return new unicast_channel(c, message_type, disable_wait);
         }
 
-
+        common::rpc_channel *create(common::connection_iface_sptr c,
+                                    common::rpc_channel::options opts)
+        {
+            bool disable_wait = opts & common::rpc_channel::DISABLE_WAIT;
+            if( opts & common::rpc_channel::USE_CONTEXT_CALL ) {
+                create_callback_channel( c, disable_wait );
+            } else {
+                create_event_channel( c, disable_wait );
+            }
+        }
     }
 
     namespace broadcast {
