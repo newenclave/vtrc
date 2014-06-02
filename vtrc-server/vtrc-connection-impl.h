@@ -82,9 +82,9 @@ namespace vtrc { namespace server { namespace listeners {
                 return new_inst;
             }
 
-            static vtrc::shared_ptr<this_type>
-                create(listener &endpoint, socket_type   *sock,
-                                  close_closure &on_close_cb)
+            static vtrc::shared_ptr<this_type> create(
+                                    listener &endpoint, socket_type *sock,
+                                    close_closure &on_close_cb)
             {
                 return create( endpoint,
                                vtrc::shared_ptr<socket_type>(sock),
