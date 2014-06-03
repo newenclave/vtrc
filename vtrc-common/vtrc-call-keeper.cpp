@@ -35,6 +35,14 @@ namespace vtrc { namespace common {
             return !!connection_.lock( );
         }
 
+        const call_context *get_call_context( ) const
+        {
+            return stack_.empty( )
+                    ? NULL
+                    : stack_.front( ).get( );
+        }
+
+
     };
 
     call_keeper::call_keeper( connection_iface *connection )
@@ -50,6 +58,11 @@ namespace vtrc { namespace common {
     vtrc::shared_ptr<call_keeper> call_keeper::create(connection_iface *conn)
     {
         return vtrc::make_shared<call_keeper>( conn );
+    }
+
+    const call_context *call_keeper::get_call_context( ) const
+    {
+        return impl_->get_call_context( );
     }
 
     bool call_keeper::valid( ) const
