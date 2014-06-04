@@ -8,6 +8,8 @@
 
 #include "vtrc-mutex.h"
 
+//#define VTRC_PP_CONCAT( a, b ) a ## b
+
 #define VTRC_DECLARE_SIGNAL_COMMON( Access, Name, SigType, MutexType )         \
     public:                                                                    \
         typedef boost::signals2::signal_type <                                 \
