@@ -35,14 +35,14 @@
 
 // ====== SAFE
 
-#define VTRC_DECLARE_SIGNAL_SAFE( Name, SigType )               \
+#define VTRC_DECLARE_SIGNAL_SAFE(   Name, SigType )               \
         VTRC_DECLARE_SIGNAL_COMMON( protected, Name, SigType,   \
                                     vtrc::mutex )
 
 // ====== UNSAFE
 #define VTRC_DECLARE_SIGNAL_UNSAFE( Name, SigType )             \
         VTRC_DECLARE_SIGNAL_COMMON( protected, Name, SigType,   \
-                                   boost::signals2::dummy_mutex)
+                                    boost::signals2::dummy_mutex)
 
 #define VTRC_DECLARE_SIGNAL VTRC_DECLARE_SIGNAL_SAFE
 
