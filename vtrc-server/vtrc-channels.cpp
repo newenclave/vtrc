@@ -214,9 +214,9 @@ namespace vtrc { namespace server {
         {
             bool disable_wait = (flags & common::rpc_channel::DISABLE_WAIT);
             if( flags & common::rpc_channel::USE_CONTEXT_CALL ) {
-                create_callback_channel( c, disable_wait );
+                return create_callback_channel( c, disable_wait );
             } else {
-                create_event_channel( c, disable_wait );
+                return create_event_channel( c, disable_wait );
             }
         }
     }
