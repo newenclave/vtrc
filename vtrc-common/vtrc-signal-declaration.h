@@ -25,13 +25,19 @@
         BOOST_PP_CAT( Name, _connect )                                         \
              ( SlotType s,                                                     \
              boost::signals2::connect_position pos = boost::signals2::at_back )\
-        { return BOOST_PP_CAT( Name, _ ).connect( s, pos ); }                  \
+        {                                                                      \
+            return BOOST_PP_CAT( Name, _ ).connect( s, pos );                  \
+        }                                                                      \
                                                                                \
         void BOOST_PP_CAT( Name, _disconnect_all_slots )( )                    \
-        { BOOST_PP_CAT( Name, _ ).disconnect_all_slots( ); }                   \
+        {                                                                      \
+            BOOST_PP_CAT( Name, _ ).disconnect_all_slots( );                   \
+        }                                                                      \
     Access:                                                                    \
         BOOST_PP_CAT( Name, _type )&  BOOST_PP_CAT( get_, Name )( )            \
-        { return BOOST_PP_CAT( Name, _ ); }                                    \
+        {                                                                      \
+            return BOOST_PP_CAT( Name, _ );                                    \
+        }                                                                      \
     private:                                                                   \
         BOOST_PP_CAT( Name, _type ) BOOST_PP_CAT( Name, _ )
 
