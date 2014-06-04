@@ -14,16 +14,19 @@
             SigType,                                                           \
             boost::signals2::keywords::mutex_type<MutexType>                   \
         >::type BOOST_PP_CAT( Name, _type );                                   \
+                                                                               \
         typedef BOOST_PP_CAT( Name, _type )::slot_type                         \
                 BOOST_PP_CAT( Name, _slot_type );                              \
         typedef BOOST_PP_CAT( Name, _type )::group_type                        \
                 BOOST_PP_CAT( Name, _group_type );                             \
+                                                                               \
         template <typename SlotType>                                           \
         boost::signals2::connection                                            \
         BOOST_PP_CAT( Name, _connect )                                         \
              ( SlotType s,                                                     \
              boost::signals2::connect_position pos = boost::signals2::at_back )\
         { return BOOST_PP_CAT( Name, _ ).connect( s, pos ); }                  \
+                                                                               \
         void BOOST_PP_CAT( Name, _disconnect_all_slots )( )                    \
         { BOOST_PP_CAT( Name, _ ).disconnect_all_slots( ); }                   \
     Access:                                                                    \
@@ -35,7 +38,7 @@
 
 // ====== SAFE
 
-#define VTRC_DECLARE_SIGNAL_SAFE(   Name, SigType )               \
+#define VTRC_DECLARE_SIGNAL_SAFE(   Name, SigType )             \
         VTRC_DECLARE_SIGNAL_COMMON( protected, Name, SigType,   \
                                     vtrc::mutex )
 
