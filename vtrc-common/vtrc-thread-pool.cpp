@@ -63,14 +63,6 @@ namespace vtrc { namespace common {
             }
         }
 
-        void move_to_stopped( thread_context::shared_type &thread )
-        {
-            unique_shared_lock lck(threads_lock_);
-
-            stopped_threads_.insert( thread );
-            threads_.erase( thread );
-        }
-
         void add( size_t count )
         {
             std::list<thread_context::shared_type> tmp;
@@ -150,11 +142,19 @@ namespace vtrc { namespace common {
             stopped_threads_.clear( );
         }
 
+        void move_to_stopped( thread_context::shared_type &thread )
+        {
+            unique_shared_lock lck(threads_lock_);
+
+            stopped_threads_.insert( thread );
+            threads_.erase( thread );
+        }
+
         void run( thread_context::shared_type thread )
         {
             run_impl( thread.get( ) );
-            move_to_stopped( thread ); /// must not remove it here;
-                                       /// moving to stopped_thread_
+//            move_to_stopped( thread ); /// must not remove it here;
+//                                       /// moving to stopped_thread_
         }
 
         bool run_impl( thread_context * /*context*/ )
