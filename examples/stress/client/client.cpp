@@ -222,10 +222,11 @@ int start( const po::variables_map &params )
             ? params["threads"].as<unsigned>( )
             : 0;
 
+    boost::thread_group tg;
+
     if( params.count( "ping" ) ) {
 
         unsigned times = params["ping"].as<unsigned>( );
-        boost::thread_group tg;
 
         for( unsigned i=0; i<threads; ++i ) {
             tg.add_thread( new vtrc::thread( start_ping_flod, impl, false,
@@ -234,13 +235,9 @@ int start( const po::variables_map &params )
 
         stress::ping( *impl, false, times, payload );
 
-        tg.join_all( );
-
     } else if( params.count( "flood" ) ) {
 
         unsigned times = params["flood"].as<unsigned>( );
-
-        boost::thread_group tg;
 
         for( unsigned i=0; i<threads; ++i ) {
             tg.add_thread( new vtrc::thread( start_ping_flod, impl, true,
@@ -248,7 +245,6 @@ int start( const po::variables_map &params )
         }
 
         stress::ping( *impl, true, times, payload );
-        tg.join_all( );
 
     } else if( params.count( "gen-events" ) ) {
 
@@ -264,8 +260,6 @@ int start( const po::variables_map &params )
 
         unsigned event_count = params["gen-events"].as<unsigned>( );
 
-        boost::thread_group tg;
-
         for( unsigned i=0; i<threads; ++i ) {
             tg.add_thread( new vtrc::thread( start_generate_events, impl,
                                              event_count,
@@ -273,8 +267,6 @@ int start( const po::variables_map &params )
         }
 
         start_generate_events(impl, event_count, true, false, payload);
-
-        tg.join_all( );
 
         std::cout << "Ok\n";
 
@@ -292,8 +284,6 @@ int start( const po::variables_map &params )
 
         unsigned event_count = params["gen-callbacks"].as<unsigned>( );
 
-        boost::thread_group tg;
-
         for( unsigned i=0; i<threads; ++i ) {
             tg.add_thread( new vtrc::thread( start_generate_events, impl,
                                              event_count,
@@ -301,8 +291,6 @@ int start( const po::variables_map &params )
         }
 
         start_generate_events(impl, event_count, true, true, payload);
-
-        tg.join_all( );
 
         std::cout << "Ok\n";
 
@@ -316,20 +304,18 @@ int start( const po::variables_map &params )
 
         unsigned call_count = params["recursive"].as<unsigned>( );
 
-        boost::thread_group tg;
-
         for( unsigned i=0; i<threads; ++i ) {
             tg.add_thread( new vtrc::thread( start_recursive, impl,
                                              call_count, payload) );
         }
 
         start_recursive( impl, call_count, payload );
-        tg.join_all( );
 
         std::cout << "Ok\n";
 
     }
 
+    tg.join_all( );
     //pp.get_rpc_pool( ).attach( );
     pp.stop_all( );
     pp.join_all( );

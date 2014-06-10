@@ -9,6 +9,7 @@
 #include "vtrc-bind.h"
 #include "vtrc-thread.h"
 
+///// TODO: need some fix here
 namespace vtrc { namespace common {
 
     namespace basio = boost::asio;
@@ -161,7 +162,7 @@ namespace vtrc { namespace common {
             while ( true  ) {
                 try {
                     while ( true ) {
-                        const size_t count = ios_->run_one();
+                        const size_t count = ios_->run_one( );
                         if( !count ) return true; /// stopped;
                     }
                 } catch( const interrupt & ) {
