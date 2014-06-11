@@ -25,6 +25,7 @@ namespace rfs_examples {
         std::string lstring( 2, ' ' );
 
         for( iterator i(impl.begin_iterator( )); !i->end( ); i->next( ) ) {
+
             bool is_dir( i->info( ).is_directory_ );
 
             dirs  += is_dir ? 1 : 0;
