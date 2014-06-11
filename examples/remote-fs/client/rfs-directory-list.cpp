@@ -32,8 +32,8 @@ namespace rfs_examples {
             files += is_dir ? 0 : 1;
 
             std::cout << lstring
-                      << ( i->info( ).is_empty_ ? " " : "+" );
-            std::cout << ( is_dir ? "[" : " " )
+                      << ( i->info( ).is_empty_ ? " " : "+" )
+                      << ( is_dir ? "[" : " " )
                       << leaf_of(i->info( ).path_)
                       << ( is_dir ? "]" : " " )
                       << "\n";
