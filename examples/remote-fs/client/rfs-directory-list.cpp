@@ -16,7 +16,7 @@ namespace rfs_examples {
 
     using namespace vtrc;
 
-    void list_dir( interfaces::remote_fs &impl)
+    void list_dir( interfaces::remote_fs &impl )
     {
         typedef vtrc::shared_ptr<interfaces::remote_fs_iterator> iterator;
 
