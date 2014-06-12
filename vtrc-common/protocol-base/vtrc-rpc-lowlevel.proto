@@ -12,11 +12,11 @@ message unit_options {
 }
 
 message session_options {
-    optional uint32 max_active_calls    = 1 [default = 5];
-    optional uint32 max_message_length  = 2 [default = 65536];
-    optional uint32 max_total_calls     = 3 [default = 20];
-    optional uint32 max_stack_size      = 4 [default = 64];
-    optional uint32 read_buffer_size    = 5 [default = 4096];
+    optional uint32 max_active_calls    = 1 [default = 5];      //per user
+    optional uint32 max_message_length  = 2 [default = 65536];  //per user
+//    optional uint32 max_total_calls     = 3 [default = 20];
+    optional uint32 max_stack_size      = 4 [default = 64];     //per user
+    optional uint32 read_buffer_size    = 5 [default = 4096];   //per user
 }
 
 message message_info {

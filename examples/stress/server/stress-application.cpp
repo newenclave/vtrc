@@ -199,6 +199,11 @@ namespace stress {
                             params["read-size"].as<unsigned>( ));
             }
 
+            if( params.count( "max-calls" ) ) {
+                opts.set_max_active_calls(
+                            params["max-calls"].as<unsigned>( ));
+            }
+
             return opts;
         }
 

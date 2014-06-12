@@ -34,6 +34,9 @@ void get_options( po::options_description& desc )
         ("message-size,M", po::value<unsigned>( ),
             "maximum message size for protocol")
 
+        ("max-calls,C", po::value<unsigned>( ),
+            "maximum calls per user")
+
         ("read-size,B", po::value<unsigned>( ),
             "buffer size for receiving data")
 
