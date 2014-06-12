@@ -282,7 +282,7 @@ namespace stress {
         :impl_(new impl(io_threads, rpc_threads))
     { }
 
-    application::~application()
+    application::~application( )
     {
         delete impl_;
     }
