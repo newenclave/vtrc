@@ -135,7 +135,7 @@ namespace async_transport {
             write_queue_.push( new_mess );
         }
 
-        const queue_value_sptr &queue_top( )
+        const queue_value_sptr &queue_top( ) const
         {
             return write_queue_.front( );
         }
