@@ -66,7 +66,6 @@ namespace async_transport {
         typedef std::queue<queue_value_sptr> message_queue_type;
 
         typedef void (this_type::*call_impl)( );
-        typedef int  priority_type;
 
         boost::asio::io_service          &ios_;
         boost::asio::io_service::strand   write_dispatcher_;
