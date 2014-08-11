@@ -42,7 +42,7 @@ namespace {
         }
 
         void upd( const std::string &name,
-                          const std::vector<std::string> &value ) const
+                  const std::vector<std::string> &value ) const
         {
             vtrc_example::value_set_req req;
             req.set_name( name );
