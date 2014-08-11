@@ -30,13 +30,12 @@ add_subdirectory(vtrc-common)
 add_subdirectory(vtrc-server)
 add_subdirectory(vtrc-client-base)
 
-if(WITHOUT_EXAMPLES)
-else(WITHOUT_EXAMPLES)
+if(WITH_EXAMPLES)
     add_subdirectory(examples/calculator)
     add_subdirectory(examples/remote-fs)
     add_subdirectory(examples/lukki-db)
     add_subdirectory(examples/stress)
-endif(WITHOUT_EXAMPLES)
+endif(WITH_EXAMPLES)
 
 
 
