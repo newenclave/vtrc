@@ -102,7 +102,7 @@ namespace vtrc { namespace utilities {
         return false;
     }
 
-    // true if equal
+    /// true if equal
     bool messages_diff ( gpb::Message const &templ,
                          gpb::Message &src,
                          gpb::FieldDescriptor const *fld )
@@ -149,7 +149,7 @@ namespace vtrc { namespace utilities {
         return true;
     }
 
-    // true if messages are equal
+    /// true if messages are equal
     bool make_message_diff( gpb::Message const &templ,
                             gpb::Message const &src,
                             gpb::Message &result  )
@@ -188,7 +188,7 @@ namespace vtrc { namespace utilities {
     }
 
     /// merges
-    /// crutch for repeated field
+    /// crutch for repeated fields
     void clear_repeated( gpb::Message &to, gpb::Message const &from )
     {
         gpb::Reflection const *refl( to.GetReflection() );
