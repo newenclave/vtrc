@@ -89,8 +89,9 @@ namespace vtrc { namespace utilities {
 
     bool message_has_repeated( const gpb::FieldDescriptor *fld )
     {
-        if( !field_is_message( fld ) )
+        if( !field_is_message( fld ) ) {
             return false;
+        }
 
         const gpb::Descriptor *mess(fld->message_type());
         for(int i(0); i!=mess->field_count(); ++i) {
