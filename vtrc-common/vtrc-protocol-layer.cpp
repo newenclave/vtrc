@@ -1,5 +1,6 @@
 
 #include "boost/thread/tss.hpp"
+#include "boost/asio.hpp"
 
 #include "google/protobuf/message.h"
 #include "google/protobuf/descriptor.h"
@@ -39,6 +40,7 @@ namespace vtrc { namespace common {
 
     namespace gpb   = google::protobuf;
     namespace bsys  = boost::system;
+    namespace basio = boost::asio;
 
     namespace {
 
@@ -807,7 +809,7 @@ namespace vtrc { namespace common {
      protocol_layer::protocol_layer(transport_iface *connection,
                                     bool oddside,
                                     const vtrc_rpc::session_options &opts)
-         :impl_(new impl(connection, oddside, opts ))
+        :impl_(new impl(connection, oddside, opts ))
      {
          impl_->parent_ = this;
      }
