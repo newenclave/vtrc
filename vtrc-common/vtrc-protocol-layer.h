@@ -121,8 +121,11 @@ namespace vtrc { namespace common {
         void erase_all_slots( );
         void cancel_all_slots( );
 
-        const vtrc_rpc::options &get_method_options(
+        const vtrc_rpc::options *get_method_options(
                             const google::protobuf::MethodDescriptor* method );
+
+//        const vtrc_rpc::options &get_method_options(
+//                            const lowlevel_unit_type &llu );
 
         const vtrc_rpc::session_options &session_options( ) const;
 

@@ -545,7 +545,7 @@ namespace vtrc { namespace common {
             return level_;
         }
 
-        const vtrc_rpc::options &get_method_options(
+        const vtrc_rpc::options *get_method_options(
                               const gpb::MethodDescriptor *method)
         {
             upgradable_lock lck(options_map_lock_);
@@ -574,7 +574,7 @@ namespace vtrc { namespace common {
                 result = f->second;
             }
 
-            return *result;
+            return result.get( );
         }
 
         void erase_all_slots(  )
@@ -700,7 +700,7 @@ namespace vtrc { namespace common {
                 throw vtrc::common::exception( vtrc_errors::ERR_NO_FUNC );
             }
 
-            const vtrc_rpc::options &call_opts
+            const vtrc_rpc::options *call_opts
                                         ( parent_->get_method_options( meth ) );
 
             ch.ctx_->set_call_options( call_opts );
@@ -895,7 +895,7 @@ namespace vtrc { namespace common {
         impl_->copy_call_stack( other );
     }
 
-    const vtrc_rpc::options &protocol_layer::get_method_options(
+    const vtrc_rpc::options *protocol_layer::get_method_options(
                               const gpb::MethodDescriptor *method)
     {
         return impl_->get_method_options( method );

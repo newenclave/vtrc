@@ -42,7 +42,7 @@ namespace vtrc { namespace common {
         bool get_impersonated( ) const;
 
         const vtrc_rpc::options *get_call_options( ) const;
-        void set_call_options(const vtrc_rpc::options &opts);
+        void set_call_options(const vtrc_rpc::options *opts);
 
         void set_done_closure( google::protobuf::Closure *done );
 

@@ -82,15 +82,15 @@ namespace vtrc { namespace client {
                                                "Connection lost");
             }
 
-            const vtrc_rpc::options &call_opt
+            const vtrc_rpc::options *call_opt
                             ( get_protocol( clk ).get_method_options(method) );
 
             if( disable_wait_ )
                 llu.mutable_opt( )->set_wait( false );
             else {
-                llu.mutable_opt( )->set_wait( call_opt.wait( ) );
+                llu.mutable_opt( )->set_wait( call_opt->wait( ) );
                 llu.mutable_opt( )->set_accept_callbacks
-                                               ( call_opt.accept_callbacks( ) );
+                                            ( call_opt->accept_callbacks( ) );
             }
 
             parent_->configure_message_for( clk, llu );

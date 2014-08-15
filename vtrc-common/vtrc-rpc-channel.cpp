@@ -99,7 +99,7 @@ namespace vtrc { namespace common  {
                             const lowlevel_unit_type &llu,
                             google::protobuf::Message *response,
                             connection_iface_sptr &cl,
-                            const vtrc_rpc::options &call_opt) const
+                            const vtrc_rpc::options *call_opt) const
     {
         cl->get_protocol( ).call_rpc_method( call_id, llu );
 
@@ -112,7 +112,7 @@ namespace vtrc { namespace common  {
             lowlevel_unit_sptr top (vtrc::make_shared<lowlevel_unit_type>( ));
 
             cl->get_protocol( ).read_slot_for( call_id, top,
-                                               call_opt.timeout( ) );
+                                               call_opt->timeout( ) );
 
             if( top->error( ).code( ) != vtrc_errors::ERR_NO_ERROR ) {
                 cl->get_protocol( ).erase_slot( call_id );

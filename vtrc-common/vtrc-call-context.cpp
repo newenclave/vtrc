@@ -94,9 +94,9 @@ namespace vtrc { namespace common {
         return impl_->opts_;
     }
 
-    void call_context::set_call_options(const vtrc_rpc::options &opts)
+    void call_context::set_call_options(const vtrc_rpc::options *opts)
     {
-        impl_->opts_ = &opts;
+        impl_->opts_ = opts;
     }
 
     void call_context::set_done_closure( google::protobuf::Closure *done )
