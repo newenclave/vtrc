@@ -130,7 +130,7 @@ namespace stress {
             ,retry_timer_(pp_.get_io_service( ))
         { }
 
-        void on_new_connection( server::listener_sptr l,
+        void on_new_connection( server::listener *l,
                                 const common::connection_iface *c )
         {
             //vtrc::unique_lock<vtrc::mutex> lock(counter_lock_);
@@ -165,16 +165,16 @@ namespace stress {
             }
         }
 
-        void on_accept_failed( server::listener_sptr l,
+        void on_accept_failed( server::listener *l,
                                unsigned retry_to,
                                const boost::system::error_code &code )
         {
             std::cout << "Accept failed at " << l->name( )
                       << " due to '" << code.message( ) << "'\n";
-            start_retry_accept( l, retry_to );
+            start_retry_accept( l->shared_from_this( ), retry_to );
         }
 
-        void on_stop_connection( server::listener_sptr l,
+        void on_stop_connection( server::listener *l,
                                  const common::connection_iface *c )
         {
             //vtrc::unique_lock<vtrc::mutex> lock(counter_lock_);
@@ -251,14 +251,16 @@ namespace stress {
                                     vtrc::server::listener_sptr listen )
         {
             listen->on_new_connection_connect(
-                   vtrc::bind( &impl::on_new_connection, this, listen, _1 ));
+                   vtrc::bind( &impl::on_new_connection, this,
+                               listen.get( ), _1 ));
 
             listen->on_stop_connection_connect(
-                   vtrc::bind( &impl::on_stop_connection, this, listen, _1 ));
+                   vtrc::bind( &impl::on_stop_connection, this,
+                               listen.get( ), _1 ));
 
             listen->on_accept_failed_connect(
                    vtrc::bind( &impl::on_accept_failed, this,
-                               listen, retry_to, _1 ) );
+                               listen.get( ), retry_to, _1 ) );
 
             listeners_.push_back( listen );
 
