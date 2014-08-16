@@ -23,6 +23,7 @@ namespace stress {
 
         virtual void recursive_call( unsigned count, unsigned payload ) = 0;
 
+        virtual void shutdown( ) = 0;
     };
 
     interface *create_stress_client(

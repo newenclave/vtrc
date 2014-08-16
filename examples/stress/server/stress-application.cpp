@@ -76,7 +76,11 @@ namespace stress {
         }
 
         class app_impl: public server::application {
+
         public:
+
+            stress::application *parent_app_;
+
             app_impl( common::pool_pair &pp )
                 :server::application(pp)
             { }
@@ -87,7 +91,8 @@ namespace stress {
             {
                 if( service_name == stress::service_name( ) ) {
 
-                    gpb::Service *stress_serv = stress::create_service( conn );
+                    gpb::Service *stress_serv =
+                            stress::create_service( conn, *parent_app_ );
 
                     return vtrc::shared_ptr<common::rpc_service_wrapper>(
                                 vtrc::make_shared<common::rpc_service_wrapper>(
@@ -263,24 +268,31 @@ namespace stress {
 
         void stop( )
         {
+            std::cout << "Stopping server ...";
             typedef std::vector<server::listener_sptr>::const_iterator citer;
             for( citer b(listeners_.begin( )), e(listeners_.end( )); b!=e; ++b){
                 (*b)->stop( );
             }
             retry_timer_.cancel( );
+            listeners_.clear( );
             pp_.stop_all( );
             pp_.join_all( );
+            std::cout << "Ok\n";
         }
 
     };
 
     application::application( unsigned io_threads )
         :impl_(new impl(io_threads))
-    { }
+    {
+        impl_->app_.parent_app_ = this;
+    }
 
     application::application( unsigned io_threads, unsigned rpc_threads )
         :impl_(new impl(io_threads, rpc_threads))
-    { }
+    {
+        impl_->app_.parent_app_ = this;
+    }
 
     application::~application( )
     {

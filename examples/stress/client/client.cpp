@@ -91,6 +91,9 @@ void get_options( po::options_description& desc )
         ("payload,l", po::value<unsigned>( ),
             "payload in bytes for commands such as ping; default = 64")
 
+        ("shutdown,S",
+            "shutdown remote server")
+
         ;
 }
 
@@ -224,7 +227,13 @@ int start( const po::variables_map &params )
 
     boost::thread_group tg;
 
-    if( params.count( "ping" ) ) {
+    if( params.count( "shutdown" ) ) {
+
+        std::cout << "Shutdown remote server...";
+        impl->shutdown( );
+        std::cout << "Ok\n";
+
+    } else if( params.count( "ping" ) ) {
 
         unsigned times = params["ping"].as<unsigned>( );
 

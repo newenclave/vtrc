@@ -28,6 +28,9 @@ message recursive_call_req {
 
 message recursive_call_res { }
 
+message shutdown_req { }
+message shutdown_res { }
+
 service stress_service {
 
     rpc init (empty) returns (empty);
@@ -36,6 +39,9 @@ service stress_service {
 
     /// make recursive_callback is balance != 0
     rpc recursive_call (recursive_call_req) returns (recursive_call_res);
+
+    /// shutdown server
+    rpc shutdown(shutdown_req) returns (shutdown_res);
 }
 
 /// ============== events or callbacks ================== ///
@@ -46,8 +52,7 @@ message event_req {
     optional bytes  payload       = 4;
 }
 
-message event_res {
-}
+message event_res { }
 
 service stress_events {
 

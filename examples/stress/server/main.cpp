@@ -1,5 +1,6 @@
 #include <iostream>
 #include "boost/program_options.hpp"
+#include "google/protobuf/stubs/common.h"
 
 #include "vtrc-common/vtrc-exception.h"
 
@@ -66,5 +67,6 @@ int main( int argc, char *argv[] )
         return 3;
     }
 
+    google::protobuf::ShutdownProtobufLibrary( );
     return 0;
 }

@@ -10,6 +10,8 @@
 
 #include "google/protobuf/descriptor.h"
 
+#include "stress-application.h"
+
 namespace gpb = google::protobuf;
 using namespace vtrc;
 
@@ -22,12 +24,15 @@ namespace  {
 
     class stress_service_impl: public vtrc_example::stress_service {
 
+        stress::application      &app_;
         common::connection_iface *c_;
 
     public:
 
-        stress_service_impl( common::connection_iface *c )
-            :c_(c)
+        stress_service_impl( stress::application &app,
+                             common::connection_iface *c )
+            :app_(app)
+            ,c_(c)
         { }
 
     private:
@@ -104,15 +109,25 @@ namespace  {
             stub.call_request( &stub_type::recursive_callback, request );
         }
 
+        void shutdown(::google::protobuf::RpcController* controller,
+                             const ::vtrc_example::shutdown_req* request,
+                             ::vtrc_example::shutdown_res* response,
+                             ::google::protobuf::Closure* done)
+        {
+            common::closure_holder holder(done);
+            app_.stop( );
+        }
+
     };
 
 }
 
 namespace stress {
 
-    gpb::Service *create_service( common::connection_iface *c )
+    gpb::Service *create_service(common::connection_iface *c ,
+                                 application &app)
     {
-        return new stress_service_impl( c );
+        return new stress_service_impl( app, c );
     }
 
     std::string service_name( )

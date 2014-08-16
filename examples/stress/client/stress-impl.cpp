@@ -63,6 +63,11 @@ namespace {
             stub_.call_request( &stub_type::recursive_call, &req );
         }
 
+        void shutdown( )
+        {
+            stub_.call( &stub_type::shutdown );
+        }
+
     };
 }
 

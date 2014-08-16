@@ -11,9 +11,15 @@ namespace vtrc { namespace common {
     struct connection_iface;
 }}
 
+
 namespace stress {
+
+    class application;
+
     google::protobuf::Service *create_service(
-                                            vtrc::common::connection_iface *c );
+                               vtrc::common::connection_iface *c,
+                               application &app);
+
     std::string service_name( );
 }
 
