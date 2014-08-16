@@ -51,7 +51,7 @@ namespace rfs_examples {
 
             total += block.size( );
 
-            double percents = (remote_size == -1)
+            double percents = (remote_size == gpb::uint64(-1))
                             ? 100.0
                             : 100.0 - (double(remote_size - total )
                                       / (double(remote_size) / 100));

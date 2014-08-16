@@ -61,7 +61,7 @@ namespace rfs_examples {
                 shift += w;
                 r -= w;
 
-                double percents = (file_size == -1)
+                double percents = (file_size == gpb::uint64(-1))
                                 ? 100.0
                                 : 100.0 - (double(file_size - total )
                                           / (double(file_size) / 100));

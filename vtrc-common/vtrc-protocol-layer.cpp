@@ -65,9 +65,6 @@ namespace vtrc { namespace common {
             }
         }
 
-        static const size_t default_max_message_length = 1024 * 1024;
-        static const size_t default_stack_size         = 128;
-
         struct rpc_unit_index {
             uint64_t     id_;
             rpc_unit_index( uint64_t id )
