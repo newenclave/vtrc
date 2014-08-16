@@ -35,6 +35,7 @@ namespace vtrc { namespace common {
         void store( common::connection_iface_sptr c )
         {
             unique_shared_lock l(clients_lock_);
+            // std::cout << "Store client: " << clients_.size( ) + 1 << "\n";
             clients_.insert(std::make_pair(c.get( ), c));
         }
 
@@ -54,6 +55,7 @@ namespace vtrc { namespace common {
             client_map_type::iterator f(clients_.find(c));
             if( f != clients_.end( )) {
                 upgrade_to_unique ulck(lck);
+                // std::cout << "Drop client: " << clients_.size( ) - 1 << "\n";
                 clients_.erase( f );
             }
         }
