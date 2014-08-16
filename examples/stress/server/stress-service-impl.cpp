@@ -6,6 +6,7 @@
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-closure-holder.h"
 #include "vtrc-server/vtrc-channels.h"
+#include "vtrc-server/vtrc-application.h"
 #include "vtrc-common/vtrc-stub-wrapper.h"
 
 #include "google/protobuf/descriptor.h"

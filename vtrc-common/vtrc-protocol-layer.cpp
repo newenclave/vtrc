@@ -181,7 +181,8 @@ namespace vtrc { namespace common {
         { }
 
         ~impl( )
-        { }
+        {
+        }
 
         void configure_session( const vtrc_rpc::session_options &opts )
         {
@@ -369,6 +370,7 @@ namespace vtrc { namespace common {
         void check_create_stack( )
         {
             if( NULL == context_.get( ) ) {
+                std::cout << "Stack is empty!\n";
                 context_.reset( new call_stack_type );
             }
         }
@@ -796,6 +798,8 @@ namespace vtrc { namespace common {
         }
 
     };
+
+//protocol_layer::impl::call_context_ptr protocol_layer::impl::context_;
 
     protocol_layer::protocol_layer( transport_iface *connection, bool oddside )
         :impl_(new impl(connection, oddside, vtrc_rpc::session_options( )))
