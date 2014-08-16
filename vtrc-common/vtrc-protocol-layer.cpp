@@ -36,6 +36,8 @@
 #include "protocol/vtrc-rpc-options.pb.h"
 #include "protocol/vtrc-errors.pb.h"
 
+#define USE_STATIC_CALL_CONTEXT 1
+
 namespace vtrc { namespace common {
 
     namespace gpb   = google::protobuf;
@@ -153,8 +155,11 @@ namespace vtrc { namespace common {
         rpc_queue_type               rpc_queue_;
         vtrc::atomic<uint64_t>       rpc_index_;
 
+#if USE_STATIC_CALL_CONTEXT
+        static call_context_ptr      context_;
+#else
         call_context_ptr             context_;
-
+#endif
         options_map_type             options_map_;
         mutable vtrc::shared_mutex   options_map_lock_;
 
@@ -370,7 +375,7 @@ namespace vtrc { namespace common {
         void check_create_stack( )
         {
             if( NULL == context_.get( ) ) {
-                std::cout << "Stack is empty!\n";
+                //std::cout << "Stack is empty!\n";
                 context_.reset( new call_stack_type );
             }
         }
@@ -799,7 +804,9 @@ namespace vtrc { namespace common {
 
     };
 
-//protocol_layer::impl::call_context_ptr protocol_layer::impl::context_;
+#if USE_STATIC_CALL_CONTEXT
+    protocol_layer::impl::call_context_ptr protocol_layer::impl::context_;
+#endif
 
     protocol_layer::protocol_layer( transport_iface *connection, bool oddside )
         :impl_(new impl(connection, oddside, vtrc_rpc::session_options( )))
