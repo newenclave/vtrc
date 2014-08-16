@@ -22,7 +22,7 @@ namespace rfs_examples {
                     const std::string &local_path,
                     size_t block_size )
     {
-        gpb::uint64 remote_size = -1;
+        gpb::uint64 remote_size = gpb::uint64(-1);
         try {
             remote_size = impl.file_size( remote_path );
             std::cout << "Remote file size is: " << remote_size << "\n";

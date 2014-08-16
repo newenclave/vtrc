@@ -27,7 +27,7 @@ namespace rfs_examples {
         vtrc::shared_ptr<interfaces::remote_file> rem_f
                 ( interfaces::create_remote_file( client, remote_path, "wb" ) );
 
-        gpb::uint64 file_size = -1;
+        gpb::uint64 file_size = gpb::uint64(-1);
 
         try {
             file_size = boost::filesystem::file_size( local_path );
