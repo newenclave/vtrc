@@ -124,7 +124,7 @@ namespace vtrc { namespace common {
         const vtrc_rpc::options *get_method_options(
                             const google::protobuf::MethodDescriptor* method );
 
-//        const vtrc_rpc::options &get_method_options(
+//        const vtrc_rpc::options *get_method_options(
 //                            const lowlevel_unit_type &llu );
 
         const vtrc_rpc::session_options &session_options( ) const;
@@ -159,13 +159,19 @@ namespace vtrc { namespace common {
 
     protected:
 
-        void set_level( unsigned level );
+        void     set_level( unsigned level );
         unsigned get_level(  ) const;
+
+        //// pure virtual
 
         virtual void init( )             = 0;
         virtual void on_data_ready( )    = 0;
 
         virtual const std::string &client_id( ) const = 0;
+
+        virtual rpc_service_wrapper_sptr get_service_by_name(
+                                         const std::string &name ) = 0;
+        ////
 
         typedef std::deque< vtrc::shared_ptr<call_context> > call_stack_type;
 
@@ -191,9 +197,6 @@ namespace vtrc { namespace common {
         void push_rpc_message( uint64_t slot_id, lowlevel_unit_sptr mess);
 
         void push_rpc_message_all( lowlevel_unit_sptr mess );
-
-        virtual rpc_service_wrapper_sptr get_service_by_name(
-                                                const std::string &name ) = 0;
 
         size_t ready_messages_count( ) const;
         bool   message_queue_empty( ) const;
