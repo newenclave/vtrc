@@ -146,6 +146,7 @@ namespace {
 
             std::cout << "[IN ] balance: " << request->balance( )
                       << "; stack: " << stack
+                      << "; thread: " << vtrc::this_thread::get_id( )
                       << "\n";
 
             client::vtrc_client_sptr locked(client_.lock( ));
@@ -165,6 +166,7 @@ namespace {
 
             std::cout << "[OUT] balance: " << request->balance( )
                       << "; stack: " << stack
+                      << "; thread: " << vtrc::this_thread::get_id( )
                       << "\n";
         }
 

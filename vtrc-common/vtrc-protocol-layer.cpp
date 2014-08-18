@@ -120,8 +120,9 @@ namespace vtrc { namespace common {
 
             ~closure_holder_type( ) try
             {
-                if( proto_closure_ )
+                if( proto_closure_ ) {
                     delete proto_closure_;
+                }
 
                 call_internal( );
 
