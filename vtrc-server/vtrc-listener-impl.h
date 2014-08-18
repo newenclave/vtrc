@@ -89,7 +89,8 @@ namespace {
 
             acceptor_->async_accept( *new_sock,
                 vtrc::bind( &this_type::on_accept, this,
-                             basio::placeholders::error, new_sock ));
+                             basio::placeholders::error, new_sock,
+                             shared_from_this( )));
         }
 
         acceptor_type *acceptor( ) const
@@ -123,7 +124,8 @@ namespace {
         }
 
         void on_accept( const bsys::error_code &error,
-                        vtrc::shared_ptr<socket_type> sock )
+                        vtrc::shared_ptr<socket_type> sock,
+                        vtrc::shared_ptr<listener> inst)
         {
             if( !error ) {
                 vtrc::shared_ptr<connection_type> new_conn;

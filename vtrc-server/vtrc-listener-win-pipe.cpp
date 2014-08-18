@@ -163,7 +163,8 @@ namespace {
 
                 overlapped_.reset( ios_,
                         vtrc::bind( &this_type::on_accept, this,
-                            basio::placeholders::error, new_sock) );
+                            basio::placeholders::error, new_sock,
+                            shared_from_this( ) ) );
 
                 BOOL res = ConnectNamedPipe( pipe_hdl, overlapped_.get( ) );
 
@@ -206,7 +207,8 @@ namespace {
         }
 
         void on_accept( const bsys::error_code &error,
-                        vtrc::shared_ptr<socket_type> sock )
+                        vtrc::shared_ptr<socket_type> sock,
+                        vtrc::shared_ptr<listener> inst)
         {
             if( !error ) {
                 try {

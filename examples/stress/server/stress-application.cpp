@@ -278,7 +278,6 @@ namespace stress {
             retry_timer_.cancel( );
             listeners_.clear( );
             pp_.stop_all( );
-            pp_.join_all( );
             std::cout << "Ok\n";
         }
 
