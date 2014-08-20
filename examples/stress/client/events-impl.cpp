@@ -75,7 +75,7 @@ namespace {
         {
             client::vtrc_client_sptr locked( client_.lock( ) );
 
-            if( locked ) { /// just on case;
+            if( locked ) { /// just in case;
 
                 const common::call_context *cc(locked->get_call_context( ));
                 size_t depth = cc->depth( );
@@ -93,7 +93,7 @@ namespace {
         {
             client::vtrc_client_sptr locked( client_.lock( ) );
 
-            if( locked ) { /// just on case;
+            if( locked ) { /// just in case;
 
                 const common::call_context *cc(locked->get_call_context( ));
                 std::ostringstream oss;
@@ -113,7 +113,7 @@ namespace {
         {
             client::vtrc_client_sptr locked( client_.lock( ) );
 
-            if( locked ) { /// just on case;
+            if( locked ) { /// just in case;
 
                 const common::call_context *cc(locked->get_call_context( ));
                 std::ostringstream oss;
