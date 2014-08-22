@@ -441,11 +441,9 @@ namespace vtrc { namespace common {
 
         void pop_call_context( )
         {
-            if( !context_->empty( ) )
+            if( !context_->empty( ) ) {
                 context_->pop_front( );
-//            if( context_->empty( ) ) {
-//                context_.reset(  );
-//            }
+            }
         }
 
         void reset_call_context( )
@@ -641,7 +639,7 @@ namespace vtrc { namespace common {
             rpc_queue_.cancel_all( );
         }
 
-        common::rpc_service_wrapper_sptr get_service(const std::string &name)
+        common::rpc_service_wrapper_sptr get_service( const std::string &name )
         {
             return parent_->get_service_by_name( name );
         }
@@ -766,7 +764,7 @@ namespace vtrc { namespace common {
             closure_hold->controller_.reset(new common::rpc_controller);
 
             closure_hold->connection_ = connection_->weak_from_this( );
-            closure_hold->       llu_ = llu;
+            closure_hold->llu_        = llu;
 
             gpb::Closure* clos(make_closure(closure_hold, llu->opt( ).wait( )));
             ch.ctx_->set_done_closure( clos );
