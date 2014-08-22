@@ -22,7 +22,7 @@ namespace stress {
         return chrono::duration_cast<chrono::microseconds>( point ).count( );
     }
 
-    void ping_impl( interface &iface, unsigned payload )
+    size_t ping_impl( interface &iface, unsigned payload )
     {
 
         std::cout << "Send ping with " << payload << " bytes as payload...";
@@ -33,19 +33,29 @@ namespace stress {
 
         time_point stop = chrono::high_resolution_clock::now( );
 
-        std::cout << "ok; " << cast(stop - start)
+        size_t to = cast(stop - start);
+        std::cout << "ok; " << to
                   << " microseconds\n";
+        return to;
     }
 
     void ping(interface &iface, bool flood, unsigned count, unsigned payload)
     {
         std::cout << "Start pinging...\n";
+        size_t   res = 0;
+        const unsigned counter = count;
         while( count-- ) {
-            ping_impl( iface, payload );
+
+            res += ping_impl( iface, payload );
+
             if( !flood && count ) {
                 this_thread::sleep_for( chrono::seconds( 1 ) );
             }
         }
+
+        std::cout << "Avarage TO: "
+                  << ( res / counter )
+                  << " microseconds\n";
     }
 
 }

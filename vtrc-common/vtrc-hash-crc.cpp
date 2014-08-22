@@ -50,6 +50,27 @@ namespace vtrc { namespace common {  namespace hash {
 
                 return result;
             }
+
+            void get_data_hash(const void *data, size_t length,
+                                     void *result_hash ) const
+            {
+
+                crc64_type res;
+                res.process_bytes(data, length);
+
+                crc64_type::value_type crc = res.checksum( );
+                uint8_t *result = reinterpret_cast<uint8_t *>(result_hash);
+
+                result[7] = (crc      ) & 0xFF;
+                result[6] = (crc >>  8) & 0xFF;
+                result[5] = (crc >> 16) & 0xFF;
+                result[4] = (crc >> 24) & 0xFF;
+                result[3] = (crc >> 32) & 0xFF;
+                result[2] = (crc >> 40) & 0xFF;
+                result[1] = (crc >> 48) & 0xFF;
+                result[0] = (crc >> 56) & 0xFF;
+
+            }
         };
 
         struct hasher_crc32: public hasher_crc_base<boost::crc_32_type> {
@@ -62,12 +83,30 @@ namespace vtrc { namespace common {  namespace hash {
                 std::string result( 4, 0 );
 
                 result[3] = (crc      ) & 0xFF;
-                result[2] = (crc >> 8 ) & 0xFF;
+                result[2] = (crc >>  8) & 0xFF;
                 result[1] = (crc >> 16) & 0xFF;
                 result[0] = (crc >> 24) & 0xFF;
 
                 return result;
             }
+
+            void get_data_hash(const void *data, size_t length,
+                                     void *result_hash ) const
+            {
+
+                boost::crc_32_type res;
+                res.process_bytes(data, length);
+                boost::crc_32_type::value_type crc = res.checksum( );
+
+                uint8_t *result = reinterpret_cast<uint8_t *>(result_hash);
+
+                result[3] = (crc      ) & 0xFF;
+                result[2] = (crc >>  8) & 0xFF;
+                result[1] = (crc >> 16) & 0xFF;
+                result[0] = (crc >> 24) & 0xFF;
+
+            }
+
         };
 
         struct hasher_crc16: public hasher_crc_base<boost::crc_16_type> {
@@ -85,6 +124,20 @@ namespace vtrc { namespace common {  namespace hash {
                 result[0] = (crc >> 8 ) & 0xFF;
 
                 return result;
+            }
+
+            void get_data_hash(const void *data, size_t length,
+                                     void *result_hash ) const
+            {
+                boost::crc_16_type res;
+                res.process_bytes(data, length);
+                boost::crc_16_type::value_type crc = res.checksum( );
+
+                uint8_t *result = reinterpret_cast<uint8_t *>(result_hash);
+
+                result[1] = (crc      ) & 0xFF;
+                result[0] = (crc >> 8 ) & 0xFF;
+
             }
 
         };

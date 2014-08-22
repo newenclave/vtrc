@@ -12,7 +12,7 @@ namespace vtrc { namespace common {  namespace hash {
             }
 
             std::string get_data_hash(const void * /* data   */,
-                                      size_t       /* length */) const
+                                      size_t       /* length */ ) const
             {
                 static const std::string fh;
                 return fh;
@@ -20,10 +20,18 @@ namespace vtrc { namespace common {  namespace hash {
 
             bool check_data_hash( const void *  /* data  */,
                                   size_t        /* length*/,
-                                  const void *  /* hash  */) const
+                                  const void *  /* hash  */ ) const
             {
                 return true;
             }
+
+            void get_data_hash(const void * /*data*/,
+                               size_t       /*length*/,
+                               void       * /*result_hash*/ ) const
+            {
+
+            }
+
         };
 
     }

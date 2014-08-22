@@ -187,8 +187,7 @@ namespace vtrc { namespace common {
         { }
 
         ~impl( )
-        {
-        }
+        { }
 
         void configure_session( const vtrc_rpc::session_options &opts )
         {
@@ -214,14 +213,21 @@ namespace vtrc { namespace common {
             /**
              * message_header = <packed_size(data_length + hash_length)>
             **/
-            std::string result(size_policy_ns::pack_size(
-                                length + hash_maker_->hash_size( )));
+            std::string result( size_policy_ns::pack_size (
+                                          length + hash_maker_->hash_size( )));
 
             /** here is:
              *  message_body = <hash(data)> + <data>
             **/
-            std::string body( hash_maker_->get_data_hash(data, length ) );
-            body.append( data, data + length );
+            std::vector<char> body( length + hash_maker_->hash_size( ) );
+            hash_maker_->get_data_hash( data, length, &body[0] );
+
+            if( length > 0 ) {
+                memcpy( &body[hash_maker_->hash_size( )], data, length );
+            }
+
+            //std::string body( hash_maker_->get_data_hash( data, length ) );
+            //body.append( data, data + length );
 
             /**
              * message =  message_header + <transform( message )>
@@ -237,7 +243,8 @@ namespace vtrc { namespace common {
         void process_data( const char *data, size_t length )
         {
             if( length > 0 ) {
-                std::string next_data(data, data + length);
+
+                //std::string next_data(data, data + length);
 
                 const size_t old_size = queue_->messages( ).size( );
 
@@ -245,7 +252,10 @@ namespace vtrc { namespace common {
                  * message = <size>transformed(data)
                  * we must revert data in 'parse_and_pop'
                 **/
-                queue_->append( &next_data[0], next_data.size( ));
+
+                //queue_->append( &next_data[0], next_data.size( ));
+
+                queue_->append( data, length );
                 queue_->process( );
 
                 if( queue_->messages( ).size( ) > old_size ) {

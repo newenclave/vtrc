@@ -35,6 +35,11 @@ namespace vtrc { namespace hash {
             return std::string( &data[0], &data[digest_length] );              \
         }                                                                      \
                                                                                \
+        static void final( context_type *context, u_int8_t *result )           \
+        {                                                                      \
+            NAME##_Final( result, context );                                   \
+        }                                                                      \
+                                                                               \
         static std::string end( context_type *context )                        \
         {                                                                      \
             digest_string_type result;                                         \

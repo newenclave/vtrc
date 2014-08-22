@@ -38,12 +38,14 @@ namespace {
         unsigned    payload_;
 
     public:
+
         events_impl( vtrc::shared_ptr<vtrc::client::vtrc_client> c,
                      unsigned payload )
             :client_(c)
             ,last_event_point_(high_resolution_clock::now( ))
             ,payload_(payload)
         { }
+
     private:
 
         void event(::google::protobuf::RpcController* controller,
@@ -119,15 +121,16 @@ namespace {
                 std::ostringstream oss;
                 bool from_server = true;
                 while( cc ) {
-                    oss << (from_server ? "S>" : "C<") << ":"
+                    oss
+                        << "\n"
+                        << "\t"
+                        << (from_server ? "Server -> " : "Client <- ")
                         << cc->get_lowlevel_message( )->call( ).service_id( )
                         << "::"
-                        << cc->get_lowlevel_message( )->call( ).method_id( );
+                        << cc->get_lowlevel_message( )->call( ).method_id( )
+                           ;
                     cc = cc->next( );
                     from_server = !from_server;
-                    if( cc ) {
-                        oss << "->";
-                    }
                 }
                 return oss.str( );
             }
@@ -142,7 +145,7 @@ namespace {
         {
             common::closure_holder holder( done );
 
-            std::string stack(get_stack( ));
+            std::string stack(get_stack2( ));
 
             std::cout << "[IN ] balance: " << request->balance( )
                       << "; stack: " << stack

@@ -21,9 +21,21 @@ namespace vtrc { namespace common {  namespace hash {
                 typename HashTraits::context_type context;
                 HashTraits::init( &context );
                 HashTraits::update( &context,
-                    reinterpret_cast<const u_int8_t *>(data), length );
+                    reinterpret_cast<const uint8_t *>(data), length );
 
                 return HashTraits::final( &context );
+            }
+
+            void get_data_hash(const void *data, size_t length,
+                                     void *result_hash ) const
+            {
+                typename HashTraits::context_type context;
+                HashTraits::init( &context );
+                HashTraits::update( &context,
+                    reinterpret_cast<const uint8_t *>(data), length );
+
+                HashTraits::final( &context,
+                                    reinterpret_cast<uint8_t *>(result_hash));
             }
 
             bool check_data_hash( const void *  data  ,
