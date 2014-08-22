@@ -247,6 +247,11 @@ namespace vtrc { namespace common { namespace data_queue {
             return policy_type::pack( size );
         }
 
+        size_t pack_size_to( size_t size, void *result )
+        {
+            return policy_type::pack( size, result );
+        }
+
     }
 
     namespace fixint {
@@ -263,6 +268,11 @@ namespace vtrc { namespace common { namespace data_queue {
         std::string pack_size(size_t size)
         {
             return policy_type::pack( size );
+        }
+
+        size_t pack_size_to( size_t size, void *result )
+        {
+            return policy_type::pack( size, result );
         }
 
     }

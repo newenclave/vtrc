@@ -60,6 +60,16 @@ namespace vtrc { namespace common { namespace policies {
             return std::string( &res[0], &res[max_length] );
         }
 
+        static size_t pack( size_type size, void *result )
+        {
+            uint8_t *res = reinterpret_cast<uint8_t *>(result);
+            for( size_t current = max_length; current > 0; --current ) {
+                res[current-1] = static_cast<uint8_t>( size & 0xFF );
+                size >>= 8;
+            }
+            return max_length;
+        }
+
         template <typename IterT>
         static size_type unpack( IterT begin, const IterT &end )
         {
@@ -116,6 +126,17 @@ namespace vtrc { namespace common { namespace policies {
             }
             res.push_back(static_cast<char>(size));
             return res;
+        }
+
+        static size_t pack( size_type size, void *result )
+        {
+            size_t   index = 0;
+            uint8_t *res = reinterpret_cast<uint8_t *>(result);
+            for( ; size > 0x7F; size >>= 7 ) {
+                res[index++] = (static_cast<char>(size & 0x7F) | 0x80);
+            }
+            res[index++] = (static_cast<char>(size));
+            return index;
         }
 
         template <typename IterT>

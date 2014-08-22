@@ -42,12 +42,14 @@ namespace vtrc { namespace common { namespace data_queue {
 
     namespace varint {
         std::string pack_size( size_t size );
+        size_t      pack_size_to( size_t size, void *result );
         queue_base *create_parser    ( size_t max_valid_length );
         queue_base *create_serializer( size_t max_valid_length );
     }
 
     namespace fixint {
         std::string pack_size( size_t size );
+        size_t      pack_size_to( size_t size, void *result );
         queue_base *create_parser    ( size_t max_valid_length );
         queue_base *create_serializer( size_t max_valid_length );
     }

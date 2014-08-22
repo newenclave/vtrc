@@ -208,6 +208,7 @@ namespace vtrc { namespace common {
             return res;
         }
 
+#if 0 /// variant
         std::string prepare_data( const char *data, size_t length )
         {
             /**
@@ -219,15 +220,8 @@ namespace vtrc { namespace common {
             /** here is:
              *  message_body = <hash(data)> + <data>
             **/
-            std::vector<char> body( length + hash_maker_->hash_size( ) );
-            hash_maker_->get_data_hash( data, length, &body[0] );
-
-            if( length > 0 ) {
-                memcpy( &body[hash_maker_->hash_size( )], data, length );
-            }
-
-            //std::string body( hash_maker_->get_data_hash( data, length ) );
-            //body.append( data, data + length );
+            std::string body( hash_maker_->get_data_hash( data, length ) );
+            body.append( data, data + length );
 
             /**
              * message =  message_header + <transform( message )>
@@ -239,7 +233,47 @@ namespace vtrc { namespace common {
 
             return result;
         }
+#else
+        std::string prepare_data( const char *data, size_t length )
+        {
+            /**
+             * message_header = <packed_size(data_length + hash_length)>
+            **/
+            const size_t body_len = length + hash_maker_->hash_size( );
 
+            //std::string body( body_len + 32, '?' );
+            std::vector<char> body( body_len + 32 );
+
+
+            /**
+             *  Pack length of the data and the hash to vector
+             *  Get size of packed size value;
+            **/
+            size_t size_len = size_policy_ns::pack_size_to(body_len, &body[0]);
+
+            /** here is:
+             *  message_body = <hash(data)> + <data>
+            **/
+            hash_maker_->get_data_hash( data, length, &body[size_len] );
+
+            if( length > 0 ) {
+                memcpy( &body[hash_maker_->hash_size( ) + size_len],
+                         data, length );
+            }
+
+            /**
+             * message =  message_header + <transform( message )>
+            **/
+            transformer_->transform( body.empty( ) ? NULL : &body[0],
+                                     body.size( ) );
+
+//            body.resize( body_len + size_len );
+//            return body;
+
+            return std::string( body.begin( ),
+                                body.begin( ) + body_len + size_len );
+        }
+#endif
         void process_data( const char *data, size_t length )
         {
             if( length > 0 ) {
