@@ -390,7 +390,6 @@ namespace vtrc { namespace common {
         }
 
         // --------------- sett ----------------- //
-
         message_queue_type &message_queue( )
         {
             return queue_->messages( );
