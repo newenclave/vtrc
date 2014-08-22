@@ -214,8 +214,8 @@ namespace vtrc { namespace common {
             /**
              * message_header = <packed_size(data_length + hash_length)>
             **/
-            std::string result( size_policy_ns::pack_size (
-                                          length + hash_maker_->hash_size( )));
+            const size_t body_len = length + hash_maker_->hash_size( );
+            std::string result( size_policy_ns::pack_size( body_len ));
 
             /** here is:
              *  message_body = <hash(data)> + <data>
@@ -249,15 +249,15 @@ namespace vtrc { namespace common {
              *  Pack length of the data and the hash to vector
              *  Get size of packed size value;
             **/
-            size_t size_len = size_policy_ns::pack_size_to(body_len, &body[0]);
+            size_t siz_len = size_policy_ns::pack_size_to( body_len, &body[0] );
 
             /** here is:
              *  message_body = <hash(data)> + <data>
             **/
-            hash_maker_->get_data_hash( data, length, &body[size_len] );
+            hash_maker_->get_data_hash( data, length, &body[siz_len] );
 
             if( length > 0 ) {
-                memcpy( &body[hash_maker_->hash_size( ) + size_len],
+                memcpy( &body[hash_maker_->hash_size( ) + siz_len],
                          data, length );
             }
 
@@ -271,7 +271,7 @@ namespace vtrc { namespace common {
 //            return body;
 
             return std::string( body.begin( ),
-                                body.begin( ) + body_len + size_len );
+                                body.begin( ) + body_len + siz_len );
         }
 #endif
         void process_data( const char *data, size_t length )
