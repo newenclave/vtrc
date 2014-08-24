@@ -255,7 +255,9 @@ namespace vtrc { namespace common { namespace data_queue {
     }
 
     namespace fixint {
+
         typedef vtrc::common::policies::fixint_policy<uint32_t> policy_type;
+
         queue_base *create_parser( size_t max_valid_length )
         {
             return new parser_impl<policy_type>(max_valid_length);
