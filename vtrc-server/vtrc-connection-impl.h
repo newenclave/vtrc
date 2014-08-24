@@ -40,7 +40,7 @@ namespace vtrc { namespace server { namespace listeners {
             std::vector<char>                   read_buff_;
 
             vtrc::unique_ptr<protocol_layer_s>  protocol_;
-            close_closure                       close_closure_;
+            const close_closure                 close_closure_;
 
             std::string                         name_;
 
