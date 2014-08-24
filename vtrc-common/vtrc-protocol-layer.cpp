@@ -195,6 +195,7 @@ namespace vtrc { namespace common {
             queue_->set_maximum_length( opts.max_message_length( ) );
         }
 
+#if 0
         static protocol_layer::lowlevel_unit_type make_fake_mess( )
         {
             random_device rd(true);
@@ -207,6 +208,7 @@ namespace vtrc { namespace common {
 
             return res;
         }
+#endif
 
 #if 0 /// variant
         std::string prepare_data( const char *data, size_t length )

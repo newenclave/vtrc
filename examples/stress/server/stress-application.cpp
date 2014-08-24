@@ -276,7 +276,6 @@ namespace stress {
                 (*b)->stop( );
             }
             retry_timer_.cancel( );
-            listeners_.clear( );
             pp_.stop_all( );
             std::cout << "Ok\n";
         }
