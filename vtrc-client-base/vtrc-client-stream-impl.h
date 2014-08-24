@@ -112,7 +112,7 @@ namespace { /// implementation.
                     disp.wrap(vtrc::bind( &this_type::read_handler, this,
                          basio::placeholders::error,
                          basio::placeholders::bytes_transferred,
-                         parent_->weak_from_this( ) ))
+                         parent_->shared_from_this( ) ))
                 );
 #else
             get_socket( ).async_read_some(
@@ -120,16 +120,16 @@ namespace { /// implementation.
                         vtrc::bind( &this_type::read_handler, this,
                              basio::placeholders::error,
                              basio::placeholders::bytes_transferred,
-                             parent_->weak_from_this( ) )
+                             parent_->shared_from_this( ) )
                 );
 #endif
         }
 
         void read_handler( const bsys::error_code &error, size_t bytes,
-                           common::connection_iface_wptr parent)
+                           const common::connection_iface_sptr & /*inst*/ )
         {
-            common::connection_iface_sptr lk(parent.lock( ));
-            if( !lk ) return;
+//            common::connection_iface_sptr lk(inst.lock( ));
+//            if( !lk ) return;
 
             if( !error ) {
                 try {
