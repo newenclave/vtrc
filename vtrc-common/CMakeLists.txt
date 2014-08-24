@@ -69,7 +69,7 @@ foreach(next_proto ${protofiles})
     list( APPEND lib_src ${OUTPUT_FILES})
     list( APPEND lib_src ${next_proto})
 
-endforeach()
+endforeach( )
 
 ##################################################
 

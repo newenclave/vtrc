@@ -39,7 +39,7 @@ namespace vtrc { namespace server { namespace listeners {
                 ,no_delay_(no_delay)
             { }
 
-            virtual std::string name( ) const
+            std::string name( ) const
             {
                 std::ostringstream oss;
 
