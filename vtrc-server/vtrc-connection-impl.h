@@ -192,16 +192,16 @@ namespace vtrc { namespace server { namespace listeners {
                             vtrc::bind( &this_type::read_handler, this,
                                  basio::placeholders::error,
                                  basio::placeholders::bytes_transferred,
-                                 this->weak_from_this( ))
+                                 this->shared_from_this( ))
                     );
 #endif
             }
 
             void read_handler( const bsys::error_code &error, size_t bytes,
-                               common::connection_iface_wptr &parent)
+                               const common::connection_iface_sptr &inst )
             {
-                common::connection_iface_sptr lck(parent.lock( ));
-                if( !lck ) return;
+//                common::connection_iface_sptr lck(parent.lock( ));
+//                if( !lck ) return;
 
                 if( !error ) {
                     try {
