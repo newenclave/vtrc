@@ -131,7 +131,7 @@ namespace vtrc { namespace common { namespace data_queue {
         public:
             serializer_impl( size_t maximim_valid )
                 :queue_base(maximim_valid)
-            {}
+            { }
 
             std::string pack_size( size_t size ) const
             {

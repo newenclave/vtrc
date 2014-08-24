@@ -11,13 +11,13 @@ message options {
     optional uint32     level            = 1;
 
     /// other side waits answer
-    optional bool       wait             = 2 [default = true];
+    optional bool       wait             = 2 [ default = true ];
 
     /// wait timeout (MICROseconds); only if 'wait' is true;
-    optional uint64     timeout          = 3 [default = 60000000 ];
+    optional uint64     timeout          = 3 [ default = 30000000 ]; // 30 sec.
 
     /// other side accepts callbacks for this call; only if 'wait' is true
-    optional bool       accept_callbacks = 4 [default = true];
+    optional bool       accept_callbacks = 4 [ default = true ];
 };
 
 extend google.protobuf.ServiceOptions {
