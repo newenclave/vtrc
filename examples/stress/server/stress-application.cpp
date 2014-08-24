@@ -230,7 +230,7 @@ namespace stress {
                     ? params["accept-retry"].as<unsigned>( )
                     : 1000;
 
-            for( vec_citer b(ser.begin( )), e(ser.end( )); b != e; ++b) {
+            for( vec_citer b(ser.begin( )), e(ser.end( )); b != e; ++b ) {
 
                 std::cout << "Starting listener at '" <<  *b << "'...";
                 attach_start_listener( retry_to,
