@@ -253,7 +253,8 @@ namespace vtrc { namespace common {
             **/
             size_t siz_len = size_policy_ns::pack_size_to( body_len, &body[0] );
 
-            /** here is:
+            /**
+             *  here is:
              *  message_body = <hash(data)> + <data>
             **/
             hash_maker_->get_data_hash( data, length, &body[siz_len] );
