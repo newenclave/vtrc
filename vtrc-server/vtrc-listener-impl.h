@@ -125,7 +125,7 @@ namespace {
 
         void on_accept( const bsys::error_code &error,
                         vtrc::shared_ptr<socket_type> sock,
-                        const vtrc::shared_ptr<listener> &inst)
+                        const vtrc::shared_ptr<listener> inst)
         {
             if( !error ) {
                 vtrc::shared_ptr<connection_type> new_conn;
