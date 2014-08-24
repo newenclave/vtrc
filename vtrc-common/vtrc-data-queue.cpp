@@ -230,7 +230,7 @@ namespace vtrc { namespace common { namespace data_queue {
 
     namespace varint {
 
-        typedef vtrc::common::policies::varint_policy<size_t> policy_type;
+        typedef vtrc::common::policies::varint_policy<uint32_t> policy_type;
 
         queue_base *create_parser( size_t max_valid_length )
         {
