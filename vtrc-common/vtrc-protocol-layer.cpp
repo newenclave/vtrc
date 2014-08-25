@@ -210,7 +210,7 @@ namespace vtrc { namespace common {
         }
 #endif
 
-#if 0 /// variant
+#if 0 /// variant uno
         std::string prepare_data( const char *data, size_t length )
         {
             /**
