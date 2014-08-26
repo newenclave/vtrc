@@ -186,7 +186,6 @@ int start( const po::variables_map &params )
 
     if( params.count( "push" ) ) {
         std::string path = params["push"].as<std::string>( );
-        std::cout << "push file '" << path << "'\n";
         if( params.count( "output" ) ) {
             rfs_examples::push_file( client, path, output, bs );
         } else {
@@ -196,6 +195,9 @@ int start( const po::variables_map &params )
 
     if( params.count( "push-tree" ) ) {
         std::string path = params["push-tree"].as<std::string>( );
+
+        std::cout << "input file: " << "\n";
+
         std::cout << "push tree '" << path << "'\n";
         rfs_examples::push_tree( client, *impl, path );
     }

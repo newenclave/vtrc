@@ -43,32 +43,51 @@ namespace rfs_examples {
                   << "Block size = " << block_size
                   << std::endl;
 
-        std::ifstream f;
-        f.open(local_path.c_str( ), std::ifstream::in );
-
-
         std::string block(block_size, 0);
         size_t total = 0;
 
-        while( size_t r = f.readsome( &block[0], block_size ) ) {
+        if( local_path == "-" ) {
 
-            size_t shift = 0;
+            std::cout << "Input: \n";
 
-            while ( r ) {
+            while( fgets( &block[0], block_size, stdin ) ) {
 
-                size_t w = rem_f->write( block.c_str( ) + shift, r );
-                total += w;
-                shift += w;
-                r -= w;
+                size_t r = strlen(&block[0]);
+                size_t shift = 0;
 
-                double percents = (file_size == gpb::uint64(-1))
-                                ? 100.0
-                                : 100.0 - (double(file_size - total )
-                                          / (double(file_size) / 100));
+                while ( r ) {
+                    size_t w = rem_f->write( block.c_str( ) + shift, r );
+                    total += w;
+                    shift += w;
+                    r     -= w;
+                }
+            }
 
-                std::cout << "Push " << total << " bytes "
-                          << percents_string( percents, 100.0 ) << "\r"
-                          << std::flush;
+        } else {
+
+            std::ifstream f;
+            f.open(local_path.c_str( ), std::ifstream::in );
+
+            while( size_t r = f.readsome( &block[0], block_size ) ) {
+
+                size_t shift = 0;
+
+                while ( r ) {
+
+                    size_t w = rem_f->write( block.c_str( ) + shift, r );
+                    total += w;
+                    shift += w;
+                    r     -= w;
+
+                    double percents = (file_size == gpb::uint64(-1))
+                                    ? 100.0
+                                    : 100.0 - (double(file_size - total )
+                                              / (double(file_size) / 100));
+
+                    std::cout << "Push " << total << " bytes "
+                              << percents_string( percents, 100.0 ) << "\r"
+                              << std::flush;
+                }
             }
         }
         std::cout << "\nUpload complete\n";
