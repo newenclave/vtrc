@@ -32,6 +32,7 @@ namespace rfs_examples {
     void pull_file( vtrc::client::vtrc_client_sptr &client,
                     const interfaces::remote_fs    &impl,
                     const std::string &remote_path, size_t block_size );
+
     void pull_file( vtrc::client::vtrc_client_sptr &client,
                     const interfaces::remote_fs    &impl,
                     const std::string &remote_path,
