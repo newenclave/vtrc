@@ -20,9 +20,9 @@ namespace vtrc { namespace common {
 
         void reset( )
         {
-            failed_     = false;
-            canceled_   = false;
-            cancel_cl_  = NULL;
+            failed_      = false;
+            canceled_    = false;
+            cancel_cl_   = NULL;
             error_string_.clear( );
         }
     };
