@@ -6,8 +6,9 @@
 #include "vtrc-common/vtrc-closure-holder.h"
 
 #include "vtrc-common/vtrc-closure.h"
+#include "vtrc-common/vtrc-rpc-channel.h"
 
-#include "vtrc-client-base/vtrc-rpc-channel-c.h"
+//#include "vtrc-client-base/vtrc-rpc-channel-c.h"
 
 #include "vtrc-memory.h"
 
@@ -97,8 +98,8 @@ namespace client {
         boost::asio::io_service       &get_rpc_service( );
         const boost::asio::io_service &get_rpc_service( ) const;
 
-        rpc_channel_c *create_channel( );
-        rpc_channel_c *create_channel( unsigned flags );
+        common::rpc_channel *create_channel( );
+        common::rpc_channel *create_channel( unsigned flags );
 
         void set_session_key( const std::string &id, const std::string &key );
         void set_session_key( const std::string &key );

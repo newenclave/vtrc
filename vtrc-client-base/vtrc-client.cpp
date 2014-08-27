@@ -23,6 +23,8 @@
 
 #include "protocol/vtrc-errors.pb.h"
 
+#include "vtrc-rpc-channel-c.h"
+
 namespace vtrc { namespace client {
 
     namespace basio = boost::asio;
@@ -443,12 +445,12 @@ namespace vtrc { namespace client {
         return impl_->rpc_ios_;
     }
 
-    rpc_channel_c *vtrc_client::create_channel( )
+    common::rpc_channel *vtrc_client::create_channel( )
     {
         return impl_->create_channel( );
     }
 
-    rpc_channel_c *vtrc_client::create_channel( unsigned flags )
+    common::rpc_channel *vtrc_client::create_channel( unsigned flags )
     {
         return impl_->create_channel( flags );
     }

@@ -12,7 +12,7 @@ namespace {
 
     struct lukki_db_impl: public interfaces::lukki_db {
 
-        typedef client::rpc_channel_c channel_type;
+        typedef common::rpc_channel channel_type;
         mutable vtrc::common::stub_wrapper<stub_type>  wrap_stub_;
 
         vtrc::shared_ptr<channel_type> get_channel( client::vtrc_client &c )

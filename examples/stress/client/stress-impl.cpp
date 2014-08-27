@@ -17,12 +17,12 @@ namespace {
 
     struct impl: public interface {
 
-        typedef client::rpc_channel_c channel_type;
+        typedef common::rpc_channel channel_type;
 
         stub_wrapper_type stub_;
 
         vtrc::shared_ptr<channel_type> get_channel( client::vtrc_client &c,
-                                             common::rpc_channel::flags opts)
+                                                    channel_type::flags opts)
         {
             vtrc::shared_ptr<channel_type> new_ch(c.create_channel( opts ));
             return new_ch;
