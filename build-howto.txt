@@ -37,3 +37,8 @@ $ cd vtrc-build
 $ cmake -G "Unix Makefiles" ../vtrc
 ...
 $ make -j4
+
+For building an examples add to cmake command line -DWITH_EXAMPLES=1
+
+$ cmake -G "Unix Makefiles" -DWITH_EXAMPLES=1 ../vtrc
+....
