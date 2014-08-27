@@ -38,6 +38,8 @@ namespace vtrc { namespace client {
         {
             return (flags & common::rpc_channel::DISABLE_WAIT);
         }
+
+        typedef common::protocol_layer::context_holder context_holder;
     }
 
     struct rpc_channel_c::impl {
@@ -98,7 +100,7 @@ namespace vtrc { namespace client {
 
             if( llu.opt( ).wait( ) ) {  /// Send and wait
 
-                rpc_channel::context_holder ch( &get_protocol( clk ), &llu );
+                context_holder ch( &get_protocol( clk ), &llu );
                 ch.ctx_->set_call_options( call_opt );
                 ch.ctx_->set_done_closure( done );
 

@@ -12,8 +12,8 @@
 
 #include "protocol/calculator.pb.h"
 
-#include "vtrc-listener-tcp.h"
-#include "vtrc-listener-local.h"
+#include "vtrc-server/vtrc-listener-tcp.h"
+#include "vtrc-server/vtrc-listener-local.h"
 
 #include "vtrc-memory.h"
 #include "vtrc-bind.h"

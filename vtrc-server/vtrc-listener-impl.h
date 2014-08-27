@@ -6,8 +6,8 @@
 #include "vtrc-listener.h"
 #include "vtrc-application.h"
 
-#include "vtrc-connection-iface.h"
-#include "vtrc-connection-list.h"
+#include "vtrc-common/vtrc-connection-iface.h"
+#include "vtrc-common/vtrc-connection-list.h"
 
 #include "vtrc-ref.h"
 #include "vtrc-bind.h"

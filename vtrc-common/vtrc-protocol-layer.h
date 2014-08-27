@@ -129,7 +129,7 @@ namespace vtrc { namespace common {
 
         const vtrc_rpc::session_options &session_options( ) const;
 
-    protected:
+    //protected:
 
         struct context_holder {
             protocol_layer *p_;

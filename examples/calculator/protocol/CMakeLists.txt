@@ -1,8 +1,6 @@
 
 set(lib_name calculator_protocol_s)
 
-include_directories( ${PROJECT_SOURCE_DIR} )
-
 list(APPEND src_dirs . )
 
 set( vtrc_common vtrc_common_s )

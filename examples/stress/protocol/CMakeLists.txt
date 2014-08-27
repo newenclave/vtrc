@@ -1,7 +1,6 @@
 
 set(lib_name stress_protocol_s)
 
-include_directories( ${PROJECT_SOURCE_DIR} )
 
 list(APPEND src_dirs . )
 

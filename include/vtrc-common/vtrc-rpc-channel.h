@@ -4,7 +4,7 @@
 #include "google/protobuf/service.h"
 
 #include "vtrc-connection-iface.h"
-#include "vtrc-protocol-layer.h"
+//#include "vtrc-protocol-layer.h"
 
 namespace vtrc_rpc {
     class lowlevel_unit;
@@ -52,7 +52,7 @@ namespace vtrc { namespace common  {
                             const vtrc_rpc::options *call_opt ) const;
     protected:
 
-        typedef protocol_layer::context_holder context_holder;
+        //typedef protocol_layer::context_holder context_holder;
 
         protocol_layer &get_protocol( common::connection_iface &cl );
 

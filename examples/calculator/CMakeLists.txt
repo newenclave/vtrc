@@ -25,6 +25,8 @@ find_package( Boost 1.50 COMPONENTS
               REQUIRED)
 find_package( Protobuf REQUIRED)
 
+include_directories(${PROJECT_SOURCE_DIR} ${VTRC_INCLUDE_DIRS})
+
 add_subdirectory(protocol)
 add_subdirectory(client)
 add_subdirectory(server)

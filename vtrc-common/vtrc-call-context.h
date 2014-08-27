@@ -1,7 +1,7 @@
 #ifndef VTRC_CALL_CONTEXT_H
 #define VTRC_CALL_CONTEXT_H
 
-#include "vtrc-connection-iface.h"
+#include "vtrc-common/vtrc-connection-iface.h"
 
 namespace vtrc_rpc {
     class lowlevel_unit;

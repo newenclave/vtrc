@@ -10,6 +10,7 @@
 #include "vtrc-client-unix-local.h"
 #include "vtrc-client-win-pipe.h"
 #include "vtrc-rpc-channel-c.h"
+#include "vtrc-protocol-layer-c.h"
 
 #include "vtrc-bind.h"
 #include "vtrc-ref.h"

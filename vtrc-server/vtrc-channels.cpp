@@ -5,6 +5,7 @@
 #include "vtrc-common/vtrc-exception.h"
 #include "vtrc-common/vtrc-closure-holder.h"
 #include "vtrc-common/vtrc-rpc-channel.h"
+#include "vtrc-common/vtrc-protocol-layer.h"
 
 #include "protocol/vtrc-errors.pb.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
@@ -29,6 +30,8 @@ namespace vtrc { namespace server {
 
         typedef vtrc_rpc::lowlevel_unit     lowlevel_unit_type;
         typedef vtrc::shared_ptr<lowlevel_unit_type> lowlevel_unit_sptr;
+
+        typedef common::protocol_layer::context_holder context_holder;
 
         class unicast_channel: public common::rpc_channel {
 
@@ -85,7 +88,7 @@ namespace vtrc { namespace server {
 
                 if( llu.opt( ).wait( ) ) { /// Send and wait
 
-                    rpc_channel::context_holder ch(&get_protocol(*clnt), &llu);
+                    context_holder ch(&get_protocol(*clnt), &llu);
                     ch.ctx_->set_call_options( call_opt );
                     ch.ctx_->set_done_closure( done );
 

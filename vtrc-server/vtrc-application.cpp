@@ -2,7 +2,8 @@
 #include "boost/asio.hpp"
 
 #include "vtrc-application.h"
-#include "vtrc-connection-list.h"
+
+#include "vtrc-common/vtrc-connection-list.h"
 
 #include "vtrc-common/vtrc-enviroment.h"
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"

@@ -1,7 +1,6 @@
 
 set(lib_name vtrc_common_s)
 
-
 list(APPEND src_dirs
         .
         ./hash
@@ -17,9 +16,11 @@ foreach( src_dir ${src_dirs} )
 endforeach( )
 
 set( CONFIG_FILES_DIRECTORY ${VTRC_INCLUDE_DIRS}/vtrc-common/config )
-#set( CONFIG_FILES_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/config)
 
-include_directories( ${PROJECT_SOURCE_DIR} ${VTRC_INCLUDE_DIRS} )
+include_directories( ${PROJECT_SOURCE_DIR}
+                     ${VTRC_INCLUDE_DIRS}
+                     ${VTRC_INCLUDE_DIRS}/vtrc-common )
+
 include_directories( ${CONFIG_FILES_DIRECTORY}  )
 
 ####################### PROTOCOL BASE #######################

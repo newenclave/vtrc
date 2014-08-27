@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-#include "vtrc-connection-iface.h"
+#include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-closure.h"
 
 namespace boost {

@@ -11,7 +11,10 @@ foreach( src_dir ${src_dirs} )
     list(APPEND lib_src ${headers})
 endforeach( )
 
-include_directories( ${PROJECT_SOURCE_DIR} ${VTRC_INCLUDE_DIRS})
+include_directories( ${PROJECT_SOURCE_DIR}
+                     ${VTRC_INCLUDE_DIRS}
+                     ${VTRC_INCLUDE_DIRS}/vtrc-server)
+
 add_library(${lib_name} STATIC ${lib_src})
 
 list(APPEND dependencies  
