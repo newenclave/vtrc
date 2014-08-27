@@ -8,8 +8,6 @@
 #include "vtrc-common/vtrc-closure.h"
 #include "vtrc-common/vtrc-rpc-channel.h"
 
-//#include "vtrc-client-base/vtrc-rpc-channel-c.h"
-
 #include "vtrc-memory.h"
 
 namespace boost {
