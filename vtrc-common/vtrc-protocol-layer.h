@@ -8,9 +8,9 @@
 #include "vtrc-memory.h"
 #include "vtrc-stdint.h"
 
-#include "vtrc-call-context.h"
-#include "vtrc-rpc-service-wrapper.h"
-#include "vtrc-closure.h"
+#include "vtrc-common/vtrc-call-context.h"
+#include "vtrc-common/vtrc-rpc-service-wrapper.h"
+#include "vtrc-common/vtrc-closure.h"
 
 namespace google { namespace protobuf {
     class Message;

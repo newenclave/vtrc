@@ -7,9 +7,9 @@
 
 #include "vtrc-protocol-layer-s.h"
 
-#include "vtrc-monotonic-timer.h"
-#include "vtrc-data-queue.h"
-#include "vtrc-hash-iface.h"
+#include "vtrc-common/vtrc-monotonic-timer.h"
+#include "vtrc-common/vtrc-data-queue.h"
+#include "vtrc-common/vtrc-hash-iface.h"
 #include "vtrc-transformer-iface.h"
 
 #include "vtrc-transport-iface.h"

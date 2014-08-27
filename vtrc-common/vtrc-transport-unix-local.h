@@ -5,7 +5,7 @@
 
 #include "vtrc-transport-iface.h"
 #include "boost/asio/local/stream_protocol.hpp"
-#include "vtrc-closure.h"
+#include "vtrc-common/vtrc-closure.h"
 
 namespace boost {
 

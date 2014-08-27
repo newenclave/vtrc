@@ -17,9 +17,7 @@ endforeach( )
 
 set( CONFIG_FILES_DIRECTORY ${VTRC_INCLUDE_DIRS}/vtrc-common/config )
 
-include_directories( ${PROJECT_SOURCE_DIR}
-                     ${VTRC_INCLUDE_DIRS}
-                     ${VTRC_INCLUDE_DIRS}/vtrc-common )
+include_directories( ${VTRC_INCLUDE_DIRS}/vtrc-common )
 
 include_directories( ${CONFIG_FILES_DIRECTORY}  )
 

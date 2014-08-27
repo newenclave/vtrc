@@ -1,9 +1,9 @@
 #ifndef VTRC_CLIENT_TCP_H
 #define VTRC_CLIENT_TCP_H
 
-#include "vtrc-common/vtrc-transport-tcp.h"
 #include "vtrc-memory.h"
-#include "vtrc-closure.h"
+#include "vtrc-common/vtrc-transport-tcp.h"
+#include "vtrc-common/vtrc-closure.h"
 
 namespace boost { namespace asio {
     class io_service;

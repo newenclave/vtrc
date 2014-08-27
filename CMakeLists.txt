@@ -27,6 +27,8 @@ find_package( Protobuf REQUIRED)
 
 set( VTRC_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include )
 
+include_directories( ${PROJECT_SOURCE_DIR} ${VTRC_INCLUDE_DIRS} )
+
 add_subdirectory(vtrc-common)
 add_subdirectory(vtrc-server)
 add_subdirectory(vtrc-client-base)
