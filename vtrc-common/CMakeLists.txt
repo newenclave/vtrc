@@ -1,14 +1,13 @@
 
 set(lib_name vtrc_common_s)
 
-include_directories( ${PROJECT_SOURCE_DIR} )
 
 list(APPEND src_dirs
         .
         ./hash
         ./proto-helper
-        ./config
         ${VTRC_INCLUDE_DIRS}/vtrc-common
+        ${VTRC_INCLUDE_DIRS}/vtrc-common/config
     )
 
 foreach( src_dir ${src_dirs} )
@@ -17,8 +16,11 @@ foreach( src_dir ${src_dirs} )
     list(APPEND lib_src ${headers})
 endforeach( )
 
-set( CONFIG_FILES_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/config)
-include_directories( ${CONFIG_FILES_DIRECTORY} ${VTRC_INCLUDE_DIRS} )
+set( CONFIG_FILES_DIRECTORY ${VTRC_INCLUDE_DIRS}/vtrc-common/config )
+#set( CONFIG_FILES_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/config)
+
+include_directories( ${PROJECT_SOURCE_DIR} ${VTRC_INCLUDE_DIRS} )
+include_directories( ${CONFIG_FILES_DIRECTORY}  )
 
 ####################### PROTOCOL BASE #######################
 
