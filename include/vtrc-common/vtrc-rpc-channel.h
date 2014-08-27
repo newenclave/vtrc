@@ -4,7 +4,6 @@
 #include "google/protobuf/service.h"
 
 #include "vtrc-connection-iface.h"
-//#include "vtrc-protocol-layer.h"
 
 namespace vtrc_rpc {
     class lowlevel_unit;
