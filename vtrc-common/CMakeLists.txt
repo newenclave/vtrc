@@ -8,6 +8,7 @@ list(APPEND src_dirs
         ./hash
         ./proto-helper
         ./config
+        ${VTRC_INCLUDE_DIRS}/vtrc-common
     )
 
 foreach( src_dir ${src_dirs} )
@@ -17,7 +18,7 @@ foreach( src_dir ${src_dirs} )
 endforeach( )
 
 set( CONFIG_FILES_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/config)
-include_directories( ${CONFIG_FILES_DIRECTORY} )
+include_directories( ${CONFIG_FILES_DIRECTORY} ${VTRC_INCLUDE_DIRS} )
 
 ####################### PROTOCOL BASE #######################
 

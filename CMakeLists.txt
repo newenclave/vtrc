@@ -25,10 +25,12 @@ find_package( Boost 1.50 COMPONENTS
               REQUIRED)
 find_package( Protobuf REQUIRED)
 
-add_subdirectory(vtrc-common)
+set( VTRC_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include )
 
+add_subdirectory(vtrc-common)
 add_subdirectory(vtrc-server)
 add_subdirectory(vtrc-client-base)
+
 
 if(MSVC)
     # Force to always compile with W4

@@ -8,6 +8,7 @@ endif(WIN32)
 
 cmake_minimum_required(VERSION 2.8)
 
+
 project(vtrc-stress)
 
 set(Boost_USE_STATIC_LIBS     ON)
