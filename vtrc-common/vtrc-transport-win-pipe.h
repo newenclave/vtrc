@@ -5,7 +5,7 @@
 #include "boost/asio/windows/stream_handle.hpp"
 
 #include "vtrc-memory.h"
-#include "vtrc-closure.h"
+#include "vtrc-common/vtrc-closure.h"
 
 namespace boost {
 
