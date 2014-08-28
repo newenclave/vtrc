@@ -72,18 +72,25 @@ int main( int argc, const char **argv )
 
     hello_application app( pp );
 
+    const char *address = "127.0.0.1";
     unsigned short port = 56560;
 
-    if( argc > 1 ) {
-        port = boost::lexical_cast<unsigned short>(argv[1]);
+    if( argc > 2 ) {
+        address = argv[1];
+        port = boost::lexical_cast<unsigned short>( argv[2] );
+    } else if( argc > 1 ) {
+        port = boost::lexical_cast<unsigned short>( argv[1] );
     }
 
     vtrc::shared_ptr<server::listener>
-            tcp( server::listeners::tcp::create( app, "0.0.0.0", port ) );
+            tcp( server::listeners::tcp::create( app, address, port ) );
 
     tcp->start( );
 
     pp.join_all( );
+
+    /// make valgrind happy.
+    google::protobuf::ShutdownProtobufLibrary( );
 
     return 0;
 }

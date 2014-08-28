@@ -29,10 +29,14 @@ int main( int argc, const char **argv )
 {
     common::thread_pool tp( 1 );
 
+    const char *address = "127.0.0.1";
     unsigned short port = 56560;
 
-    if( argc > 1 ) {
-        port = boost::lexical_cast<unsigned short>(argv[1]);
+    if( argc > 2 ) {
+        address = argv[1];
+        port = boost::lexical_cast<unsigned short>( argv[2] );
+    } else if( argc > 1 ) {
+        port = boost::lexical_cast<unsigned short>( argv[1] );
     }
 
     client::vtrc_client_sptr cl(
@@ -45,7 +49,7 @@ int main( int argc, const char **argv )
 
     std::cout <<  "Connecting..." << std::endl;
 
-    cl->connect( "127.0.0.1", port );
+    cl->connect( address, port );
 
     std::cout << "Ok" << std::endl;
 
@@ -66,6 +70,9 @@ int main( int argc, const char **argv )
 
     tp.stop( );
     tp.join_all( );
+
+    /// make valgrind happy.
+    google::protobuf::ShutdownProtobufLibrary( );
 
     return 0;
 }
