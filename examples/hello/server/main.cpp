@@ -12,6 +12,9 @@
 
 #include "boost/lexical_cast.hpp"
 
+#include "google/protobuf/descriptor.h" /// for descriptor( )->full_name( )
+
+
 using namespace vtrc;
 
 namespace {
