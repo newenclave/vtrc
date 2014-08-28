@@ -4,6 +4,7 @@
 #include "vtrc-server/vtrc-listener-tcp.h"
 
 #include "vtrc-common/vtrc-connection-iface.h"
+#include "vtrc-common/vtrc-closure-holder.h"
 
 #include "vtrc-common/vtrc-thread-pool.h"
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"
@@ -28,6 +29,7 @@ class  hello_service_impl: public howto::hello_service {
                     ::howto::response_message*          response,
                     ::google::protobuf::Closure*        done) /*override*/
     {
+        common::closure_holder ch( done ); /// instead of done->Run( );
         std::ostringstream oss;
 
         oss << "Hello " << request->name( )
@@ -36,7 +38,7 @@ class  hello_service_impl: public howto::hello_service {
             << cl_->name( ) << "'.\nHave a nice day.";
 
         response->set_hello( oss.str( ) );
-        done->Run( );
+        /// done->Run( ); /// ch will call it
     }
 
 public:
