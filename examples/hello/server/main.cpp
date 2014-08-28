@@ -2,7 +2,6 @@
 
 #include "vtrc-server/vtrc-application.h"
 #include "vtrc-server/vtrc-listener-tcp.h"
-#include "vtrc-server/vtrc-listener-local.h"
 
 #include "vtrc-common/vtrc-connection-iface.h"
 
