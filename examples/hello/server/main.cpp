@@ -51,7 +51,8 @@ public:
 
 class hello_application: public server::application {
 
-    typedef vtrc::shared_ptr<common::rpc_service_wrapper> wrapper_sptr;
+    typedef common::rpc_service_wrapper     wrapper_type;
+    typedef vtrc::shared_ptr<wrapper_type>  wrapper_sptr;
 
 public:
 
@@ -66,7 +67,7 @@ public:
 
              hello_service_impl *new_impl = new hello_service_impl(connection);
 
-             return vtrc::make_shared<common::rpc_service_wrapper>( new_impl );
+             return vtrc::make_shared<wrapper_type>( new_impl );
 
         }
         return wrapper_sptr( );
