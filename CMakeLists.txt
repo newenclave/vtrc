@@ -14,7 +14,7 @@ set(Boost_USE_STATIC_LIBS     ON)
 set(Boost_USE_MULTITHREADED   ON)
 set(Boost_USE_STATIC_RUNTIME  ON)
 
-find_package( Boost 1.50 COMPONENTS
+find_package( Boost 1.53 COMPONENTS
                     system
                     chrono
                     date_time
@@ -47,7 +47,6 @@ include_directories( ${PROJECT_SOURCE_DIR} ${VTRC_INCLUDE_DIRS} )
 add_subdirectory(vtrc-common)
 add_subdirectory(vtrc-server)
 add_subdirectory(vtrc-client-base)
-
 
 if(MSVC)
     # Force to always compile with W4
