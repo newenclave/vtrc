@@ -1,3 +1,4 @@
+include/vtrc-common/protocol/*
 *.user
 *.autosave
 *.user.*

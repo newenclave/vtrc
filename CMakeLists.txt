@@ -25,7 +25,14 @@ find_package( Boost 1.50 COMPONENTS
               REQUIRED)
 find_package( Protobuf REQUIRED)
 
-set( VTRC_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include )
+set( VTRC_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include )
+set( VTRC_PROTOCOL_INCLUDE_DIR ${VTRC_INCLUDE_DIR}/include/protocol )
+
+set( VTRC_INCLUDE_DIRS
+     ${VTRC_INCLUDE_DIR}
+     ${VTRC_INCLUDE_DIR}/vtrc-common/config
+     ${VTRC_PROTOCOL_INCLUDE_DIR}
+   )
 
 include_directories( ${PROJECT_SOURCE_DIR} ${VTRC_INCLUDE_DIRS} )
 

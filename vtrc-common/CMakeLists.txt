@@ -5,8 +5,8 @@ list(APPEND src_dirs
         .
         ./hash
         ./proto-helper
-        ${VTRC_INCLUDE_DIRS}/vtrc-common
-        ${VTRC_INCLUDE_DIRS}/vtrc-common/config
+        ${VTRC_INCLUDE_DIR}/vtrc-common
+        ${VTRC_INCLUDE_DIR}/vtrc-common/config
     )
 
 foreach( src_dir ${src_dirs} )
@@ -15,9 +15,9 @@ foreach( src_dir ${src_dirs} )
     list(APPEND lib_src ${headers})
 endforeach( )
 
-set( CONFIG_FILES_DIRECTORY ${VTRC_INCLUDE_DIRS}/vtrc-common/config )
+set( CONFIG_FILES_DIRECTORY ${VTRC_INCLUDE_DIR}/vtrc-common/config )
 
-include_directories( ${VTRC_INCLUDE_DIRS}/vtrc-common )
+include_directories( ${VTRC_INCLUDE_DIR}/vtrc-common )
 
 include_directories( ${CONFIG_FILES_DIRECTORY}  )
 
@@ -70,6 +70,11 @@ foreach(next_proto ${protofiles})
 
     list( APPEND lib_src ${OUTPUT_FILES})
     list( APPEND lib_src ${next_proto})
+
+    file(COPY
+         ${${lib_name}_PROTOBUF_FILES_OUTPUT}/${out_FILE}.pb.h
+         DESTINATION
+         ${VTRC_PROTOCOL_INCLUDE_DIR}/protocol )
 
 endforeach( )
 

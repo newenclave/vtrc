@@ -1,14 +1,31 @@
 
 aux_source_directory(. src_dir)
 
-set( exe_name remote_fs_server )
+set( exe_name ${INTERNAL_PROJECT_NAME}_server )
 
 add_executable(${exe_name} ${src_dir})
 
-list(APPEND dependencies
-    remote_fs_protocol_s
+
+list( APPEND internal
+    ${INTERNAL_PROJECT_NAME}_protocol_s
     vtrc_server_s
     vtrc_common_s
+    )
+
+include_directories( ${${INTERNAL_PROJECT_NAME}_protocol_s_INCLUDE_DIRS}  )
+
+message( "-- Seting up internal dependencies for " ${exe_name} )
+foreach( dep ${internal} )
+
+    message( "\tAdd dependence: " ${dep} )
+
+    add_dependencies(       ${exe_name} ${dep}      )
+    add_definitions(        ${${dep}_DEFINITIONS}   )
+    target_link_libraries(  ${exe_name} ${${dep}_LIBRARIES} )
+
+endforeach(dep)
+
+list(APPEND dependencies
     Boost
     PROTOBUF
     )

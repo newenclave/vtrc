@@ -2,7 +2,7 @@ set(lib_name vtrc_server_s)
 
 list(APPEND src_dirs 
         .
-        ${VTRC_INCLUDE_DIRS}/vtrc-server
+        ${VTRC_INCLUDE_DIR}/vtrc-server
     )
 
 foreach( src_dir ${src_dirs} )
@@ -11,7 +11,7 @@ foreach( src_dir ${src_dirs} )
     list(APPEND lib_src ${headers})
 endforeach( )
 
-include_directories( ${VTRC_INCLUDE_DIRS}/vtrc-server)
+include_directories( ${VTRC_INCLUDE_DIR}/vtrc-server)
 
 add_library(${lib_name} STATIC ${lib_src})
 

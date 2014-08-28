@@ -1,14 +1,30 @@
 
 aux_source_directory(. src_dir)
 
-set( exe_name calculator_client )
+set( exe_name ${INTERNAL_PROJECT_NAME}_client )
 
 add_executable(${exe_name} ${src_dir})
 
-list(APPEND dependencies
-    calculator_protocol_s
+list( APPEND internal
+    ${INTERNAL_PROJECT_NAME}_protocol_s
     vtrc_client_base_s
     vtrc_common_s
+    )
+
+include_directories( ${${INTERNAL_PROJECT_NAME}_protocol_s_INCLUDE_DIRS}  )
+
+message( "-- Seting up internal dependencies for " ${exe_name} )
+foreach( dep ${internal} )
+
+    message( "\tAdd dependence: " ${dep} )
+
+    add_dependencies(       ${exe_name} ${dep}      )
+    add_definitions(        ${${dep}_DEFINITIONS}   )
+    target_link_libraries(  ${exe_name} ${${dep}_LIBRARIES} )
+
+endforeach(dep)
+
+list(APPEND dependencies
     Boost
     PROTOBUF
     )

@@ -10,6 +10,8 @@ cmake_minimum_required(VERSION 2.8)
 
 project(vtrc-remote-fs)
 
+set(INTERNAL_PROJECT_NAME remote_fs)
+
 set(Boost_USE_STATIC_LIBS     ON)
 set(Boost_USE_MULTITHREADED   ON)
 set(Boost_USE_STATIC_RUNTIME  ON)
