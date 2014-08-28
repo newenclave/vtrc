@@ -13,7 +13,7 @@ ProtoBuf:
 g++
     apt-get install g++
 
-Boost: (MINIMUM version 1.50 is REQUIRED)
+Boost: (MINIMUM version 1.53 is REQUIRED)
 
     apt-get install libboost-all-dev
 
