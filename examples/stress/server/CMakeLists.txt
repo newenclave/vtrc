@@ -36,6 +36,7 @@ foreach( dep ${dependencies} )
 
     add_dependencies(       ${exe_name} ${dep}      )
     add_definitions(        ${${dep}_DEFINITIONS}   )
+    include_directories(    ${${dep}_INCLUDE_DIRS}  )
     target_link_libraries(  ${exe_name} ${${dep}_LIBRARIES} )
 
 endforeach(dep)
