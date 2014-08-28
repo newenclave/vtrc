@@ -84,8 +84,6 @@ public:
 
 int main( int argc, const char **argv )
 {
-    common::thread_pool tp;
-    hello_application app( tp );
 
     const char *address = "127.0.0.1";
     unsigned short port = 56560;
@@ -96,6 +94,9 @@ int main( int argc, const char **argv )
     } else if( argc > 1 ) {
         port = boost::lexical_cast<unsigned short>( argv[1] );
     }
+
+    common::thread_pool tp;
+    hello_application app( tp );
 
     try {
 
