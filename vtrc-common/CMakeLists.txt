@@ -42,8 +42,8 @@ foreach(next_proto ${protofiles})
     get_filename_component(in_PATH  ${next_proto} PATH)
 
     set( OUTPUT_FILES
-                ${${lib_name}_PROTOBUF_FILES_OUTPUT}/${out_FILE}.pb.h
-                ${${lib_name}_PROTOBUF_FILES_OUTPUT}/${out_FILE}.pb.cc
+             ${${lib_name}_PROTOBUF_FILES_OUTPUT}/${out_FILE}.pb.h
+             ${${lib_name}_PROTOBUF_FILES_OUTPUT}/${out_FILE}.pb.cc
        )
 
     add_custom_command(
@@ -54,6 +54,12 @@ foreach(next_proto ${protofiles})
                         --proto_path=${in_PATH}
                         --cpp_out=${${lib_name}_PROTOBUF_FILES_OUTPUT}
                         ${next_proto}
+
+        COMMAND
+                ${CMAKE_COMMAND} -E copy
+                    ${${lib_name}_PROTOBUF_FILES_OUTPUT}/${out_FILE}.pb.h
+                    ${VTRC_PROTOCOL_INCLUDE_DIR}/protocol/${out_FILE}.pb.h
+
         WORKING_DIRECTORY
                 ${GENERATED_FILES_OUTPUT}
         OUTPUT
@@ -70,11 +76,6 @@ foreach(next_proto ${protofiles})
 
     list( APPEND lib_src ${OUTPUT_FILES})
     list( APPEND lib_src ${next_proto})
-
-    file(COPY
-         ${${lib_name}_PROTOBUF_FILES_OUTPUT}/${out_FILE}.pb.h
-         DESTINATION
-         ${VTRC_PROTOCOL_INCLUDE_DIR}/protocol )
 
 endforeach( )
 
