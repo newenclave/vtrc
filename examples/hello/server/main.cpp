@@ -30,7 +30,7 @@ class  hello_service_impl: public howto::hello_service {
 
         oss << "Hello " << request->name( )
             << " from hello_service_impl::send_hello!\n"
-            << "Your client name is '"
+            << "Your transport name is '"
             << cl_->name( ) << "'.\nHave a nice day.";
 
         response->set_hello( oss.str( ) );
