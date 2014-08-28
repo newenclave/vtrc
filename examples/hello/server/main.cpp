@@ -30,6 +30,13 @@ class  hello_service_impl: public howto::hello_service {
         response->set_hello( oss.str( ) );
         done->Run( );
     }
+
+public:
+    static std::string const &service_name(  )
+    {
+        return howto::hello_service::descriptor( )->full_name( );
+    }
+
 };
 
 class hello_application: public server::application {
@@ -37,6 +44,7 @@ class hello_application: public server::application {
     typedef vtrc::shared_ptr<common::rpc_service_wrapper> wrapper_sptr;
 
 public:
+
     hello_application( vtrc::common::pool_pair &pp )
         :vtrc::server::application(pp)
     { }
@@ -44,7 +52,7 @@ public:
     wrapper_sptr get_service_by_name( common::connection_iface* connection,
                                       const std::string &service_name )
     {
-        if( service_name == hello_service_impl::descriptor( )->full_name( ) ) {
+        if( service_name == hello_service_impl::service_name( ) ) {
 
              hello_service_impl *new_impl = new  hello_service_impl;
 
