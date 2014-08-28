@@ -23,7 +23,6 @@ namespace {
     {
         std::cout << "disconnect...";
     }
-
 }
 
 int main( int argc, const char **argv )
