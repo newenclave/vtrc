@@ -73,6 +73,8 @@ if(WITH_EXAMPLES)
     add_subdirectory(examples/remote-fs)
     add_subdirectory(examples/lukki-db)
     add_subdirectory(examples/stress)
+    add_subdirectory(examples/hello)
+
 endif(WITH_EXAMPLES)
 
 
