@@ -108,7 +108,6 @@ int main( int argc, const char **argv )
         std::cerr << "Hello, world failed: " << ex.what( ) << "\n";
     }
 
-
     tp.join_all( );
 
     /// make valgrind happy.
