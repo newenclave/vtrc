@@ -55,14 +55,14 @@ int main( int argc, const char **argv )
 
         vtrc::unique_ptr<common::rpc_channel> channel(cl->create_channel( ));
 
-        common::stub_wrapper<howto::hello_service_Stub> hello(channel.get( ));
+        typedef howto::hello_service_Stub stub_type;
+
+        common::stub_wrapper<stub_type> hello(channel.get( ));
 
         howto::request_message  req;
         howto::response_message res;
 
         req.set_name( "%USERNAME%" );
-
-        typedef howto::hello_service_Stub stub_type;
 
         hello.call( &stub_type::send_hello, &req, &res );
 
