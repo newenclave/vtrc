@@ -76,8 +76,8 @@ namespace interfaces {
         virtual void del( ) const = 0;
 
         /// iterator start
-        virtual vtrc::shared_ptr<remote_fs_iterator> begin_iterator(
-                                              const std::string &path) const =0;
+        virtual vtrc::shared_ptr<remote_fs_iterator>
+                               begin_iterator(const std::string &path) const =0;
         virtual vtrc::shared_ptr<remote_fs_iterator> begin_iterator( ) const =0;
 
         /// service
