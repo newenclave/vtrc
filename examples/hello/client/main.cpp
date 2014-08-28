@@ -23,6 +23,7 @@ namespace {
     {
         std::cout << "disconnect...";
     }
+
 }
 
 int main( int argc, const char **argv )
@@ -46,7 +47,6 @@ int main( int argc, const char **argv )
     cl->on_connect_connect ( on_connect );
     cl->on_ready_connect ( on_ready );
     cl->on_disconnect_connect( on_disconnect );
-
 
     try {
 
