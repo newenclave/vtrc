@@ -32,6 +32,8 @@ set( VTRC_CONFIG_INCLUDE_DIR ${VTRC_INCLUDE_DIR}/vtrc-common/config )
 # VTRC_PROTOCOL_DIR
 #   use this option to copy generated protocol files into desired directory
 #
+#   default is "${PROJECT_SOURCE_DIR}/include/vtrc-common/protocol"
+#
 #
 if( NOT DEFINED VTRC_PROTOCOL_DIR )
     set( VTRC_PROTOCOL_INCLUDE_DIR ${VTRC_INCLUDE_DIR}/vtrc-common/protocol )
