@@ -19,12 +19,9 @@ set(Boost_USE_STATIC_RUNTIME  ON)
 find_package( Boost 1.50 COMPONENTS
                     system
                     chrono
-                    date_time
-                    regex
                     thread
                     atomic
                     random
-                    program_options
               REQUIRED)
 find_package( Protobuf REQUIRED)
 
