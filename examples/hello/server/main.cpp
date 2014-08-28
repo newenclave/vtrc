@@ -5,7 +5,7 @@
 
 #include "vtrc-common/vtrc-connection-iface.h"
 
-#include "vtrc-common/vtrc-pool-pair.h"
+#include "vtrc-common/vtrc-thread-pool.h"
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"
 
 #include "protocol/hello.pb.h" /// hello protocol
@@ -56,8 +56,8 @@ class hello_application: public server::application {
 
 public:
 
-    hello_application( vtrc::common::pool_pair &pp )
-        :vtrc::server::application(pp)
+    hello_application( common::thread_pool &tp )
+        :server::application(tp.get_io_service( ))
     { }
 
     wrapper_sptr get_service_by_name( common::connection_iface* connection,
@@ -79,9 +79,8 @@ public:
 
 int main( int argc, const char **argv )
 {
-    common::pool_pair pp( 1, 1 );
-
-    hello_application app( pp );
+    common::thread_pool tp;
+    hello_application app( tp );
 
     const char *address = "127.0.0.1";
     unsigned short port = 56560;
@@ -94,15 +93,19 @@ int main( int argc, const char **argv )
     }
 
     try {
+
         vtrc::shared_ptr<server::listener>
                 tcp( server::listeners::tcp::create( app, address, port ) );
 
         tcp->start( );
+
+        tp.attach( );
+
     } catch( const std::exception &ex ) {
         std::cerr << "Hello, world failed: " << ex.what( ) << "\n";
     }
 
-    pp.join_all( );
+    tp.join_all( );
 
     /// make valgrind happy.
     google::protobuf::ShutdownProtobufLibrary( );
