@@ -17,10 +17,10 @@ namespace {
 
 class  hello_service_impl: public howto::hello_service {
 
-    void send_hello(::google::protobuf::RpcController* controller,
-                    const ::howto::request_message* request,
-                    ::howto::response_message* response,
-                    ::google::protobuf::Closure* done) /*override*/
+    void send_hello(::google::protobuf::RpcController*  controller,
+                    const ::howto::request_message*     request,
+                    ::howto::response_message*          response,
+                    ::google::protobuf::Closure*        done) /*override*/
     {
         std::ostringstream oss;
 
@@ -34,14 +34,15 @@ class  hello_service_impl: public howto::hello_service {
 
 class hello_application: public server::application {
 
+    typedef vtrc::shared_ptr<common::rpc_service_wrapper> wrapper_sptr;
+
 public:
     hello_application( vtrc::common::pool_pair &pp )
         :vtrc::server::application(pp)
     { }
 
-    vtrc::shared_ptr<common::rpc_service_wrapper>
-           get_service_by_name( common::connection_iface* connection,
-                                     const std::string &service_name )
+    wrapper_sptr get_service_by_name( common::connection_iface* connection,
+                                      const std::string &service_name )
     {
         if( service_name == hello_service_impl::descriptor( )->full_name( ) ) {
 
@@ -50,7 +51,7 @@ public:
              return vtrc::make_shared<common::rpc_service_wrapper>( new_impl );
 
         }
-        return vtrc::shared_ptr<common::rpc_service_wrapper>( );
+        return wrapper_sptr( );
     }
 
 };
