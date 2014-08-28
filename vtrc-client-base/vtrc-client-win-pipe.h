@@ -3,8 +3,9 @@
 #ifdef _WIN32
 
 #include "vtrc-common/vtrc-transport-win-pipe.h"
-#include "vtrc-memory.h"
 #include "vtrc-common/vtrc-closure.h"
+
+#include "vtrc-memory.h"
 
 namespace boost { namespace asio {
     class io_service;
