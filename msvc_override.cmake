@@ -1,5 +1,4 @@
 
-
 if(MSVC)
 
     foreach(flag_var         
