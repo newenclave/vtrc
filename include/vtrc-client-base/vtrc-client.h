@@ -12,13 +12,14 @@
 
 namespace boost {
 
-namespace system {
-    class error_code;
-}
+    namespace system {
+        class error_code;
+    }
 
-namespace asio {
-    class io_service;
-}}
+    namespace asio {
+        class io_service;
+    }
+}
 
 namespace vtrc_errors {
     class container;
