@@ -34,9 +34,11 @@ if( NOT DEFINED VTRC_PROTOCOL_DIR )
 
 else( )
 
-    set(  VTRC_PROTOCOL_INCLUDE_DIR ${VTRC_PROTOCOL_DIR} )
+    set( VTRC_PROTOCOL_INCLUDE_DIR ${VTRC_PROTOCOL_DIR} )
 
 endif( )
+
+message( "Protocol files' path: " ${VTRC_PROTOCOL_INCLUDE_DIR} )
 
 set( VTRC_INCLUDE_DIRS
      ${VTRC_INCLUDE_DIR}
