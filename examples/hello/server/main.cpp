@@ -102,11 +102,12 @@ int main( int argc, const char **argv )
 
         tcp->start( );
 
+        tp.attach( );
+
     } catch( const std::exception &ex ) {
         std::cerr << "Hello, world failed: " << ex.what( ) << "\n";
     }
 
-    tp.attach( );
 
     tp.join_all( );
 
