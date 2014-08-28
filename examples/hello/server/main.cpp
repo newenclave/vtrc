@@ -82,10 +82,14 @@ int main( int argc, const char **argv )
         port = boost::lexical_cast<unsigned short>( argv[1] );
     }
 
-    vtrc::shared_ptr<server::listener>
-            tcp( server::listeners::tcp::create( app, address, port ) );
+    try {
+        vtrc::shared_ptr<server::listener>
+                tcp( server::listeners::tcp::create( app, address, port ) );
 
-    tcp->start( );
+        tcp->start( );
+    } catch( const std::exception &ex ) {
+        std::cerr << "Hello, world failed: " << ex.what( ) << "\n";
+    }
 
     pp.join_all( );
 

@@ -47,26 +47,32 @@ int main( int argc, const char **argv )
     cl->on_ready_connect ( on_ready );
     cl->on_disconnect_connect( on_disconnect );
 
-    std::cout <<  "Connecting..." << std::endl;
 
-    cl->connect( address, port );
+    try {
 
-    std::cout << "Ok" << std::endl;
+        std::cout <<  "Connecting..." << std::endl;
 
-    vtrc::unique_ptr<common::rpc_channel> channel(cl->create_channel( ));
+        cl->connect( address, port );
+        std::cout << "Ok" << std::endl;
 
-    common::stub_wrapper<howto::hello_service_Stub> hello(channel.get( ));
+        vtrc::unique_ptr<common::rpc_channel> channel(cl->create_channel( ));
 
-    howto::request_message  req;
-    howto::response_message res;
+        common::stub_wrapper<howto::hello_service_Stub> hello(channel.get( ));
 
-    req.set_name( "%USERNAME%" );
+        howto::request_message  req;
+        howto::response_message res;
 
-    typedef howto::hello_service_Stub stub_type;
+        req.set_name( "%USERNAME%" );
 
-    hello.call( &stub_type::send_hello, &req, &res );
+        typedef howto::hello_service_Stub stub_type;
 
-    std::cout <<  res.hello( ) << std::endl;
+        hello.call( &stub_type::send_hello, &req, &res );
+
+        std::cout <<  res.hello( ) << std::endl;
+
+    } catch( const std::exception &ex ) {
+        std::cerr << "Hello, world failed: " << ex.what( ) << "\n";
+    }
 
     tp.stop( );
     tp.join_all( );
