@@ -5,10 +5,26 @@ set( exe_name stress_server )
 
 add_executable(${exe_name} ${src_dir})
 
-list(APPEND dependencies
-    stress_protocol_s
+list( APPEND internal
+    ${INTERNAL_PROJECT_NAME}_protocol_s
     vtrc_server_s
     vtrc_common_s
+    )
+
+include_directories( ${${INTERNAL_PROJECT_NAME}_protocol_s_INCLUDE_DIRS}  )
+
+message( "-- Seting up internal dependencies for " ${exe_name} )
+foreach( dep ${internal} )
+
+    message( "\tAdd dependence: " ${dep} )
+
+    add_dependencies(       ${exe_name} ${dep}      )
+    add_definitions(        ${${dep}_DEFINITIONS}   )
+    target_link_libraries(  ${exe_name} ${${dep}_LIBRARIES} )
+
+endforeach(dep)
+
+list(APPEND dependencies
     Boost
     PROTOBUF
     )
@@ -20,7 +36,6 @@ foreach( dep ${dependencies} )
 
     add_dependencies(       ${exe_name} ${dep}      )
     add_definitions(        ${${dep}_DEFINITIONS}   )
-    include_directories(    ${${dep}_INCLUDE_DIRS}  )
     target_link_libraries(  ${exe_name} ${${dep}_LIBRARIES} )
 
 endforeach(dep)

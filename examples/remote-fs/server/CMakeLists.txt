@@ -5,7 +5,6 @@ set( exe_name ${INTERNAL_PROJECT_NAME}_server )
 
 add_executable(${exe_name} ${src_dir})
 
-
 list( APPEND internal
     ${INTERNAL_PROJECT_NAME}_protocol_s
     vtrc_server_s
