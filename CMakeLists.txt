@@ -28,6 +28,11 @@ find_package( Protobuf REQUIRED)
 set( VTRC_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include )
 set( VTRC_CONFIG_INCLUDE_DIR ${VTRC_INCLUDE_DIR}/vtrc-common/config )
 
+#
+# VTRC_PROTOCOL_DIR
+#   use this option to copy generated protocol files into desired directory
+#
+#
 if( NOT DEFINED VTRC_PROTOCOL_DIR )
     set( VTRC_PROTOCOL_INCLUDE_DIR ${VTRC_INCLUDE_DIR}/vtrc-common/protocol )
 else( )
