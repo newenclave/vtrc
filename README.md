@@ -1,4 +1,9 @@
+RPC library
+========
 
-Simple "Hello world!" application.
+
+Documentation; Is not yet complete 
+
+https://github.com/newenclave/vtrc-docs 
 
 
