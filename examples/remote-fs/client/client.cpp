@@ -135,7 +135,7 @@ int start( const po::variables_map &params )
 
     std::cout << "Success; id is '" << impl->get_handle( ) << "'\n";
 
-    std::cout << "Path " << ( impl->exists(  ) ? "exists" : "not exists" )
+    std::cout << "Path " << ( impl->exists(  ) ? "exists" : "does not exist" )
               << "\n";
 
     if( params.count( "pwd" ) ) {
