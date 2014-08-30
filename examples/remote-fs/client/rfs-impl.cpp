@@ -212,7 +212,7 @@ namespace {
 
         void flush( ) const
         {
-            stub_.call_request( &stub_type::flush, &fhdl_ );
+            stub_.call_request( &stub_type::flsh, &fhdl_ );
         }
 
     };
