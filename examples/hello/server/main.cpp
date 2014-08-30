@@ -20,7 +20,7 @@ class  hello_service_impl: public howto::hello_service {
 
     common::connection_iface *cl_;
 
-    void send_hello(::google::protobuf::RpcController*  controller,
+    void send_hello(::google::protobuf::RpcController*  /*controller*/,
                     const ::howto::request_message*     request,
                     ::howto::response_message*          response,
                     ::google::protobuf::Closure*        done) /*override*/
