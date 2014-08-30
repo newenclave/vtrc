@@ -31,8 +31,6 @@ namespace vtrc {
 
 namespace server {
 
-    class  listener;
-
     class application {
 
         struct         impl;
@@ -41,8 +39,6 @@ namespace server {
 
         application( const application & );
         application& operator = ( const application & );
-
-        friend class listener;
 
     public:
 
