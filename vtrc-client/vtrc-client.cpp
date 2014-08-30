@@ -256,8 +256,9 @@ namespace vtrc { namespace client {
         void async_connect_success( const bsys::error_code &err,
                                     common::system_closure_type closure )
         {
-            if( !err )
+            if( !err ) {
                 parent_->on_connect_( );
+            }
             closure(err);
         }
 
