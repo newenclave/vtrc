@@ -19,7 +19,7 @@ namespace vtrc { namespace client {
 
         impl( boost::asio::io_service &ios,
               vtrc_client *client, protocol_signals *callbacks )
-            :super_type(ios, client, 4096)
+            :super_type(ios, client, callbacks, 4096)
         { }
 
         void connect( const std::string &address )
@@ -84,18 +84,22 @@ namespace vtrc { namespace client {
     }
 
     client_win_pipe::client_win_pipe( boost::asio::io_service &ios,
-                                                        vtrc_client *client )
+                                      vtrc_client *client, 
+                                      protocol_signals *callbacks )
         :common::transport_win_pipe(create_socket(ios))
-        ,impl_(new impl(ios, client))
+        ,impl_(new impl(ios, client, callbacks ))
     {
         impl_->set_parent( this );
     }
 
     vtrc::shared_ptr<client_win_pipe> client_win_pipe::create(
-                                 basio::io_service &ios, vtrc_client *client)
+                                 basio::io_service &ios, 
+                                 vtrc_client *client, 
+                                 protocol_signals *callbacks)
     {
         vtrc::shared_ptr<client_win_pipe> new_inst
-                                        (new client_win_pipe( ios, client ));
+                    (new client_win_pipe( ios, client, callbacks ));
+
         new_inst->init( );
         return new_inst;
     }

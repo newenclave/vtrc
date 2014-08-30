@@ -20,21 +20,24 @@ namespace common {
 
 namespace client {
 
-    class vtrc_client;
+    class   vtrc_client;
+    struct  protocol_signals;
 
     class client_win_pipe: public common::transport_win_pipe {
 
         struct impl;
         impl  *impl_;
 
-        client_win_pipe( boost::asio::io_service &ios, vtrc_client *client );
+        client_win_pipe( boost::asio::io_service &ios, 
+                         vtrc_client *client, protocol_signals *callbacks );
 
     public:
 
         typedef vtrc::shared_ptr<client_win_pipe> shared_type;
 
-        static shared_type create (
-                            boost::asio::io_service &ios, vtrc_client *client );
+        static shared_type create ( boost::asio::io_service &ios, 
+                                    vtrc_client *client, 
+                                    protocol_signals *callbacks );
 
         ~client_win_pipe( );
         void init( );
