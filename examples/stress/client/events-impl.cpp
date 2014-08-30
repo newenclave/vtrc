@@ -5,7 +5,7 @@
 #include "protocol/stress.pb.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
 
-#include "vtrc-client-base/vtrc-client.h"
+#include "vtrc-client/vtrc-client.h"
 
 #include "vtrc-common/vtrc-closure-holder.h"
 #include "vtrc-common/vtrc-call-context.h"

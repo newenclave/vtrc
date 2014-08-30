@@ -1,6 +1,6 @@
 #include "calculator-iface.h"
-#include "vtrc-client-base/vtrc-rpc-channel-c.h"
-#include "vtrc-client-base/vtrc-client.h"
+#include "vtrc-client/vtrc-rpc-channel-c.h"
+#include "vtrc-client/vtrc-client.h"
 #include "protocol/calculator.pb.h"
 #include "vtrc-common/vtrc-stub-wrapper.h"
 

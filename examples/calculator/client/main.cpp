@@ -2,7 +2,7 @@
 
 #include "boost/lexical_cast.hpp"
 
-#include "vtrc-client-base/vtrc-client.h"
+#include "vtrc-client/vtrc-client.h"
 #include "vtrc-common/vtrc-pool-pair.h"
 #include "vtrc-common/vtrc-exception.h"
 

@@ -4,7 +4,7 @@
 #include <string>
 
 #include "rfs-iface.h"
-#include "vtrc-client-base/vtrc-client.h"
+#include "vtrc-client/vtrc-client.h"
 
 namespace rfs_examples {
 

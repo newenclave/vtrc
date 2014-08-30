@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "vtrc-client-base/vtrc-client.h"
+#include "vtrc-client/vtrc-client.h"
 #include "vtrc-common/vtrc-thread-pool.h"
 #include "vtrc-common/vtrc-stub-wrapper.h"
 

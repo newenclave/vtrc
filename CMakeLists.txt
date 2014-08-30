@@ -53,7 +53,7 @@ include_directories( ${PROJECT_SOURCE_DIR} ${VTRC_INCLUDE_DIRS} )
 
 add_subdirectory(vtrc-common)
 add_subdirectory(vtrc-server)
-add_subdirectory(vtrc-client-base)
+add_subdirectory(vtrc-client)
 
 if(MSVC)
     # Force to always compile with W4

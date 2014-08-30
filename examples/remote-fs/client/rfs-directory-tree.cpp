@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "vtrc-client-base/vtrc-client.h"
+#include "vtrc-client/vtrc-client.h"
 #include "vtrc-common/vtrc-exception.h"
 
 #include "rfs-iface.h"

@@ -1,7 +1,7 @@
 #include "lukki-db-iface.h"
 #include "protocol/lukkidb.pb.h"
 
-#include "vtrc-client-base/vtrc-client.h"
+#include "vtrc-client/vtrc-client.h"
 #include "vtrc-common/vtrc-stub-wrapper.h"
 
 namespace {
