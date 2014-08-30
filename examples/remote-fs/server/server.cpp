@@ -9,6 +9,8 @@
 #include "vtrc-common/vtrc-pool-pair.h"
 #include "remote-fs-impl.h"
 #include "protocol/remotefs.pb.h"
+#include "protocol/vtrc-rpc-lowlevel.pb.h"
+
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"
 
 #include "vtrc-server/vtrc-listener-tcp.h"
@@ -30,6 +32,12 @@ public:
     ~fs_application( )
     {
         google::protobuf::ShutdownProtobufLibrary( );
+    }
+
+    void configure_session( common::connection_iface* connection,
+                                    vtrc_rpc::session_options &opts )
+    {
+        opts.set_read_buffer_size( 44000 );
     }
 
     vtrc::shared_ptr<common::rpc_service_wrapper>
