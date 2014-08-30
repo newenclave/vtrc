@@ -19,13 +19,19 @@ Boost: (MINIMUM version 1.53 is REQUIRED)
 
         or
 
-    apt-get install libboost-system-dev libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev libboost-date-time-dev libboost-regex-dev libboost-random-dev libboost-atomic-dev libboost-chrono-dev
+    apt-get install libboost-system-dev libboost-filesystem-dev \
+                    libboost-program-options-dev libboost-thread-dev \
+                    libboost-date-time-dev libboost-regex-dev \
+                    libboost-random-dev libboost-atomic-dev libboost-chrono-dev
 
-        libboost-filesystem-dev libboost-program-options-dev are required for examples only
+        !!! libboost-filesystem-dev libboost-program-options-dev are required for examples only
 
 or all together: 
-    apt-get install libboost-system-dev libboost-chrono-dev libboost-thread-dev libboost-date-time-dev libboost-regex-dev libboost-random-dev libboost-atomic-dev libboost-chrono-dev git cmake protobuf-compiler libprotoc-dev g++
-
+    apt-get install libboost-system-dev libboost-chrono-dev \
+                    libboost-thread-dev libboost-date-time-dev \
+                    libboost-regex-dev libboost-random-dev \
+                    libboost-atomic-dev libboost-chrono-dev \
+                    git cmake protobuf-compiler libprotoc-dev g++
  
 make folder for project tree:
 $ mkdir github
