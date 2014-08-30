@@ -11,7 +11,6 @@
 #include "google/protobuf/descriptor.h" /// for descriptor( )->full_name( )
 #include "boost/lexical_cast.hpp"
 
-
 using namespace vtrc;
 
 namespace {
