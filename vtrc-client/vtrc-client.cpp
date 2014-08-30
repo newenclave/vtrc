@@ -145,12 +145,14 @@ namespace vtrc { namespace client {
             return new_client_inst;
         }
 
-        static void on_ready_s( vtrc::condition_variable &cond )
+        static
+        void on_ready_s( vtrc::condition_variable &cond )
         {
             cond.notify_all( );
         }
 
-        static void on_init_error_s( unsigned &failed, std::string &res,
+        static
+        void on_init_error_s( unsigned &failed, std::string &res,
                               vtrc::condition_variable &cond,
                               const vtrc_errors::container &,
                               const char *message  )
@@ -174,7 +176,8 @@ namespace vtrc { namespace client {
             vtrc::mutex              cond_lock;
 
             bs2::scoped_connection rc( parent_->on_ready_connect(
-                            vtrc::bind( impl::on_ready_s, vtrc::ref( cond ) )) );
+                           vtrc::bind( impl::on_ready_s,
+                                       vtrc::ref( cond ) )) );
 
             bs2::scoped_connection fc( parent_->on_init_error_connect(
                             vtrc::bind( impl::on_init_error_s,

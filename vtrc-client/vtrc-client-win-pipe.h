@@ -1,5 +1,6 @@
 #ifndef VTRC_CLIENT_WIN_PIPE_H
 #define VTRC_CLIENT_WIN_PIPE_H
+
 #ifdef _WIN32
 
 #include "vtrc-common/vtrc-transport-win-pipe.h"
@@ -29,7 +30,8 @@ namespace client {
         impl  *impl_;
 
         client_win_pipe( boost::asio::io_service &ios, 
-                         vtrc_client *client, protocol_signals *callbacks );
+                         vtrc_client *client,
+                         protocol_signals *callbacks );
 
     public:
 
