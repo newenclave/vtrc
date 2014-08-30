@@ -133,7 +133,7 @@ namespace {
             return std::string("pipe://") + endpoint_;
         }
 
-        void start_accept(  )
+        void start_accept( bool throw_if_fail )
         {
             if( !working_ ) return;
 
@@ -169,32 +169,45 @@ namespace {
 
                 BOOL res = ConnectNamedPipe( pipe_hdl, overlapped_.get( ) );
 
-                DWORD last_error(GetLastError());
+                DWORD last_error( GetLastError( ) );
+
                 if( res || ( last_error ==  ERROR_IO_PENDING ) ) {
+
                     overlapped_.release();
 
                 } else if( last_error == ERROR_PIPE_CONNECTED ) {
+
                     bsys::error_code ec( 0,
                             basio::error::get_system_category( ));
                     overlapped_.complete( ec, 0 );
 
                 } else {
+
                     bsys::error_code ec(last_error,
                                 basio::error::get_system_category( ));
-                    overlapped_.complete( ec, 0 );
+
+                    if( throw_if_fail ) {
+                        throw bsys::system_error( ec );
+                    } else {
+                        overlapped_.complete( ec, 0 );
+                    }
 
                 }
             } else {
-                bsys::error_code ec(GetLastError( ),
+                bsys::error_code ec( GetLastError( ),
                             basio::error::get_system_category( ));
-                overlapped_.complete( ec, 0 );
+                if( throw_if_fail ) {
+                    throw bsys::system_error( ec );
+                } else {
+                    overlapped_.complete( ec, 0 );
+                }
             }
         }
 
         void start( )
         {
             working_ = true;
-            start_accept( );
+            start_accept( true );
             call_on_start( );
         }
 
@@ -228,7 +241,7 @@ namespace {
                 } catch( ... ) {
                     ;;;
                 }
-                start_accept( );
+                start_accept( false );
             } else {
                 if( working_ ) {
                     stop( );
