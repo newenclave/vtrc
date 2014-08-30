@@ -8,9 +8,10 @@ endif(WIN32)
 
 cmake_minimum_required(VERSION 2.8)
 
-project(vtrc-hello)
-
 set(INTERNAL_PROJECT_NAME hello)
+
+project(vtrc-${INTERNAL_PROJECT_NAME})
+
 
 set(Boost_USE_STATIC_LIBS     ON)
 set(Boost_USE_MULTITHREADED   ON)
