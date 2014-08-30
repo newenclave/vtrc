@@ -107,6 +107,6 @@ service remote_file {
     rpc read(file_data_block)  returns (file_data_block);
     rpc write(file_data_block) returns (file_data_block);
 
-    rpc flush_file(fs_handle)       returns (empty);
+    rpc flush(fs_handle)       returns (empty);
 }
 
