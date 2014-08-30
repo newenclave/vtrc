@@ -10,6 +10,7 @@ message file_position {
     optional uint64 position = 1;
 }
 
+message empty { }
 
 // fs directory operations;
 message fs_handle_path {
@@ -105,5 +106,7 @@ service remote_file {
 
     rpc read(file_data_block)  returns (file_data_block);
     rpc write(file_data_block) returns (file_data_block);
+
+    rpc flush(fs_handle)       returns (empty);
 }
 

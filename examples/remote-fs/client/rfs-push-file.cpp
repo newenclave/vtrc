@@ -61,6 +61,7 @@ namespace rfs_examples {
                     shift += w;
                     r     -= w;
                 }
+                rem_f->flush( );
             }
 
         } else {

@@ -162,6 +162,16 @@ namespace {
             response->set_length( w );
         }
 
+        void flush(::google::protobuf::RpcController* /*controller*/,
+                const ::vtrc_example::fs_handle* request,
+                ::vtrc_example::empty*                /*response*/,
+                ::google::protobuf::Closure* done)
+        {
+            common::closure_holder holder(done);
+            file_ptr f(file_from_hdl(request->value( )));
+            fflush( f.get( ) );
+        }
+
     public:
 
         remote_file_impl(vtrc::common::connection_iface *connection)

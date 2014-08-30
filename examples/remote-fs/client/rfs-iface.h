@@ -51,6 +51,8 @@ namespace interfaces {
         virtual size_t write( std::string &data )               const = 0;
         virtual size_t write( const char *data, size_t lenght ) const = 0;
 
+        virtual void flush( ) const = 0;
+
     };
 
     struct remote_fs {

@@ -209,6 +209,12 @@ namespace {
             stub_.call( &stub_type::write, &block, &block );
             return block.length( );
         }
+
+        void flush( ) const
+        {
+            stub_.call_request( &stub_type::flush, &fhdl_ );
+        }
+
     };
 
     struct remote_fs_impl: public interfaces::remote_fs {
