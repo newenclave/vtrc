@@ -3,14 +3,13 @@
 #include "vtrc-server/vtrc-application.h"
 #include "vtrc-server/vtrc-listener-tcp.h"
 
+#include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-closure-holder.h"
 #include "vtrc-common/vtrc-thread-pool.h"
 
-#include "protocol/hello.pb.h" /// hello protocol
-
-#include "boost/lexical_cast.hpp"
-
+#include "protocol/hello.pb.h"          /// hello protocol
 #include "google/protobuf/descriptor.h" /// for descriptor( )->full_name( )
+#include "boost/lexical_cast.hpp"
 
 
 using namespace vtrc;
