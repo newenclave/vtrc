@@ -3,11 +3,8 @@
 #include "vtrc-server/vtrc-application.h"
 #include "vtrc-server/vtrc-listener-tcp.h"
 
-#include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-closure-holder.h"
-
 #include "vtrc-common/vtrc-thread-pool.h"
-#include "vtrc-common/vtrc-rpc-service-wrapper.h"
 
 #include "protocol/hello.pb.h" /// hello protocol
 

@@ -1,8 +1,8 @@
 #ifndef VTRC_APPLICATION_IFACE_H
 #define VTRC_APPLICATION_IFACE_H
 
-//#include "vtrc-common/vtrc-signal-declaration.h"
-#include "vtrc-memory.h"
+#include "vtrc-common/vtrc-rpc-service-wrapper.h"
+#include "vtrc-common/vtrc-connection-iface.h"
 
 namespace boost { namespace asio {
     class io_service;
@@ -23,9 +23,7 @@ namespace vtrc_rpc {
 namespace vtrc {
 
     namespace common {
-        struct connection_iface;
         class enviroment;
-        class rpc_service_wrapper;
         class connection_list;
         class pool_pair;
         struct connection_iface;
