@@ -23,9 +23,9 @@ namespace vtrc_rpc {
 namespace vtrc {
 
     namespace common {
-        class enviroment;
-        class connection_list;
-        class pool_pair;
+        class  enviroment;
+        class  connection_list;
+        class  pool_pair;
         struct connection_iface;
     }
 
