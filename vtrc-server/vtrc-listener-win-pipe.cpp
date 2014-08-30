@@ -136,6 +136,7 @@ namespace {
         void start_accept(  )
         {
             if( !working_ ) return;
+
             SECURITY_DESCRIPTOR secdesc;
             SECURITY_ATTRIBUTES secarttr;
             InitializeSecurityDescriptor(&secdesc,

@@ -42,7 +42,7 @@ enum errors_numbers { // CATEGORY_INTERNAL
 
 message container {
     optional uint32 code        =  1 [default = 0]; // @errors_numbers
-    optional uint32 category    =  2;
+    optional uint32 category    =  2 [default = 0]; // @error_category
     optional bool   fatal       =  3;
     optional string additional  = 10;
 }

@@ -23,7 +23,7 @@ namespace vtrc { namespace common {  namespace hash {
                 HashTraits::update( &context,
                     reinterpret_cast<const uint8_t *>(data), length );
 
-                return HashTraits::final( &context );
+                return HashTraits::finish( &context );
             }
 
             void get_data_hash(const void *data, size_t length,
@@ -34,7 +34,7 @@ namespace vtrc { namespace common {  namespace hash {
                 HashTraits::update( &context,
                     reinterpret_cast<const uint8_t *>(data), length );
 
-                HashTraits::final( &context,
+                HashTraits::finish( &context,
                                     reinterpret_cast<uint8_t *>(result_hash));
             }
 
