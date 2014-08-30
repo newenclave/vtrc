@@ -162,7 +162,7 @@ namespace {
             response->set_length( w );
         }
 
-        void flsh(::google::protobuf::RpcController* /*controller*/,
+        void flush(::google::protobuf::RpcController* /*controller*/,
                 const ::vtrc_example::fs_handle* request,
                 ::vtrc_example::empty*                /*response*/,
                 ::google::protobuf::Closure* done)
