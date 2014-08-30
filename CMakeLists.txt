@@ -69,6 +69,7 @@ elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 endif( )
 
 if(WITH_EXAMPLES)
+
     add_subdirectory(examples/calculator)
     add_subdirectory(examples/remote-fs)
     add_subdirectory(examples/lukki-db)
