@@ -17,7 +17,8 @@ namespace vtrc { namespace client {
 
     struct client_win_pipe::impl: public super_type  {
 
-        impl( boost::asio::io_service &ios, vtrc_client *client )
+        impl( boost::asio::io_service &ios,
+              vtrc_client *client, protocol_signals *callbacks )
             :super_type(ios, client, 4096)
         { }
 

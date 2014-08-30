@@ -18,7 +18,8 @@ namespace common {
 
 namespace client {
 
-    class vtrc_client;
+    class  vtrc_client;
+    struct protocol_signals;
 
     class client_unix_local: public common::transport_unix_local {
 
@@ -26,14 +27,17 @@ namespace client {
         friend struct impl;
         impl  *impl_;
 
-        client_unix_local( boost::asio::io_service &ios, vtrc_client *client );
+        client_unix_local(boost::asio::io_service &ios,
+                          vtrc_client *client ,
+                          protocol_signals *callbacks);
 
     public:
 
         typedef vtrc::shared_ptr<client_unix_local> shared_type;
 
         static shared_type create (
-                            boost::asio::io_service &ios, vtrc_client *client );
+                       boost::asio::io_service &ios,
+                        vtrc_client *client, protocol_signals *callbacks );
 
         ~client_unix_local( );
         void init( );

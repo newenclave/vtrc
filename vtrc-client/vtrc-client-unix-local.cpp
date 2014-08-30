@@ -15,8 +15,9 @@ namespace vtrc { namespace client {
 
     struct client_unix_local::impl: public super_type  {
 
-        impl( boost::asio::io_service &ios, vtrc_client *client )
-            :super_type(ios, client, 4096)
+        impl( boost::asio::io_service &ios,
+              vtrc_client *client, protocol_signals *callbacks )
+            :super_type(ios, client, callbacks, 4096)
         { }
 
         void connect( const std::string &address )
@@ -44,18 +45,20 @@ namespace vtrc { namespace client {
     }
 
     client_unix_local::client_unix_local( boost::asio::io_service &ios,
-                                                        vtrc_client *client )
+                            vtrc_client *client, protocol_signals *callbacks )
         :common::transport_unix_local(create_socket(ios))
-        ,impl_(new impl(ios, client))
+        ,impl_(new impl(ios, client, callbacks))
     {
         impl_->set_parent( this );
     }
 
-    vtrc::shared_ptr<client_unix_local> client_unix_local::create(
-                                 basio::io_service &ios, vtrc_client *client)
+    vtrc::shared_ptr<client_unix_local>
+        client_unix_local::create(basio::io_service &ios,
+                                  vtrc_client *client,
+                                  protocol_signals *callbacks)
     {
         vtrc::shared_ptr<client_unix_local> new_inst
-                                        (new client_unix_local( ios, client ));
+                         (new client_unix_local( ios, client, callbacks ));
         new_inst->init( );
         return new_inst;
     }

@@ -29,6 +29,7 @@ namespace { /// implementation.
 
         parent_type             *parent_;
         vtrc_client             *client_;
+        protocol_signals        *callbacks_;
         common::enviroment       env_;
 
         std::vector<char>        read_buff_;
@@ -36,9 +37,11 @@ namespace { /// implementation.
         vtrc::unique_ptr<protocol_layer_c> protocol_;
 
         client_stream_impl( boost::asio::io_service &ios,
-                            vtrc_client *client, size_t read_buffer_size )
+                            vtrc_client *client, protocol_signals *callbacks,
+                            size_t read_buffer_size )
             :ios_(ios)
             ,client_(client)
+            ,callbacks_(callbacks)
             ,read_buff_(read_buffer_size)
         {
 
@@ -73,7 +76,9 @@ namespace { /// implementation.
 
         void init(  )
         {
-            protocol_.reset(new protocol_layer_c( parent_, client_ ));
+            protocol_.reset(new protocol_layer_c( parent_,
+                                                  client_,
+                                                  callbacks_ ));
         }
 
         void on_close( )

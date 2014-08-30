@@ -21,6 +21,25 @@ namespace common {
 
 namespace client {
 
+    struct protocol_signals {
+
+        virtual ~protocol_signals( ) { }
+
+        virtual void on_init_error(const vtrc_errors::container & /*err*/,
+                                   const char * /*message*/)
+        {}
+
+        virtual void on_connect( )
+        {}
+
+        virtual void on_disconnect( )
+        {}
+
+        virtual void on_ready( )
+        {}
+
+    };
+
     class protocol_layer_c: public common::protocol_layer {
 
         struct        impl;
@@ -33,7 +52,8 @@ namespace client {
     public:
 
         protocol_layer_c( common::transport_iface *connection,
-                          vtrc::client::vtrc_client *client );
+                          vtrc::client::vtrc_client *client,
+                          protocol_signals *callbacks);
         ~protocol_layer_c( );
 
     public:

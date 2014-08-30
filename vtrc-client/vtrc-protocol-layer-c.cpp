@@ -55,11 +55,14 @@ namespace vtrc { namespace client {
         protocol_layer_c            *parent_;
         stage_funcion_type           stage_call_;
         vtrc_client                 *client_;
+        protocol_signals            *callbacks_;
         protocol_stage               stage_;
 
-        impl( common::transport_iface *c, vtrc_client *client )
+        impl( common::transport_iface *c, vtrc_client *client,
+              protocol_signals *cb )
             :connection_(c)
             ,client_(client)
+            ,callbacks_(cb)
             ,stage_(STAGE_HELLO)
         {
             stage_call_ = vtrc::bind( &this_type::on_hello_call, this );
@@ -198,7 +201,7 @@ namespace vtrc { namespace client {
         void on_ready( bool ready )
         {
             parent_->set_ready( ready );
-            client_->on_ready_( );
+            callbacks_->on_ready( );
         }
 
         void on_rpc_process( )
@@ -414,10 +417,11 @@ namespace vtrc { namespace client {
 
     };
 
-    protocol_layer_c::protocol_layer_c( common::transport_iface   *connection,
-                                        vtrc::client::vtrc_client *client )
+    protocol_layer_c::protocol_layer_c(common::transport_iface   *connection,
+                                        vtrc::client::vtrc_client *client ,
+                                        protocol_signals *callbacks)
         :common::protocol_layer(connection, true)
-        ,impl_(new impl(connection, client))
+        ,impl_(new impl(connection, client, callbacks))
     {
         impl_->parent_ = this;
     }
@@ -436,7 +440,7 @@ namespace vtrc { namespace client {
     {
         impl_->check_disconnect_stage( );
         cancel_all_slots( );
-        impl_->client_->on_disconnect_( );
+        impl_->callbacks_->on_disconnect( );
     }
 
     const std::string &protocol_layer_c::client_id( ) const
@@ -452,7 +456,7 @@ namespace vtrc { namespace client {
     void protocol_layer_c::on_init_error(const vtrc_errors::container &error,
                                          const char *message)
     {
-        impl_->client_->on_init_error_( error, message );
+        impl_->callbacks_->on_init_error( error, message );
     }
 
     common::rpc_service_wrapper_sptr protocol_layer_c::get_service_by_name(

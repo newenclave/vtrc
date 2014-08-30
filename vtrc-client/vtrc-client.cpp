@@ -44,7 +44,7 @@ namespace vtrc { namespace client {
 
     }
 
-    struct vtrc_client::impl {
+    struct vtrc_client::impl: public protocol_signals {
 
         typedef impl this_type;
 
@@ -67,6 +67,29 @@ namespace vtrc { namespace client {
             ,protocol_(NULL)
             ,key_set_(false)
         { }
+
+        /// ============= signals =============== /////
+        void on_init_error(const vtrc_errors::container &err,
+                                   const char *message)
+        {
+            parent_->on_init_error_( err, message );
+        }
+
+        void on_connect( )
+        {
+            parent_->on_connect_( );
+        }
+
+        void on_disconnect( )
+        {
+            parent_->on_disconnect_( );
+        }
+
+        void on_ready( )
+        {
+            parent_->on_ready_( );
+        }
+        /// ====================================== /////
 
         const common::call_context *get_call_context( ) const
         {
@@ -103,7 +126,9 @@ namespace vtrc { namespace client {
         template<typename ClientType>
         vtrc::shared_ptr<ClientType> create_client(  )
         {
-            vtrc::shared_ptr<ClientType> c(ClientType::create( ios_, parent_ ));
+            vtrc::shared_ptr<ClientType> c(ClientType::create( ios_,
+                                                               parent_,
+                                                               this ));
             connection_ =   c;
             protocol_   =  &c->get_protocol( );
             return c;
@@ -111,11 +136,13 @@ namespace vtrc { namespace client {
 
         vtrc::shared_ptr<client_tcp> create_client_tcp( bool tcp_nodelay )
         {
-            vtrc::shared_ptr<client_tcp> c
-                    (client_tcp::create( ios_, parent_, tcp_nodelay ));
-            connection_ =   c;
-            protocol_   =  &c->get_protocol( );
-            return c;
+            vtrc::shared_ptr<client_tcp> new_client_inst
+                    (client_tcp::create( ios_, parent_, this, tcp_nodelay ));
+
+            connection_ =   new_client_inst;
+            protocol_   =  &new_client_inst->get_protocol( );
+
+            return new_client_inst;
         }
 
         static void on_ready( vtrc::condition_variable &cond )

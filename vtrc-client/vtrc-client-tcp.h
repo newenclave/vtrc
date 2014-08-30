@@ -17,7 +17,8 @@ namespace common {
 
 namespace client {
 
-    class vtrc_client;
+    class   vtrc_client;
+    struct  protocol_signals;
 
     class client_tcp: public common::transport_tcp {
 
@@ -25,7 +26,9 @@ namespace client {
         impl  *impl_;
 
         client_tcp( boost::asio::io_service &ios,
-                    vtrc_client *client, bool tcp_nodelay );
+                    vtrc_client *client,
+                    protocol_signals *callbacks,
+                    bool tcp_nodelay );
 
     public:
 
@@ -33,7 +36,8 @@ namespace client {
 
         static shared_type create (
                             boost::asio::io_service &ios,
-                            vtrc_client *client, bool tcp_nodelay );
+                            vtrc_client *client, protocol_signals *callbacks,
+                            bool tcp_nodelay );
 
         ~client_tcp( );
         void init( );
