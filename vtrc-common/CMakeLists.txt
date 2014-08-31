@@ -82,7 +82,7 @@ endforeach( )
 
 
 file(COPY
-        protocol-base/vtrc-errors.proto
+        #protocol-base/vtrc-errors.proto
         protocol-base/vtrc-rpc-options.proto
 
      DESTINATION
