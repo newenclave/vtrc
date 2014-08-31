@@ -131,12 +131,12 @@ namespace vtrc { namespace client {
             return client_->get_session_id( );
         }
 
-        common::rpc_service_wrapper_sptr get_service_by_name(
-                                                      const std::string &name )
+        typedef common::rpc_service_wrapper_sptr wrapper_sptr;
+
+        wrapper_sptr get_service_by_name( const std::string &name )
         {
-            return common::rpc_service_wrapper_sptr
-                        (new common::rpc_service_wrapper(
-                             client_->get_rpc_handler( name )));
+            return wrapper_sptr (new common::rpc_service_wrapper(
+                                 client_->get_rpc_handler( name )));
         }
 
         void send_proto_message( const gpb::MessageLite &mess ) const
