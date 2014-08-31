@@ -41,7 +41,7 @@ foreach(next_proto ${protofiles})
                         --proto_path=${PROTOBUF_INCLUDE_DIRS}
                         --proto_path=${POTOBUF_IMPORT_DIRS}
                         --proto_path=${in_PATH}
-                        --proto_path=${${vtrc_common}_POTOBUF_IMPORT_DIR}
+                        --proto_path=${VTRC_PROTOCOL_INCLUDE_DIR}
                         --cpp_out=${${lib_name}_PROTOBUF_FILES_OUTPUT}
                         ${next_proto}
         WORKING_DIRECTORY

@@ -9,7 +9,8 @@
 #include "vtrc-common/vtrc-pool-pair.h"
 #include "remote-fs-impl.h"
 #include "protocol/remotefs.pb.h"
-#include "protocol/vtrc-rpc-lowlevel.pb.h"
+
+#include "vtrc-rpc-lowlevel.pb.h"
 
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"
 

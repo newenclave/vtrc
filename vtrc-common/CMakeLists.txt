@@ -30,7 +30,7 @@ file(GLOB protofiles protocol-base/*.proto)
 set( ${lib_name}_PROTOBUF_FILES_DIR    ${CMAKE_CURRENT_BINARY_DIR} )
 
 set( ${lib_name}_PROTOBUF_FILES_OUTPUT
-     ${${lib_name}_PROTOBUF_FILES_DIR}/protocol )
+     ${${lib_name}_PROTOBUF_FILES_DIR} )
 
 file( MAKE_DIRECTORY ${${lib_name}_PROTOBUF_FILES_OUTPUT})
 
@@ -58,7 +58,7 @@ foreach(next_proto ${protofiles})
         COMMAND
                 ${CMAKE_COMMAND} -E copy
                     ${${lib_name}_PROTOBUF_FILES_OUTPUT}/${out_FILE}.pb.h
-                    ${VTRC_PROTOCOL_INCLUDE_DIR}/protocol/${out_FILE}.pb.h
+                    ${VTRC_PROTOCOL_INCLUDE_DIR}/${out_FILE}.pb.h
 
         WORKING_DIRECTORY
                 ${GENERATED_FILES_OUTPUT}
@@ -78,6 +78,16 @@ foreach(next_proto ${protofiles})
     list( APPEND lib_src ${next_proto})
 
 endforeach( )
+
+
+file(COPY
+        protocol-base/vtrc-errors.proto
+        protocol-base/vtrc-rpc-options.proto
+
+     DESTINATION
+
+        ${VTRC_PROTOCOL_INCLUDE_DIR} )
+
 
 ##################################################
 
