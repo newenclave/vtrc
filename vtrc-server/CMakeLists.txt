@@ -30,7 +30,7 @@ foreach( dep ${dependencies} )
     add_dependencies(       ${lib_name} ${dep}      )
     add_definitions(        ${${dep}_DEFINITIONS}   )
     include_directories(    ${${dep}_INCLUDE_DIRS}  )
-    target_link_libraries(  ${lib_name} ${${dep}_LIBRARIES} )
+    #target_link_libraries(  ${lib_name} ${${dep}_LIBRARIES} )
     
 endforeach(dep)
 
