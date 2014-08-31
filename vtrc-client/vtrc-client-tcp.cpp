@@ -36,8 +36,9 @@ namespace vtrc { namespace client {
 
         void connection_setup( )
         {
-            if( no_delay_ )
+            if( no_delay_ ) {
                 get_parent( )->set_no_delay( true );
+            }
         }
 
         void async_connect( const std::string &address,
