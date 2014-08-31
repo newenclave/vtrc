@@ -12,10 +12,13 @@ set(INTERNAL_PROJECT_NAME hello)
 
 project(vtrc-${INTERNAL_PROJECT_NAME})
 
+if( ${VTRC_LINK_TYPE} MATCHES ${VTRC_LINK_TYPE_STATIC} )
+    set(Boost_USE_STATIC_LIBS     ON)
+    set(Boost_USE_STATIC_RUNTIME  ON)
+endif( )
 
-set(Boost_USE_STATIC_LIBS     ON)
 set(Boost_USE_MULTITHREADED   ON)
-set(Boost_USE_STATIC_RUNTIME  ON)
+
 
 find_package( Boost 1.50 COMPONENTS
                     system
