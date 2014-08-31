@@ -135,8 +135,13 @@ namespace vtrc { namespace client {
 
         wrapper_sptr get_service_by_name( const std::string &name )
         {
-            return wrapper_sptr (new common::rpc_service_wrapper(
-                                 client_->get_rpc_handler( name )));
+            vtrc::shared_ptr<gpb::Service> res(client_->get_rpc_handler(name));
+
+            if( res ) {
+                return wrapper_sptr (new common::rpc_service_wrapper( res ));
+            } else {
+                return wrapper_sptr( );
+            }
         }
 
         void send_proto_message( const gpb::MessageLite &mess ) const
