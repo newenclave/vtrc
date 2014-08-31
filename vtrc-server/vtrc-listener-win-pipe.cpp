@@ -9,7 +9,7 @@
 #include "vtrc-common/vtrc-transport-win-pipe.h"
 #include "vtrc-common/vtrc-connection-list.h"
 
-#include "protocol/vtrc-rpc-lowlevel.pb.h"
+#include "vtrc-rpc-lowlevel.pb.h"
 
 #include "vtrc-connection-impl.h"
 

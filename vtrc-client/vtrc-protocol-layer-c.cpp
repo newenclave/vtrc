@@ -21,8 +21,8 @@
 
 #include "vtrc-client.h"
 
-#include "protocol/vtrc-auth.pb.h"
-#include "protocol/vtrc-rpc-lowlevel.pb.h"
+#include "vtrc-auth.pb.h"
+#include "vtrc-rpc-lowlevel.pb.h"
 
 namespace vtrc { namespace client {
 

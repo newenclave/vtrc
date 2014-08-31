@@ -2,8 +2,8 @@
 #include <map>
 #include "google/protobuf/descriptor.h"
 
-#include "protocol/vtrc-rpc-lowlevel.pb.h"
-#include "protocol/vtrc-rpc-options.pb.h"
+#include "vtrc-rpc-lowlevel.pb.h"
+#include "vtrc-rpc-options.pb.h"
 
 #include "vtrc-rpc-channel.h"
 #include "vtrc-protocol-layer.h"

@@ -2,7 +2,7 @@
 #include "boost/system/error_code.hpp"
 
 #include "vtrc-exception.h"
-#include "protocol/vtrc-errors.pb.h"
+#include "vtrc-errors.pb.h"
 
 namespace vtrc { namespace common {
 

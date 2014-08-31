@@ -3,7 +3,7 @@
 
 #include "vtrc-hash-iface.h"
 #include "vtrc-stdint.h"
-#include "protocol/vtrc-auth.pb.h"
+#include "vtrc-auth.pb.h"
 
 namespace vtrc { namespace common {  namespace hash {
 

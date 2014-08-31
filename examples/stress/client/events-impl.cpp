@@ -3,7 +3,8 @@
 #include "events-impl.h"
 
 #include "protocol/stress.pb.h"
-#include "protocol/vtrc-rpc-lowlevel.pb.h"
+
+#include "vtrc-rpc-lowlevel.pb.h"
 
 #include "vtrc-client/vtrc-client.h"
 

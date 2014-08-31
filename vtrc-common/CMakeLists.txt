@@ -44,6 +44,7 @@ foreach(next_proto ${protofiles})
     set( OUTPUT_FILES
              ${${lib_name}_PROTOBUF_FILES_OUTPUT}/${out_FILE}.pb.h
              ${${lib_name}_PROTOBUF_FILES_OUTPUT}/${out_FILE}.pb.cc
+             ${VTRC_PROTOCOL_INCLUDE_DIR}/${out_FILE}.pb.h
        )
 
     add_custom_command(

@@ -3,8 +3,8 @@
 #include "google/protobuf/service.h"
 #include "google/protobuf/descriptor.h"
 
-#include "protocol/vtrc-rpc-lowlevel.pb.h"
-#include "protocol/vtrc-rpc-options.pb.h"
+#include "vtrc-rpc-lowlevel.pb.h"
+#include "vtrc-rpc-options.pb.h"
 
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-call-context.h"

@@ -32,9 +32,9 @@
 
 #include "proto-helper/message-utilities.h"
 
-#include "protocol/vtrc-rpc-lowlevel.pb.h"
-#include "protocol/vtrc-rpc-options.pb.h"
-#include "protocol/vtrc-errors.pb.h"
+#include "vtrc-rpc-lowlevel.pb.h"
+#include "vtrc-rpc-options.pb.h"
+#include "vtrc-errors.pb.h"
 
 #define USE_STATIC_CALL_CONTEXT 1
 

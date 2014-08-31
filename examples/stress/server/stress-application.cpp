@@ -1,6 +1,6 @@
 #include "stress-application.h"
 
-#include "protocol/vtrc-rpc-lowlevel.pb.h"
+#include "vtrc-rpc-lowlevel.pb.h"
 
 #include "vtrc-common/vtrc-pool-pair.h"
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"

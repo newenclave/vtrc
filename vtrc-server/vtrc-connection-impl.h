@@ -10,7 +10,7 @@
 #include "vtrc-protocol-layer-s.h"
 #include "vtrc-common/vtrc-enviroment.h"
 
-#include "protocol/vtrc-rpc-lowlevel.pb.h"
+#include "vtrc-rpc-lowlevel.pb.h"
 
 #include <memory>
 

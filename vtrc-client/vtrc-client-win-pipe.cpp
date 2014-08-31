@@ -6,7 +6,8 @@
 #include "boost/asio/windows/stream_handle.hpp"
 #include "vtrc-client-stream-impl.h"
 #include "vtrc-common/vtrc-exception.h"
-#include "protocol/vtrc-errors.pb.h"
+
+#include "vtrc-errors.pb.h"
 
 namespace vtrc { namespace client {
 

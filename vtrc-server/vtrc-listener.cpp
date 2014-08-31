@@ -4,7 +4,7 @@
 #include "vtrc-common/vtrc-enviroment.h"
 #include "vtrc-atomic.h"
 
-#include "protocol/vtrc-rpc-lowlevel.pb.h"
+#include "vtrc-rpc-lowlevel.pb.h"
 
 namespace vtrc { namespace server {
 

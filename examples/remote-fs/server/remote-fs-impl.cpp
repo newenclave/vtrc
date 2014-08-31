@@ -2,7 +2,8 @@
 #include <errno.h>
 
 #include "protocol/remotefs.pb.h"
-#include "protocol/vtrc-errors.pb.h"
+
+#include "vtrc-errors.pb.h"
 
 #include "boost/filesystem.hpp"
 

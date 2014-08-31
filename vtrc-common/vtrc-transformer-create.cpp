@@ -1,5 +1,5 @@
 #include "vtrc-transformer-iface.h"
-#include "protocol/vtrc-auth.pb.h"
+#include "vtrc-auth.pb.h"
 
 #include "vtrc-random-device.h"
 #include "vtrc-hash-iface.h"

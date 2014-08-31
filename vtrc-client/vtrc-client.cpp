@@ -21,7 +21,7 @@
 #include "vtrc-common/vtrc-mutex-typedefs.h"
 #include "vtrc-common/vtrc-pool-pair.h"
 
-#include "protocol/vtrc-errors.pb.h"
+#include "vtrc-errors.pb.h"
 
 #include "vtrc-rpc-channel-c.h"
 

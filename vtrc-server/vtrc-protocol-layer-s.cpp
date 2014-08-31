@@ -21,9 +21,9 @@
 
 #include "vtrc-application.h"
 
-#include "protocol/vtrc-errors.pb.h"
-#include "protocol/vtrc-auth.pb.h"
-#include "protocol/vtrc-rpc-lowlevel.pb.h"
+#include "vtrc-errors.pb.h"
+#include "vtrc-auth.pb.h"
+#include "vtrc-rpc-lowlevel.pb.h"
 
 #include "vtrc-chrono.h"
 #include "vtrc-atomic.h"
