@@ -45,7 +45,8 @@ namespace vtrc { namespace client {
     }
 
     client_unix_local::client_unix_local( boost::asio::io_service &ios,
-                            vtrc_client *client, protocol_signals *callbacks )
+                                          vtrc_client *client,
+                                          protocol_signals *callbacks )
         :common::transport_unix_local(create_socket(ios))
         ,impl_(new impl(ios, client, callbacks))
     {
@@ -105,10 +106,9 @@ namespace vtrc { namespace client {
         impl_->on_close( );
     }
 
-    std::string client_unix_local::prepare_for_write(
-                                                  const char *data, size_t len)
+    std::string client_unix_local::prepare_for_write( const char *d, size_t l )
     {
-        return impl_->prepare_for_write( data, len );
+        return impl_->prepare_for_write( d, l );
     }
 
     void client_unix_local::init( )

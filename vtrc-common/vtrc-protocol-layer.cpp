@@ -595,7 +595,7 @@ namespace vtrc { namespace common {
         }
 
         const vtrc_rpc::options *get_method_options(
-                              const gpb::MethodDescriptor *method)
+                                    const gpb::MethodDescriptor *method)
         {
             upgradable_lock lck(options_map_lock_);
 
