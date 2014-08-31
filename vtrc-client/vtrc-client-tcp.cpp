@@ -46,6 +46,7 @@ namespace vtrc { namespace client {
         {
             basio::ip::tcp::endpoint ep
                     (basio::ip::address::from_string(address), service );
+
             get_socket( ).async_connect( ep,
                     vtrc::bind( &this_type::on_connect, this,
                                  basio::placeholders::error, closure,
