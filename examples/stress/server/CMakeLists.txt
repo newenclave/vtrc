@@ -45,5 +45,7 @@ if(WIN32)
     target_link_libraries(${exe_name} ws2_32.lib)
 endif(WIN32)
 
-set_target_properties(${exe_name} PROPERTIES COMPILE_DEFINITIONS "STATIC")
+set_target_properties(${exe_name}
+                      PROPERTIES
+                      COMPILE_DEFINITIONS "${VTRC_LINK_TYPE}")
 

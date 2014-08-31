@@ -13,7 +13,7 @@ endforeach( )
 
 include_directories( ${VTRC_INCLUDE_DIR}/vtrc-client )
 
-add_library(${lib_name} STATIC ${lib_src})
+add_library(${lib_name} ${VTRC_LINK_TYPE} ${lib_src})
 
 list(APPEND dependencies
     vtrc_common_s
@@ -34,10 +34,13 @@ foreach( dep ${dependencies} )
 
 endforeach(dep)
 
-set_target_properties(${lib_name} PROPERTIES COMPILE_DEFINITIONS "STATIC")
+set_target_properties(${lib_name}
+                      PROPERTIES
+                        COMPILE_DEFINITIONS "${VTRC_LINK_TYPE}")
+
 get_target_property(${lib_name}_LOCATION ${lib_name} LOCATION)
 
-set(${lib_name}_DEFINITIONS "-DSTATIC" PARENT_SCOPE)
+set(${lib_name}_DEFINITIONS "-D${VTRC_LINK_TYPE}" PARENT_SCOPE)
 set(${lib_name}_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE)
 set(${lib_name}_LIBRARIES ${${lib_name}_LOCATION} PARENT_SCOPE)
 

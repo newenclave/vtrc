@@ -10,9 +10,16 @@ endif(WIN32)
 
 project(vtrc)
 
-set(Boost_USE_STATIC_LIBS     ON)
+if( NOT DEFINED VTRC_LINK_TYPE )
+    set( VTRC_LINK_TYPE STATIC )
+endif( )
+
+if( ${VTRC_LINK_TYPE} EQUAL STATIC )
+    set(Boost_USE_STATIC_LIBS     ON)
+    set(Boost_USE_STATIC_RUNTIME  ON)
+endif( )
+
 set(Boost_USE_MULTITHREADED   ON)
-set(Boost_USE_STATIC_RUNTIME  ON)
 
 find_package( Boost 1.53 COMPONENTS
                     system
@@ -40,6 +47,7 @@ if( NOT DEFINED VTRC_PROTOCOL_DIR )
 else( )
     set( VTRC_PROTOCOL_INCLUDE_DIR ${VTRC_PROTOCOL_DIR} )
 endif( )
+
 
 message( "Protocol files' path: " ${VTRC_PROTOCOL_INCLUDE_DIR} )
 
