@@ -121,8 +121,8 @@ namespace vtrc { namespace server {
                                common::connection_iface_wptr   sender)
                 :common::rpc_channel(direct_call_type, callback_type)
                 ,clients_(clients)
-                ,message_type_(mess_type)
                 ,sender_(sender)
+                ,message_type_(mess_type)
             { }
 
 

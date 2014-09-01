@@ -70,12 +70,13 @@ namespace vtrc { namespace server {
 
         std::string              client_id_;
 
+        vtrc::atomic<unsigned>   current_calls_;
+
         common::delayed_call     keepalive_calls_;
 
         typedef vtrc::function<void (void)> stage_function_type;
         stage_function_type      stage_function_;
 
-        vtrc::atomic<unsigned>   current_calls_;
 
         impl( application &a, common::transport_iface *c )
             :app_(a)

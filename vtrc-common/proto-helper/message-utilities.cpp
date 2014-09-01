@@ -46,6 +46,8 @@ namespace vtrc { namespace utilities {
                 VTRC_CAS_NOT_REP_EQUAL( CPPTYPE_FLOAT,   GetFloat );
                 VTRC_CAS_NOT_REP_EQUAL( CPPTYPE_DOUBLE,  GetDouble);
                 VTRC_CAS_NOT_REP_EQUAL( CPPTYPE_STRING,  GetString);
+                default:
+                    break;
             }
             sreflect->ClearField( &src, fld );
             return true;
@@ -70,6 +72,8 @@ namespace vtrc { namespace utilities {
                     VTRC_CAS_REP_EQUAL( CPPTYPE_DOUBLE, GetRepeatedDouble, i );
                     VTRC_CAS_REP_EQUAL( CPPTYPE_STRING, GetRepeatedString, i );
                     VTRC_CAS_REP_EQUAL( CPPTYPE_ENUM,	GetRepeatedEnum,   i );
+                    default:
+                        break;
                 }
                 if( !equal ) return false;
             }
