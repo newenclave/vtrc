@@ -63,10 +63,6 @@ set( VTRC_INCLUDE_DIRS
 
 include_directories( ${PROJECT_SOURCE_DIR} ${VTRC_INCLUDE_DIRS} )
 
-add_subdirectory(vtrc-common)
-add_subdirectory(vtrc-server)
-add_subdirectory(vtrc-client)
-
 if(MSVC)
     # Force to always compile with W4
     if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
@@ -79,6 +75,10 @@ elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     # Update if necessary
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -pedantic")
 endif( )
+
+add_subdirectory(vtrc-common)
+add_subdirectory(vtrc-server)
+add_subdirectory(vtrc-client)
 
 if(WITH_EXAMPLES)
 
