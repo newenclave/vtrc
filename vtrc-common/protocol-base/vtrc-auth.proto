@@ -9,12 +9,12 @@ package vtrc_auth;
 // index 51000
 
 enum hash_variant {
-    HASH_NONE       = 0;
+    HASH_NONE       =  0;
 
     // ---- crc ----  //
-    HASH_CRC_16     = 1;
-    HASH_CRC_32     = 2;
-    HASH_CRC_64     = 3;
+    HASH_CRC_16     =  1;
+    HASH_CRC_32     =  2;
+    HASH_CRC_64     =  3;
 
     // ---- sha ----  //
     HASH_SHA2_256   = 10;
