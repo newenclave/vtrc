@@ -34,7 +34,7 @@ namespace vtrc { namespace client {
             basio::local::stream_protocol::endpoint ep (address);
             get_socket( ).async_connect( ep,
                     vtrc::bind( &this_type::on_connect, this,
-                                 basio::placeholders::error, closure,
+                                 vtrc::placeholders::error, closure,
                                  parent_->shared_from_this( )) );
         }
     };

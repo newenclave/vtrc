@@ -280,7 +280,7 @@ namespace vtrc { namespace client {
 
             new_client->async_connect( local_name,
                 vtrc::bind( &this_type::async_connect_success, this,
-                            basio::placeholders::error,
+                            vtrc::placeholders::error,
                             closure ));
         }
 #endif
@@ -294,7 +294,7 @@ namespace vtrc { namespace client {
             new_client->async_connect( local_name,
             vtrc::bind( &this_type::async_connect_success,
                          this,
-                         basio::placeholders::error,
+                         vtrc::placeholders::error,
                          closure ));
 #else
             vtrc::shared_ptr<client_win_pipe>
@@ -303,7 +303,7 @@ namespace vtrc { namespace client {
             new_client->async_connect( local_name,
                 vtrc::bind( &this_type::async_connect_success,
                             this,
-                            basio::placeholders::error,
+                            vtrc::placeholders::error,
                             closure ));
 #endif
         }
@@ -319,7 +319,7 @@ namespace vtrc { namespace client {
             new_client->async_connect( address, service,
                     vtrc::bind( &this_type::async_connect_success,
                                 this,
-                                basio::placeholders::error,
+                                vtrc::placeholders::error,
                                 closure ));
         }
 

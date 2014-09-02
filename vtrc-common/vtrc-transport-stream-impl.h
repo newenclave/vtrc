@@ -219,8 +219,8 @@ namespace vtrc { namespace common {
                             basio::buffer( data, length ),
                             write_dispatcher_.wrap(
                                     vtrc::bind( &this_type::write_handler, this,
-                                         basio::placeholders::error,
-                                         basio::placeholders::bytes_transferred,
+                                         vtrc::placeholders::error,
+                                         vtrc::placeholders::bytes_transferred,
                                          length, total,
                                          parent_->shared_from_this( )))
                             );

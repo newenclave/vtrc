@@ -164,7 +164,7 @@ namespace {
 
                 overlapped_.reset( ios_,
                         vtrc::bind( &this_type::on_accept, this,
-                            basio::placeholders::error, new_sock,
+                            vtrc::placeholders::error, new_sock,
                             weak_from_this( ) ) );
 
                 BOOL res = ConnectNamedPipe( pipe_hdl, overlapped_.get( ) );

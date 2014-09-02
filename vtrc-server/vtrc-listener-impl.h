@@ -89,7 +89,7 @@ namespace {
 
             acceptor_->async_accept( *new_sock,
                 vtrc::bind( &this_type::on_accept, this,
-                             basio::placeholders::error, new_sock,
+                             vtrc::placeholders::error, new_sock,
                              weak_from_this( )));
         }
 
