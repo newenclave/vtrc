@@ -11,6 +11,7 @@ namespace vtrc { namespace common {
     namespace {
 
         const std::string unknown_error("Unknown error");
+        const unsigned default_category = vtrc_errors::CATEGORY_INTERNAL;
 
         const std::string &get_internal_error( unsigned code )
         {
@@ -41,7 +42,7 @@ namespace vtrc { namespace common {
 
         std::string get_error_code_string( unsigned code )
         {
-            return get_error_code_string(code, vtrc_errors::CATEGORY_INTERNAL);
+            return get_error_code_string( code, default_category );
         }
 
     }
@@ -61,20 +62,18 @@ namespace vtrc { namespace common {
         ,code_(code)
         ,category_(code_category)
         ,additional_(additional)
-    {
-
-    }
+    { }
 
     exception::exception( unsigned code )
         :std::runtime_error(get_error_code_string(code))
         ,code_(code)
-        ,category_(vtrc_errors::CATEGORY_INTERNAL)
+        ,category_(default_category)
     { }
 
     exception::exception( unsigned code, const std::string &additional )
         :std::runtime_error(get_error_code_string(code))
         ,code_(code)
-        ,category_(vtrc_errors::CATEGORY_INTERNAL)
+        ,category_(default_category)
         ,additional_(additional)
     { }
 
