@@ -38,12 +38,18 @@ namespace vtrc { namespace common {
             }
             return unknown_error;
         }
+
+        std::string get_error_code_string( unsigned code )
+        {
+            return get_error_code_string(code, vtrc_errors::CATEGORY_INTERNAL);
+        }
+
     }
 
     exception::exception( unsigned code, unsigned code_category )
-        :code_(code)
+        :std::runtime_error(get_error_code_string(code, code_category))
+        ,code_(code)
         ,category_(code_category)
-        ,what_(get_error_code_string(code_, category_))
     {
 
     }
@@ -51,34 +57,29 @@ namespace vtrc { namespace common {
     exception::exception(unsigned code,
                          unsigned code_category,
                          const std::string &additional)
-        :code_(code)
+        :std::runtime_error(get_error_code_string(code, code_category))
+        ,code_(code)
         ,category_(code_category)
-        ,what_(get_error_code_string(code_, category_))
         ,additional_(additional)
     {
 
     }
 
     exception::exception( unsigned code )
-        :code_(code)
+        :std::runtime_error(get_error_code_string(code))
+        ,code_(code)
         ,category_(vtrc_errors::CATEGORY_INTERNAL)
-        ,what_(get_error_code_string(code_, category_))
-    {}
+    { }
 
     exception::exception( unsigned code, const std::string &additional )
-        :code_(code)
+        :std::runtime_error(get_error_code_string(code))
+        ,code_(code)
         ,category_(vtrc_errors::CATEGORY_INTERNAL)
-        ,what_(get_error_code_string(code_, category_))
         ,additional_(additional)
-    {}
+    { }
 
     exception::~exception( ) throw ( )
-    {}
-
-    const char *exception::what( ) const throw ( )
-    {
-        return what_.c_str( );
-    }
+    { }
 
     const char *exception::additional( ) const
     {

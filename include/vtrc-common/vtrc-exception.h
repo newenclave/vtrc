@@ -1,7 +1,7 @@
 #ifndef VTRC_ERRORS_H
 #define VTRC_ERRORS_H
 
-#include <exception>
+#include <stdexcept>
 #include <string>
 
 namespace vtrc_errors {
@@ -10,12 +10,12 @@ namespace vtrc_errors {
 
 namespace vtrc { namespace common {
 
-    class exception: public std::exception {
+    class exception: public std::runtime_error {
 
         unsigned    code_;
         unsigned    category_;
 
-        std::string what_;
+        //std::string what_;
         std::string additional_;
 
     public:
@@ -30,10 +30,9 @@ namespace vtrc { namespace common {
 
         virtual ~exception( ) throw ( );
 
-        const char *what( ) const throw ( );
         const char *additional( ) const;
-        unsigned    code( ) const;
-        unsigned    category( ) const;
+        unsigned    code( )       const;
+        unsigned    category( )   const;
     };
 
 }}
