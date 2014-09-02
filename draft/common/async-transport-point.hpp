@@ -3,11 +3,80 @@
 
 #include "boost/asio.hpp"
 
+#if 1
+
 #include "boost/bind.hpp"
 #include "boost/enable_shared_from_this.hpp"
 #include "boost/make_shared.hpp"
 #include "boost/weak_ptr.hpp"
 #include "boost/function.hpp"
+
+namespace tns {
+    using boost::bind;
+    using boost::function;
+    using boost::shared_ptr;
+    using boost::weak_ptr;
+    using boost::make_shared;
+    using boost::enable_shared_from_this;
+
+    namespace placeholders {
+
+        namespace {
+            boost::arg<1> _1;
+            boost::arg<2> _2;
+            boost::arg<3> _3;
+            boost::arg<4> _4;
+            boost::arg<5> _5;
+            boost::arg<6> _6;
+            boost::arg<7> _7;
+            boost::arg<8> _8;
+            boost::arg<9> _9;
+        }
+
+        static boost::arg<1> &error             = _1;
+        static boost::arg<2> &bytes_transferred = _2;
+        static boost::arg<2> &iterator          = _2;
+        static boost::arg<2> &signal_number     = _2;
+
+    }
+}
+
+#else
+
+#include <functional>
+#include <memory>
+
+
+namespace tns {
+
+    using std::bind;
+    using std::function;
+    using std::shared_ptr;
+    using std::weak_ptr;
+    using std::make_shared;
+    using std::enable_shared_from_this;
+
+    namespace placeholders {
+
+        using std::placeholders::_1;
+        using std::placeholders::_2;
+        using std::placeholders::_3;
+        using std::placeholders::_4;
+        using std::placeholders::_5;
+        using std::placeholders::_6;
+        using std::placeholders::_7;
+        using std::placeholders::_8;
+        using std::placeholders::_9;
+
+        static decltype ( _1 ) &error             = _1;
+        static decltype ( _2 ) &bytes_transferred = _2;
+        static decltype ( _2 ) &iterator          = _2;
+        static decltype ( _2 ) &signal_number     = _2;
+
+    }
+}
+
+#endif
 
 #include <string>
 #include <queue>
@@ -15,14 +84,14 @@
 namespace async_transport {
 
     template <typename ST>
-    class point_iface: public boost::enable_shared_from_this<point_iface<ST> > {
+    class point_iface: public tns::enable_shared_from_this<point_iface<ST> > {
 
         typedef point_iface<ST> this_type;
 
     public:
 
-        typedef boost::shared_ptr<this_type> shared_type;
-        typedef boost::weak_ptr<this_type>   weak_type;
+        typedef tns::shared_ptr<this_type> shared_type;
+        typedef tns::weak_ptr<this_type>   weak_type;
         typedef ST stream_type;
 
         enum message_transform_type {
@@ -35,7 +104,7 @@ namespace async_transport {
             DISPATCH_READ
         };
 
-        typedef boost::function <
+        typedef tns::function <
             void (const boost::system::error_code &)
         > write_closure;
 
@@ -45,7 +114,7 @@ namespace async_transport {
 
         struct queue_value {
 
-            typedef boost::shared_ptr<queue_value> shared_type;
+            typedef tns::shared_ptr<queue_value> shared_type;
 
             message_type    message_;
             write_closure   success_;
@@ -57,7 +126,7 @@ namespace async_transport {
             static
             shared_type create( const char *data, size_t length )
             {
-                return boost::make_shared<queue_value>( data, length );
+                return tns::make_shared<queue_value>( data, length );
             }
         };
 
@@ -123,7 +192,7 @@ namespace async_transport {
         void post_close(  )
         {
             write_dispatcher_.post(
-                        boost::bind( &this_type::close_impl, this,
+                        tns::bind( &this_type::close_impl, this,
                                      this->shared_from_this( ) ));
         }
 
@@ -162,11 +231,11 @@ namespace async_transport {
                 stream_.async_write_some(
                         boost::asio::buffer( data, length ),
                         write_dispatcher_.wrap(
-                            boost::bind( &this_type::write_handler, this,
-                            boost::asio::placeholders::error,
-                            boost::asio::placeholders::bytes_transferred,
-                            length, total,
-                            this->shared_from_this( ))
+                            tns::bind( &this_type::write_handler, this,
+                                tns::placeholders::error,
+                                tns::placeholders::bytes_transferred,
+                                length, total,
+                                this->shared_from_this( ))
                         )
                 );
             } catch( const std::exception & ) {
@@ -249,7 +318,7 @@ namespace async_transport {
             inst->success_ = close;
 
             write_dispatcher_.post(
-                    boost::bind( &this_type::write_impl, this,
+                    tns::bind( &this_type::write_impl, this,
                                  inst, this->shared_from_this( ) )
                     );
         }
@@ -279,10 +348,10 @@ namespace async_transport {
             stream_.async_read_some(
                     boost::asio::buffer(&read_buffer_[0], read_buffer_.size( )),
                     write_dispatcher_.wrap(
-                        boost::bind( &this_type::read_handler, this,
-                        boost::asio::placeholders::error,
-                        boost::asio::placeholders::bytes_transferred,
-                        this->shared_from_this( ))
+                        tns::bind( &this_type::read_handler, this,
+                            tns::placeholders::error,
+                            tns::placeholders::bytes_transferred,
+                            this->shared_from_this( ))
                     )
              );
         }
@@ -291,9 +360,9 @@ namespace async_transport {
         {
             stream_.async_read_some(
                     boost::asio::buffer(&read_buffer_[0], read_buffer_.size( )),
-                    boost::bind( &this_type::read_handler, this,
-                        boost::asio::placeholders::error,
-                        boost::asio::placeholders::bytes_transferred,
+                    tns::bind( &this_type::read_handler, this,
+                        tns::placeholders::error,
+                        tns::placeholders::bytes_transferred,
                         this->shared_from_this( )
                     )
             );
