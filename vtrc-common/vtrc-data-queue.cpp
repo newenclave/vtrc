@@ -40,7 +40,7 @@ namespace vtrc { namespace common { namespace data_queue {
 
         std::string &front( )
         {
-            packed_.front( );
+            return packed_.front( );
         }
 
         void pop_front( )

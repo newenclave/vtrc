@@ -50,15 +50,15 @@ namespace vtrc { namespace helper {
             return &::google::protobuf::Reflection::Set##TypeName; }           \
         static const adder_type         add() {                                \
             return &::google::protobuf::Reflection::Add##TypeName; }           \
-    };
+    }
 
 #define VTRC_STATIC_DEFINE_NAME_TYPE_CALLS_FOR_INTS( T )                       \
         VTRC_STATIC_DEFINE_NAME_TYPE_CALLS(                                    \
             google::protobuf::FieldDescriptor::CPPTYPE_INT##T,                 \
-            google::protobuf::int##T, google::protobuf::int##T, Int##T)        \
+            google::protobuf::int##T, google::protobuf::int##T, Int##T);       \
         VTRC_STATIC_DEFINE_NAME_TYPE_CALLS(                                    \
             google::protobuf::FieldDescriptor::CPPTYPE_UINT##T,                \
-            google::protobuf::uint##T, google::protobuf::uint##T, UInt##T)
+            google::protobuf::uint##T, google::protobuf::uint##T, UInt##T);
 
 VTRC_STATIC_DEFINE_NAME_TYPE_CALLS_FOR_INTS( 32 )
 VTRC_STATIC_DEFINE_NAME_TYPE_CALLS_FOR_INTS( 64 )

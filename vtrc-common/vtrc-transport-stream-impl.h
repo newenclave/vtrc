@@ -44,6 +44,8 @@ namespace vtrc { namespace common {
 
             vtrc::shared_ptr<stream_type>       stream_;
             basio::io_service                  &ios_;
+            basio::io_service::strand           write_dispatcher_;
+
             enviroment                          env_;
 
             parent_type                         *parent_;
@@ -52,7 +54,6 @@ namespace vtrc { namespace common {
 
             std::string                          name_;
 
-            basio::io_service::strand            write_dispatcher_;
 
 #ifndef TRANSPORT_USE_ASYNC_WRITE
             vtrc::mutex                          write_lock_;
