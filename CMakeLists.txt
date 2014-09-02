@@ -8,7 +8,7 @@ if(WIN32)
     )
 endif(WIN32)
 
-#include( cxx11_detect.cmake )
+include( cxx11_check.cmake )
 
 project(vtrc)
 
