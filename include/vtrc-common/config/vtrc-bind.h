@@ -3,6 +3,8 @@
 
 //#include "config.h"
 
+#if 1
+
 #include "boost/bind.hpp"
 
 namespace vtrc {
@@ -28,5 +30,33 @@ namespace vtrc {
 //        static boost::arg<2> &signal_number     = _2;
     }
 }
+#else
 
+#include <functional>
+
+namespace vtrc {
+
+    using std::bind;
+
+    namespace placeholders {
+
+        using std::placeholders::_1;
+        using std::placeholders::_2;
+        using std::placeholders::_3;
+        using std::placeholders::_4;
+        using std::placeholders::_5;
+        using std::placeholders::_6;
+        using std::placeholders::_7;
+        using std::placeholders::_8;
+        using std::placeholders::_9;
+
+        static decltype( _1 ) &error             = _1;
+        static decltype( _2 ) &bytes_transferred = _2;
+
+        //static decltype( _2 ) &iterator          = _2;
+        //static decltype( _2 ) &signal_number     = _2;
+    }
+}
+
+#endif
 #endif // VTRCBIND_H

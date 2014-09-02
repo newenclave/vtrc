@@ -91,7 +91,8 @@ namespace vtrc { namespace server {
             /// client has only 10 seconds for init connection
             /// todo: think about setting  for this timeout value
             keepalive_calls_.call_from_now(
-                        vtrc::bind( &this_type::on_init_timeout, this, _1 ),
+                        vtrc::bind( &this_type::on_init_timeout, this,
+                                     vtrc::placeholders::_1 ),
                         boost::posix_time::seconds( 10 ));
         }
 
@@ -147,8 +148,9 @@ namespace vtrc { namespace server {
         void send_and_close( const gpb::MessageLite &mess )
         {
             send_proto_message( mess,
-                                vtrc::bind( &this_type::close_client, this, _1,
-                                            connection_->shared_from_this( )),
+                                vtrc::bind( &this_type::close_client, this,
+                                             vtrc::placeholders::_1,
+                                             connection_->shared_from_this( )),
                                 true );
         }
 
@@ -319,7 +321,8 @@ namespace vtrc { namespace server {
                         common::connection_iface_sptr /*conn*/ )
         {
             parent_->make_local_call( llu,
-                vtrc::bind(&this_type::call_done, this, _1 ));
+                vtrc::bind(&this_type::call_done, this,
+                            vtrc::placeholders::_1 ));
         }
 
         void send_busy( lowlevel_unit_type &llu )

@@ -410,7 +410,8 @@ namespace vtrc { namespace client {
             change_stage( key_set ? STAGE_SETUP : STAGE_READY );
 
             send_proto_message( capsule,
-                                vtrc::bind( &this_type::set_options, this, _1 ),
+                                vtrc::bind( &this_type::set_options, this,
+                                             vtrc::placeholders::_1 ),
                                 false );
 
         }

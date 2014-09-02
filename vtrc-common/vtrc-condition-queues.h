@@ -281,7 +281,8 @@ namespace vtrc { namespace common {
             vtrc::shared_lock lck(lock_);
             std::for_each( store_.begin( ), store_.end( ),
                            vtrc::bind( this_type::write_all_impl,
-                                       _1, vtrc::cref(data)));
+                                       vtrc::placeholders::_1,
+                                       vtrc::cref(data)));
         }
 
         void write_queue_if_exists( const key_type &key,
@@ -313,19 +314,25 @@ namespace vtrc { namespace common {
         wait_result_codes wait_queue( const key_type &key )
         {
             return wait_queue_impl( key,
-                        vtrc::bind( &this_type::cond_wait, _1, _2) );
+                        vtrc::bind( &this_type::cond_wait,
+                                     vtrc::placeholders::_1,
+                                     vtrc::placeholders::_2) );
         }
 
         wait_result_codes read( const key_type &key, queue_value_type &result )
         {
             return read_impl( key, result,
-                        vtrc::bind( &this_type::cond_wait, _1, _2 ) );
+                        vtrc::bind( &this_type::cond_wait,
+                                     vtrc::placeholders::_1,
+                                     vtrc::placeholders::_2 ) );
         }
 
         wait_result_codes read_queue( const key_type &key, queue_type &result )
         {
             return read_queue_impl( key, result,
-                        vtrc::bind( &this_type::cond_wait, _1, _2) );
+                        vtrc::bind( &this_type::cond_wait,
+                                     vtrc::placeholders::_1,
+                                     vtrc::placeholders::_2) );
         }
 
         bool queue_exists( const key_type &key ) const
@@ -395,7 +402,9 @@ namespace vtrc { namespace common {
         {
             return wait_queue_impl( key,
                         vtrc::bind( &this_type::cond_wait_for<Rep, Period>,
-                                     _1, _2, vtrc::cref(duration) ) );
+                                     vtrc::placeholders::_1,
+                                     vtrc::placeholders::_2,
+                                     vtrc::cref(duration) ) );
         }
 
         template <typename Rep, typename Period>
@@ -404,7 +413,9 @@ namespace vtrc { namespace common {
         {
             return read_impl( key, result,
                         vtrc::bind( &this_type::cond_wait_for<Rep, Period>,
-                                     _1, _2, vtrc::cref(duration) ) );
+                                     vtrc::placeholders::_1,
+                                     vtrc::placeholders::_2,
+                                     vtrc::cref(duration) ) );
         }
 
         template <typename Rep, typename Period>
@@ -413,7 +424,9 @@ namespace vtrc { namespace common {
         {
             return read_queue_impl( key, result,
                         vtrc::bind( &this_type::cond_wait_for<Rep, Period>,
-                                     _1, _2, vtrc::cref(duration) ) );
+                                     vtrc::placeholders::_1,
+                                     vtrc::placeholders::_2,
+                                     vtrc::cref(duration) ) );
         }
 
     };

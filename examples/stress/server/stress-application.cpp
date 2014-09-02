@@ -145,7 +145,8 @@ namespace stress {
         void start_retry_accept( server::listener_sptr l, unsigned rto )
         {
             retry_timer_.call_from_now(
-                vtrc::bind( &impl::retry_timer_handler, this, l, rto, _1 ),
+                vtrc::bind( &impl::retry_timer_handler, this,
+                            l, rto, vtrc::placeholders::_1 ),
                             common::timer::milliseconds( rto ));
         }
 
@@ -252,15 +253,16 @@ namespace stress {
         {
             listen->on_new_connection_connect(
                    vtrc::bind( &impl::on_new_connection, this,
-                               listen.get( ), _1 ));
+                               listen.get( ), vtrc::placeholders::_1 ));
 
             listen->on_stop_connection_connect(
                    vtrc::bind( &impl::on_stop_connection, this,
-                               listen.get( ), _1 ));
+                               listen.get( ), vtrc::placeholders::_1 ));
 
             listen->on_accept_failed_connect(
                    vtrc::bind( &impl::on_accept_failed, this,
-                               listen.get( ), retry_to, _1 ) );
+                               listen.get( ), retry_to,
+                               vtrc::placeholders::_1 ) );
 
             listeners_.push_back( listen );
 

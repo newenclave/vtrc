@@ -180,13 +180,15 @@ namespace vtrc { namespace server {
 
                 if( clk ) {
                     lck_list->foreach_while(
-                            vtrc::bind( &this_type::send_to_client, this, _1,
-                                        vtrc::cref(clk), vtrc::ref(llu),
-                                        message_type_) );
+                            vtrc::bind( &this_type::send_to_client, this,
+                                         vtrc::placeholders::_1,
+                                         vtrc::cref(clk), vtrc::ref(llu),
+                                         message_type_) );
                 } else {
                     lck_list->foreach_while(
-                            vtrc::bind( &this_type::send_to_client2, this, _1,
-                                        vtrc::ref(llu), message_type_) );
+                            vtrc::bind( &this_type::send_to_client2, this,
+                                         vtrc::placeholders::_1,
+                                         vtrc::ref(llu), message_type_) );
                 }
             }
         };

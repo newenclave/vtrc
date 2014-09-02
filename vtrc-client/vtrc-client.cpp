@@ -181,8 +181,11 @@ namespace vtrc { namespace client {
 
             bs2::scoped_connection fc( parent_->on_init_error_connect(
                             vtrc::bind( impl::on_init_error_s,
-                                  vtrc::ref(failed), vtrc::ref(failed_message),
-                                  vtrc::ref(cond), _1, _2 )) );
+                                        vtrc::ref(failed),
+                                        vtrc::ref(failed_message),
+                                        vtrc::ref(cond),
+                                        vtrc::placeholders::_1,
+                                        vtrc::placeholders::_2 )) );
 
             /// call connect
             conn_func( );

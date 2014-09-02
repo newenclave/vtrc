@@ -73,7 +73,9 @@ namespace lukki_db {
                             common::closure_holder::create(done) );
                 app_.set( request->name( ), request->value( ),
                           vtrc::bind( &this_type::yks_closure,
-                                      _1, _2, controller, holder) );
+                                      vtrc::placeholders::_1,
+                                      vtrc::placeholders::_2,
+                                      controller, holder) );
             }
 
             void upd(::google::protobuf::RpcController* controller,
@@ -85,7 +87,9 @@ namespace lukki_db {
                             common::closure_holder::create(done) );
                 app_.upd( request->name( ), request->value( ),
                           vtrc::bind( &this_type::yks_closure,
-                                      _1, _2, controller, holder) );
+                                      vtrc::placeholders::_1,
+                                      vtrc::placeholders::_2,
+                                      controller, holder) );
             }
 
             void del(::google::protobuf::RpcController* controller,
@@ -98,7 +102,9 @@ namespace lukki_db {
 
                 app_.del( request->name( ),
                           vtrc::bind( &this_type::yks_closure,
-                                      _1, _2, controller, holder) );
+                                      vtrc::placeholders::_1,
+                                      vtrc::placeholders::_2,
+                                      controller, holder) );
 
             }
 
@@ -132,8 +138,9 @@ namespace lukki_db {
 
                 app_.get( request->name( ), res,
                            vtrc::bind( &this_type::mess_closure<res_type>,
-                                  _1, _2,
-                                  res, response, controller, holder) );
+                                        vtrc::placeholders::_1,
+                                        vtrc::placeholders::_2,
+                                        res, response, controller, holder) );
             }
 
             void stat(::google::protobuf::RpcController* controller,
@@ -149,8 +156,9 @@ namespace lukki_db {
 
                 vtrc::shared_ptr<res_type> res(new res_type);
                 app_.stat( res, vtrc::bind( &this_type::mess_closure<res_type>,
-                                         _1, _2,
-                                         res, response, controller, holder) );
+                                            vtrc::placeholders::_1,
+                                            vtrc::placeholders::_2,
+                                            res, response, controller, holder));
             }
 
             void exist(::google::protobuf::RpcController* controller,
@@ -165,7 +173,8 @@ namespace lukki_db {
                 vtrc::shared_ptr<res_type> res (new res_type);
                 app_.exist( request->name( ), res,
                             vtrc::bind( &this_type::mess_closure<res_type>,
-                                        _1, _2,
+                                        vtrc::placeholders::_1,
+                                        vtrc::placeholders::_2,
                                         res, response, controller, holder ));
 
             }
@@ -404,10 +413,12 @@ namespace lukki_db {
     void application::attach_start_listener( server::listener_sptr listen )
     {
         listen->on_new_connection_connect(
-                    vtrc::bind( &impl::on_new_connection, impl_, listen, _1 ));
+                    vtrc::bind( &impl::on_new_connection, impl_,
+                                 listen, vtrc::placeholders::_1 ));
 
         listen->on_stop_connection_connect(
-                    vtrc::bind( &impl::on_stop_connection, impl_, listen, _1 ));
+                    vtrc::bind( &impl::on_stop_connection, impl_,
+                                 listen, vtrc::placeholders::_1 ));
 
         listen->start( );
         impl_->listeners_.push_back( listen );

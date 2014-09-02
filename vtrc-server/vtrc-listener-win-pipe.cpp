@@ -125,7 +125,8 @@ namespace {
         close_closure get_on_close_cb( )
         {
             return vtrc::bind( &this_type::on_client_destroy, this,
-                               weak_from_this( ), _1 );
+                                weak_from_this( ),
+                                vtrc::placeholders::_1 );
         }
 
         std::string name( ) const

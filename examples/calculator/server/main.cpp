@@ -186,10 +186,10 @@ public:
     {
         listen->on_new_connection_connect(
                     vtrc::bind( &this_type::on_new_connection, this,
-                                listen, _1 ));
+                                listen, vtrc::placeholders::_1 ));
         listen->on_stop_connection_connect(
                     vtrc::bind( &this_type::on_stop_connection, this,
-                                listen, _1 ));
+                                listen, vtrc::placeholders::_1 ));
     }
 };
 
