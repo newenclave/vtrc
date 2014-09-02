@@ -1,6 +1,8 @@
 
 cmake_minimum_required(VERSION 2.8)
 
+project(vtrc)
+
 if(WIN32)
     set(
         CMAKE_USER_MAKE_RULES_OVERRIDE
@@ -10,7 +12,15 @@ endif(WIN32)
 
 include( cxx11_check.cmake )
 
-project(vtrc)
+set( VTRC_CXX11_ENABLED 0 )
+
+check_cxx11( VTRC_CXX11_ENABLED )
+
+if( VTRC_CXX11_ENABLED )
+    message( "if " ${VTRC_CXX11_ENABLED} )
+else( )
+    message( "else " ${VTRC_CXX11_ENABLED} )
+endif( )
 
 set( VTRC_LINK_TYPE_STATIC STATIC )
 set( VTRC_LINK_TYPE_SHARED SHARED )
