@@ -8,6 +8,8 @@ if(WIN32)
     )
 endif(WIN32)
 
+#include( cxx11_detect.cmake )
+
 project(vtrc)
 
 set( VTRC_LINK_TYPE_STATIC STATIC )
