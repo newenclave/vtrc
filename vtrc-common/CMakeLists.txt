@@ -80,14 +80,21 @@ foreach(next_proto ${protofiles})
 
 endforeach( )
 
+list( APPEND public_proto_files
+        vtrc-rpc-options.proto
+        #vtrc-errors.proto
+    )
 
-file(COPY
-        #protocol-base/vtrc-errors.proto
-        protocol-base/vtrc-rpc-options.proto
+foreach( next_proto ${public_proto_files} )
 
-     DESTINATION
+    file(COPY
+            protocol-base/${next_proto}
+        DESTINATION
+            ${VTRC_PROTOCOL_INCLUDE_DIR} )
 
-        ${VTRC_PROTOCOL_INCLUDE_DIR} )
+endforeach( )
+
+
 
 
 ##################################################
