@@ -51,9 +51,7 @@ namespace vtrc { namespace common {
         :std::runtime_error(get_error_code_string(code, code_category))
         ,code_(code)
         ,category_(code_category)
-    {
-
-    }
+    { }
 
     exception::exception(unsigned code,
                          unsigned code_category,
