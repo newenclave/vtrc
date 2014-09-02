@@ -3,6 +3,8 @@
 
 //#include "config.h"
 
+#if 1
+
 #include "boost/shared_ptr.hpp"
 #include "boost/weak_ptr.hpp"
 #include "boost/make_shared.hpp"
@@ -123,5 +125,20 @@ namespace vtrc {
 //    template <typename T>
 //    struct weak_ptr { typedef boost::weak_ptr<T> type; };
 }
+
+
+#else
+
+#include <memory>
+namespace vtrc {
+    using std::shared_ptr;
+    using std::weak_ptr;
+    using std::make_shared;
+    using std::enable_shared_from_this;
+    using std::unique_ptr;
+}
+
+#endif
+
 
 #endif // VTRCMEMORY_H
