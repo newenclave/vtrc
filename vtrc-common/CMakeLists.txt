@@ -94,10 +94,8 @@ foreach( next_proto ${public_proto_files} )
 
 endforeach( )
 
-
-
-
 ##################################################
+
 
 add_library(${lib_name} ${VTRC_LINK_TYPE} ${lib_src})
 
