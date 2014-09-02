@@ -126,7 +126,6 @@ namespace vtrc {
 //    struct weak_ptr { typedef boost::weak_ptr<T> type; };
 }
 
-
 #else
 
 #include <memory>
