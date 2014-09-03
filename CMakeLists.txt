@@ -56,7 +56,11 @@ set( VTRC_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include )
 set( VTRC_CONFIG_INCLUDE_DIR ${VTRC_INCLUDE_DIR}/vtrc-common/config )
 
 if( VTRC_CXX11_ENABLED )
+
     set( VTRC_DISABLE_CXX11 0 )
+    get_cmd_cxx11( VTRC_CXX_CMD )
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${VTRC_CXX_CMD}")
+
 else( )
     set( VTRC_DISABLE_CXX11 1 )
 endif( )

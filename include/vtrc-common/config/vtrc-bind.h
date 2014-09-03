@@ -3,7 +3,7 @@
 
 #include "vtrc-general-config.h"
 
-#if 1
+#if VTRC_DISABLE_CXX11
 
 #include "boost/bind.hpp"
 
