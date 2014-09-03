@@ -212,6 +212,19 @@ namespace vtrc { namespace common {
                 }
             }
 
+            struct handler_params {
+                size_t length_;
+                size_t total_;
+                common::connection_iface_sptr inst_;
+                handler_params( size_t length,
+                                size_t total,
+                                common::connection_iface_sptr inst )
+                    :length_(length)
+                    ,total_(total)
+                    ,inst_(inst)
+                {}
+            };
+
             void async_write( const char *data, size_t length, size_t total )
             {
                 try {
@@ -221,8 +234,8 @@ namespace vtrc { namespace common {
                                     vtrc::bind( &this_type::write_handler, this,
                                          vtrc::placeholders::error,
                                          vtrc::placeholders::bytes_transferred,
-                                         length, total,
-                                         parent_->shared_from_this( )))
+                                         handler_params( length, total,
+                                            parent_->shared_from_this( ))))
                             );
                 } catch( const std::exception & ) {
                     this->close( );
@@ -232,21 +245,22 @@ namespace vtrc { namespace common {
 
             void write_handler( const bsys::error_code &error,
                                 size_t const bytes,
-                                size_t const length,
-                                size_t       total,
-                                common::connection_iface_sptr /*inst*/)
+                                handler_params &params )
+                                //size_t const length,
+                                //size_t       total,
+                                //common::connection_iface_sptr /*inst*/)
             {
                 message_holder &top_holder(*write_queue_.front( ));
 
                 if( !error ) {
 
-                    if( bytes < length ) {
+                    if( bytes < params.length_ ) {
 
-                        total += bytes;
+                        params.total_ += bytes;
 
                         const std::string &top(top_holder.message_);
-                        async_write(top.c_str( ) + total,
-                                    top.size( )  - total, total);
+                        async_write(top.c_str( ) + params.total_,
+                                    top.size( )  - params.total_, params.total_);
 
                     } else {
 
