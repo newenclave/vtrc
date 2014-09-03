@@ -10,5 +10,8 @@
 #define VTRC_DISABLE_CXX11 0
 
 
+#define VTRC_THREAD_LOCAL  thread_local
+
+
 #endif // VTRC_GENERAL_CONFIG_H
 
