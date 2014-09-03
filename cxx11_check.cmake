@@ -30,7 +30,7 @@ macro( get_cmd_cxx11 COMMAND_VAR )
 
     if( MSVC )                                          ### MS
 
-        set( ${COMMAND_VAR} "-D_VARIADIC_MAX=9" )
+        set( ${COMMAND_VAR} "" )
 
     elseif( CMAKE_COMPILER_IS_GNUCXX )                  ### CNU
 
