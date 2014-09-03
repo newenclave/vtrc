@@ -134,6 +134,19 @@ namespace vtrc { namespace common {
 
         namespace size_policy_ns = data_queue::varint;
 
+        typedef std::deque< vtrc::shared_ptr<call_context> > call_stack_type;
+#if VTRC_DISABLE_CXX11
+        /// call context ptr BOOST
+        typedef std::deque< vtrc::shared_ptr<call_context> > call_stack_type;
+        typedef boost::thread_specific_ptr<call_stack_type>  call_context_ptr;
+        static call_context_ptr s_call_context;
+#else
+        //// NON BOOST
+        typedef call_stack_type *call_context_ptr;
+        static thread_local call_context_ptr s_call_context = nullptr;
+#endif
+        /// ///
+
     }
 
     struct protocol_layer::impl {
@@ -157,7 +170,7 @@ namespace vtrc { namespace common {
         vtrc::atomic<uint64_t>       rpc_index_;
 
 #if USE_STATIC_CALL_CONTEXT
-        static call_context_ptr      context_;
+        //static call_context_ptr      context_;
 #else
         call_context_ptr             context_;
 #endif
@@ -185,6 +198,33 @@ namespace vtrc { namespace common {
             ,level_(0)
             ,session_opts_(opts)
         { }
+
+        /// call_stack pointer BOOST ///
+#if VTRC_DISABLE_CXX11
+        static call_stack_type *context_get( )
+        {
+            return s_call_context.get( );
+        }
+
+        static void context_reset( call_stack_type *new_inst = NULL )
+        {
+            s_call_context.reset( new_inst );
+        }
+#else
+        static call_stack_type *context_get( )
+        {
+            return s_call_context;
+        }
+
+        static void context_reset( call_stack_type *new_inst = NULL )
+        {
+            if( s_call_context ) {
+                delete s_call_context;
+            }
+            s_call_context = new_inst;
+        }
+#endif
+        //////////////////////////
 
         ~impl( )
         { }
@@ -421,9 +461,9 @@ namespace vtrc { namespace common {
 
         void check_create_stack( )
         {
-            if( NULL == context_.get( ) ) {
+            if( NULL == context_get( ) ) {
                 //std::cout << "Stack is empty!\n";
-                context_.reset( new call_stack_type );
+                context_reset( new call_stack_type );
             }
         }
 
@@ -432,8 +472,8 @@ namespace vtrc { namespace common {
             check_create_stack( );
             call_context *top = top_call_context( );
             cc->set_next( top );
-            context_->push_front( cc );
-            return context_->front( ).get( );
+            context_get( )->push_front( cc );
+            return context_get( )->front( ).get( );
         }
 
         call_context *push_call_context( call_context *cc)
@@ -443,20 +483,24 @@ namespace vtrc { namespace common {
 
         void pop_call_context( )
         {
-            if( !context_->empty( ) ) {
-                context_->pop_front( );
+            if( !context_get( )->empty( ) ) {
+                context_get( )->pop_front( );
+            }
+
+            if( context_get( )->empty( ) ) {
+                context_reset( );
             }
         }
 
         void reset_call_context( )
         {
-            context_.reset(  );
+            context_reset(  );
         }
 
         void swap_call_stack( call_stack_type &other )
         {
             check_create_stack( );
-            std::swap( *context_, other );
+            std::swap( *context_get( ), other );
         }
 
         static vtrc::shared_ptr<call_context> clone_context( call_context &src )
@@ -483,24 +527,24 @@ namespace vtrc { namespace common {
 
         void copy_call_stack( call_stack_type &other ) const
         {
-            if( NULL == context_.get( ) ) {
+            if( NULL == context_get( ) ) {
                 other.clear( );
             } else {
-                clone_stack( *context_, other );
+                clone_stack( *context_get( ), other );
             }
         }
 
         const call_context *get_call_context( ) const
         {
-            return context_.get( ) && !context_->empty( )
-                    ? context_->front( ).get( )
+            return context_get( ) && !context_get( )->empty( )
+                    ? context_get( )->front( ).get( )
                     : NULL;
         }
 
         call_context *top_call_context( )
         {
-            return (context_.get( ) && !context_->empty( ))
-                    ? context_->front( ).get( )
+            return (context_get( ) && !context_get( )->empty( ))
+                    ? context_get( )->front( ).get( )
                     : NULL;
         }
 
@@ -850,7 +894,7 @@ namespace vtrc { namespace common {
     };
 
 #if USE_STATIC_CALL_CONTEXT
-    protocol_layer::impl::call_context_ptr protocol_layer::impl::context_;
+//    protocol_layer::impl::call_context_ptr protocol_layer::impl::context_;
 #endif
 
     protocol_layer::protocol_layer( transport_iface *connection, bool oddside )

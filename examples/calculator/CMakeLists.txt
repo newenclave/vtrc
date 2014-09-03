@@ -24,7 +24,7 @@ if( VTRC_CXX11_ENABLED )
     find_package( Boost 1.50 COMPONENTS
                     system
                     thread
-              REQUIRED)
+                  REQUIRED)
 
 else( )
 
@@ -36,7 +36,7 @@ else( )
                     thread
                     atomic
                     random
-              REQUIRED)
+                  REQUIRED)
 endif( )
 
 find_package( Protobuf REQUIRED)

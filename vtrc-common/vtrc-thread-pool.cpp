@@ -167,8 +167,6 @@ namespace vtrc { namespace common {
                     }
                 } catch( const interrupt & ) {
                     break;
-                } catch( const boost::thread_interrupted & ) {
-                    break;
                 } catch( const std::exception &) {
                     ;;;
                 }
