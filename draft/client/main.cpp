@@ -40,10 +40,9 @@ void get_set_ptr( int i, thread_ptr_int &data )
 
         if( j != m ) {
             std::cerr << "Failed!\n";
-        } else {
-            std::cout << std::this_thread::get_id( ) << " ok\n";
         }
     }
+    delete data.get( );
 }
 
 int main( )
@@ -58,6 +57,9 @@ int main( )
     for( int i=0; i<100; ++i ) {
         tg.create_thread( boost::bind( get_set_ptr, i, boost::ref( ti ) ) );
     }
+
+    tg.join_all( );
+    delete ti.get( );
 
     return 0;
 }
