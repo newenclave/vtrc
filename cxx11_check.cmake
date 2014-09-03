@@ -26,7 +26,6 @@ set( ${VAR_ENABLED} 1 )
 
 endmacro( )
 
-
 macro( get_cmd_cxx11 COMMAND_VAR )
 
     if( MSVC )                                          ### MS

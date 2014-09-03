@@ -14,7 +14,9 @@ include( cxx11_check.cmake )
 
 set( VTRC_CXX11_ENABLED 0 )
 
-check_cxx11( VTRC_CXX11_ENABLED )
+if( NOT VTRC_DISABLE_CXX11 )
+    check_cxx11( VTRC_CXX11_ENABLED )
+endif( )
 
 set( VTRC_LINK_TYPE_STATIC STATIC )
 set( VTRC_LINK_TYPE_SHARED SHARED )
@@ -31,7 +33,7 @@ endif( )
 
 set(Boost_USE_MULTITHREADED   ON)
 
-if( VTRC_CXX11_ENABLED AND NOT VTRC_DISABLE_CXX11 )
+if( VTRC_CXX11_ENABLED )
 
     find_package( Boost 1.53 COMPONENTS
                         system
