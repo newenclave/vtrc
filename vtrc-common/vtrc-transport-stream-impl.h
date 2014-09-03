@@ -212,6 +212,7 @@ namespace vtrc { namespace common {
                 }
             }
 
+            /// because of _VARIADIC_MAX=5 for MSVC
             struct handler_params {
                 size_t length_;
                 size_t total_;
