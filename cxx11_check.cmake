@@ -12,7 +12,7 @@ set( ${VAR_ENABLED} 1 )
 
     elseif( CMAKE_COMPILER_IS_GNUCXX )                  ### CNU
 
-        if( ${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS 4.6 )
+        if( ${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS 4.8 )
             set( ${VAR_ENABLED} 0 )
         endif( )
 
