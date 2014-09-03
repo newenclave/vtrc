@@ -24,6 +24,7 @@
 #include "vtrc-mutex.h"
 #include "vtrc-atomic.h"
 
+#include "boost/asio.hpp"
 #include "boost/asio/error.hpp"
 
 namespace stress {
@@ -31,6 +32,7 @@ namespace stress {
     using namespace vtrc;
     namespace po = boost::program_options;
     namespace gpb = google::protobuf;
+    namespace basio = boost::asio;
 
     namespace {
 
@@ -109,6 +111,7 @@ namespace stress {
     struct application::impl {
 
         common::pool_pair                   pp_;
+        basio::io_service::strand           disp_;
         app_impl                            app_;
         std::vector<server::listener_sptr>  listeners_;
 
@@ -119,6 +122,7 @@ namespace stress {
 
         impl( unsigned io_threads )
             :pp_(io_threads)
+            ,disp_(pp_.get_io_service( ))
             ,app_(pp_)
             ,counter_(0)
             ,retry_timer_(pp_.get_io_service( ))
@@ -127,6 +131,7 @@ namespace stress {
 
         impl( unsigned io_threads, unsigned rpc_threads )
             :pp_(io_threads, rpc_threads)
+            ,disp_(pp_.get_io_service( ))
             ,app_(pp_)
             ,counter_(0)
             ,retry_timer_(pp_.get_io_service( ))
@@ -254,12 +259,12 @@ namespace stress {
                                     vtrc::server::listener_sptr listen )
         {
             listen->on_new_connection_connect(
-                   vtrc::bind( &impl::on_new_connection, this,
-                               listen.get( ), vtrc::placeholders::_1 ));
+                   disp_.wrap(vtrc::bind( &impl::on_new_connection, this,
+                               listen.get( ), vtrc::placeholders::_1 )));
 
             listen->on_stop_connection_connect(
-                   vtrc::bind( &impl::on_stop_connection, this,
-                               listen.get( ), vtrc::placeholders::_1 ));
+                   disp_.wrap(vtrc::bind( &impl::on_stop_connection, this,
+                               listen.get( ), vtrc::placeholders::_1 )));
 
             listen->on_accept_failed_connect(
                    vtrc::bind( &impl::on_accept_failed, this,
