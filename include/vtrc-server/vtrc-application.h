@@ -22,7 +22,7 @@ namespace vtrc_rpc {
 namespace vtrc {
 
     namespace common {
-        class  connection_iface;
+        struct connection_iface;
         class  enviroment;
         class  connection_list;
         class  pool_pair;
