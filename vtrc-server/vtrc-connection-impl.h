@@ -78,7 +78,7 @@ namespace vtrc { namespace server { namespace listeners {
                      (vtrc::make_shared<this_type>(vtrc::ref(endpoint),
                                                    sock, on_close_cb ));
 
-                new_inst->init( );
+                //new_inst->init( );
                 return new_inst;
             }
 
