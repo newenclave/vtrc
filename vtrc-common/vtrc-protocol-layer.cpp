@@ -142,12 +142,7 @@ namespace vtrc { namespace common {
 #else
         //// NON BOOST
         typedef call_stack_type *call_context_ptr;
-#ifdef _MSC_VER
-        /// crutch!!!!
-        static __declspec( thread ) call_context_ptr s_call_context = nullptr;
-#else
-        static thread_local call_context_ptr s_call_context = nullptr;
-#endif
+        static VTRC_THREAD_LOCAL call_context_ptr s_call_context = nullptr;
 
 #endif  /// VTRC_DISABLE_CXX11
 

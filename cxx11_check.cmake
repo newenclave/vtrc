@@ -12,7 +12,7 @@ set( ${VAR_ENABLED} 1 )
 
     elseif( CMAKE_COMPILER_IS_GNUCXX )                  ### CNU
 
-        if( ${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS 4.8 )
+        if( ${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS 4.6 )
             set( ${VAR_ENABLED} 0 )
         endif( )
 
@@ -39,6 +39,28 @@ macro( get_cmd_cxx11 COMMAND_VAR )
     elseif( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" )    ### Clang
 
         set( ${COMMAND_VAR} "-std=c++11" )
+
+    endif( )
+
+endmacro( )
+
+macro( get_compiler_thread_local MACRO_VAR )
+
+    if( MSVC )                                          ### MS
+
+        set( ${MACRO_VAR} __declspec(thread) )
+
+    elseif( CMAKE_COMPILER_IS_GNUCXX )                  ### CNU
+
+        if( ${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS 4.8 )
+            set( ${MACRO_VAR} __thread )
+        else( )
+            set( ${MACRO_VAR} thread_local )
+        endif( )
+
+    elseif( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" )    ### Clang
+
+        set( ${MACRO_VAR} thread_local )
 
     endif( )
 

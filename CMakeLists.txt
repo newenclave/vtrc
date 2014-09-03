@@ -39,8 +39,12 @@ if( VTRC_CXX11_ENABLED )
                         system
                         thread  # for the shared mutexes
                   REQUIRED)
+
     set( VTRC_DISABLE_CXX11 0 )
+
     get_cmd_cxx11( VTRC_CXX_CMD )
+    get_compiler_thread_local( VTRC_THREAD_LOCAL )
+
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${VTRC_CXX_CMD}")
 
 else( )
