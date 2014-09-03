@@ -45,6 +45,10 @@ find_package( Protobuf REQUIRED)
 
 include_directories( ${VTRC_INCLUDE_DIRS} )
 
+if(MSVC) #crutch or VS
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_VARIADIC_MAX=9")
+endif( )
+
 add_subdirectory(protocol)
 add_subdirectory(client)
 add_subdirectory(server)
