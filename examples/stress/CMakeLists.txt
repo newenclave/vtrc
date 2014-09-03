@@ -8,7 +8,6 @@ endif(WIN32)
 
 cmake_minimum_required(VERSION 2.8)
 
-
 project(vtrc-stress)
 
 set(INTERNAL_PROJECT_NAME stress)
