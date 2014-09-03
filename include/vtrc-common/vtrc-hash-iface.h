@@ -3,6 +3,7 @@
 
 #include <string>
 #include "vtrc-memory.h"
+#include "vtrc-stdint.h"
 
 namespace vtrc { namespace common {
     struct hash_iface {
