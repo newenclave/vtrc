@@ -1,5 +1,7 @@
 #include "google/protobuf/descriptor.h"
 
+#include <stdexcept>
+
 #include "vtrc-call-keeper.h"
 #include "vtrc-call-context.h"
 #include "vtrc-protocol-layer.h"
