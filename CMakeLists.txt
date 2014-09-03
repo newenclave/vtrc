@@ -111,6 +111,8 @@ elseif(  CMAKE_CXX_COMPILER_ID STREQUAL "Clang" )
 
 endif( )
 
+message( ${CMAKE_CXX_FLAGS} )
+
 add_subdirectory(vtrc-common)
 add_subdirectory(vtrc-server)
 add_subdirectory(vtrc-client)
