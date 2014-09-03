@@ -10,6 +10,11 @@
 #include "vtrc-ref.h"
 #include "vtrc-thread.h"
 
+#ifdef _MSC_VER
+#define sleep_ Sleep
+#else
+#define sleep_ sleep
+#endif
 
 namespace stress {
 
@@ -50,7 +55,7 @@ namespace stress {
             res += ping_impl( iface, payload );
 
             if( !flood && count ) {
-                this_thread::sleep_for( chrono::seconds( 1 ) );
+                sleep_( 1 );
             }
         }
 

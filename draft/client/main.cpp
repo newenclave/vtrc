@@ -6,7 +6,7 @@
 
 template <typename T> T *& get_ptr( )
 {
-    static thread_local T * t = nullptr;
+    static __thread T * t = nullptr;
     return t;
 }
 
