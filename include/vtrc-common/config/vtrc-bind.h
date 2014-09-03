@@ -1,7 +1,7 @@
 #ifndef VTRC_BIND_H
 #define VTRC_BIND_H
 
-//#include "config.h"
+#include "vtrc-general-config.h"
 
 #if 1
 

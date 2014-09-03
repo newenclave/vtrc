@@ -31,19 +31,40 @@ endif( )
 
 set(Boost_USE_MULTITHREADED   ON)
 
-find_package( Boost 1.53 COMPONENTS
-                    system
-                    chrono
-                    date_time
-                    regex
-                    thread
-                    atomic
-                    random
-              REQUIRED)
+if( VTRC_CXX11_ENABLED )
+
+    find_package( Boost 1.53 COMPONENTS
+                        system
+                  REQUIRED)
+else( )
+
+    find_package( Boost 1.53 COMPONENTS
+                        system
+                        chrono
+                        date_time
+                        regex
+                        thread
+                        atomic
+                        random
+                  REQUIRED)
+
+endif( )
+
 find_package( Protobuf REQUIRED)
 
 set( VTRC_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include )
 set( VTRC_CONFIG_INCLUDE_DIR ${VTRC_INCLUDE_DIR}/vtrc-common/config )
+
+if( VTRC_CXX11_ENABLED )
+    set( VTRC_DISABLE_CXX11 0 )
+else( )
+    set( VTRC_DISABLE_CXX11 1 )
+endif( )
+
+message( ${PROJECT_SOURCE_DIR} )
+
+configure_file ("${PROJECT_SOURCE_DIR}/vtrc-general-config.h.in"
+                "${VTRC_CONFIG_INCLUDE_DIR}/vtrc-general-config.h" )
 
 #
 # VTRC_PROTOCOL_DIR

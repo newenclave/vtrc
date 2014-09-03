@@ -1,6 +1,8 @@
 #ifndef VTRC_RANDOM_H
 #define VTRC_RANDOM_H
 
+#include "vtrc-general-config.h"
+
 #include "boost/random/random_device.hpp"
 #include "boost/random.hpp"
 

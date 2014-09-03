@@ -1,7 +1,7 @@
 #ifndef VTRC_ATOMIC_H
 #define VTRC_ATOMIC_H
 
-//#include "config.h"
+#include "vtrc-general-config.h"
 
 #include "boost/atomic.hpp"
 

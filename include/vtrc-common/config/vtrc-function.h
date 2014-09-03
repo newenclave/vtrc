@@ -1,7 +1,7 @@
 #ifndef VTRC_FUNCTION_H
 #define VTRC_FUNCTION_H
 
-//#include "config.h"
+#include "vtrc-general-config.h"
 
 #include "boost/function.hpp"
 

@@ -1,7 +1,7 @@
 #ifndef VTRC_MEMORY_H
 #define VTRC_MEMORY_H
 
-//#include "config.h"
+#include "vtrc-general-config.h"
 
 #if 1
 

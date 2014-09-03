@@ -25,3 +25,22 @@ set( ${VAR_ENABLED} 1 )
     endif( )
 
 endmacro( )
+
+
+macro( get_cmd_cxx11 COMMAND_VAR )
+
+    if( MSVC )                                          ### MS
+
+        set( ${COMMAND_VAR} "" )
+
+    elseif( CMAKE_COMPILER_IS_GNUCXX )                  ### CNU
+
+        set( ${COMMAND_VAR} "-std=c++11" )
+
+    elseif( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" )    ### Clang
+
+        set( ${COMMAND_VAR} "-std=c++11" )
+
+    endif( )
+
+endmacro( )
