@@ -1,5 +1,6 @@
 #include <map>
 #include <string>
+#include <iostream>
 
 #include "lukki-db-application.h"
 #include "vtrc-common/vtrc-thread-pool.h"

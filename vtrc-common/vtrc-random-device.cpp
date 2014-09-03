@@ -3,7 +3,7 @@
 
 #include "vtrc-random.h"
 
-#include <limits>
+#include <limits.h>
 
 #include "vtrc-memory.h"
 
@@ -18,7 +18,9 @@ namespace  vtrc { namespace  common {
         vtrc::random_device rd_;
         void generate( char *b, char *e )
         {
-            rd_.generate( b, e );
+            for( ; b!= e; ++b ) {
+                *b = rd_();
+            }
         }
     };
 

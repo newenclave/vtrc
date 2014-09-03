@@ -31,11 +31,15 @@ endif( )
 
 set(Boost_USE_MULTITHREADED   ON)
 
-if( VTRC_CXX11_ENABLED )
+if( VTRC_CXX11_ENABLED AND NOT VTRC_DISABLE_CXX11 )
 
     find_package( Boost 1.53 COMPONENTS
                         system
                   REQUIRED)
+    set( VTRC_DISABLE_CXX11 0 )
+    get_cmd_cxx11( VTRC_CXX_CMD )
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${VTRC_CXX_CMD}")
+
 else( )
 
     find_package( Boost 1.53 COMPONENTS
@@ -48,24 +52,14 @@ else( )
                         random
                   REQUIRED)
 
+    set( VTRC_DISABLE_CXX11 1 )
+
 endif( )
 
 find_package( Protobuf REQUIRED)
 
 set( VTRC_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include )
 set( VTRC_CONFIG_INCLUDE_DIR ${VTRC_INCLUDE_DIR}/vtrc-common/config )
-
-if( VTRC_CXX11_ENABLED )
-
-    set( VTRC_DISABLE_CXX11 0 )
-    get_cmd_cxx11( VTRC_CXX_CMD )
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${VTRC_CXX_CMD}")
-
-else( )
-    set( VTRC_DISABLE_CXX11 1 )
-endif( )
-
-message( ${PROJECT_SOURCE_DIR} )
 
 configure_file ("${PROJECT_SOURCE_DIR}/vtrc-general-config.h.in"
                 "${VTRC_CONFIG_INCLUDE_DIR}/vtrc-general-config.h" )

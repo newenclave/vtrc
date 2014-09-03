@@ -1,5 +1,6 @@
 #include <vector>
 #include <string>
+#include <iostream>
 
 #include "boost/program_options.hpp"
 #include "boost/lexical_cast.hpp"
@@ -24,6 +25,8 @@
 
 #include "vtrc-thread.h"
 
+#include "boost/thread.hpp" /// for thread_group
+
 namespace po = boost::program_options;
 namespace gpb = google::protobuf;
 
@@ -40,12 +43,22 @@ struct work_time {
         ,total_(start_)
     { }
 
+    std::string diff( const time_point &now, const time_point &last )
+    {
+        namespace cr = vtrc::chrono;
+        std::ostringstream oss;
+        oss << cr::duration_cast<cr::microseconds>(now - last).count( )
+            << " microseconds";
+
+        return oss.str( );
+    }
+
     void print_point( const std::string &name )
     {
         time_point now(vtrc::chrono::high_resolution_clock::now( ));
         time_point::duration stop( now - start_);
-        std::cout << "[" << name << "]"<< " call time: '" << stop
-                  << "' total: '" << (now - total_) << "'\n";
+        std::cout << "[" << name << "]"<< " call time: '" << stop.count( )
+                  << "' total: '" << diff(now, total_) << "'\n";
         start_ = vtrc::chrono::high_resolution_clock::now( );
     }
 
@@ -238,8 +251,8 @@ int start( const po::variables_map &params )
         unsigned times = params["ping"].as<unsigned>( );
 
         for( unsigned i=0; i<threads; ++i ) {
-            tg.add_thread( new vtrc::thread( start_ping_flod, impl, false,
-                                             times, payload) );
+            tg.create_thread( vtrc::bind( start_ping_flod, impl,
+                                          false, times, payload ) );
         }
 
         stress::ping( *impl, false, times, payload );
@@ -249,8 +262,8 @@ int start( const po::variables_map &params )
         unsigned times = params["flood"].as<unsigned>( );
 
         for( unsigned i=0; i<threads; ++i ) {
-            tg.add_thread( new vtrc::thread( start_ping_flod, impl, true,
-                                             times, payload) );
+            tg.create_thread( vtrc::bind( start_ping_flod,
+                                          impl, true, times, payload ) );
         }
 
         stress::ping( *impl, true, times, payload );
@@ -270,9 +283,9 @@ int start( const po::variables_map &params )
         unsigned event_count = params["gen-events"].as<unsigned>( );
 
         for( unsigned i=0; i<threads; ++i ) {
-            tg.add_thread( new vtrc::thread( start_generate_events, impl,
-                                             event_count,
-                                             true, false, payload) );
+            tg.create_thread( vtrc::bind( start_generate_events,
+                                          impl, event_count,
+                                          true, false, payload ));
         }
 
         start_generate_events(impl, event_count, true, false, payload);
@@ -294,9 +307,9 @@ int start( const po::variables_map &params )
         unsigned event_count = params["gen-callbacks"].as<unsigned>( );
 
         for( unsigned i=0; i<threads; ++i ) {
-            tg.add_thread( new vtrc::thread( start_generate_events, impl,
-                                             event_count,
-                                             true, true, payload) );
+            tg.create_thread( vtrc::bind( start_generate_events,
+                                          impl, event_count,
+                                          true, true, payload ) );
         }
 
         start_generate_events(impl, event_count, true, true, payload);
@@ -314,8 +327,8 @@ int start( const po::variables_map &params )
         unsigned call_count = params["recursive"].as<unsigned>( );
 
         for( unsigned i=0; i<threads; ++i ) {
-            tg.add_thread( new vtrc::thread( start_recursive, impl,
-                                             call_count, payload) );
+            tg.create_thread( vtrc::bind(start_recursive,
+                                         impl, call_count, payload) );
         }
 
         start_recursive( impl, call_count, payload );

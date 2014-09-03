@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "stress-application.h"
 
 #include "vtrc-rpc-lowlevel.pb.h"

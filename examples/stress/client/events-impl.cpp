@@ -1,4 +1,6 @@
 #include <stack>
+#include <iostream>
+#include <sstream>
 
 #include "events-impl.h"
 

@@ -3,6 +3,9 @@
 
 #include "vtrc-general-config.h"
 
+
+#if VTRC_DISABLE_CXX11
+
 #include "boost/thread.hpp"
 
 namespace vtrc {
@@ -13,5 +16,19 @@ namespace vtrc {
     }
 
 }
+
+#else
+
+#include <thread>
+
+namespace vtrc {
+
+    using std::thread;
+    namespace this_thread {
+        using namespace std::this_thread;
+    }
+}
+
+#endif
 
 #endif // VTRCTHREAD_H

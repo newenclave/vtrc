@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "vtrc-server/vtrc-application.h"
 #include "boost/program_options.hpp"

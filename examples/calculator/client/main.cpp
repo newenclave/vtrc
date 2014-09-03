@@ -40,12 +40,22 @@ struct work_time {
         ,total_(start_)
     { }
 
+    std::string diff( const time_point &now, const time_point &last )
+    {
+        namespace cr = vtrc::chrono;
+        std::ostringstream oss;
+        oss << cr::duration_cast<cr::microseconds>(now - last).count( )
+            << " microseconds";
+
+        return oss.str( );
+    }
+
     void print_point( const std::string &name )
     {
         time_point now(vtrc::chrono::high_resolution_clock::now( ));
         time_point::duration stop( now - start_);
-        std::cout << "[" << name << "]"<< " call time: '" << stop
-                  << "' total: '" << (now - total_) << "'\n";
+        std::cout << "[" << name << "]"<< " call time: '" << stop.count( )
+                  << "' total: '" << diff(now, total_) << "'\n";
         start_ = vtrc::chrono::high_resolution_clock::now( );
     }
 
