@@ -168,7 +168,7 @@ namespace vtrc { namespace client {
         }
 
         template <typename FuncType>
-        void connect_impl( const FuncType &conn_func )
+        void connect_impl( FuncType conn_func )
         {
             unsigned                 failed = 0;
             std::string              failed_message;

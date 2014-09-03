@@ -133,6 +133,7 @@ namespace vtrc { namespace common {
         namespace size_policy_ns = data_queue::varint;
 
         typedef std::deque< vtrc::shared_ptr<call_context> > call_stack_type;
+
 #if VTRC_DISABLE_CXX11
         /// call context ptr BOOST
         typedef std::deque< vtrc::shared_ptr<call_context> > call_stack_type;
@@ -149,7 +150,7 @@ namespace vtrc { namespace common {
 #endif
 
 #endif  /// VTRC_DISABLE_CXX11
-        /// ///
+
 
     }
 
