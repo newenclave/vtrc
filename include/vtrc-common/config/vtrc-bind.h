@@ -32,6 +32,10 @@ namespace vtrc {
 }
 #else
 
+#ifdef _MSC_VER
+#define _VARIADIC_MAX 9
+#endif
+
 #include <functional>
 
 namespace vtrc {
