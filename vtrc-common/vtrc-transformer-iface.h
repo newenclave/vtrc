@@ -2,6 +2,8 @@
 #define VTRC_TRANSFORMER_IFACE_H
 
 #include <stdlib.h>
+#include <string>
+
 #include "vtrc-memory.h"
 
 namespace vtrc { namespace common {
