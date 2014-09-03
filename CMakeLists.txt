@@ -111,8 +111,10 @@ elseif(  CMAKE_CXX_COMPILER_ID STREQUAL "Clang" )
 
 endif( )
 
-message( ${CMAKE_CXX_FLAGS} )
-message( ${CMAKE_CXX_COMPILER_ID} )
+message( "Compiler ID: " ${CMAKE_CXX_COMPILER_ID} )
+message( "Is GNU compiler: " ${CMAKE_COMPILER_IS_GNUCXX} )
+message( "Compiler version: " ${CMAKE_CXX_COMPILER_VERSION} )
+message( "CMAKE_CXX_FLAGS: " ${CMAKE_CXX_FLAGS} )
 
 add_subdirectory(vtrc-common)
 add_subdirectory(vtrc-server)
