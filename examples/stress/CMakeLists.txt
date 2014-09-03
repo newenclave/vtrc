@@ -44,6 +44,13 @@ find_package( Protobuf REQUIRED)
 
 include_directories( ${VTRC_INCLUDE_DIRS} )
 
+if( CMAKE_COMPILER_IS_GNUCXX )                  ### CNU
+    if( ${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS 4.8 )
+        set( ${CMAKE_CXX_FLAGS}
+            "${CMAKE_CXX_FLAGS} -D_GLIBCXX_USE_NANOSLEEP=1" )
+    endif( )
+endif( )
+
 add_subdirectory(protocol)
 add_subdirectory(client)
 add_subdirectory(server)
