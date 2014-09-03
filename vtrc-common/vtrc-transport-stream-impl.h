@@ -235,11 +235,12 @@ namespace vtrc { namespace common {
                                     vtrc::bind( &this_type::write_handler, this,
                                         vtrc::placeholders::error,
                                         vtrc::placeholders::bytes_transferred,
-                                        handler_params(
-                                            length,
-                                            total,
-                                            parent_->shared_from_this( )
-                                        )
+                                        length, total, parent_->shared_from_this( )
+//                                        handler_params(
+//                                            length,
+//                                            total,
+//                                            parent_->shared_from_this( )
+//                                        )
                                     )
                             ));
                 } catch( const std::exception & ) {
@@ -250,19 +251,21 @@ namespace vtrc { namespace common {
 
             void write_handler( const bsys::error_code &error,
                                 size_t const bytes,
-                                handler_params &params )
+                                size_t length_, size_t total_,
+                                common::connection_iface_sptr inst )
+                                //handler_params &params )
             {
                 message_holder &top_holder(*write_queue_.front( ));
 
                 if( !error ) {
 
-                    if( bytes < params.length_ ) {
+                    if( bytes < length_ ) {
 
-                        params.total_ += bytes;
+                        total_ += bytes;
 
                         const std::string &top(top_holder.message_);
-                        async_write(top.c_str( ) + params.total_,
-                                    top.size( )  - params.total_, params.total_);
+                        async_write(top.c_str( ) + total_,
+                                    top.size( )  - total_, total_);
 
                     } else {
 
