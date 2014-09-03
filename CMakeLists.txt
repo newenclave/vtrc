@@ -37,6 +37,7 @@ if( VTRC_CXX11_ENABLED )
 
     find_package( Boost 1.53 COMPONENTS
                         system
+                        thread
                   REQUIRED)
     set( VTRC_DISABLE_CXX11 0 )
     get_cmd_cxx11( VTRC_CXX_CMD )

@@ -19,14 +19,23 @@ endif( )
 
 set(Boost_USE_MULTITHREADED   ON)
 
+if( VTRC_CXX11_ENABLED )
 
-find_package( Boost 1.50 COMPONENTS
+    find_package( Boost 1.50 COMPONENTS
+                    system
+                    thread
+                  REQUIRED)
+
+else( )
+    find_package( Boost 1.50 COMPONENTS
                     system
                     chrono
                     thread
                     atomic
                     random
-              REQUIRED)
+                  REQUIRED)
+endif( )
+
 find_package( Protobuf REQUIRED)
 
 include_directories( ${VTRC_INCLUDE_DIRS} )
