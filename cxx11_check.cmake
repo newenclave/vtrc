@@ -48,7 +48,7 @@ macro( get_compiler_thread_local MACRO_VAR )
 
     if( MSVC )                                          ### MS
 
-        set( ${MACRO_VAR} __declspec(thread) )
+        set( ${MACRO_VAR} __declspec\(thread\) )
 
     elseif( CMAKE_COMPILER_IS_GNUCXX )                  ### CNU
 
