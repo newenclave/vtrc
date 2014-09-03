@@ -222,7 +222,7 @@ namespace vtrc { namespace common {
                     :length_(length)
                     ,total_(total)
                     ,inst_(inst)
-                {}
+                { }
             };
 
             void async_write( const char *data, size_t length, size_t total )
@@ -232,11 +232,15 @@ namespace vtrc { namespace common {
                             basio::buffer( data, length ),
                             write_dispatcher_.wrap(
                                     vtrc::bind( &this_type::write_handler, this,
-                                         vtrc::placeholders::error,
-                                         vtrc::placeholders::bytes_transferred,
-                                         handler_params( length, total,
-                                            parent_->shared_from_this( ))))
-                            );
+                                        vtrc::placeholders::error,
+                                        vtrc::placeholders::bytes_transferred,
+                                        handler_params(
+                                            length,
+                                            total,
+                                            parent_->shared_from_this( )
+                                        )
+                                    )
+                            ));
                 } catch( const std::exception & ) {
                     this->close( );
                 }
@@ -246,9 +250,6 @@ namespace vtrc { namespace common {
             void write_handler( const bsys::error_code &error,
                                 size_t const bytes,
                                 handler_params &params )
-                                //size_t const length,
-                                //size_t       total,
-                                //common::connection_iface_sptr /*inst*/)
             {
                 message_holder &top_holder(*write_queue_.front( ));
 
