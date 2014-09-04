@@ -123,6 +123,7 @@ namespace stress {
 
         unsigned                            accept_errors_;
         unsigned                            max_clients_;
+        vtrc::mutex                         counter_lock_;
 
         impl( unsigned io_threads )
             :pp_(io_threads)
@@ -144,7 +145,7 @@ namespace stress {
         void on_new_connection( server::listener *l,
                                 const common::connection_iface *c )
         {
-            //vtrc::unique_lock<vtrc::mutex> lock(counter_lock_);
+//            vtrc::unique_lock<vtrc::mutex> lock(counter_lock_);
             std::cout << "New connection: "
                       << "\n\tep:     " << l->name( )
                       << "\n\tclient: " << c->name( )
@@ -154,22 +155,22 @@ namespace stress {
 //            if( counter_ % 2 == 0 ) {
 //                app_.get_clients( )->drop( (common::connection_iface *)(c) );
 //            }
-            if( counter_ > max_clients_ ) {
-                l->stop( );
-            }
+//            if( counter_ > max_clients_ ) {
+//                l->stop( );
+//            }
         }
 
         void on_stop_connection( server::listener *l,
                                  const common::connection_iface *c )
         {
-            //vtrc::unique_lock<vtrc::mutex> lock(counter_lock_);
+//            vtrc::unique_lock<vtrc::mutex> lock(counter_lock_);
             std::cout << "Close connection: "
                       << c->name( )
                       << "; count: " << --counter_
                       << "\n";
-            if( counter_ < max_clients_ ) {
-                l->start( );
-            }
+//            if( counter_ == max_clients_ ) {
+//                l->start( );
+//            }
         }
 
         void start_retry_accept( server::listener_sptr l, unsigned rto )
