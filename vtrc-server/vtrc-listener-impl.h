@@ -102,7 +102,7 @@ namespace {
         {
             working_ = true;
             acceptor_.reset(new acceptor_type(ios_, endpoint_));
-            acceptor_->listen( 5 );
+            acceptor_->listen( 1 );
             start_accept( );
             call_on_start( );
         }
