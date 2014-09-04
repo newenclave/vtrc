@@ -155,7 +155,6 @@ namespace stress {
 //            if( counter_ % 2 == 0 ) {
 //                app_.get_clients( )->drop( (common::connection_iface *)(c) );
 //            }
-            sleep( 1 );
             if( counter_ > max_clients_ ) {
                 l->stop( );
             }
