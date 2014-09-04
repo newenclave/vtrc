@@ -155,6 +155,7 @@ namespace stress {
 //            if( counter_ % 2 == 0 ) {
 //                app_.get_clients( )->drop( (common::connection_iface *)(c) );
 //            }
+            sleep( 1 );
             if( counter_ > max_clients_ ) {
                 l->stop( );
             }
@@ -237,6 +238,7 @@ namespace stress {
 
         void run( const po::variables_map &params )
         {
+
             typedef std::vector<std::string> string_vector;
             typedef string_vector::const_iterator vec_citer;
 

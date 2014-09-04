@@ -76,8 +76,8 @@ namespace {
                                         sock,
                                         vtrc::ref(on_close_cb),
                                         vtrc::ref(name)));
-
-            new_inst->init( );
+            new_inst->protocol_ ->init( );
+            //new_inst->init( );
             return new_inst;
         }
     };

@@ -195,7 +195,7 @@ namespace vtrc { namespace common {
             /// non concurrence call.
             void write_impl( message_holder_sptr data,
                              vtrc::shared_ptr<system_closure_type> closure,
-                             common::connection_iface_sptr /*inst*/)
+                             common::connection_iface_sptr &/*inst*/)
             {
                 bool empty = write_queue_.empty( );
 
