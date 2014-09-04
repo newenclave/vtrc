@@ -155,9 +155,9 @@ namespace stress {
 //            if( counter_ % 2 == 0 ) {
 //                app_.get_clients( )->drop( (common::connection_iface *)(c) );
 //            }
-//            if( counter_ > max_clients_ ) {
-//                l->stop( );
-//            }
+            if( counter_ > max_clients_ ) {
+                l->stop( );
+            }
         }
 
         void on_stop_connection( server::listener *l,
@@ -168,9 +168,9 @@ namespace stress {
                       << c->name( )
                       << "; count: " << --counter_
                       << "\n";
-//            if( counter_ == max_clients_ ) {
-//                l->start( );
-//            }
+            if( counter_ == max_clients_ ) {
+                l->start( );
+            }
         }
 
         void start_retry_accept( server::listener_sptr l, unsigned rto )
