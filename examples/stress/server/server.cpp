@@ -37,6 +37,9 @@ void get_options( po::options_description& desc )
         ("max-calls,C", po::value<unsigned>( ),
             "maximum calls per user")
 
+        ("max-clients,y", po::value<unsigned>( ),
+            "maximum clients at one time")
+
         ("read-size,B", po::value<unsigned>( ),
             "buffer size for receiving data")
 

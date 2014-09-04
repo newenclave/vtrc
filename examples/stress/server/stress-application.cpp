@@ -9,6 +9,8 @@
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-delayed-call.h"
 
+#include "vtrc-common/vtrc-connection-list.h"
+
 #include "vtrc-server/vtrc-application.h"
 #include "vtrc-server/vtrc-listener-tcp.h"
 #include "vtrc-server/vtrc-listener-local.h"
@@ -26,6 +28,8 @@
 
 #include "boost/asio.hpp"
 #include "boost/asio/error.hpp"
+
+#include "google/protobuf/service.h"
 
 namespace stress {
 
@@ -95,8 +99,8 @@ namespace stress {
             {
                 if( service_name == stress::service_name( ) ) {
 
-                    gpb::Service *stress_serv =
-                            stress::create_service( conn, *parent_app_ );
+                    vtrc::shared_ptr<gpb::Service> stress_serv
+                            ( stress::create_service( conn, *parent_app_ ) );
 
                     return vtrc::shared_ptr<common::rpc_service_wrapper>(
                                 vtrc::make_shared<common::rpc_service_wrapper>(
@@ -118,6 +122,7 @@ namespace stress {
         common::delayed_call                retry_timer_;
 
         unsigned                            accept_errors_;
+        unsigned                            max_clients_;
 
         impl( unsigned io_threads )
             :pp_(io_threads)
@@ -125,6 +130,7 @@ namespace stress {
             ,counter_(0)
             ,retry_timer_(pp_.get_io_service( ))
             ,accept_errors_(0)
+            ,max_clients_(1000)
         { }
 
         impl( unsigned io_threads, unsigned rpc_threads )
@@ -132,6 +138,7 @@ namespace stress {
             ,app_(pp_)
             ,counter_(0)
             ,retry_timer_(pp_.get_io_service( ))
+            ,max_clients_(1000)
         { }
 
         void on_new_connection( server::listener *l,
@@ -144,6 +151,25 @@ namespace stress {
                       << "\n\ttotal:  " << ++counter_
                       << "\n"
                         ;
+//            if( counter_ % 2 == 0 ) {
+//                app_.get_clients( )->drop( (common::connection_iface *)(c) );
+//            }
+            if( counter_ > max_clients_ ) {
+                l->stop( );
+            }
+        }
+
+        void on_stop_connection( server::listener *l,
+                                 const common::connection_iface *c )
+        {
+            //vtrc::unique_lock<vtrc::mutex> lock(counter_lock_);
+            std::cout << "Close connection: "
+                      << c->name( )
+                      << "; count: " << --counter_
+                      << "\n";
+            if( counter_ < max_clients_ ) {
+                l->start( );
+            }
         }
 
         void start_retry_accept( server::listener_sptr l, unsigned rto )
@@ -179,15 +205,6 @@ namespace stress {
             start_retry_accept( l->shared_from_this( ), retry_to );
         }
 
-        void on_stop_connection( server::listener *l,
-                                 const common::connection_iface *c )
-        {
-            //vtrc::unique_lock<vtrc::mutex> lock(counter_lock_);
-            std::cout << "Close connection: "
-                      << c->name( )
-                      << "; count: " << --counter_
-                      << "\n";
-        }
 
         vtrc_rpc::session_options options( const po::variables_map &params )
         {
@@ -234,6 +251,10 @@ namespace stress {
             unsigned retry_to = (params.count( "accept-retry" ) != 0)
                     ? params["accept-retry"].as<unsigned>( )
                     : 1000;
+
+            if( params.count( "max-clients" ) ) {
+                max_clients_ = params["max-clients"].as<unsigned>( );
+            }
 
             for( vec_citer b(ser.begin( )), e(ser.end( )); b != e; ++b ) {
 
