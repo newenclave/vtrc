@@ -146,10 +146,10 @@ namespace {
                     new_conn->init( );
 
                 } catch( ... ) {
-                    sock->close( );
+                    //sock->close( );
                     if( new_conn.get( ) )  {
-                        get_application( )
-                                .get_clients( )->drop( new_conn.get( ) );
+                        get_application( ).get_clients( )
+                                         ->drop( new_conn.get( ) );
                     }
                 }
                 start_accept( );
