@@ -67,6 +67,7 @@ namespace server {
         virtual std::string name( ) const = 0;
         virtual void start( )             = 0;
         virtual void stop ( )             = 0;
+        virtual bool is_active( )   const = 0;
 
     protected:
 

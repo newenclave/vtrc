@@ -221,6 +221,11 @@ namespace {
             call_on_stop( );
         }
 
+        bool is_active( ) const
+        {
+            return working_;
+        }
+
         void on_accept( const bsys::error_code &error,
                         vtrc::shared_ptr<socket_type> sock,
                         vtrc::weak_ptr<listener> &inst)

@@ -114,6 +114,11 @@ namespace {
             stop_impl( );
         }
 
+        bool is_active( ) const
+        {
+            return working_;
+        }
+
         virtual void stop_impl( )
         {
 
