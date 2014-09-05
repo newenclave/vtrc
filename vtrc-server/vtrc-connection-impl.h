@@ -78,8 +78,8 @@ namespace vtrc { namespace server { namespace listeners {
                      (vtrc::make_shared<this_type>(vtrc::ref(endpoint),
                                                    sock, on_close_cb ));
 
-                new_inst->protocol_ ->init( );
-                //new_inst->init( );
+                new_inst->protocol_->init( );
+
                 return new_inst;
             }
 
@@ -208,7 +208,6 @@ namespace vtrc { namespace server { namespace listeners {
                     try {
                         protocol_->process_data( &read_buff_[0], bytes );
                     } catch( const std::exception & /*ex*/ ) {
-                        //close_drop( ex.what( ) );
                         close_drop(  );
                         return;
                     }
