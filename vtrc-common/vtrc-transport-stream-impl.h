@@ -153,7 +153,7 @@ namespace vtrc { namespace common {
                 prepare_for_write( data->message_ );
                 basio::write( *stream_, basio::buffer( mh->message_ ) );
 #else
-                std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << "\n";
+                DEBUG_LINE;
 
                 write_dispatcher_.post(
                        vtrc::bind( &this_type::write_impl, this, mh,
@@ -179,7 +179,7 @@ namespace vtrc { namespace common {
 
                 message_holder_sptr mh(make_holder(data, length,
                                                    closure, on_send));
-                std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << "\n";
+                DEBUG_LINE;
 
                 write_dispatcher_.post(
                        vtrc::bind( &this_type::write_impl, this, mh,
@@ -231,7 +231,7 @@ namespace vtrc { namespace common {
 
             void async_write( const char *data, size_t length, size_t total )
             {
-                std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << "\n";
+                DEBUG_LINE;
 
                 try {
                     stream_->async_write_some(

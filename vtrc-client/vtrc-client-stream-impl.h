@@ -120,7 +120,7 @@ namespace { /// implementation.
                          parent_->shared_from_this( ) ))
                 );
 #else
-            std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << "\n";
+            DEBUG_LINE;
 
             get_socket( ).async_read_some(
                     basio::buffer( &read_buff_[0], read_buff_.size( ) ),

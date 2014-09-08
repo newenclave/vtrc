@@ -1,7 +1,16 @@
 #ifndef VTRC_MEMORY_H
 #define VTRC_MEMORY_H
 
+#if 0
 #include <iostream>
+
+#define DEBUG_LINE std::cout << \
+    __FILE__ << ":" << __LINE__ \
+    << ":" << __FUNCTION__ << "\n"
+
+#else
+#define DEBUG_LINE
+#endif
 
 #include "vtrc-general-config.h"
 

@@ -54,11 +54,7 @@ namespace vtrc { namespace server { namespace listeners {
                 ,env_(endpoint_.get_enviroment( ))
                 ,read_buff_(endpoint_.get_options( ).read_buffer_size( ))
                 ,close_closure_(on_close_cb)
-            {
-                vtrc_rpc::session_options const &opts(endpoint_.get_options( ));
-                protocol_.reset(new protocol_layer_s( vtrc::ref(app_), this,
-                                                      opts));
-            }
+            { }
 
             void set_name( std::string const &name )
             {
@@ -77,6 +73,12 @@ namespace vtrc { namespace server { namespace listeners {
                 vtrc::shared_ptr<this_type> new_inst
                      (vtrc::make_shared<this_type>(vtrc::ref(endpoint),
                                                    sock, on_close_cb ));
+
+                vtrc_rpc::session_options const &opts(endpoint.get_options( ));
+
+                new_inst->protocol_.reset(
+                       new protocol_layer_s( new_inst->app_,
+                                             new_inst.get( ), opts ) );
 
                 new_inst->protocol_->init( );
 
@@ -188,7 +190,7 @@ namespace vtrc { namespace server { namespace listeners {
                              this->shared_from_this( )))
                     );
 #else
-                std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << "\n";
+                DEBUG_LINE;
 
                 this->get_socket( ).async_read_some(
                         basio::buffer( &read_buff_[0], read_buff_.size( ) ),
