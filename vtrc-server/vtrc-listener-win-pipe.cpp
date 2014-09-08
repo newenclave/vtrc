@@ -243,7 +243,12 @@ namespace {
                                 name( )));
                     get_application( ).get_clients( )->store( new_conn );
                     new_connection( new_conn.get( ) );
-                    new_conn->init( );
+
+                    //new_conn->init( );
+
+                    get_application( ).get_io_service( )
+                      .dispatch(vtrc::bind(&connection_type::init, new_conn ) );
+
                 } catch( ... ) {
                     ;;;
                 }
