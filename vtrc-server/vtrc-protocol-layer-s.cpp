@@ -147,6 +147,8 @@ namespace vtrc { namespace server {
 
         void send_and_close( const gpb::MessageLite &mess )
         {
+            std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << "\n";
+
             send_proto_message( mess,
                                 vtrc::bind( &this_type::close_client, this,
                                              vtrc::placeholders::_1,
@@ -343,6 +345,8 @@ namespace vtrc { namespace server {
 
         void process_call( lowlevel_unit_sptr &llu )
         {
+            std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << "\n";
+
             if( ++current_calls_ <= max_calls( ) ) {
                 app_.get_rpc_service( ).post(
                         vtrc::bind( &this_type::push_call, this,

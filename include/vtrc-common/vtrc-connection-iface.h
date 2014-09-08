@@ -41,11 +41,13 @@ namespace vtrc { namespace common {
 
         vtrc::weak_ptr<connection_iface> weak_from_this( )
         {
+            std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << "\n";
             return vtrc::weak_ptr<connection_iface>( shared_from_this( ) );
         }
 
         vtrc::weak_ptr<connection_iface const> weak_from_this( ) const
         {
+            std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << "\n";
             return vtrc::weak_ptr<connection_iface const>( shared_from_this( ));
         }
 

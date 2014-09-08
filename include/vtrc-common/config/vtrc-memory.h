@@ -1,6 +1,8 @@
 #ifndef VTRC_MEMORY_H
 #define VTRC_MEMORY_H
 
+#include <iostream>
+
 #include "vtrc-general-config.h"
 
 #if VTRC_DISABLE_CXX11

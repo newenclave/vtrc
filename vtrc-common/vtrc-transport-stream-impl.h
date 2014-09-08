@@ -153,6 +153,8 @@ namespace vtrc { namespace common {
                 prepare_for_write( data->message_ );
                 basio::write( *stream_, basio::buffer( mh->message_ ) );
 #else
+                std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << "\n";
+
                 write_dispatcher_.post(
                        vtrc::bind( &this_type::write_impl, this, mh,
                                     vtrc::shared_ptr<system_closure_type>( ),
@@ -177,6 +179,7 @@ namespace vtrc { namespace common {
 
                 message_holder_sptr mh(make_holder(data, length,
                                                    closure, on_send));
+                std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << "\n";
 
                 write_dispatcher_.post(
                        vtrc::bind( &this_type::write_impl, this, mh,
@@ -216,10 +219,10 @@ namespace vtrc { namespace common {
             struct handler_params {
                 size_t length_;
                 size_t total_;
-                common::connection_iface_wptr inst_;
+                common::connection_iface_sptr inst_;
                 handler_params( size_t length,
                                 size_t total,
-                                common::connection_iface_wptr inst )
+                                common::connection_iface_sptr inst )
                     :length_(length)
                     ,total_(total)
                     ,inst_(inst)
@@ -228,6 +231,8 @@ namespace vtrc { namespace common {
 
             void async_write( const char *data, size_t length, size_t total )
             {
+                std::cout << __FILE__ << ":" << __LINE__ << ":" << __FUNCTION__ << "\n";
+
                 try {
                     stream_->async_write_some(
                             basio::buffer( data, length ),
@@ -238,7 +243,7 @@ namespace vtrc { namespace common {
                                         handler_params(
                                             length,
                                             total,
-                                            parent_->weak_from_this( )
+                                            parent_->shared_from_this( )
                                         )
                                     )
                             ));
@@ -253,10 +258,10 @@ namespace vtrc { namespace common {
                                 handler_params &params )
             {
 
-                common::connection_iface_sptr lock(params.inst_.lock( ));
-                if( !lock ) {
-                    return;
-                }
+//                common::connection_iface_sptr lock(params.inst_.lock( ));
+//                if( !lock ) {
+//                    return;
+//                }
 
                 message_holder &top_holder(*write_queue_.front( ));
 
