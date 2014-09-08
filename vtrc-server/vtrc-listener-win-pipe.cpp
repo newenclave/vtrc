@@ -247,7 +247,9 @@ namespace {
                     //new_conn->init( );
 
                     get_application( ).get_io_service( )
-                      .dispatch(vtrc::bind(&connection_type::init, new_conn ) );
+                        .dispatch( vtrc::bind( &connection_type::init,
+                                                new_conn ) );
+
 
                 } catch( ... ) {
                     ;;;
