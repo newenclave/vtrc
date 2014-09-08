@@ -254,7 +254,7 @@ namespace vtrc { namespace common {
             {
 
                 common::connection_iface_sptr lock(params.inst_.lock( ));
-                if( !locked ) {
+                if( !lock ) {
                     return;
                 }
 
