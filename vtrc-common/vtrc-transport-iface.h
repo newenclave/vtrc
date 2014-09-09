@@ -6,6 +6,8 @@
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-closure.h"
 
+#include "boost/asio.hpp"
+
 namespace boost {
 
     namespace system {
@@ -24,6 +26,8 @@ namespace vtrc { namespace common {
         virtual void close( )               = 0;
         virtual bool active( ) const        = 0;
         virtual void init( )                = 0;
+
+//        virtual boost::asio::io_service::strand &get_dispatcher( ) = 0;
 
         virtual void write( const char *data, size_t length ) = 0;
 
