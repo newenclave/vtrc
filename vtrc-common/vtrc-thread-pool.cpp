@@ -169,6 +169,8 @@ namespace vtrc { namespace common {
                     break;
                 } catch( const std::exception &) {
                     ;;;
+                } catch( ... ) {
+                    ;;;
                 }
             }
             return false; /// interruped by interrupt::raise or
