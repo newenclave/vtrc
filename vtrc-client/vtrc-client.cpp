@@ -126,9 +126,9 @@ namespace vtrc { namespace client {
         template<typename ClientType>
         vtrc::shared_ptr<ClientType> create_client(  )
         {
-            vtrc::shared_ptr<ClientType> c(ClientType::create( ios_,
-                                                               parent_,
-                                                               this ));
+            vtrc::shared_ptr<ClientType> c(
+                        ClientType::create( ios_, parent_, this ));
+
             connection_ =   c;
             protocol_   =  &c->get_protocol( );
             return c;
