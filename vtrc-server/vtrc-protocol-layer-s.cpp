@@ -206,7 +206,7 @@ namespace vtrc { namespace server {
         }
 
         void close_client( const bsys::error_code &      /*err */,
-                           common::connection_iface_wptr inst )
+                           common::connection_iface_wptr &inst )
         {
             common::connection_iface_sptr lcked( inst.lock( ) );
             if( lcked ) {

@@ -206,7 +206,7 @@ namespace vtrc { namespace server { namespace listeners {
             }
 
             void read_handler( const bsys::error_code &error, size_t bytes,
-                               const common::connection_iface_sptr /*inst*/ )
+                               const common::connection_iface_sptr &/*inst*/ )
             {
 //                common::connection_iface_sptr lck(inst.lock( ));
 //                if( !lck ) return;
