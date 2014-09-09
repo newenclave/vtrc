@@ -183,7 +183,7 @@ namespace vtrc { namespace common {
 
                 write_dispatcher_.post(
                        vtrc::bind( &this_type::write_impl, this, mh,
-                                    closure, parent_->shared_from_this( )));
+                                    closure, parent_->weak_from_this( )));
 #endif
             }
 
