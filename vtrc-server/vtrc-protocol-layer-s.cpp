@@ -61,7 +61,8 @@ namespace vtrc { namespace server {
         typedef protocol_layer_s parent_type;
 
         application             &app_;
-        common::transport_iface *connection_;
+        common::transport_iface *connectio_;
+        common::connection_iface_wptr keeper_;
         protocol_layer_s        *parent_;
         bool                     ready_;
 
@@ -77,10 +78,10 @@ namespace vtrc { namespace server {
         typedef vtrc::function<void (void)> stage_function_type;
         stage_function_type      stage_function_;
 
-
         impl( application &a, common::transport_iface *c )
             :app_(a)
-            ,connection_(c)
+            ,connectio_(c)
+            ,keeper_(c->weak_from_this( ))
             ,ready_(false)
             ,current_calls_(0)
             ,keepalive_calls_(a.get_io_service( ))
@@ -96,16 +97,26 @@ namespace vtrc { namespace server {
                         boost::posix_time::seconds( 10 ));
         }
 
+        common::transport_iface *get_conn( )
+        {
+            return connectio_;
+        }
+
         common::rpc_service_wrapper_sptr get_service( const std::string &name )
         {
             upgradable_lock lk( services_lock_ );
             common::rpc_service_wrapper_sptr result;
             service_map::iterator f( services_.find( name ) );
 
+            common::transport_iface *conn(get_conn( ));
+            if( !conn ) {
+                return result;
+            }
+
             if( f != services_.end( ) ) {
                 result = f->second;
             } else {
-                result = app_.get_service_by_name( connection_, name );
+                result = app_.get_service_by_name( conn, name );
                 if( result ) {
                     upgrade_to_unique ulk( lk );
                     services_.insert( std::make_pair( name, result ) );
@@ -133,31 +144,45 @@ namespace vtrc { namespace server {
 
         void send_proto_message( const gpb::MessageLite &mess )
         {
-            std::string s(mess.SerializeAsString( ));
-            connection_->write( s.c_str( ), s.size( ) );
+            common::transport_iface *conn(get_conn( ));
+            if( conn ) {
+                std::string s(mess.SerializeAsString( ));
+                conn->write( s.c_str( ), s.size( ) );
+            }
         }
 
         void send_proto_message( const gpb::MessageLite &mess,
                                  common::system_closure_type closure,
                                  bool on_send)
         {
-            std::string s(mess.SerializeAsString( ));
-            connection_->write( s.c_str( ), s.size( ), closure, on_send );
+            common::transport_iface *conn(get_conn( ));
+            if( conn ) {
+                std::string s(mess.SerializeAsString( ));
+                conn->write( s.c_str( ), s.size( ), closure, on_send );
+            }
         }
 
         void send_and_close( const gpb::MessageLite &mess )
         {
-            DEBUG_LINE(connection_);
+            common::transport_iface *conn(get_conn( ));
+            if( conn ) {
 
-            send_proto_message( mess,
+                DEBUG_LINE(conn);
+
+                send_proto_message( mess,
                                 vtrc::bind( &this_type::close_client, this,
                                              vtrc::placeholders::_1,
-                                             connection_->shared_from_this( )),
+                                             conn->shared_from_this( )),
                                 true );
+            }
         }
 
         void set_client_ready( vtrc_auth::init_capsule &capsule )
         {
+            common::transport_iface *conn(get_conn( ));
+            if( !conn ) {
+                return;
+            }
             keepalive_calls_.cancel( );
             stage_function_ =
                     vtrc::bind( &this_type::on_rcp_call_ready, this );
@@ -170,7 +195,7 @@ namespace vtrc { namespace server {
             session_setup.mutable_options( )
                          ->CopyFrom( parent_->session_options( ) );
 
-            app_.configure_session( connection_,
+            app_.configure_session( conn,
                                    *session_setup.mutable_options( ) );
 
             capsule.set_body( session_setup.SerializeAsString( ) );
@@ -184,11 +209,20 @@ namespace vtrc { namespace server {
         void close_client( const bsys::error_code &      /*err */,
                            common::connection_iface_sptr /*inst*/)
         {
-            connection_->close( );
+
+            common::transport_iface *conn(get_conn( ));
+            if( conn ) {
+                conn->close( );
+            }
         }
 
         void on_client_transformer( )
         {
+            common::transport_iface *conn(get_conn( ));
+            if( !conn ) {
+                return;
+            }
+
             using namespace common::transformers;
             vtrc_auth::init_capsule capsule;
             bool check = get_pop_message( capsule );
@@ -201,7 +235,7 @@ namespace vtrc { namespace server {
             }
 
             if( !capsule.ready( ) ) {
-                connection_->close( );
+                conn->close( );
                 return;
             }
 
@@ -209,7 +243,7 @@ namespace vtrc { namespace server {
 
             tsetup.ParseFromString( capsule.body( ) );
 
-            std::string key(app_.get_session_key( connection_, client_id_ ));
+            std::string key(app_.get_session_key( conn, client_id_ ));
 
             create_key( key,             // input
                         tsetup.salt1( ), // input
@@ -218,7 +252,7 @@ namespace vtrc { namespace server {
 
             // client revertor is my transformer
             parent_->change_transformer( erseefor::create(
-                                                key.c_str( ), key.size( ) ) );
+                                            key.c_str( ), key.size( ) ) );
 
             capsule.Clear( );
 
@@ -227,6 +261,11 @@ namespace vtrc { namespace server {
 
         void setup_transformer( unsigned id )
         {
+            common::transport_iface *conn(get_conn( ));
+            if( !conn ) {
+                return;
+            }
+
             using namespace common::transformers;
 
             vtrc_auth::transformer_setup ts;
@@ -238,7 +277,7 @@ namespace vtrc { namespace server {
 
             } else if( id == vtrc_auth::TRANSFORM_ERSEEFOR ) {
 
-                std::string key(app_.get_session_key(connection_, client_id_));
+                std::string key(app_.get_session_key(conn, client_id_));
 
                 generate_key_infos( key,                 // input
                                    *ts.mutable_salt1( ), // output
@@ -270,16 +309,21 @@ namespace vtrc { namespace server {
 
         void on_client_selection( )
         {
+            common::transport_iface *conn(get_conn( ));
+            if( !conn ) {
+                return;
+            }
+
             vtrc_auth::init_capsule capsule;
             bool check = get_pop_message( capsule );
 
             if( !check ) {
-                connection_->close( );
+                conn->close( );
                 return;
             }
 
             if( !capsule.ready( ) ) {
-                connection_->close( );
+                conn->close( );
                 return;
             }
 
@@ -293,7 +337,7 @@ namespace vtrc { namespace server {
                         common::hash::create_by_index( cs.hash( ) ) );
 
             if( !new_maker.get( ) || !new_checker.get( ) ) {
-                connection_->close( );
+                conn->close( );
                 return;
             }
 
@@ -307,9 +351,13 @@ namespace vtrc { namespace server {
 
         bool get_pop_message( gpb::MessageLite &capsule )
         {
+            common::transport_iface *conn(get_conn( ));
+            if( !conn ) {
+                return false;
+            }
             bool check = parent_->parse_and_pop( capsule );
             if( !check ) {
-                connection_->close( );
+                conn->close( );
             }
             return check;
         }
@@ -345,12 +393,16 @@ namespace vtrc { namespace server {
 
         void process_call( lowlevel_unit_sptr &llu )
         {
-            DEBUG_LINE(connection_);
+            common::transport_iface *conn(get_conn( ));
+            if( !conn ) {
+                return;
+            }
+            DEBUG_LINE(conn);
 
             if( ++current_calls_ <= max_calls( ) ) {
                 app_.get_rpc_service( ).post(
                         vtrc::bind( &this_type::push_call, this,
-                                    llu, connection_->shared_from_this( )));
+                                    llu, conn->shared_from_this( )));
             } else {
                 send_busy( *llu );
                 --current_calls_;
@@ -433,8 +485,12 @@ namespace vtrc { namespace server {
 
         void init( )
         {
+            common::transport_iface *conn(get_conn( ));
+            if( !conn ) {
+                return;
+            }
             static const std::string data(first_message( ));
-            connection_->write(data.c_str( ), data.size( ));
+            conn->write(data.c_str( ), data.size( ));
         }
 
         void data_ready( )
