@@ -238,6 +238,8 @@ namespace vtrc { namespace common {
             {
                 DEBUG_LINE(parent_);
 
+                if( closed_ ) return;
+
                 try {
                     stream_->async_write_some(
                             basio::buffer( data, length ),
