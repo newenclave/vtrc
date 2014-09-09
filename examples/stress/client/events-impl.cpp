@@ -173,7 +173,8 @@ namespace {
 
             std::cout << "[OUT] balance: " << request->balance( )
                       << "; stack: " << stack
-                      << "; thread: " << vtrc::this_thread::get_id( )
+                      << "; thread: "
+                      << std::hex << vtrc::this_thread::get_id( ) << std::dec
                       << "\n";
         }
 

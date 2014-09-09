@@ -476,8 +476,7 @@ namespace vtrc { namespace server {
         void init_success( common::system_closure_type clos )
         {
             static const std::string data(first_message( ));
-            connection_->write(data.c_str( ), data.size( ),
-                               clos, true );
+            connection_->write(data.c_str( ), data.size( ), clos, true );
         }
 
         void data_ready( )
