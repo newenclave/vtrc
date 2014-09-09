@@ -25,6 +25,8 @@ foreach( dep ${dependencies} )
 
 endforeach(dep)
 
+target_link_libraries( ${exe_name} pthread )
+
 if(WIN32)
     target_link_libraries(${exe_name} ws2_32.lib)
 endif(WIN32)
