@@ -20,7 +20,7 @@ namespace vtrc { namespace common {
     namespace basio = boost::asio;
     namespace bsys  = boost::system;
 
-#define TRANSPORT_USE_ASYNC_WRITE 1
+#define TRANSPORT_USE_ASYNC_WRITE 0
 
     namespace {
 
@@ -183,7 +183,7 @@ namespace vtrc { namespace common {
 
                 write_dispatcher_.post(
                        vtrc::bind( &this_type::write_impl, this, mh,
-                                    closure, parent_->weak_from_this( )));
+                                    closure, parent_->shared_from_this( )));
 #endif
             }
 
@@ -198,12 +198,12 @@ namespace vtrc { namespace common {
             /// non concurrence call.
             void write_impl( message_holder_sptr data,
                              vtrc::shared_ptr<system_closure_type> closure,
-                             common::connection_iface_wptr inst)
+                             common::connection_iface_sptr &/*inst*/)
             {
-                common::connection_iface_sptr lckd( inst.lock( ) );
-                if( !lckd ) {
-                    return;
-                }
+//                common::connection_iface_sptr lckd( inst.lock( ) );
+//                if( !lckd ) {
+//                    return;
+//                }
 
                 bool empty = write_queue_.empty( );
 
