@@ -477,8 +477,8 @@ namespace vtrc { namespace server {
         {
             common::connection_iface_sptr lckd( keeper_.lock( ) );
             if( !lckd ) {
-                //return;
-                throw std::runtime_error( "failed" );
+                return;
+                //throw std::runtime_error( "failed" );
             }
             //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
             stage_function_( );
