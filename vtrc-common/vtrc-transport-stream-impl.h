@@ -233,6 +233,10 @@ namespace vtrc { namespace common {
             {
                 DEBUG_LINE(parent_);
 
+                if( !parent_->active( ) ) {
+                    return;
+                }
+
                 try {
                     stream_->async_write_some(
                             basio::buffer( data, length ),
