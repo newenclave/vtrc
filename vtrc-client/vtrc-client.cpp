@@ -146,20 +146,21 @@ namespace vtrc { namespace client {
         }
 
         static
-        void on_ready_s( vtrc::condition_variable &cond )
+        void on_ready_s( vtrc::condition_variable *cond )
         {
-            cond.notify_all( );
+            cond->notify_all( );
         }
 
         static
-        void on_init_error_s( unsigned &failed, std::string &res,
-                              vtrc::condition_variable &cond,
+        void on_init_error_s( unsigned *failed,
+                              std::string *res,
+                              vtrc::condition_variable *cond,
                               const vtrc_errors::container &,
                               const char *message  )
         {
-            failed = true;
-            res.assign( message );
-            cond.notify_all( );
+            (*failed) = 1;
+            res->assign( message );
+            cond->notify_all( );
         }
 
         bool on_ready_diconnect( unsigned &failed )
@@ -175,15 +176,14 @@ namespace vtrc { namespace client {
             vtrc::condition_variable cond;
             vtrc::mutex              cond_lock;
 
-            bs2::scoped_connection rc( parent_->on_ready_connect(
-                           vtrc::bind( impl::on_ready_s,
-                                       vtrc::ref( cond ) )) );
+            bs2::scoped_connection rc(
+                        parent_->on_ready_connect(
+                            vtrc::bind( impl::on_ready_s, &cond ) ) );
 
             bs2::scoped_connection fc( parent_->on_init_error_connect(
                             vtrc::bind( impl::on_init_error_s,
-                                        vtrc::ref(failed),
-                                        vtrc::ref(failed_message),
-                                        vtrc::ref(cond),
+                                        &failed, &failed_message,
+                                        &cond,
                                         vtrc::placeholders::_1,
                                         vtrc::placeholders::_2 )) );
 
