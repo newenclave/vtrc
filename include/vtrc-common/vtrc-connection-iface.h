@@ -41,13 +41,13 @@ namespace vtrc { namespace common {
 
         vtrc::weak_ptr<connection_iface> weak_from_this( )
         {
-            DEBUG_LINE;
+            DEBUG_LINE(this);
             return vtrc::weak_ptr<connection_iface>( shared_from_this( ) );
         }
 
         vtrc::weak_ptr<connection_iface const> weak_from_this( ) const
         {
-            DEBUG_LINE;
+            DEBUG_LINE(this);
             return vtrc::weak_ptr<connection_iface const>( shared_from_this( ));
         }
 

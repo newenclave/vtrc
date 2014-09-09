@@ -147,7 +147,7 @@ namespace vtrc { namespace server {
 
         void send_and_close( const gpb::MessageLite &mess )
         {
-            DEBUG_LINE;
+            DEBUG_LINE(connection_);
 
             send_proto_message( mess,
                                 vtrc::bind( &this_type::close_client, this,
@@ -345,7 +345,7 @@ namespace vtrc { namespace server {
 
         void process_call( lowlevel_unit_sptr &llu )
         {
-            DEBUG_LINE;
+            DEBUG_LINE(connection_);
 
             if( ++current_calls_ <= max_calls( ) ) {
                 app_.get_rpc_service( ).post(

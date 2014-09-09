@@ -29,7 +29,7 @@ namespace vtrc { namespace common {
 
         void store( common::connection_iface *c )
         {
-            DEBUG_LINE;
+            DEBUG_LINE(c);
             store( c->shared_from_this( ) );
         }
 

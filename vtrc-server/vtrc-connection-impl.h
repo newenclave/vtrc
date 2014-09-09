@@ -190,7 +190,7 @@ namespace vtrc { namespace server { namespace listeners {
                              this->shared_from_this( )))
                     );
 #else
-                DEBUG_LINE;
+                DEBUG_LINE(this);
 
                 this->get_socket( ).async_read_some(
                         basio::buffer( &read_buff_[0], read_buff_.size( ) ),
