@@ -25,6 +25,7 @@
 #include "vtrc-ref.h"
 #include "vtrc-mutex.h"
 #include "vtrc-atomic.h"
+#include "vtrc-thread.h"
 
 #include "boost/asio.hpp"
 #include "boost/asio/error.hpp"
