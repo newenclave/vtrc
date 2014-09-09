@@ -98,6 +98,7 @@ namespace stress {
                      get_service_by_name( common::connection_iface* conn,
                                           const std::string &service_name )
             {
+                return vtrc::shared_ptr<common::rpc_service_wrapper>( );
                 if( service_name == stress::service_name( ) ) {
 
                     vtrc::shared_ptr<gpb::Service> stress_serv
@@ -154,6 +155,7 @@ namespace stress {
                       << "\n\ttotal:  " << ++counter_
                       << "\n"
                         ;
+//            vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds( 100 ) );
 //            sleep( 1 );
 //            if( counter_ > max_clients_ ) {
 //                l->stop( );
@@ -278,13 +280,13 @@ namespace stress {
         void attach_start_listener( unsigned retry_to,
                                     vtrc::server::listener_sptr listen )
         {
-            listen->on_new_connection_connect(
-                   vtrc::bind( &impl::on_new_connection, this,
-                               listen.get( ), vtrc::placeholders::_1 ));
+//            listen->on_new_connection_connect(
+//                   vtrc::bind( &impl::on_new_connection, this,
+//                               listen.get( ), vtrc::placeholders::_1 ));
 
-            listen->on_stop_connection_connect(
-                   vtrc::bind( &impl::on_stop_connection, this,
-                               listen.get( ), vtrc::placeholders::_1 ));
+//            listen->on_stop_connection_connect(
+//                   vtrc::bind( &impl::on_stop_connection, this,
+//                               listen.get( ), vtrc::placeholders::_1 ));
 
             listen->on_accept_failed_connect(
                    vtrc::bind( &impl::on_accept_failed, this,
