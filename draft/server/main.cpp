@@ -4,7 +4,7 @@
 #include <queue>
 #include <set>
 
-#include "boost/thread.hpp"
+//#include "boost/thread.hpp"
 
 #include "common/async-transport-point.hpp"
 #include "vtrc-signal-declaration.h"
