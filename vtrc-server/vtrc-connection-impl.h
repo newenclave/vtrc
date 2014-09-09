@@ -152,7 +152,7 @@ namespace vtrc { namespace server { namespace listeners {
             void on_write_error( const bsys::error_code &error )
             {
                 protocol_->on_write_error( error );
-                this->close( );
+                //this->close( );
             }
 
             void close_drop( )
