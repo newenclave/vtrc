@@ -83,7 +83,7 @@ namespace vtrc { namespace server { namespace listeners {
                        new protocol_layer_s( new_inst->app_,
                                              new_inst.get( ), opts ) );
 
-                new_inst->protocol_->init( );
+                //new_inst->protocol_->init( );
 
                 return new_inst;
             }
@@ -99,8 +99,8 @@ namespace vtrc { namespace server { namespace listeners {
 
             void init( )
             {
+                protocol_ ->init( );
                 start_reading( );
-                //protocol_ ->init( );
             }
 
             common::enviroment &get_enviroment( )
