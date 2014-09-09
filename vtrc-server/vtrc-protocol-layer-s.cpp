@@ -37,11 +37,15 @@ namespace vtrc { namespace server {
     namespace bsys  = boost::system;
     namespace basio = boost::asio;
 
+#if 0
 #define VPROTOCOL_S_LOCK_CONN( conn, ret )          \
     common::connection_iface_sptr lckd( conn );     \
     if( !lckd ) {                                   \
         return ret;                                 \
     }
+#else
+    #define VPROTOCOL_S_LOCK_CONN( conn, ret )
+#endif
 
     namespace {
         enum init_stage_enum {
