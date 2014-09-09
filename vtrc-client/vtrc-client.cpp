@@ -187,12 +187,13 @@ namespace vtrc { namespace client {
                                         vtrc::placeholders::_1,
                                         vtrc::placeholders::_2 )) );
 
+            vtrc::unique_lock<vtrc::mutex> ul(cond_lock);
+
             /// call connect
             conn_func( );
 
             parent_->on_connect_( );
 
-            vtrc::unique_lock<vtrc::mutex> ul(cond_lock);
             bool ok = cond.wait_for( ul,
                          vtrc::chrono::seconds( 10 ),
                          vtrc::bind( &impl::on_ready_diconnect, this,
