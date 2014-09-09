@@ -224,7 +224,7 @@ int main( ) try
     ba::io_service       ios;
     ba::io_service::work wrk(ios);
 
-    ba::ip::tcp::acceptor acceptor( ios, make_endpoint("127.0.0.1", 55555) );
+    ba::ip::tcp::acceptor acceptor( ios, make_endpoint("0.0.0.0", 55555) );
 
     start_accept( acceptor );
 
