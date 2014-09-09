@@ -155,7 +155,7 @@ namespace stress {
                       << "\n\ttotal:  " << ++counter_
                       << "\n"
                         ;
-            vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds( 1000 ) );
+//            vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds( 1000 ) );
 //            sleep( 1 );
 //            if( counter_ > max_clients_ ) {
 //                l->stop( );
