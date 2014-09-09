@@ -280,13 +280,13 @@ namespace stress {
         void attach_start_listener( unsigned retry_to,
                                     vtrc::server::listener_sptr listen )
         {
-//            listen->on_new_connection_connect(
-//                   vtrc::bind( &impl::on_new_connection, this,
-//                               listen.get( ), vtrc::placeholders::_1 ));
+            listen->on_new_connection_connect(
+                   vtrc::bind( &impl::on_new_connection, this,
+                               listen.get( ), vtrc::placeholders::_1 ));
 
-//            listen->on_stop_connection_connect(
-//                   vtrc::bind( &impl::on_stop_connection, this,
-//                               listen.get( ), vtrc::placeholders::_1 ));
+            listen->on_stop_connection_connect(
+                   vtrc::bind( &impl::on_stop_connection, this,
+                               listen.get( ), vtrc::placeholders::_1 ));
 
             listen->on_accept_failed_connect(
                    vtrc::bind( &impl::on_accept_failed, this,
