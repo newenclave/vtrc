@@ -17,7 +17,6 @@ add_library(${lib_name} ${VTRC_LINK_TYPE} ${lib_src})
 
 list(APPEND dependencies  
     vtrc_common_s
-    vtrc_protocol_s
     Boost
     PROTOBUF
     )
