@@ -7,7 +7,8 @@
 #define DEBUG_LINE( c ) std::cout <<    \
     __FILE__ << ":" << __LINE__         \
     << ":" << __FUNCTION__              \
-    << std::hex << c << std::dec        \
+    << " " << std::hex << c << std::dec \
+    << " " << c->active( )              \
     << "\n"
 
 #else
