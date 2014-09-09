@@ -98,7 +98,6 @@ namespace stress {
                      get_service_by_name( common::connection_iface* conn,
                                           const std::string &service_name )
             {
-                return vtrc::shared_ptr<common::rpc_service_wrapper>( );
                 if( service_name == stress::service_name( ) ) {
 
                     vtrc::shared_ptr<gpb::Service> stress_serv
