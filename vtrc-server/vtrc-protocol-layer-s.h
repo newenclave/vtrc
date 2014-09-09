@@ -35,7 +35,7 @@ namespace server {
     public:
 
         void init( );
-        void init_success(common::system_closure_type clos );
+        void init_success( common::system_closure_type clos );
         const std::string &client_id( ) const;
 
         void close( );
