@@ -85,10 +85,8 @@ namespace {
         void start_accept(  )
         {
 
-            vtrc::shared_ptr<socket_type> new_sock( new socket_type( ios_ ) );
-
-//            vtrc::shared_ptr<socket_type> new_sock
-//                    ( vtrc::make_shared<socket_type>(vtrc::ref(ios_) ) );
+            vtrc::shared_ptr<socket_type> new_sock
+                    ( vtrc::make_shared<socket_type>(vtrc::ref(ios_) ) );
 
             acceptor_->async_accept( *new_sock,
                 vtrc::bind( &this_type::on_accept, this,
