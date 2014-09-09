@@ -190,7 +190,7 @@ namespace vtrc { namespace server { namespace listeners {
                         disp.wrap(vtrc::bind( &this_type::read_handler, this,
                              vtrc::placeholders::error,
                              vtrc::placeholders::bytes_transferred,
-                             this->shared_from_this( )))
+                             this->weak_from_this( )))
                     );
 #else
                 DEBUG_LINE(this);
@@ -200,18 +200,18 @@ namespace vtrc { namespace server { namespace listeners {
                             vtrc::bind( &this_type::read_handler, this,
                                  vtrc::placeholders::error,
                                  vtrc::placeholders::bytes_transferred,
-                                 this->weak_from_this( ))
+                                 this->shared_from_this( ))
                     );
 #endif
             }
 
             void read_handler( const bsys::error_code &error, size_t bytes,
-                               const common::connection_iface_wptr inst )
+                               const common::connection_iface_sptr &/*inst*/ )
             {
-                common::connection_iface_sptr lck(inst.lock( ));
-                if( !lck ) {
-                    return;
-                }
+//                common::connection_iface_sptr lck(inst.lock( ));
+//                if( !lck ) {
+//                    return;
+//                }
 
                 if( !error ) {
                     try {
