@@ -163,9 +163,9 @@ namespace vtrc { namespace client {
             cond->notify_all( );
         }
 
-        bool on_ready_diconnect( unsigned &failed )
+        bool on_ready_diconnect( unsigned *failed )
         {
-            return (failed != 0) || ready( );
+            return ((*failed) != 0) || ready( );
         }
 
         template <typename FuncType>
@@ -195,9 +195,8 @@ namespace vtrc { namespace client {
             parent_->on_connect_( );
 
             bool ok = cond.wait_for( ul,
-                         vtrc::chrono::seconds( 10 ),
-                         vtrc::bind( &impl::on_ready_diconnect, this,
-                                      vtrc::ref(failed) ));
+                      vtrc::chrono::seconds( 10 ),
+                      vtrc::bind( &impl::on_ready_diconnect, this, &failed ) );
 
             if( !ok ) {
                 throw vtrc::common::exception( vtrc_errors::ERR_TIMEOUT );
