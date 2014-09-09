@@ -473,6 +473,13 @@ namespace vtrc { namespace server {
             connection_->write(data.c_str( ), data.size( ));
         }
 
+        void init_success( common::system_closure_type clos )
+        {
+            static const std::string data(first_message( ));
+            connection_->write(data.c_str( ), data.size( ),
+                               clos, true );
+        }
+
         void data_ready( )
         {
             common::connection_iface_sptr lckd( keeper_.lock( ) );
@@ -505,6 +512,11 @@ namespace vtrc { namespace server {
         impl_->init( );
     }
 
+    void protocol_layer_s::init_success( common::system_closure_type clos )
+    {
+        return impl_->init_success( clos );
+    }
+
     void protocol_layer_s::close( )
     {
 
@@ -530,6 +542,7 @@ namespace vtrc { namespace server {
     {
         return impl_->get_service(name);
     }
+
 
 }}
 

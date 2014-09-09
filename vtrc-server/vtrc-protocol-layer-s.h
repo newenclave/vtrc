@@ -3,6 +3,7 @@
 
 #include <string>
 #include "vtrc-common/vtrc-protocol-layer.h"
+#include "vtrc-common/vtrc-closure.h"
 
 namespace vtrc {
 
@@ -34,6 +35,7 @@ namespace server {
     public:
 
         void init( );
+        void init_success(common::system_closure_type clos );
         const std::string &client_id( ) const;
 
         void close( );

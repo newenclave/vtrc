@@ -97,10 +97,22 @@ namespace vtrc { namespace server { namespace listeners {
 //                               on_close_cb );
 //            }
 
+            void start_read_clos( bsys::error_code const & /*err*/,
+                                  common::connection_iface_wptr &inst)
+            {
+                common::connection_iface_sptr lck(inst.lock( ));
+                if( lck ) {
+                    start_reading( );
+                }
+            }
+
             void init( )
             {
-                protocol_ ->init( );
-                start_reading( );
+                protocol_->init_success(
+                            vtrc::bind( &this_type::start_read_clos, this,
+                                        vtrc::placeholders::error,
+                                        this->weak_from_this( )));
+                //start_reading( );
             }
 
             common::enviroment &get_enviroment( )
