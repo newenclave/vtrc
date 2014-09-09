@@ -60,20 +60,20 @@ namespace vtrc { namespace server {
         typedef impl             this_type;
         typedef protocol_layer_s parent_type;
 
-        application             &app_;
-        common::transport_iface *connection_;
-        common::connection_iface_wptr keeper_;
-        protocol_layer_s        *parent_;
-        bool                     ready_;
+        application                     &app_;
+        common::transport_iface         *connection_;
+        common::connection_iface_wptr    keeper_;
+        protocol_layer_s                *parent_;
+        bool                             ready_;
 
-        service_map              services_;
-        shared_mutex             services_lock_;
+        service_map                      services_;
+        shared_mutex                     services_lock_;
 
-        std::string              client_id_;
+        std::string                      client_id_;
 
-        vtrc::atomic<unsigned>   current_calls_;
+        vtrc::atomic<unsigned>           current_calls_;
 
-        common::delayed_call     keepalive_calls_;
+        common::delayed_call             keepalive_calls_;
 
         typedef vtrc::function<void (void)> stage_function_type;
         stage_function_type      stage_function_;
@@ -103,7 +103,7 @@ namespace vtrc { namespace server {
             if( lckd )
                 return connection_;
             else
-                return NULL;
+                throw std::runtime_error( "dead connection" );
         }
 
         common::rpc_service_wrapper_sptr get_service( const std::string &name )
