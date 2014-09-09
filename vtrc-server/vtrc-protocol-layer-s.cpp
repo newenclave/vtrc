@@ -202,10 +202,12 @@ namespace vtrc { namespace server {
         }
 
         void close_client( const bsys::error_code &      /*err */,
-                           common::connection_iface_sptr /*inst*/)
+                           common::connection_iface_wptr inst )
         {
-            VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
-            connection_->close( );
+            common::connection_iface_sptr lcked( inst.lock( ) );
+            if( lcked ) {
+                lcked->close( );
+            }
         }
 
         void on_client_transformer( )
