@@ -152,7 +152,8 @@ namespace {
 
             std::cout << "[IN ] balance: " << request->balance( )
                       << "; stack: " << stack
-                      << "; thread: " << vtrc::this_thread::get_id( )
+                      << "; thread: "
+                      << std::hex << vtrc::this_thread::get_id( ) << std::dec
                       << "\n";
 
             client::vtrc_client_sptr locked(client_.lock( ));
