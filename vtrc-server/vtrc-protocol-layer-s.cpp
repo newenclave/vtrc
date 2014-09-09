@@ -468,7 +468,7 @@ namespace vtrc { namespace server {
 
         void init( )
         {
-            VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
+            //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
             static const std::string data(first_message( ));
             connection_->write(data.c_str( ), data.size( ));
         }
