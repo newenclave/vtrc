@@ -39,7 +39,7 @@ namespace vtrc { namespace server {
 
 #define VPROTOCOL_S_LOCK_CONN( conn, ret )          \
     common::connection_iface_sptr lckd( conn );     \
-    if( !conn ) {                                   \
+    if( !lckd ) {                                   \
         return ret;                                 \
     }
 
@@ -469,7 +469,12 @@ namespace vtrc { namespace server {
 
         void data_ready( )
         {
-            VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
+            common::connection_iface_sptr lckd( keeper_.lock( ) );
+            if( !lckd ) {
+                return;
+                //throw std::runtime_error( "failed" );
+            }
+            //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
             stage_function_( );
         }
 
