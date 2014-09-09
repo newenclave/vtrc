@@ -57,11 +57,7 @@ namespace vtrc { namespace server { namespace listeners {
             { }
 
             ~connection_impl( )
-            {
-                std::cout << "Destroy client "
-                          << std::hex << this << std::dec
-                          << "\n";
-            }
+            { }
 
             void set_name( std::string const &name )
             {
