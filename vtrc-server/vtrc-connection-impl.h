@@ -56,6 +56,13 @@ namespace vtrc { namespace server { namespace listeners {
                 ,close_closure_(on_close_cb)
             { }
 
+            ~connection_impl( )
+            {
+                std::cout << "Destroy client "
+                          << std::hex << this << std::dec
+                          << "\n";
+            }
+
             void set_name( std::string const &name )
             {
                 name_.assign( name );
