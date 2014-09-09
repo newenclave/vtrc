@@ -61,7 +61,7 @@ namespace vtrc { namespace server {
         typedef protocol_layer_s parent_type;
 
         application             &app_;
-        common::transport_iface *connectio_;
+        common::transport_iface *connection_;
         common::connection_iface_wptr keeper_;
         protocol_layer_s        *parent_;
         bool                     ready_;
@@ -80,7 +80,7 @@ namespace vtrc { namespace server {
 
         impl( application &a, common::transport_iface *c )
             :app_(a)
-            ,connectio_(c)
+            ,connection_(c)
             ,keeper_(c->weak_from_this( ))
             ,ready_(false)
             ,current_calls_(0)
@@ -99,7 +99,11 @@ namespace vtrc { namespace server {
 
         common::transport_iface *get_conn( )
         {
-            return connectio_;
+            common::connection_iface_sptr lckd(keeper_.lock( ));
+            if( lckd )
+                return connection_;
+            else
+                return NULL;
         }
 
         common::rpc_service_wrapper_sptr get_service( const std::string &name )
