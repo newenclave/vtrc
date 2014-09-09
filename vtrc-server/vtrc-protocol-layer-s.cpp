@@ -37,7 +37,7 @@ namespace vtrc { namespace server {
     namespace bsys  = boost::system;
     namespace basio = boost::asio;
 
-#if 0
+#if 1
 #define VPROTOCOL_S_LOCK_CONN( conn, ret )          \
     common::connection_iface_sptr lckd( conn );     \
     if( !lckd ) {                                   \
