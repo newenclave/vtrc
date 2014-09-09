@@ -164,14 +164,14 @@ namespace vtrc { namespace server {
 
         void send_and_close( const gpb::MessageLite &mess )
         {
-            //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
+            VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
             DEBUG_LINE(connection_);
 
             send_proto_message( mess,
-                            vtrc::bind( &this_type::close_client, this,
-                                         vtrc::placeholders::_1,
-                                         connection_->shared_from_this( )),
-                            true );
+                                vtrc::bind( &this_type::close_client, this,
+                                             vtrc::placeholders::_1,
+                                             connection_->weak_from_this( )),
+                                true );
         }
 
         void set_client_ready( vtrc_auth::init_capsule &capsule )
