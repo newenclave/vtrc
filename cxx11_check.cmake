@@ -10,7 +10,7 @@ set( ${VAR_ENABLED} 1 )
             set( ${VAR_ENABLED} 0 )
         endif( )
 
-    elseif( CMAKE_COMPILER_IS_GNUCXX )                  ### CNU
+    elseif( CMAKE_COMPILER_IS_GNUCXX )                  ### GNU
 
         if( ${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS 4.6 )
             set( ${VAR_ENABLED} 0 )
@@ -32,7 +32,7 @@ macro( get_cmd_cxx11 COMMAND_VAR )
 
         set( ${COMMAND_VAR} "" )
 
-    elseif( CMAKE_COMPILER_IS_GNUCXX )                  ### CNU
+    elseif( CMAKE_COMPILER_IS_GNUCXX )                  ### GNU
 
         set( ${COMMAND_VAR} "-std=c++11" )
 
@@ -50,7 +50,7 @@ macro( get_compiler_thread_local MACRO_VAR )
 
         set( ${MACRO_VAR} __declspec\(thread\) )
 
-    elseif( CMAKE_COMPILER_IS_GNUCXX )                  ### CNU
+    elseif( CMAKE_COMPILER_IS_GNUCXX )                  ### GNU
 
         if( ${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS 4.8 )
             set( ${MACRO_VAR} __thread )
