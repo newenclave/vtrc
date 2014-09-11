@@ -32,12 +32,14 @@ namespace vtrc { namespace common  {
         typedef vtrc_rpc::lowlevel_unit              lowlevel_unit_type;
         typedef vtrc::shared_ptr<lowlevel_unit_type> lowlevel_unit_sptr;
 
-        rpc_channel(unsigned direct_call_type, unsigned callback_type);
+        rpc_channel( unsigned direct_call_type, unsigned callback_type );
         virtual ~rpc_channel( );
 
     public:
 
         virtual bool alive( ) const = 0;
+
+    protected:
 
         lowlevel_unit_sptr create_lowlevel(
                           const google::protobuf::MethodDescriptor* method,
@@ -49,7 +51,6 @@ namespace vtrc { namespace common  {
                             google::protobuf::Message* response,
                             common::connection_iface_sptr &cl,
                             const vtrc_rpc::options *call_opt ) const;
-    protected:
 
         //typedef protocol_layer::context_holder context_holder;
 
