@@ -59,7 +59,7 @@ namespace stress {
             }
         }
 
-        std::cout << "Avarage TO: "
+        std::cout << "Avarage: "
                   << ( res / counter )
                   << " microseconds\n";
     }
