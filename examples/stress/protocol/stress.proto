@@ -37,7 +37,7 @@ service stress_service {
     rpc ping (ping_req) returns (ping_res);
     rpc generate_event (generate_events_req) returns (generate_events_res);
 
-    /// make recursive_callback is balance != 0
+    /// make recursive_callback if balance != 0
     rpc recursive_call (recursive_call_req) returns (recursive_call_res);
 
     /// shutdown server
