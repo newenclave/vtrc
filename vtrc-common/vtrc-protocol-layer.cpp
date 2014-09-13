@@ -764,7 +764,7 @@ namespace vtrc { namespace common {
             return closure_hold->proto_closure_;
         }
 
-        void make_local_call_impl( lowlevel_unit_sptr llu,
+        void make_local_call_impl( lowlevel_unit_sptr  &llu,
                                    closure_holder_sptr &closure_hold)
         {
             protocol_layer::context_holder ch( parent_, llu.get( ) );
@@ -822,7 +822,7 @@ namespace vtrc { namespace common {
             make_local_call( llu, empty_call );
         }
 
-        void make_local_call( protocol_layer::lowlevel_unit_sptr llu,
+        void make_local_call( protocol_layer::lowlevel_unit_sptr &llu,
                                       const protcol_closure_type &done )
         {
             bool failed        = true;
