@@ -11,9 +11,11 @@
 #include "vtrc-thread.h"
 
 #ifdef _MSC_VER
-#define sleep_ Sleep
+#define sleep_ Sleep /// milliseconds
+#define MILLISECONDS( x ) x
 #else
-#define sleep_ sleep
+#define sleep_ usleep /// microseconds
+#define MILLISECONDS( x ) ((x) * 1000)
 #endif
 
 namespace stress {
@@ -55,7 +57,7 @@ namespace stress {
             res += ping_impl( iface, payload );
 
             if( !flood && count ) {
-                sleep_( 1 );
+                sleep_( MILLISECONDS( 1000 ) );
             }
         }
 
