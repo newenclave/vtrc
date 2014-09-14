@@ -232,10 +232,10 @@ namespace async_transport {
                         boost::asio::buffer( data, length ),
                         write_dispatcher_.wrap(
                             tns::bind( &this_type::write_handler, this,
-                                tns::placeholders::error,
-                                tns::placeholders::bytes_transferred,
-                                length, total,
-                                this->shared_from_this( ))
+                                        tns::placeholders::error,
+                                        tns::placeholders::bytes_transferred,
+                                        length, total,
+                                        this->shared_from_this( ))
                         )
                 );
             } catch( const std::exception & ) {

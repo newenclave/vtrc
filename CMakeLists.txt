@@ -126,11 +126,12 @@ add_subdirectory(vtrc-client)
 
 if(WITH_EXAMPLES)
 
-    add_subdirectory(examples/calculator)
+    #add_subdirectory(examples/calculator)
     add_subdirectory(examples/remote-fs)
     add_subdirectory(examples/lukki-db)
     add_subdirectory(examples/stress)
     add_subdirectory(examples/hello)
+    add_subdirectory(examples/hello-events)
 
 endif(WITH_EXAMPLES)
 
