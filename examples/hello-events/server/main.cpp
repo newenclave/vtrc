@@ -35,7 +35,7 @@ class  hello_service_impl: public howto::hello_events_service {
         using   server::channels::unicast::create_event_channel;
 
 
-        { // do event
+        { // do event. send and dont wait response
             common::rpc_channel *ec =
                             create_event_channel( cl_->shared_from_this( ) );
 
@@ -43,7 +43,7 @@ class  hello_service_impl: public howto::hello_events_service {
             event.call( &stub_type::hello_event );
         }
 
-        { // do callback
+        { // do callback. wait response from client.
             common::rpc_channel *cc =
                             create_callback_channel( cl_->shared_from_this( ) );
 
