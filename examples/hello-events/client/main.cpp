@@ -35,7 +35,7 @@ class hello_event_impl: public howto::hello_events {
                  ::google::protobuf::Closure* done)
     {
         common::closure_holder ch( done );
-        std::cout << "Event from server; Current thread is: "
+        std::cout << "Event from server; Current thread is: 0x"
                   << std::hex
                   << vtrc::this_thread::get_id( )
                   << std::dec
@@ -49,7 +49,7 @@ class hello_event_impl: public howto::hello_events {
                  ::google::protobuf::Closure* done)
     {
         common::closure_holder ch( done );
-        std::cout << "Callback from server; Current thread is: "
+        std::cout << "Callback from server; Current thread is: 0x"
                   << std::hex
                   << vtrc::this_thread::get_id( )
                   << std::dec
@@ -57,7 +57,7 @@ class hello_event_impl: public howto::hello_events {
                      ;
 
         std::ostringstream oss;
-        oss << "Hello there! my thread id is "
+        oss << "Hello there! my thread id is 0x"
             << std::hex
             << vtrc::this_thread::get_id( )
                ;
@@ -100,7 +100,7 @@ int main( int argc, const char **argv )
 
         common::stub_wrapper<stub_type> hello(channel.get( ));
 
-        std::cout << "main( ) thread id is: "
+        std::cout << "main( ) thread id is: 0x"
                   << std::hex
                   << vtrc::this_thread::get_id( )
                   << std::dec
