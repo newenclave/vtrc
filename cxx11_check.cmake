@@ -1,8 +1,7 @@
 macro( check_cxx11 VAR_ENABLED )
 
-#-std=c++11 by default
-
-set( ${VAR_ENABLED} 1 )
+    #-std=c++11 by default
+    set( ${VAR_ENABLED} 1 )
 
     if( MSVC )                                          ### MS
 
