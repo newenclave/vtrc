@@ -26,7 +26,7 @@ namespace vtrc { namespace common  {
              DEFAULT            = 0
             ,DISABLE_WAIT       = 1
             ,USE_CONTEXT_CALL   = 1 << 1
-            //,CONTEXT_REQIRED    = 1 << 2
+            //,CONTEXT_REQUIRED   = 1 << 2
         };
 
         typedef vtrc_rpc::lowlevel_unit              lowlevel_unit_type;
