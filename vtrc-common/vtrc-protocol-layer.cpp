@@ -64,7 +64,7 @@ namespace vtrc { namespace common {
                 break;
             }
         }
-
+#if 0
         struct rpc_unit_index {
             uint64_t     id_;
             rpc_unit_index( uint64_t id )
@@ -77,7 +77,7 @@ namespace vtrc { namespace common {
         {
             return lhs.id_ < rhs.id_;
         }
-
+#endif
         typedef vtrc_rpc::lowlevel_unit              lowlevel_unit_type;
         typedef vtrc::shared_ptr<lowlevel_unit_type> lowlevel_unit_sptr;
 
