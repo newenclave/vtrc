@@ -126,18 +126,18 @@ typedef u_int64_t sha2_word64;	/* Exactly 8 bytes */
 
 /*** ENDIAN REVERSAL MACROS *******************************************/
 #if BYTE_ORDER == LITTLE_ENDIAN
-#define REVERSE32(w,x)	{ \
-	sha2_word32 tmp = (w); \
-	tmp = (tmp >> 16) | (tmp << 16); \
+#define REVERSE32(w,x)	{                                            \
+    sha2_word32 tmp = (w);                                           \
+    tmp = (tmp >> 16) | (tmp << 16);                                 \
 	(x) = ((tmp & 0xff00ff00UL) >> 8) | ((tmp & 0x00ff00ffUL) << 8); \
 }
-#define REVERSE64(w,x)	{ \
-	sha2_word64 tmp = (w); \
-	tmp = (tmp >> 32) | (tmp << 32); \
-	tmp = ((tmp & 0xff00ff00ff00ff00ULL) >> 8) | \
-	      ((tmp & 0x00ff00ff00ff00ffULL) << 8); \
-	(x) = ((tmp & 0xffff0000ffff0000ULL) >> 16) | \
-	      ((tmp & 0x0000ffff0000ffffULL) << 16); \
+#define REVERSE64(w,x)	{                           \
+    sha2_word64 tmp = (w);                          \
+    tmp = (tmp >> 32) | (tmp << 32);                \
+    tmp = ((tmp & 0xff00ff00ff00ff00ULL) >> 8) |    \
+          ((tmp & 0x00ff00ff00ff00ffULL) << 8);     \
+    (x) = ((tmp & 0xffff0000ffff0000ULL) >> 16) |   \
+          ((tmp & 0x0000ffff0000ffffULL) << 16);    \
 }
 #endif /* BYTE_ORDER == LITTLE_ENDIAN */
 
@@ -146,11 +146,11 @@ typedef u_int64_t sha2_word64;	/* Exactly 8 bytes */
  * unsigned 128-bit integer (represented using a two-element array of
  * 64-bit words):
  */
-#define ADDINC128(w,n)	{ \
+#define ADDINC128(w,n)	{       \
 	(w)[0] += (sha2_word64)(n); \
-	if ((w)[0] < (n)) { \
-		(w)[1]++; \
-	} \
+    if ((w)[0] < (n)) {         \
+        (w)[1]++;               \
+    }                           \
 }
 
 /*
