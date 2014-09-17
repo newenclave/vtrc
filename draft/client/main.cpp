@@ -19,6 +19,7 @@ void read_handler( boost::system::error_code const &e,
         std::cout << "read " << bytes << "\n";
         start_read( desc );
     } else {
+        std::cout << "read error: " << e.message( ) << "\n";
         throw std::runtime_error( e.message( ) );
     }
 }
