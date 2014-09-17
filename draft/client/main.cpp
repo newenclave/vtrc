@@ -1,66 +1,59 @@
 #include <iostream>
+#include <fcntl.h>
+#include <vector>
 
-#include <thread>
-#include "boost/thread.hpp"
-#include "boost/bind.hpp"
+#include <boost/asio/posix/stream_descriptor.hpp>
+#include <boost/asio.hpp>
+#include <boost/bind.hpp>
 
-template <typename T> T *& get_ptr( )
+namespace ba = boost::asio;
+std::vector<char> data(4096);
+
+void start_read( ba::posix::stream_descriptor &desc );
+
+void read_handler( boost::system::error_code const &e,
+                   size_t bytes,
+                   ba::posix::stream_descriptor &desc)
 {
-    static __thread T * t = nullptr;
-    return t;
+    if( !e ) {
+        std::cout << "read " << bytes << "\n";
+        start_read( desc );
+    } else {
+        throw std::runtime_error( e.message( ) );
+    }
 }
 
-template<typename T>
-class thread_local_ptr {
-
-public:
-
-    typedef T value_type;
-    typedef T * ptr_type;
-
-    ptr_type &get( )
-    {
-        return get_ptr<T>( );
-    }
-
-};
-
-typedef thread_local_ptr<int> thread_ptr_int;
-
-void get_set_ptr( int i, thread_ptr_int &data )
+void start_read( ba::posix::stream_descriptor &desc )
 {
-    if( data.get( ) != nullptr ) {
-        std::cerr << "NOT EMPTY!\n";
-        std::terminate( );
-    }
-    data.get( ) = new int( i );
-    for( int j=0; j<1000; ++j ) {
-        (*data.get( )) = j;
-        int m = (*data.get( ));
-
-        if( j != m ) {
-            std::cerr << "Failed!\n";
-        }
-    }
-    delete data.get( );
+    desc.async_read_some( ba::buffer(data),
+                          boost::bind( &read_handler,
+                                       ba::placeholders::error,
+                                       ba::placeholders::bytes_transferred,
+                                       boost::ref(desc)) );
 }
 
-int main( )
+int main( int argc, const char *argv[] ) try
 {
-    boost::thread_group tg;
-    thread_ptr_int ti;
 
-    ti.get( ) = new int( 100 );
+    ba::io_service ios;
+    ba::io_service::work w(ios);
 
-    std::cout << "Ti for main thread: " << (*ti.get( )) << std::endl;
+    ba::posix::stream_descriptor sd(ios);
 
-    for( int i=0; i<100; ++i ) {
-        tg.create_thread( boost::bind( get_set_ptr, i, boost::ref( ti ) ) );
+    int fd = open( argv[1], O_RDONLY );
+
+    std::cout << "Fd: " << fd << "\n";
+
+    sd.assign( fd );
+    start_read( sd );
+
+    while( 1 ) {
+        ios.run_one( );
     }
-
-    tg.join_all( );
-    delete ti.get( );
 
     return 0;
+} catch( const std::exception &ex ) {
+    std::cerr << ex.what( ) << "\n";
+    return 1;
 }
 
