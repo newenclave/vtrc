@@ -49,14 +49,20 @@ struct add_del_struct {
 
 //eventfd
 
-void fd_cb( int fd )
+void fd_cb( int fd, int add )
 {
     char bl = 0;
     lseek( fd, 0, SEEK_SET );
     read( fd, &bl, 1 );
     std::cout << "Read 1 byte from " << fd
               << " result: '" << bl << "'\n";
-    lseek( fd, 0, SEEK_SET );
+
+    add_del_struct *new_fd;
+    new_fd->fd_     = fd;
+    new_fd->flags_  = EPOLLIN | EPOLLET | EPOLLPRI | EPOLLERR;
+
+    eventfd_write( add, (eventfd_t)(new_fd) );
+
 }
 
 int add_fd_to_epoll( int ep, int ev, uint32_t flags )
@@ -175,7 +181,7 @@ int main( int argc, const char *argv[] ) try
     int del  = eventfd( 0, EFD_NONBLOCK );
     int stop = eventfd( 0, EFD_NONBLOCK );
 
-    boost::function<void (int)> fcb(boost::bind( fd_cb, _1 ));
+    boost::function<void (int)> fcb(boost::bind( fd_cb, _1, add ));
 
     boost::thread t( boost::bind( poll_thread, add, del, stop,
                                   fcb, boost::ref(ios)) );
