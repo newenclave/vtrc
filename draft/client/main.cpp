@@ -193,7 +193,7 @@ void poll_thread( int add_event,
     }
 }
 
-int main( int argc, const char *argv[] ) try
+int main( int argc, const char *argv[ ] ) try
 {
     ba::io_service ios;
     ba::io_service::work w(ios);
@@ -214,6 +214,9 @@ int main( int argc, const char *argv[] ) try
     std::cout << "Fd: " << fd << "\n";
 
     add_fd( add, fd );
+
+    sleep( 1 );
+    eventfd_write( stop, 0 );
 
     //write( add, &new_fd, sizeof(new_fd) );
 
