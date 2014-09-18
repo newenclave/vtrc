@@ -118,7 +118,9 @@ void poll_thread( int add_event,
 
                     int res = read( add_event, &data, sizeof(data) );
 
-                    std::cout << "Read ptr data (add) 0x"
+                    std::cout << "Read ptr data (add) "
+                              << " res = " << res
+                              << " 0x"
                               << std::hex << data << std::dec
                               << "\n";
 
