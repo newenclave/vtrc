@@ -105,6 +105,7 @@ void poll_thread( int add_event,
         struct epoll_event rcvd[1];
 
         while( working ) {
+
             int count = epoll_wait( epfd, rcvd, 1, -1);
             if( -1 == count ) {
                 std::cerr << "epoll_wait failed: " << errno << "\n";
@@ -152,6 +153,10 @@ void poll_thread( int add_event,
                 }
             }
         }
+
+        close( add_event );
+        close( del_event );
+        close( stop_event );
     }
 }
 
@@ -179,7 +184,8 @@ int main( int argc, const char *argv[] ) try
     new_fd->fd_     = fd;
     new_fd->flags_  = EPOLLPRI;
 
-    write( add, &new_fd, sizeof(new_fd) );
+    eventfd_write( add, (eventfd_t)new_fd );
+    //write( add, &new_fd, sizeof(new_fd) );
 
 //    while( 1 ) {
 //        ios.run_one( );
