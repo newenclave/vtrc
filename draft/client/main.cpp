@@ -26,7 +26,6 @@ void read_handler( boost::system::error_code const &e,
 
 void start_read( ba::posix::stream_descriptor &desc )
 {
-    lseek( desc.native_handle( ), 0, SEEK_SET );
     desc.async_read_some( ba::buffer(data),
                           boost::bind( &read_handler,
                                        ba::placeholders::error,
