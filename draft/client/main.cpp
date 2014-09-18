@@ -209,6 +209,9 @@ int main( int argc, const char *argv[] ) try
     new_fd->flags_  = EPOLLIN | EPOLLET | EPOLLPRI | EPOLLERR;
 
     eventfd_write( add, (eventfd_t)(new_fd) );
+
+    eventfd_write( add, (eventfd_t)(0) );
+
     //write( add, &new_fd, sizeof(new_fd) );
 
 //    while( 1 ) {
