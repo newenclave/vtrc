@@ -89,11 +89,18 @@ void poll_thread( int add_event,
     int epfd = epoll_create( 5 );
     int working = 1;
 
+    std::cout << "Epoll: " << epfd << "\n";
+
     if( epfd > 0 ) {
 
-        add_event_to_epoll( epfd, add_event );
-        add_event_to_epoll( epfd, del_event );
-        add_event_to_epoll( epfd, stop_event );
+        int ar = add_event_to_epoll( epfd, add_event );
+        std::cout << "Epoll add: " << ar << "\n";
+
+        ar = add_event_to_epoll( epfd, del_event );
+        std::cout << "Epoll del: " << ar << "\n";
+
+        ar = add_event_to_epoll( epfd, stop_event );
+        std::cout << "Epoll stop: " << ar << "\n";
 
         struct epoll_event rcvd[1];
 
