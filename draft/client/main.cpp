@@ -56,6 +56,7 @@ void fd_cb( int fd )
     read( fd, &bl, 1 );
     std::cout << "Read 1 byte from " << fd
               << " result: '" << bl << "'\n";
+    lseek( fd, 0, SEEK_SET );
 }
 
 int add_fd_to_epoll( int ep, int ev, uint32_t flags )
