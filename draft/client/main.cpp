@@ -120,6 +120,7 @@ void poll_thread( int add_event,
 
                     std::cout << "Read ptr data (add) "
                               << " res = " << res
+                              << " errno " << errno
                               << " 0x"
                               << std::hex << data << std::dec
                               << "\n";
