@@ -5,6 +5,8 @@
 #include <boost/asio/posix/stream_descriptor.hpp>
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
+#include <boost/thread.hpp>
+#include <boost/chrono.hpp>
 
 namespace ba = boost::asio;
 std::vector<char> data(4096);
@@ -17,11 +19,12 @@ void read_handler( boost::system::error_code const &e,
 {
     if( !e ) {
         std::cout << "read " << bytes << "\n";
-        start_read( desc );
     } else {
         std::cout << "read error: " << e.message( ) << "\n";
-        throw std::runtime_error( e.message( ) );
+        boost::this_thread::sleep_for( boost::chrono::milliseconds(500) );
+        //throw std::runtime_error( e.message( ) );
     }
+    start_read( desc );
 }
 
 void start_read( ba::posix::stream_descriptor &desc )
