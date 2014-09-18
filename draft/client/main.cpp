@@ -95,7 +95,7 @@ void poll_thread( int add_event,
                   boost::function<void (int)> cb,
                   ba::io_service &disp )
 {
-    int epfd = epoll_create( 0 );
+    int epfd = epoll_create( 1 );
     int working = 1;
 
     std::cout << "Epoll: " << epfd << "\n";
