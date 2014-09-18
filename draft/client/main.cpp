@@ -8,6 +8,12 @@
 #include <boost/thread.hpp>
 #include <boost/chrono.hpp>
 
+#include <sys/epoll.h>
+#include <sys/types.h>
+#include <sys/eventfd.h>
+
+#include <errno.h>
+
 namespace ba = boost::asio;
 std::vector<char> data(4096);
 
@@ -36,24 +42,143 @@ void start_read( ba::posix::stream_descriptor &desc )
                                        boost::ref(desc)) );
 }
 
+struct add_del_struct {
+    int      fd_;
+    uint32_t flags_;
+};
+
+//eventfd
+
+void fd_cb( int fd )
+{
+    char bl = 0;
+    lseek( fd, 0, SEEK_SET );
+    read( fd, &bl, 1 );
+    std::cout << "Read 1 byte from " << fd
+              << " result: '" << bl << "'\n";
+}
+
+int add_fd_to_epoll( int ep, int ev, uint32_t flags )
+{
+    struct epoll_event epv;
+
+    epv.events   = flags;
+    epv.data.fd  = ev;
+
+    return epoll_ctl( ep, EPOLL_CTL_ADD, ev, &epv );
+}
+
+int add_event_to_epoll( int ep, int ev )
+{
+    return add_fd_to_epoll( ep, ev, EPOLLIN | EPOLLET );
+}
+
+int add_fd_from_epoll( int ep, int ev )
+{
+    struct epoll_event epv = { 0 };
+    epv.data.fd  = ev;
+    return epoll_ctl( ep, EPOLL_CTL_DEL, ev, &epv );
+}
+
+void poll_thread( int add_event,
+                  int del_event,
+                  int stop_event,
+                  boost::function<void (int)> cb,
+                  ba::io_service &disp )
+{
+    int epfd = epoll_create( 5 );
+    int working = 1;
+
+    if( epfd > 0 ) {
+
+        add_event_to_epoll( epfd, add_event );
+        add_event_to_epoll( epfd, del_event );
+        add_event_to_epoll( epfd, stop_event );
+
+        struct epoll_event rcvd[1];
+
+        while( working ) {
+            int count = epoll_wait( epfd, rcvd, 1, -1);
+            if( -1 == count ) {
+                std::cerr << "epoll_wait failed: " << errno << "\n";
+                working = 0;
+            } else {
+
+                add_del_struct *data;
+
+                if( rcvd[0].data.fd == add_event ) {
+
+                    int res = read( add_event, &data, sizeof(data) );
+
+                    std::cout << "Read ptr data 0x"
+                              << std::hex << data << std::dec
+                              << "\n";
+
+                    res = add_fd_to_epoll( epfd, data->fd_, data->flags_ );
+
+                    std::cout << "Add fd " << data->fd_
+                              << " res = " << res
+                              << "\n";
+
+                    free( data );
+
+                } else if( rcvd[0].data.fd == del_event ) {
+
+                    int res = read( add_event, &data, sizeof(data) );
+
+                    std::cout << "Read ptr data 0x"
+                              << std::hex << data << std::dec
+                              << "\n";
+
+                    res = add_fd_to_epoll( epfd, data->fd_, data->flags_ );
+
+                    std::cout << "Del fd " << data->fd_
+                              << " res = " << res
+                              << "\n";
+
+                    free( data );
+
+                } else if( rcvd[0].data.fd == stop_event ) {
+                    working = 0;
+                } else {
+                    cb( rcvd[0].data.fd );
+                }
+            }
+        }
+    }
+}
+
 int main( int argc, const char *argv[] ) try
 {
-
     ba::io_service ios;
     ba::io_service::work w(ios);
 
     ba::posix::stream_descriptor sd(ios);
 
+    int add  = eventfd( 0, EFD_NONBLOCK );
+    int del  = eventfd( 0, EFD_NONBLOCK );
+    int stop = eventfd( 0, EFD_NONBLOCK );
+
+    boost::function<void (int)> fcb(boost::bind( fd_cb, _1 ));
+
+    boost::thread t( boost::bind( poll_thread, add, del, stop,
+                                  fcb, boost::ref(ios)) );
+
     int fd = open( argv[1], O_RDONLY );
 
     std::cout << "Fd: " << fd << "\n";
 
-    sd.assign( fd );
-    start_read( sd );
+    add_del_struct *new_fd = (add_del_struct *)malloc( sizeof(*new_fd) );
+    new_fd->fd_     = fd;
+    new_fd->flags_  = EPOLLPRI;
 
-    while( 1 ) {
-        ios.run_one( );
-    }
+    write( add, &new_fd, sizeof(new_fd) );
+
+//    while( 1 ) {
+//        ios.run_one( );
+//    }
+
+    t.join( );
 
     return 0;
 } catch( const std::exception &ex ) {
