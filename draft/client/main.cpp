@@ -115,11 +115,15 @@ void poll_thread( int add_event,
 
         while( working ) {
 
+            std::cout << "Start reading event\n";
+
             int count = epoll_wait( epfd, rcvd, 1, -1);
             if( -1 == count ) {
                 std::cerr << "epoll_wait failed: " << errno << "\n";
                 working = 0;
             } else {
+
+                std::cout << "Got " << count << " event\n";
 
                 add_del_struct *data = 0;
 
