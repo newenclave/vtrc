@@ -139,7 +139,9 @@ void poll_thread( int add_event,
                               << "\n";
 
                     int ar = add_event_to_epoll( epfd, add_event );
-                    std::cout << "Epoll add: " << ar << "\n";
+                    std::cout << "Epoll add: "
+                              << ar  << " " << strerror( errno )
+                              << "\n";
 
                     free( data );
 
