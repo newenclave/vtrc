@@ -181,9 +181,9 @@ int main( int argc, const char *argv[] ) try
 
     ba::posix::stream_descriptor sd(ios);
 
-    int add  = eventfd( 0, EFD_NONBLOCK );
-    int del  = eventfd( 1, EFD_NONBLOCK );
-    int stop = eventfd( 2, EFD_NONBLOCK );
+    int add  = eventfd( 0, 0 );
+    int del  = eventfd( 1, 0 );
+    int stop = eventfd( 2, 0 );
 
     boost::function<void (int)> fcb(boost::bind( fd_cb, _1, add ));
 
