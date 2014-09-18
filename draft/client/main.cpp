@@ -112,13 +112,13 @@ void poll_thread( int add_event,
                 working = 0;
             } else {
 
-                add_del_struct *data;
+                add_del_struct *data = 0;
 
                 if( rcvd[0].data.fd == add_event ) {
 
                     int res = read( add_event, &data, sizeof(data) );
 
-                    std::cout << "Read ptr data 0x"
+                    std::cout << "Read ptr data (add) 0x"
                               << std::hex << data << std::dec
                               << "\n";
 
@@ -134,7 +134,7 @@ void poll_thread( int add_event,
 
                     int res = read( add_event, &data, sizeof(data) );
 
-                    std::cout << "Read ptr data 0x"
+                    std::cout << "Read ptr data (del) 0x"
                               << std::hex << data << std::dec
                               << "\n";
 
@@ -181,10 +181,15 @@ int main( int argc, const char *argv[] ) try
     std::cout << "Fd: " << fd << "\n";
 
     add_del_struct *new_fd = (add_del_struct *)malloc( sizeof(*new_fd) );
+
+    std::cout << "Create new data: "
+              << std::hex << new_fd << std::dec
+              << "\n";
+
     new_fd->fd_     = fd;
     new_fd->flags_  = EPOLLPRI;
 
-    eventfd_write( add, (eventfd_t)new_fd );
+    eventfd_write( add, (eventfd_t)(new_fd) );
     //write( add, &new_fd, sizeof(new_fd) );
 
 //    while( 1 ) {
