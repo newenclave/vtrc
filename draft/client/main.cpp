@@ -74,7 +74,7 @@ int add_event_to_epoll( int ep, int ev )
     return add_fd_to_epoll( ep, ev, EPOLLIN | EPOLLET );
 }
 
-int add_fd_from_epoll( int ep, int ev )
+int del_fd_from_epoll( int ep, int ev )
 {
     struct epoll_event epv = { 0 };
     epv.data.fd  = ev;
@@ -139,7 +139,7 @@ void poll_thread( int add_event,
                               << std::hex << data << std::dec
                               << "\n";
 
-                    res = add_fd_to_epoll( epfd, data->fd_, data->flags_ );
+                    res = del_fd_from_epoll( epfd, data->fd_, data->flags_ );
 
                     std::cout << "Add fd " << data->fd_
                               << " res = " << res
@@ -149,7 +149,7 @@ void poll_thread( int add_event,
 
                 } else if( rcvd[0].data.fd == del_event ) {
 
-                    int res = eventfd_read( add_event, (eventfd_t *)(&data) );
+                    int res = eventfd_read( del_event, (eventfd_t *)(&data) );
 
                     std::cout << "Read ptr data (del) 0x"
                               << std::hex << data << std::dec
@@ -187,8 +187,8 @@ int main( int argc, const char *argv[] ) try
     ba::posix::stream_descriptor sd(ios);
 
     int add  = eventfd( 0, 0 );
-    int del  = eventfd( 1, 0 );
-    int stop = eventfd( 2, 0 );
+    int del  = eventfd( 0, 0 );
+    int stop = eventfd( 0, 0 );
 
     boost::function<void (int)> fcb(boost::bind( fd_cb, _1, add ));
 
