@@ -163,6 +163,7 @@ void poll_thread( int add_event,
                     working = 0;
                     std::cout << "Stop rcved!\n";
                 } else {
+                    std::cout << "Cb rcved for " << rcvd[0].data.fd << "\n";
                     cb( rcvd[0].data.fd );
                 }
             }
