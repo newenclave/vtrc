@@ -102,7 +102,9 @@ void poll_thread( int add_event,
 
     if( epfd > 0 ) {
 
-        int ar = add_event_to_epoll( epfd, add_event );
+        int ar = 0;
+
+        ar = add_event_to_epoll( epfd, add_event );
         std::cout << "Epoll add: " << ar << "\n";
 
         ar = add_event_to_epoll( epfd, del_event );
@@ -111,13 +113,14 @@ void poll_thread( int add_event,
         ar = add_event_to_epoll( epfd, stop_event );
         std::cout << "Epoll stop: " << ar << "\n";
 
-        struct epoll_event rcvd[1];
-
         while( working ) {
 
             std::cout << "Start reading event\n";
 
+            struct epoll_event rcvd[1] = {0};
+
             int count = epoll_wait( epfd, rcvd, 1, -1);
+
             if( -1 == count ) {
                 std::cerr << "epoll_wait failed: " << errno << "\n";
                 working = 0;
@@ -213,6 +216,8 @@ int main( int argc, const char *argv[] ) try
 //    }
 
     t.join( );
+
+    std::cout << "Stop!\n";
 
     return 0;
 } catch( const std::exception &ex ) {
