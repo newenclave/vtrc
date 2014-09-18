@@ -81,6 +81,20 @@ int del_fd_from_epoll( int ep, int ev )
     return epoll_ctl( ep, EPOLL_CTL_DEL, ev, &epv );
 }
 
+void add_fd( int add_event, int fd )
+{
+    add_del_struct *new_fd = (add_del_struct *)malloc( sizeof(*new_fd) );
+
+    std::cout << "Create new data: "
+              << std::hex << new_fd << std::dec
+              << "\n";
+
+    new_fd->fd_     = fd;
+    new_fd->flags_  = EPOLLIN | EPOLLET | EPOLLPRI;
+
+    eventfd_write( add_event, (eventfd_t)(new_fd) );
+}
+
 void poll_thread( int add_event,
                   int del_event,
                   int stop_event,
@@ -199,22 +213,7 @@ int main( int argc, const char *argv[] ) try
 
     std::cout << "Fd: " << fd << "\n";
 
-    add_del_struct *new_fd = (add_del_struct *)malloc( sizeof(*new_fd) );
-
-    std::cout << "Create new data: "
-              << std::hex << new_fd << std::dec
-              << "\n";
-
-    new_fd->fd_     = fd;
-    new_fd->flags_  = EPOLLIN | EPOLLET | EPOLLPRI | EPOLLERR;
-
-    eventfd_write( add, (eventfd_t)(new_fd) );
-
-    int res = eventfd_write( stop, (eventfd_t)(0) );
-    std::cout << "write stop events: " << res
-              << " " << strerror( errno )
-              << "\n";
-
+    add_fd( add, fd );
 
     //write( add, &new_fd, sizeof(new_fd) );
 
