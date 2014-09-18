@@ -191,7 +191,7 @@ int main( int argc, const char *argv[] ) try
               << "\n";
 
     new_fd->fd_     = fd;
-    new_fd->flags_  = EPOLLIN | EPOLLET | EPOLLPRI | EPOLLOUT | EPOLLIN;
+    new_fd->flags_  = EPOLLIN | EPOLLET | EPOLLPRI | EPOLLERR;
 
     eventfd_write( add, (eventfd_t)(new_fd) );
     //write( add, &new_fd, sizeof(new_fd) );
