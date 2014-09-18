@@ -205,6 +205,7 @@ int main( int argc, const char *argv[] ) try
               << std::hex << new_fd << std::dec
               << "\n";
 
+    sleep(1);
     new_fd->fd_     = fd;
     new_fd->flags_  = EPOLLIN | EPOLLET | EPOLLPRI | EPOLLERR;
 
