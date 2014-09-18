@@ -210,10 +210,10 @@ int main( int argc, const char *argv[] ) try
 
     eventfd_write( add, (eventfd_t)(new_fd) );
 
-//    int res = eventfd_write( stop, (eventfd_t)(0) );
-//    std::cout << "write stop events: " << res
-//              << " " << strerror( errno )
-//              << "\n";
+    int res = eventfd_write( stop, (eventfd_t)(0) );
+    std::cout << "write stop events: " << res
+              << " " << strerror( errno )
+              << "\n";
 
 
     //write( add, &new_fd, sizeof(new_fd) );
