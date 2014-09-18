@@ -116,7 +116,7 @@ void poll_thread( int add_event,
 
                 if( rcvd[0].data.fd == add_event ) {
 
-                    int res = read( add_event, &data, sizeof(data) );
+                    int res = eventfd_read( add_event, (eventfd_t *)(&data) );
 
                     std::cout << "Read ptr data (add) "
                               << " res = " << res
@@ -135,7 +135,7 @@ void poll_thread( int add_event,
 
                 } else if( rcvd[0].data.fd == del_event ) {
 
-                    int res = read( add_event, &data, sizeof(data) );
+                    int res = eventfd_read( add_event, (eventfd_t *)(&data) );
 
                     std::cout << "Read ptr data (del) 0x"
                               << std::hex << data << std::dec
