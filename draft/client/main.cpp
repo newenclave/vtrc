@@ -121,6 +121,8 @@ void poll_thread( int add_event,
 
             int count = epoll_wait( epfd, rcvd, 1, -1);
 
+            std::cout << "Stop reading " << count << "\n";
+
             if( -1 == count ) {
                 std::cerr << "epoll_wait failed: " << errno << "\n";
                 working = 0;
@@ -210,7 +212,7 @@ int main( int argc, const char *argv[] ) try
 
     eventfd_write( add, (eventfd_t)(new_fd) );
 
-    eventfd_write( add, (eventfd_t)(0) );
+    eventfd_write( stop, (eventfd_t)(0) );
 
     //write( add, &new_fd, sizeof(new_fd) );
 
