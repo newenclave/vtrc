@@ -120,7 +120,11 @@ void poll_thread( int add_event,
                 working = 0;
             } else {
 
-                std::cout << "Got " << count << " event\n";
+                std::cout << "Got "
+                          << count << " event"
+                          << " " << rcvd[0].data.fd
+                          << "\n";
+
 
                 add_del_struct *data = 0;
 
