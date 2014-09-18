@@ -138,6 +138,9 @@ void poll_thread( int add_event,
                               << " res = " << res
                               << "\n";
 
+                    int ar = add_event_to_epoll( epfd, add_event );
+                    std::cout << "Epoll add: " << ar << "\n";
+
                     free( data );
 
                 } else if( rcvd[0].data.fd == del_event ) {
