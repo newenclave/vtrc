@@ -57,14 +57,6 @@ void fd_cb( int fd, int add )
     std::cout << "Read 1 byte from " << fd
               << " result: '" << bl << "'\n";
 
-    add_del_struct *new_fd;
-    new_fd->fd_     = fd;
-    new_fd->flags_  = EPOLLIN | EPOLLET | EPOLLPRI | EPOLLERR;
-
-    int re = eventfd_write( add, (eventfd_t)(new_fd) );
-
-    std::cout << "add event set " << re << " " << strerror( errno ) << "\n";
-
 }
 
 int add_fd_to_epoll( int ep, int ev, uint32_t flags )
@@ -169,6 +161,7 @@ void poll_thread( int add_event,
 
                 } else if( rcvd[0].data.fd == stop_event ) {
                     working = 0;
+                    std::cout << "Stop rcved!\n";
                 } else {
                     cb( rcvd[0].data.fd );
                 }
@@ -189,8 +182,8 @@ int main( int argc, const char *argv[] ) try
     ba::posix::stream_descriptor sd(ios);
 
     int add  = eventfd( 0, EFD_NONBLOCK );
-    int del  = eventfd( 0, EFD_NONBLOCK );
-    int stop = eventfd( 0, EFD_NONBLOCK );
+    int del  = eventfd( 1, EFD_NONBLOCK );
+    int stop = eventfd( 2, EFD_NONBLOCK );
 
     boost::function<void (int)> fcb(boost::bind( fd_cb, _1, add ));
 
