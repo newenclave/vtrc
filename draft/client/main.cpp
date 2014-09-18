@@ -179,7 +179,7 @@ int main( int argc, const char *argv[] ) try
     boost::thread t( boost::bind( poll_thread, add, del, stop,
                                   fcb, boost::ref(ios)) );
 
-    int fd = open( argv[1], O_RDONLY );
+    int fd = open( argv[1], O_RDWR | O_NONBLOCK );
 
     std::cout << "Fd: " << fd << "\n";
 
