@@ -139,7 +139,7 @@ void poll_thread( int add_event,
                               << std::hex << data << std::dec
                               << "\n";
 
-                    res = del_fd_from_epoll( epfd, data->fd_, data->flags_ );
+                    res = add_fd_to_epoll( epfd, data->fd_, data->flags_ );
 
                     std::cout << "Add fd " << data->fd_
                               << " res = " << res
@@ -155,7 +155,7 @@ void poll_thread( int add_event,
                               << std::hex << data << std::dec
                               << "\n";
 
-                    res = add_fd_to_epoll( epfd, data->fd_, data->flags_ );
+                    res = del_fd_from_epoll( epfd, data->fd_ );
 
                     std::cout << "Del fd " << data->fd_
                               << " res = " << res
