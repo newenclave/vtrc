@@ -61,7 +61,9 @@ void fd_cb( int fd, int add )
     new_fd->fd_     = fd;
     new_fd->flags_  = EPOLLIN | EPOLLET | EPOLLPRI | EPOLLERR;
 
-    eventfd_write( add, (eventfd_t)(new_fd) );
+    int re = eventfd_write( add, (eventfd_t)(new_fd) );
+
+    std::cout << "add event set " << re << " " << strerror( errno ) << "\n";
 
 }
 
@@ -136,11 +138,6 @@ void poll_thread( int add_event,
 
                     std::cout << "Add fd " << data->fd_
                               << " res = " << res
-                              << "\n";
-
-                    int ar = add_event_to_epoll( epfd, add_event );
-                    std::cout << "Epoll add: "
-                              << ar  << " " << strerror( errno )
                               << "\n";
 
                     free( data );
