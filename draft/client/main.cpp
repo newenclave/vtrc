@@ -87,7 +87,7 @@ void poll_thread( int add_event,
                   boost::function<void (int)> cb,
                   ba::io_service &disp )
 {
-    int epfd = epoll_create( 1 );
+    int epfd = epoll_create( 1024 );
     int working = 1;
 
     std::cout << "Epoll: " << epfd << "\n";
@@ -205,7 +205,6 @@ int main( int argc, const char *argv[] ) try
               << std::hex << new_fd << std::dec
               << "\n";
 
-    sleep(1);
     new_fd->fd_     = fd;
     new_fd->flags_  = EPOLLIN | EPOLLET | EPOLLPRI | EPOLLERR;
 
