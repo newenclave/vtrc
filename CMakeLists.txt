@@ -45,7 +45,7 @@ if( VTRC_CXX11_ENABLED )
     get_cmd_cxx11( VTRC_CXX_CMD )
     get_compiler_thread_local( VTRC_THREAD_LOCAL )
 
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${VTRC_CXX_CMD}")
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${VTRC_CXX_CMD}")
 
 else( )
 
@@ -117,7 +117,6 @@ elseif(  CMAKE_CXX_COMPILER_ID STREQUAL "Clang" )
 endif( )
 
 message( "Compiler ID: " ${CMAKE_CXX_COMPILER_ID} )
-message( "Is GNU compiler: " ${CMAKE_COMPILER_IS_GNUCXX} )
 message( "Compiler version: " ${CMAKE_CXX_COMPILER_VERSION} )
 message( "CMAKE_CXX_FLAGS: " ${CMAKE_CXX_FLAGS} )
 

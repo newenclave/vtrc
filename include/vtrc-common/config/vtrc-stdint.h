@@ -8,24 +8,133 @@
 #if _MSC_VER >= 1600
 
 // Visual Studio 2010+
-#include <stdint.h>
+#include <cstdint>
+
+namespace vtrc {
+
+    using std::int8_t;
+    using std::int16_t;
+    using std::int32_t;
+    using std::int64_t;
+
+    using std::int_fast8_t;
+    using std::int_fast16_t;
+    using std::int_fast32_t;
+    using std::int_fast64_t;
+
+    using std::int_least8_t;
+    using std::int_least16_t;
+    using std::int_least32_t;
+    using std::int_least64_t;
+
+    using std::intmax_t;
+    using std::intptr_t;
+
+    using std::uint8_t;
+    using std::uint16_t;
+    using std::uint32_t;
+    using std::uint64_t;
+
+    using std::uint_fast8_t;
+    using std::uint_fast16_t;
+    using std::uint_fast32_t;
+    using std::uint_fast64_t;
+
+    using std::uint_least8_t;
+    using std::uint_least16_t;
+    using std::uint_least32_t;
+    using std::uint_least64_t;
+
+    using std::uintmax_t;
+    using std::uintptr_t;
+}
 
 #else
 
-typedef signed      char  int8_t;
-typedef unsigned    char uint8_t;
-typedef signed     short  int16_t;
-typedef unsigned   short uint16_t;
-typedef signed   __int32  int32_t;
-typedef unsigned __int32 uint32_t;
-typedef signed   __int64  int64_t;
-typedef unsigned __int64 uint64_t;
+#include <boost/cstdint.hpp>
+
+namespace vtrc {
+
+    using boost::int8_t;
+    using boost::int_least8_t;
+    using boost::int_fast8_t;
+    using boost::uint8_t;
+    using boost::uint_least8_t;
+    using boost::uint_fast8_t;
+
+    using boost::int16_t;
+    using boost::int_least16_t;
+    using boost::int_fast16_t;
+    using boost::uint16_t;
+    using boost::uint_least16_t;
+    using boost::uint_fast16_t;
+
+    using boost::int32_t;
+    using boost::int_least32_t;
+    using boost::int_fast32_t;
+    using boost::uint32_t;
+    using boost::uint_least32_t;
+    using boost::uint_fast32_t;
+
+#ifndef BOOST_NO_INT64_T
+
+    using boost::int64_t;
+    using boost::int_least64_t;
+    using boost::int_fast64_t;
+    using boost::uint64_t;
+    using boost::uint_least64_t;
+    using boost::uint_fast64_t;
+
+#endif
+
+    using boost::intmax_t;
+    using boost::uintmax_t;
+}
 
 #endif
 
 #else
 
-#include <stdint.h>
+#include <cstdint>
+
+namespace vtrc {
+
+    using std::int8_t;
+    using std::int16_t;
+    using std::int32_t;
+    using std::int64_t;
+
+    using std::int_fast8_t;
+    using std::int_fast16_t;
+    using std::int_fast32_t;
+    using std::int_fast64_t;
+
+    using std::int_least8_t;
+    using std::int_least16_t;
+    using std::int_least32_t;
+    using std::int_least64_t;
+
+    using std::intmax_t;
+    using std::intptr_t;
+
+    using std::uint8_t;
+    using std::uint16_t;
+    using std::uint32_t;
+    using std::uint64_t;
+
+    using std::uint_fast8_t;
+    using std::uint_fast16_t;
+    using std::uint_fast32_t;
+    using std::uint_fast64_t;
+
+    using std::uint_least8_t;
+    using std::uint_least16_t;
+    using std::uint_least32_t;
+    using std::uint_least64_t;
+
+    using std::uintmax_t;
+    using std::uintptr_t;
+}
 
 #endif
 
