@@ -4,4 +4,5 @@ include/vtrc-common/config/vtrc-general-config.h
 *.autosave
 *.user.*
 \#*
+vtrc-import.cmake
 
