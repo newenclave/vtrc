@@ -31,7 +31,7 @@ if( ${VTRC_LINK_TYPE} MATCHES ${VTRC_LINK_TYPE_STATIC} )
     set(Boost_USE_STATIC_RUNTIME  ON)
 endif( )
 
-set(Boost_USE_MULTITHREADED   ON)
+set( Boost_USE_MULTITHREADED   ON)
 
 if( VTRC_CXX11_ENABLED )
 
@@ -70,9 +70,6 @@ set( VTRC_CONFIG_INCLUDE_DIR ${VTRC_INCLUDE_DIR}/vtrc-common/config )
 
 configure_file ("${PROJECT_SOURCE_DIR}/vtrc-general-config.h.in"
                 "${VTRC_CONFIG_INCLUDE_DIR}/vtrc-general-config.h" )
-
-configure_file ("${PROJECT_SOURCE_DIR}/vtrc-import.cmake.in"
-                "${PROJECT_SOURCE_DIR}/vtrc-import.cmake" )
 
 #
 # VTRC_PROTOCOL_DIR
@@ -142,6 +139,10 @@ if(WITH_EXAMPLES)
     add_subdirectory(examples/hello-events)
 
 endif(WITH_EXAMPLES)
+
+
+configure_file ("${PROJECT_SOURCE_DIR}/vtrc-import.cmake.in"
+                "${PROJECT_SOURCE_DIR}/vtrc-import.cmake" )
 
 
 
