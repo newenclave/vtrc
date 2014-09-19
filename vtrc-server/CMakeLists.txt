@@ -1,4 +1,4 @@
-set(lib_name vtrc_server_s)
+set( lib_name ${VTRC_SERVER_LIB_NAME} )
 
 list(APPEND src_dirs 
         .
@@ -16,7 +16,7 @@ include_directories( ${VTRC_INCLUDE_DIR}/vtrc-server)
 add_library(${lib_name} ${VTRC_LINK_TYPE} ${lib_src})
 
 list(APPEND dependencies  
-    vtrc_common_s
+    ${VTRC_COMMON_LIB_NAME}
     Boost
     PROTOBUF
     )

@@ -4,8 +4,6 @@ set(lib_name stress_protocol_s)
 
 list(APPEND src_dirs . )
 
-set( vtrc_common vtrc_common_s )
-
 foreach( src_dir ${src_dirs} )
     aux_source_directory(   ${src_dir} lib_src)
     file(GLOB   headers     ${src_dir}/*.h)
@@ -69,7 +67,7 @@ endforeach( )
 add_library(${lib_name} STATIC ${lib_src})
 
 list(APPEND dependencies
-    vtrc_common_s
+    vtrc_common
     )
 
 message( "-- Seting up dependencies for " ${lib_name} )

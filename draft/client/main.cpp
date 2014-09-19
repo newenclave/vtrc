@@ -56,8 +56,6 @@ void fd_cb( int fd, int add, int stop )
     read( fd, &bl, 1 );
     std::cout << "Read 1 byte from " << fd
               << " result: '" << bl << "'\n";
-
-    eventfd_write( stop, 0 );
 }
 
 int add_fd_to_epoll( int ep, int ev, uint32_t flags )

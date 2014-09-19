@@ -1,5 +1,5 @@
 
-set(lib_name vtrc_common_s)
+set( lib_name ${VTRC_COMMON_LIB_NAME} )
 
 list(APPEND src_dirs
         .

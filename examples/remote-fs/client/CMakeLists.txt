@@ -8,8 +8,8 @@ add_executable(${exe_name} ${src_dir})
 
 list( APPEND internal
     ${INTERNAL_PROJECT_NAME}_protocol_s
-    vtrc_client_s
-    vtrc_common_s
+    vtrc_client
+    vtrc_common
     )
 
 include_directories( ${${INTERNAL_PROJECT_NAME}_protocol_s_INCLUDE_DIRS}  )

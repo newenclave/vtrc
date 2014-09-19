@@ -121,6 +121,10 @@ message( "Is GNU compiler: " ${CMAKE_COMPILER_IS_GNUCXX} )
 message( "Compiler version: " ${CMAKE_CXX_COMPILER_VERSION} )
 message( "CMAKE_CXX_FLAGS: " ${CMAKE_CXX_FLAGS} )
 
+set( VTRC_COMMON_LIB_NAME vtrc_common )
+set( VTRC_SERVER_LIB_NAME vtrc_server )
+set( VTRC_CLIENT_LIB_NAME vtrc_client )
+
 add_subdirectory(vtrc-common)
 add_subdirectory(vtrc-server)
 add_subdirectory(vtrc-client)
