@@ -71,6 +71,9 @@ set( VTRC_CONFIG_INCLUDE_DIR ${VTRC_INCLUDE_DIR}/vtrc-common/config )
 configure_file ("${PROJECT_SOURCE_DIR}/vtrc-general-config.h.in"
                 "${VTRC_CONFIG_INCLUDE_DIR}/vtrc-general-config.h" )
 
+configure_file ("${PROJECT_SOURCE_DIR}/vtrc-import.cmake.in"
+                "${PROJECT_SOURCE_DIR}/vtrc-import.cmake" )
+
 #
 # VTRC_PROTOCOL_DIR
 #   use this option to copy generated protocol files into desired directory
