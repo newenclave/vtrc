@@ -5,9 +5,9 @@
 
 #include "vtrc-listener.h"
 
-namespace vtrc_rpc {
+namespace vtrc { namespace rpc {
     class session_options;
-}
+}}
 
 namespace vtrc { namespace server {
 
@@ -16,7 +16,7 @@ namespace vtrc { namespace server {
     namespace listeners { namespace local {
         listener_sptr create( application &app, const std::string &name );
         listener_sptr create( application &app,
-                              const vtrc_rpc::session_options &opts,
+                              const rpc::session_options &opts,
                               const std::string &name );
     }}
 

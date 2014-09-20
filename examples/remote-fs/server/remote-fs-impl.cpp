@@ -50,7 +50,7 @@ namespace {
             files_map::iterator f(files_.find( hdl ));
             if( f == files_.end( ) ) {
                 throw vtrc::common::exception(
-                      vtrc_errors::ERR_NOT_FOUND, "Bad file handle" );
+                      rpc::errors::ERR_NOT_FOUND, "Bad file handle" );
             }
             return f->second;
         }
@@ -69,7 +69,7 @@ namespace {
 
             if( !f ) {
                 throw vtrc::common::exception(
-                            errno, vtrc_errors::CATEGORY_SYSTEM,
+                            errno, rpc::errors::CATEGORY_SYSTEM,
                             "fopen failed");
             }
 
@@ -101,7 +101,7 @@ namespace {
             long pos = ftell( f.get( ) );
             if( -1 == pos ) {
                 throw vtrc::common::exception(
-                            errno, vtrc_errors::CATEGORY_SYSTEM,
+                            errno, rpc::errors::CATEGORY_SYSTEM,
                             "ftell failed");
             }
             response->set_position( static_cast<gpb::uint64>(pos) );
@@ -123,7 +123,7 @@ namespace {
 
             if( -1 == pos ) {
                 throw vtrc::common::exception(
-                            errno, vtrc_errors::CATEGORY_SYSTEM,
+                            errno, rpc::errors::CATEGORY_SYSTEM,
                             "fseek failed");
             }
             response->set_position( file_pos );
@@ -204,7 +204,7 @@ namespace {
             iterator_map::iterator f(iterators_.find(hdl));
             if( f == iterators_.end( ) ) {
                 throw vtrc::common::exception(
-                        vtrc_errors::ERR_NOT_FOUND, "Bad iterator handle" );
+                        rpc::errors::ERR_NOT_FOUND, "Bad iterator handle" );
             }
             return f->second;
         }
@@ -229,7 +229,7 @@ namespace {
 
                 if( f == fs_inst_.end( ) ) {
                     throw vtrc::common::exception(
-                            vtrc_errors::ERR_NOT_FOUND, "Bad fs handle" );
+                            rpc::errors::ERR_NOT_FOUND, "Bad fs handle" );
                 }
 
                 p = f->second;
@@ -300,7 +300,7 @@ namespace {
 
             if( f == fs_inst_.end( ) ) {
                 throw vtrc::common::exception(
-                        vtrc_errors::ERR_NOT_FOUND, "Bad fs handle" );
+                        rpc::errors::ERR_NOT_FOUND, "Bad fs handle" );
             }
 
             fs::path p(f->second / request->path( ));

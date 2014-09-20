@@ -55,10 +55,10 @@ namespace vtrc { namespace common {
         {
             transformer_iface *trans = NULL;
             switch ( id ) {
-            case vtrc_auth::TRANSFORM_ERSEEFOR:
+            case rpc::auth::TRANSFORM_ERSEEFOR:
                 trans = erseefor::create( key, length );
                 break;
-            case vtrc_auth::TRANSFORM_NONE:
+            case rpc::auth::TRANSFORM_NONE:
                 trans = none::create( );
                 break;
             default:

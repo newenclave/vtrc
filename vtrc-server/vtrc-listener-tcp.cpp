@@ -32,7 +32,7 @@ namespace vtrc { namespace server { namespace listeners {
             }
 
             listener_tcp( application &app,
-                          const vtrc_rpc::session_options &opts,
+                          const rpc::session_options &opts,
                           const std::string &address,
                           unsigned short port, bool no_delay )
                 :super_type( app, opts, make_endpoint(address, port))
@@ -65,7 +65,7 @@ namespace vtrc { namespace server { namespace listeners {
     namespace tcp {
 
         listener_sptr create(application &app,
-                             const vtrc_rpc::session_options &opts,
+                             const rpc::session_options &opts,
                              const std::string &address, unsigned short service,
                              bool tcp_nodelay)
         {
@@ -82,7 +82,7 @@ namespace vtrc { namespace server { namespace listeners {
                               const std::string &address,
                               unsigned short service, bool tcp_nodelay )
         {
-            const vtrc_rpc::session_options def_opts(default_options( ));
+            const rpc::session_options def_opts(default_options( ));
 
             return create( app, def_opts, address, service, tcp_nodelay );
         }

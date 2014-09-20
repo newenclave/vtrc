@@ -7,12 +7,12 @@
 
 namespace vtrc { namespace common {
 
-    typedef vtrc_rpc::lowlevel_unit lowlevel_unit;
+    typedef rpc::lowlevel_unit lowlevel_unit;
 
     struct call_context::impl {
         lowlevel_unit              *llu_;
         call_context               *parent_context_;
-        const vtrc_rpc::options    *opts_;
+        const rpc::options         *opts_;
         bool                        impersonated_;
         google::protobuf::Closure  *done_;
         size_t                      depth_;
@@ -90,12 +90,12 @@ namespace vtrc { namespace common {
         return impl_->impersonated_;
     }
 
-    const vtrc_rpc::options *call_context::get_call_options( ) const
+    const rpc::options *call_context::get_call_options( ) const
     {
         return impl_->opts_;
     }
 
-    void call_context::set_call_options(const vtrc_rpc::options *opts)
+    void call_context::set_call_options(const rpc::options *opts)
     {
         impl_->opts_ = opts;
     }

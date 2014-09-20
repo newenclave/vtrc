@@ -4,9 +4,9 @@
 #include <stdexcept>
 #include <string>
 
-namespace vtrc_errors {
-    class error_container;
-}
+//namespace vtrc { namespace rpc { namespace errors {
+//    class error_container;
+//}}}
 
 namespace vtrc { namespace common {
 

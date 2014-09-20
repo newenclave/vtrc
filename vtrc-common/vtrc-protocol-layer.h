@@ -21,15 +21,17 @@ namespace google { namespace protobuf {
     class MethodDescriptor;
 }}
 
-namespace vtrc_rpc {
+namespace vtrc { namespace rpc {
+
     class lowlevel_unit;
     class options;
     class session_options;
-}
 
-namespace vtrc_errors {
-    class container;
-}
+    namespace errors {
+        class container;
+    }
+
+}}
 
 namespace boost { namespace system {
     class error_code;
@@ -60,14 +62,14 @@ namespace vtrc { namespace common {
 
     public:
 
-        typedef vtrc_rpc::lowlevel_unit              lowlevel_unit_type;
+        typedef rpc::lowlevel_unit                   lowlevel_unit_type;
         typedef vtrc::shared_ptr<lowlevel_unit_type> lowlevel_unit_sptr;
 
         typedef std::deque<std::string> message_queue_type;
 
         protocol_layer( transport_iface *connection, bool oddside );
         protocol_layer( transport_iface *connection, bool oddside,
-                        const vtrc_rpc::session_options &opts );
+                        const rpc::session_options &opts );
         virtual ~protocol_layer( );
 
     public:
@@ -121,13 +123,13 @@ namespace vtrc { namespace common {
         void erase_all_slots( );
         void cancel_all_slots( );
 
-        const vtrc_rpc::options *get_method_options(
+        const rpc::options *get_method_options(
                             const google::protobuf::MethodDescriptor* method );
 
 //        const vtrc_rpc::options *get_method_options(
 //                            const lowlevel_unit_type &llu );
 
-        const vtrc_rpc::session_options &session_options( ) const;
+        const rpc::session_options &session_options( ) const;
 
     //protected:
 
@@ -192,7 +194,7 @@ namespace vtrc { namespace common {
 
     protected:
 
-        void configure_session( const vtrc_rpc::session_options &opts );
+        void configure_session( const rpc::session_options &opts );
 
         void push_rpc_message( uint64_t slot_id, lowlevel_unit_sptr mess);
 

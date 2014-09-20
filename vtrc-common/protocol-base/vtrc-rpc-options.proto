@@ -3,7 +3,7 @@ import "google/protobuf/descriptor.proto";
 
 // index 56000
 
-package vtrc_rpc;
+package vtrc.rpc;
 
 message options {
 

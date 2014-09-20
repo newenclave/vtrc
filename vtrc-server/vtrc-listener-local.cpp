@@ -10,7 +10,7 @@ namespace vtrc { namespace server {
     namespace win_pipe {
         listener_sptr create( application &app, const std::string &name );
         listener_sptr create( application &app, 
-                              const vtrc_rpc::session_options &opts,
+                              const rpc::session_options &opts,
                               const std::string &name );
     }
     namespace local_namespace = win_pipe;
@@ -18,7 +18,7 @@ namespace vtrc { namespace server {
     namespace unix_local {
         listener_sptr create( application &app, const std::string &name );
         listener_sptr create( application &app,
-                              const vtrc_rpc::session_options &opts,
+                              const rpc::session_options &opts,
                               const std::string &name );
     }
     namespace local_namespace = unix_local;
@@ -31,7 +31,7 @@ namespace vtrc { namespace server {
         }
 
         listener_sptr create(application &app,
-                             const vtrc_rpc::session_options &opts,
+                             const rpc::session_options &opts,
                              const std::string &name )
         {
             return local_namespace::create( app, opts, name );

@@ -5,10 +5,10 @@
 
 #include "vtrc-connection-iface.h"
 
-namespace vtrc_rpc {
+namespace vtrc { namespace rpc {
     class lowlevel_unit;
     class options;
-}
+}}
 
 namespace vtrc { namespace common  {
 
@@ -29,7 +29,7 @@ namespace vtrc { namespace common  {
             //,CONTEXT_REQUIRED   = 1 << 2
         };
 
-        typedef vtrc_rpc::lowlevel_unit              lowlevel_unit_type;
+        typedef rpc::lowlevel_unit                   lowlevel_unit_type;
         typedef vtrc::shared_ptr<lowlevel_unit_type> lowlevel_unit_sptr;
 
         rpc_channel( unsigned direct_call_type, unsigned callback_type );
@@ -50,7 +50,7 @@ namespace vtrc { namespace common  {
                             const lowlevel_unit_type &llu,
                             google::protobuf::Message* response,
                             common::connection_iface_sptr &cl,
-                            const vtrc_rpc::options *call_opt ) const;
+                            const rpc::options *call_opt ) const;
 
         //typedef protocol_layer::context_holder context_holder;
 

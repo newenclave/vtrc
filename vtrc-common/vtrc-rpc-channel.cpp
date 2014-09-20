@@ -52,7 +52,7 @@ namespace vtrc { namespace common  {
     bool can_accept_callbacks( const common::call_context *cc )
     {
 #if 1   /// yeap. we always set it up
-        vtrc_rpc::lowlevel_unit const *llu  = cc->get_lowlevel_message( );
+        rpc::lowlevel_unit const *llu  = cc->get_lowlevel_message( );
         return llu->opt( ).wait( ) && llu->opt( ).accept_callbacks( );
 #else
         vtrc_rpc::options       const *opts = cc->get_call_options( );
@@ -95,11 +95,11 @@ namespace vtrc { namespace common  {
         }
     }
 
-    void rpc_channel::call_and_wait(google::protobuf::uint64 call_id,
+    void rpc_channel::call_and_wait( google::protobuf::uint64 call_id,
                             const lowlevel_unit_type &llu,
                             google::protobuf::Message *response,
                             connection_iface_sptr &cl,
-                            const vtrc_rpc::options *call_opt) const
+                            const rpc::options *call_opt ) const
     {
         cl->get_protocol( ).call_rpc_method( call_id, llu );
 
@@ -114,7 +114,7 @@ namespace vtrc { namespace common  {
             cl->get_protocol( ).read_slot_for( call_id, top,
                                                call_opt->timeout( ) );
 
-            if( top->error( ).code( ) != vtrc_errors::ERR_NO_ERROR ) {
+            if( top->error( ).code( ) != rpc::errors::ERR_NO_ERROR ) {
                 cl->get_protocol( ).erase_slot( call_id );
                 throw vtrc::common::exception( top->error( ).code( ),
                                          top->error( ).category( ),

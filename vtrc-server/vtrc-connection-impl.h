@@ -77,7 +77,7 @@ namespace vtrc { namespace server { namespace listeners {
                      (vtrc::make_shared<this_type>(vtrc::ref(endpoint),
                                                    sock, on_close_cb ));
 
-                vtrc_rpc::session_options const &opts(endpoint.get_options( ));
+                rpc::session_options const &opts(endpoint.get_options( ));
 
                 new_inst->protocol_.reset(
                        new protocol_layer_s( new_inst->app_,
@@ -176,15 +176,15 @@ namespace vtrc { namespace server { namespace listeners {
 #if 0
             void close_drop( const std::string &mess )
             {
-                vtrc_rpc::lowlevel_unit llu;
-                typedef vtrc_rpc::message_info message_info;
+                rpc::lowlevel_unit llu;
+                typedef rpc::message_info message_info;
 
                 llu.mutable_info( )
                         ->set_message_type( message_info::MESSAGE_SERVER_CALL );
                 llu.mutable_error( )
-                        ->set_category( vtrc_errors::CATEGORY_INTERNAL);
+                        ->set_category( rpc::errors::CATEGORY_INTERNAL);
                 llu.mutable_error( )
-                        ->set_code( vtrc_errors::ERR_PROTOCOL );
+                        ->set_code( rpc::errors::ERR_PROTOCOL );
                 llu.mutable_error( )
                         ->set_additional( mess );
 

@@ -199,11 +199,11 @@ namespace vtrc { namespace client {
                       vtrc::bind( &impl::on_ready_diconnect, this, &failed ) );
 
             if( !ok ) {
-                throw vtrc::common::exception( vtrc_errors::ERR_TIMEOUT );
+                throw vtrc::common::exception( rpc::errors::ERR_TIMEOUT );
             }
 
             if( failed != 0 ) {
-                throw vtrc::common::exception( vtrc_errors::ERR_INTERNAL,
+                throw vtrc::common::exception( rpc::errors::ERR_INTERNAL,
                                                failed_message);
             }
 

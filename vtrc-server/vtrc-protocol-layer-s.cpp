@@ -59,7 +59,7 @@ namespace vtrc { namespace server {
             common::rpc_service_wrapper_sptr
         > service_map;
 
-        typedef vtrc_rpc::lowlevel_unit     lowlevel_unit_type;
+        typedef rpc::lowlevel_unit                   lowlevel_unit_type;
         typedef vtrc::shared_ptr<lowlevel_unit_type> lowlevel_unit_sptr;
     }
 
@@ -143,8 +143,8 @@ namespace vtrc { namespace server {
         {
             if( !error ) {
                 /// timeout for client init
-                vtrc_auth::init_capsule cap;
-                cap.mutable_error( )->set_code( vtrc_errors::ERR_TIMEOUT );
+                rpc::auth::init_capsule cap;
+                cap.mutable_error( )->set_code( rpc::errors::ERR_TIMEOUT );
                 cap.set_ready( false );
                 send_and_close( cap );
             }
@@ -178,7 +178,7 @@ namespace vtrc { namespace server {
                                 true );
         }
 
-        void set_client_ready( vtrc_auth::init_capsule &capsule )
+        void set_client_ready( rpc::auth::init_capsule &capsule )
         {
             //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
 
@@ -189,7 +189,7 @@ namespace vtrc { namespace server {
             capsule.set_ready( true );
             capsule.set_text( "Kiva nahda sinut!" );
 
-            vtrc_auth::session_setup session_setup;
+            rpc::auth::session_setup session_setup;
 
             session_setup.mutable_options( )
                          ->CopyFrom( parent_->session_options( ) );
@@ -219,12 +219,12 @@ namespace vtrc { namespace server {
             //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
 
             using namespace common::transformers;
-            vtrc_auth::init_capsule capsule;
+            rpc::auth::init_capsule capsule;
             bool check = get_pop_message( capsule );
 
             if( !check ) {
                 capsule.Clear( );
-                capsule.mutable_error( )->set_code( vtrc_errors::ERR_INTERNAL );
+                capsule.mutable_error( )->set_code( rpc::errors::ERR_INTERNAL );
                 send_and_close( capsule );
                 return;
             }
@@ -234,7 +234,7 @@ namespace vtrc { namespace server {
                 return;
             }
 
-            vtrc_auth::transformer_setup tsetup;
+            rpc::auth::transformer_setup tsetup;
 
             tsetup.ParseFromString( capsule.body( ) );
 
@@ -260,14 +260,14 @@ namespace vtrc { namespace server {
 
             using namespace common::transformers;
 
-            vtrc_auth::transformer_setup ts;
-            vtrc_auth::init_capsule capsule;
+            rpc::auth::transformer_setup ts;
+            rpc::auth::init_capsule capsule;
 
-            if( id == vtrc_auth::TRANSFORM_NONE ) {
+            if( id == rpc::auth::TRANSFORM_NONE ) {
 
                 set_client_ready( capsule );
 
-            } else if( id == vtrc_auth::TRANSFORM_ERSEEFOR ) {
+            } else if( id == rpc::auth::TRANSFORM_ERSEEFOR ) {
 
                 std::string key(app_.get_session_key(connection_, client_id_));
 
@@ -290,9 +290,9 @@ namespace vtrc { namespace server {
 
             } else {
                 capsule.set_ready( false );
-                vtrc_errors::container *er(capsule.mutable_error( ));
-                er->set_code( vtrc_errors::ERR_INVALID_VALUE );
-                er->set_category(vtrc_errors::CATEGORY_INTERNAL);
+                rpc::errors::container *er(capsule.mutable_error( ));
+                er->set_code( rpc::errors::ERR_INVALID_VALUE );
+                er->set_category( rpc::errors::CATEGORY_INTERNAL );
                 er->set_additional( "Invalid transformer" );
                 send_and_close( capsule );
                 return;
@@ -303,7 +303,7 @@ namespace vtrc { namespace server {
         {
             //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
 
-            vtrc_auth::init_capsule capsule;
+            rpc::auth::init_capsule capsule;
             bool check = get_pop_message( capsule );
 
             if( !check ) {
@@ -316,7 +316,7 @@ namespace vtrc { namespace server {
                 return;
             }
 
-            vtrc_auth::client_selection cs;
+            rpc::auth::client_selection cs;
             cs.ParseFromString( capsule.body( ) );
 
             vtrc::ptr_keeper<common::hash_iface> new_checker (
@@ -348,7 +348,7 @@ namespace vtrc { namespace server {
             return check;
         }
 
-        void call_done( const vtrc_errors::container & /*err*/ )
+        void call_done( const rpc::errors::container & /*err*/ )
         {
             --current_calls_;
         }
@@ -367,7 +367,7 @@ namespace vtrc { namespace server {
                 llu.clear_call( );
                 llu.clear_request( );
                 llu.clear_response( );
-                llu.mutable_error( )->set_code( vtrc_errors::ERR_BUSY );
+                llu.mutable_error( )->set_code( rpc::errors::ERR_BUSY );
                 parent_->call_rpc_method( llu );
             }
         }
@@ -410,7 +410,7 @@ namespace vtrc { namespace server {
 
         void on_rcp_call_ready( )
         {
-            typedef vtrc_rpc::message_info message_info;
+            typedef rpc::message_info message_info;
             while( !parent_->message_queue_empty( ) ) {
 
                 lowlevel_unit_sptr llu(vtrc::make_shared<lowlevel_unit_type>());
@@ -447,19 +447,19 @@ namespace vtrc { namespace server {
 
         std::string first_message( )
         {
-            vtrc_auth::init_capsule cap;
-            vtrc_auth::init_protocol hello_mess;
+            rpc::auth::init_capsule cap;
+            rpc::auth::init_protocol hello_mess;
             cap.set_text( "Tervetuloa!" );
             cap.set_ready( true );
 
-            hello_mess.add_hash_supported( vtrc_auth::HASH_NONE     );
-            hello_mess.add_hash_supported( vtrc_auth::HASH_CRC_16   );
-            hello_mess.add_hash_supported( vtrc_auth::HASH_CRC_32   );
-            hello_mess.add_hash_supported( vtrc_auth::HASH_CRC_64   );
-            hello_mess.add_hash_supported( vtrc_auth::HASH_SHA2_256 );
+            hello_mess.add_hash_supported( rpc::auth::HASH_NONE     );
+            hello_mess.add_hash_supported( rpc::auth::HASH_CRC_16   );
+            hello_mess.add_hash_supported( rpc::auth::HASH_CRC_32   );
+            hello_mess.add_hash_supported( rpc::auth::HASH_CRC_64   );
+            hello_mess.add_hash_supported( rpc::auth::HASH_SHA2_256 );
 
-            hello_mess.add_transform_supported( vtrc_auth::TRANSFORM_NONE );
-            hello_mess.add_transform_supported( vtrc_auth::TRANSFORM_ERSEEFOR );
+            hello_mess.add_transform_supported( rpc::auth::TRANSFORM_NONE );
+            hello_mess.add_transform_supported( rpc::auth::TRANSFORM_ERSEEFOR );
 
             cap.set_body( hello_mess.SerializeAsString( ) );
 
@@ -494,7 +494,7 @@ namespace vtrc { namespace server {
 
     protocol_layer_s::protocol_layer_s( application &a,
                                         common::transport_iface *connection,
-                                        const vtrc_rpc::session_options &opts )
+                                        const rpc::session_options &opts )
         :common::protocol_layer(connection, false, opts )
         ,impl_(new impl(a, connection ))
     {

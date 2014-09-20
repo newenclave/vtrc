@@ -11,12 +11,12 @@ namespace vtrc { namespace server {
     struct listener::impl {
         application              &app_;
         common::enviroment        env_;
-        vtrc_rpc::session_options opts_;
+        rpc::session_options      opts_;
 
-        listener            *parent_;
-        vtrc::atomic<size_t> client_count_;
+        listener                 *parent_;
+        vtrc::atomic<size_t>      client_count_;
 
-        impl( application &app, const vtrc_rpc::session_options &opts )
+        impl( application &app, const rpc::session_options &opts )
             :app_(app)
             ,env_(app_.get_enviroment( ))
             ,opts_(opts)
@@ -24,7 +24,7 @@ namespace vtrc { namespace server {
         { }
     };
 
-    listener::listener(application & app, const vtrc_rpc::session_options &opts)
+    listener::listener( application & app, const rpc::session_options &opts )
         :impl_(new impl(app, opts))
     {
         impl_->parent_ = this;
@@ -45,7 +45,7 @@ namespace vtrc { namespace server {
         return impl_->env_;
     }
 
-    const vtrc_rpc::session_options &listener::get_options( ) const
+    const rpc::session_options &listener::get_options( ) const
     {
         return impl_->opts_;
     }
@@ -93,9 +93,9 @@ namespace vtrc { namespace server {
     }
 
     namespace listeners {
-        vtrc_rpc::session_options default_options( )
+        rpc::session_options default_options( )
         {
-            vtrc_rpc::session_options def_opts;
+            rpc::session_options def_opts;
             return def_opts;
         }
     }

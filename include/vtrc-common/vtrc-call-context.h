@@ -3,10 +3,10 @@
 
 #include "vtrc-common/vtrc-connection-iface.h"
 
-namespace vtrc_rpc {
+namespace vtrc { namespace rpc {
     class lowlevel_unit;
     class options;
-}
+}}
 
 namespace google { namespace protobuf {
     class Closure;
@@ -21,7 +21,7 @@ namespace vtrc { namespace common {
 
     public:
 
-        call_context( vtrc_rpc::lowlevel_unit *lowlevel );
+        call_context( rpc::lowlevel_unit *lowlevel );
         virtual ~call_context( );
 
         static const call_context *get( connection_iface *iface );
@@ -35,14 +35,14 @@ namespace vtrc { namespace common {
 
         void set_next( call_context *next );
 
-        vtrc_rpc::lowlevel_unit       *get_lowlevel_message( );
-        const vtrc_rpc::lowlevel_unit *get_lowlevel_message( ) const;
+        rpc::lowlevel_unit       *get_lowlevel_message( );
+        const rpc::lowlevel_unit *get_lowlevel_message( ) const;
 
         void set_impersonated( bool value );
         bool get_impersonated( ) const;
 
-        const vtrc_rpc::options *get_call_options( ) const;
-        void set_call_options(const vtrc_rpc::options *opts);
+        const rpc::options *get_call_options( ) const;
+        void set_call_options(const rpc::options *opts);
 
         void set_done_closure( google::protobuf::Closure *done );
 

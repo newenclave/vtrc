@@ -6,9 +6,9 @@
 #include "vtrc-common/vtrc-signal-declaration.h"
 #include "vtrc-memory.h"
 
-namespace vtrc_rpc {
+namespace vtrc { namespace rpc {
     class session_options;
-}
+}}
 
 namespace boost { namespace system {
     class error_code;
@@ -46,7 +46,7 @@ namespace server {
 
     protected:
 
-        listener( application & app, const vtrc_rpc::session_options &opts );
+        listener( application & app, const rpc::session_options &opts );
 
     public:
 
@@ -56,7 +56,7 @@ namespace server {
 
         application                      &get_application( );
         common::enviroment               &get_enviroment( );
-        const vtrc_rpc::session_options  &get_options( ) const;
+        const rpc::session_options       &get_options( ) const;
         size_t clients_count( ) const;
 
         vtrc::weak_ptr<listener>       weak_from_this( );
@@ -83,7 +83,7 @@ namespace server {
     typedef vtrc::shared_ptr<listener> listener_sptr;
 
     namespace listeners {
-        vtrc_rpc::session_options default_options( );
+        rpc::session_options default_options( );
     }
 }}
 

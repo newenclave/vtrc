@@ -5,11 +5,11 @@
 
 #include "vtrc-common/vtrc-protocol-layer.h"
 
-namespace vtrc_errors {
-    class container;
-}
-
 namespace vtrc {
+
+namespace rpc { namespace errors {
+    class container;
+}}
 
 namespace client {
     class vtrc_client;
@@ -25,7 +25,7 @@ namespace client {
 
         virtual ~protocol_signals( ) { }
 
-        virtual void on_init_error(const vtrc_errors::container & /*err*/,
+        virtual void on_init_error(const rpc::errors::container & /*err*/,
                                    const char * /*message*/)
         {}
 
@@ -68,7 +68,7 @@ namespace client {
     private:
 
         void on_data_ready( );
-        void on_init_error( const vtrc_errors::container &error,
+        void on_init_error( const rpc::errors::container &error,
                             const char *message );
 
     };

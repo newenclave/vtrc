@@ -11,24 +11,24 @@ namespace vtrc { namespace common {
     namespace {
 
         const std::string unknown_error("Unknown error");
-        const unsigned default_category = vtrc_errors::CATEGORY_INTERNAL;
+        const unsigned default_category = rpc::errors::CATEGORY_INTERNAL;
 
         const std::string &get_internal_error( unsigned code )
         {
             const gpb::EnumValueDescriptor *ev =
-                vtrc_errors::errors_numbers_descriptor( )
+                rpc::errors::errors_numbers_descriptor( )
                                 ->FindValueByNumber( code );
             if( ev ) {
-                return ev->options( ).GetExtension( vtrc_errors::description );
+                return ev->options( ).GetExtension( rpc::errors::description );
             }
             return unknown_error;
         }
 
         std::string get_error_code_string( unsigned code, unsigned category )
         {
-            if( category == vtrc_errors::CATEGORY_INTERNAL ) {
+            if( category == rpc::errors::CATEGORY_INTERNAL ) {
                 return get_internal_error( code );
-            } else if( category == vtrc_errors::CATEGORY_SYSTEM ) {
+            } else if( category == rpc::errors::CATEGORY_SYSTEM ) {
                 try {
                     boost::system::error_code ec(code,
                                              boost::system::system_category( ));

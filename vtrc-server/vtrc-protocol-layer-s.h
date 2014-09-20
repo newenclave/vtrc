@@ -28,7 +28,7 @@ namespace server {
 
         protocol_layer_s( application &app,
                           common::transport_iface *connection,
-                          const vtrc_rpc::session_options &opts );
+                          const rpc::session_options &opts );
 
         ~protocol_layer_s( );
 

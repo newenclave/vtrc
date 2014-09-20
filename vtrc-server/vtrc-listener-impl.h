@@ -52,7 +52,7 @@ namespace {
         bool                            working_;
 
         listener_impl( application &app,
-                       const vtrc_rpc::session_options &opts,
+                       const rpc::session_options &opts,
                        const endpoint_type &ep)
             :listener(app, opts)
             ,ios_(app.get_io_service( ))

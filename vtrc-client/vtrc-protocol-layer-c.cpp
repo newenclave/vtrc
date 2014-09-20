@@ -29,9 +29,7 @@ namespace vtrc { namespace client {
     namespace gpb = google::protobuf;
 
     namespace {
-        typedef vtrc::shared_ptr <
-            vtrc_rpc::lowlevel_unit
-        > lowlevel_unit_sptr;
+        typedef vtrc::shared_ptr<rpc::lowlevel_unit> lowlevel_unit_sptr;
 
         typedef vtrc::shared_ptr<gpb::Service> service_str;
 
@@ -97,17 +95,17 @@ namespace vtrc { namespace client {
             switch ( stage_ ) {
             case STAGE_HELLO:
                 parent_->on_init_error(
-                            create_error( vtrc_errors::ERR_BUSY, "" ),
+                            create_error( rpc::errors::ERR_BUSY, "" ),
                             "Server in not ready");
                 break;
             case STAGE_SETUP:
                 parent_->on_init_error(
-                            create_error( vtrc_errors::ERR_INVALID_VALUE, "" ),
+                            create_error( rpc::errors::ERR_INVALID_VALUE, "" ),
                             "Bad setup info.");
                 break;
             case STAGE_READY:
                 parent_->on_init_error(
-                            create_error( vtrc_errors::ERR_INTERNAL, "" ),
+                            create_error( rpc::errors::ERR_INTERNAL, "" ),
                             "Bad session key.");
                 break;
             case STAGE_RPC:
@@ -116,12 +114,12 @@ namespace vtrc { namespace client {
             }
         }
 
-        vtrc_errors::container create_error( unsigned code,
+        rpc::errors::container create_error( unsigned code,
                                              const std::string &add )
         {
-            vtrc_errors::container cont;
+            rpc::errors::container cont;
             cont.set_code( code );
-            cont.set_category( vtrc_errors::CATEGORY_INTERNAL );
+            cont.set_category( rpc::errors::CATEGORY_INTERNAL );
             cont.set_additional( add );
             return cont;
         }
@@ -220,8 +218,8 @@ namespace vtrc { namespace client {
                 if( !check ) {
 
                     llu->Clear( );
-                    vtrc_errors::container *err = llu->mutable_error( );
-                    err->set_code(vtrc_errors::ERR_PROTOCOL);
+                    rpc::errors::container *err = llu->mutable_error( );
+                    err->set_code( rpc::errors::ERR_PROTOCOL);
                     err->set_additional("Bad message was received");
                     err->set_fatal( true );
 
@@ -234,26 +232,26 @@ namespace vtrc { namespace client {
                 switch( llu->info( ).message_type( ) ) {
 
                 /// SERVER_CALL = request; do not use id
-                case vtrc_rpc::message_info::MESSAGE_SERVER_CALL:
+                case rpc::message_info::MESSAGE_SERVER_CALL:
                     process_event( llu );
                     break;
 
                 /// SERVER_CALLBACK = request; use target_id
-                case vtrc_rpc::message_info::MESSAGE_SERVER_CALLBACK:
+                case rpc::message_info::MESSAGE_SERVER_CALLBACK:
                     process_callback( llu );
                     break;
 
                 /// internals; not implemented yet
-                case vtrc_rpc::message_info::MESSAGE_SERVICE:
+                case rpc::message_info::MESSAGE_SERVICE:
                     process_service( llu );
                     break;
-                case vtrc_rpc::message_info::MESSAGE_INTERNAL:
+                case rpc::message_info::MESSAGE_INTERNAL:
                     process_internal( llu );
                     break;
 
                 /// answers; use id
-                case vtrc_rpc::message_info::MESSAGE_CLIENT_CALL:
-                case vtrc_rpc::message_info::MESSAGE_CLIENT_CALLBACK:
+                case rpc::message_info::MESSAGE_CLIENT_CALL:
+                case rpc::message_info::MESSAGE_CLIENT_CALLBACK:
                     process_call( llu );
                     break;
                 default:
@@ -265,12 +263,12 @@ namespace vtrc { namespace client {
         void on_server_ready( )
         {
 
-            vtrc_auth::init_capsule capsule;
+            rpc::auth::init_capsule capsule;
             bool check = parent_->parse_and_pop( capsule );
 
             if( !check ) {
                 parent_->on_init_error(
-                            create_error( vtrc_errors::ERR_INTERNAL, "" ),
+                            create_error( rpc::errors::ERR_INTERNAL, "" ),
                             "Server's 'Ready' has bad hash. Bad session key." );
                 connection_->close( );
                 return;
@@ -281,7 +279,7 @@ namespace vtrc { namespace client {
                                        "Server is not ready; stage: 'Ready'");
             }
 
-            vtrc_auth::session_setup ss;
+            rpc::auth::session_setup ss;
             ss.ParseFromString( capsule.body( ) );
 
             parent_->configure_session( ss.options( ) );
@@ -295,12 +293,12 @@ namespace vtrc { namespace client {
         {
             using namespace common::transformers;
 
-            vtrc_auth::init_capsule capsule;
+            rpc::auth::init_capsule capsule;
             bool check = parent_->parse_and_pop( capsule );
 
             if( !check ) {
                 parent_->on_init_error(
-                            create_error( vtrc_errors::ERR_INTERNAL, "" ),
+                            create_error( rpc::errors::ERR_INTERNAL, "" ),
                             "Server's 'Setup' has bad hash." );
                 connection_->close( );
                 return;
@@ -314,7 +312,7 @@ namespace vtrc { namespace client {
                 return;
             }
 
-            vtrc_auth::transformer_setup tsetup;
+            rpc::auth::transformer_setup tsetup;
 
             tsetup.ParseFromString( capsule.body( ) );
 
@@ -350,14 +348,14 @@ namespace vtrc { namespace client {
         {
             if( !err ) {
                 parent_->change_hash_maker(
-                   common::hash::create_by_index( vtrc_auth::HASH_CRC_32 ));
+                   common::hash::create_by_index( rpc::auth::HASH_CRC_32 ));
             }
         }
 
-        static bool server_has_transformer( vtrc_auth::init_capsule const &cap,
+        static bool server_has_transformer( rpc::auth::init_capsule const &cap,
                                             unsigned transformer_type )
         {
-            vtrc_auth::init_protocol init;
+            rpc::auth::init_protocol init;
             init.ParseFromString( cap.body( ) );
             return std::find( init.transform_supported( ).begin( ),
                       init.transform_supported( ).end( ),
@@ -366,12 +364,12 @@ namespace vtrc { namespace client {
 
         void on_hello_call( )
         {
-            vtrc_auth::init_capsule capsule;
+            rpc::auth::init_capsule capsule;
             bool check = parent_->parse_and_pop( capsule );
 
             if( !check ) {
                 parent_->on_init_error(
-                            create_error( vtrc_errors::ERR_INTERNAL, "" ),
+                            create_error( rpc::errors::ERR_INTERNAL, "" ),
                             "Server's 'Hello' has bad hash." );
                 connection_->close( );
                 return;
@@ -384,28 +382,28 @@ namespace vtrc { namespace client {
                 return;
             }
 
-            vtrc_auth::client_selection init;
+            rpc::auth::client_selection init;
 
             capsule.set_ready( true );
             capsule.set_text( "Miten menee?" );
 
             bool key_set = client_->is_key_set( );
 
-            const unsigned basic_transform = vtrc_auth::TRANSFORM_ERSEEFOR;
+            const unsigned basic_transform = rpc::auth::TRANSFORM_ERSEEFOR;
 
             if( key_set && server_has_transformer( capsule, basic_transform )) {
-                init.set_transform( vtrc_auth::TRANSFORM_ERSEEFOR );
+                init.set_transform( rpc::auth::TRANSFORM_ERSEEFOR );
                 init.set_id( client_->get_session_id( ) );
             } else {
-                init.set_transform( vtrc_auth::TRANSFORM_NONE );
+                init.set_transform( rpc::auth::TRANSFORM_NONE );
             }
 
-            init.set_hash( vtrc_auth::HASH_CRC_32 );
+            init.set_hash( rpc::auth::HASH_CRC_32 );
 
             capsule.set_body( init.SerializeAsString( ) );
 
             parent_->change_hash_checker(
-                    common::hash::create_by_index( vtrc_auth::HASH_CRC_32 ));
+                    common::hash::create_by_index( rpc::auth::HASH_CRC_32 ));
 
             change_stage( key_set ? STAGE_SETUP : STAGE_READY );
 
@@ -459,7 +457,7 @@ namespace vtrc { namespace client {
         impl_->data_ready( );
     }
 
-    void protocol_layer_c::on_init_error(const vtrc_errors::container &error,
+    void protocol_layer_c::on_init_error(const rpc::errors::container &error,
                                          const char *message)
     {
         impl_->callbacks_->on_init_error( error, message );

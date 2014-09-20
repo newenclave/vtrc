@@ -4,7 +4,7 @@ import "vtrc-rpc-lowlevel.proto";
 
 //option optimize_for = LITE_RUNTIME;
 
-package vtrc_auth;
+package vtrc.rpc.auth;
 
 // index 51000
 
@@ -43,13 +43,13 @@ message transformer_setup {
 }
 
 message session_setup {
-    optional vtrc_rpc.session_options options = 1;
+    optional vtrc.rpc.session_options options = 1;
 }
 
 message init_capsule {
     optional string                       text =  1;
-    optional bool                        ready =  2;
-    optional vtrc_errors.container       error =  3;
+    optional bool                         ready =  2;
+    optional vtrc.rpc.errors.container    error =  3;
 
     optional bytes                        body = 10;
 }

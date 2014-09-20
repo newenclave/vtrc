@@ -141,7 +141,7 @@ namespace vtrc { namespace server {
     }
 
     void application::configure_session(common::connection_iface *  /*c*/,
-                                        vtrc_rpc::session_options & /*opts*/)
+                                        rpc::session_options & /*opts*/)
     {
         /// use default settings
     }

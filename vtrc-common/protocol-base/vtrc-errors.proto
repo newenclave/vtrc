@@ -1,5 +1,5 @@
 
-package vtrc_errors;
+package vtrc.rpc.errors;
 
 import "google/protobuf/descriptor.proto";
 

@@ -19,10 +19,9 @@ namespace vtrc { namespace client {
     namespace gpb = google::protobuf;
 
     namespace {
-        typedef vtrc::shared_ptr <
-            vtrc_rpc::lowlevel_unit
-        > lowlevel_unit_sptr;
-        typedef vtrc_rpc::message_info message_info;
+
+        typedef vtrc::shared_ptr<rpc::lowlevel_unit> lowlevel_unit_sptr;
+        typedef rpc::message_info message_info;
 
         const unsigned direct_call_type = message_info::MESSAGE_CLIENT_CALL;
         const unsigned callback_type    = message_info::MESSAGE_CLIENT_CALLBACK;
@@ -80,11 +79,11 @@ namespace vtrc { namespace client {
             if( clk.get( ) == NULL ) {
                 if( controller )
                     controller->SetFailed( "Connection lost" );
-                throw vtrc::common::exception( vtrc_errors::ERR_CHANNEL,
+                throw vtrc::common::exception( rpc::errors::ERR_CHANNEL,
                                                "Connection lost");
             }
 
-            const vtrc_rpc::options *call_opt
+            const rpc::options *call_opt
                             ( get_protocol( clk ).get_method_options(method) );
 
             if( disable_wait_ )

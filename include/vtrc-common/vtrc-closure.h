@@ -7,14 +7,14 @@ namespace boost { namespace system {
     class error_code;
 }}
 
-namespace vtrc_errors {
+namespace vtrc { namespace rpc { namespace errors {
     class container;
-}
+}}}
 
 namespace vtrc { namespace common {
 
     typedef void (system_closure_sign)(const boost::system::error_code &);
-    typedef void (protcol_closure_sign)(const vtrc_errors::container &);
+    typedef void (protcol_closure_sign)(const rpc::errors::container &);
     typedef void (success_closure_sign)(bool);
 
     typedef vtrc::function<system_closure_sign>  system_closure_type;

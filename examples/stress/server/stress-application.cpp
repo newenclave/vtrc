@@ -43,7 +43,7 @@ namespace stress {
 
         server::listener_sptr create_from_string( const std::string &name,
                                   server::application &app,
-                                  const vtrc_rpc::session_options &opts,
+                                  const rpc::session_options &opts,
                                   bool tcp_nodelay)
         {
             /// result endpoint
@@ -147,31 +147,21 @@ namespace stress {
         void on_new_connection( server::listener *l,
                                 const common::connection_iface *c )
         {
-//            vtrc::unique_lock<vtrc::mutex> lock(counter_lock_);
             std::cout << "New connection: "
                       << "\n\tep:     " << l->name( )
                       << "\n\tclient: " << c->name( )
                       << "\n\ttotal:  " << ++counter_
                       << "\n"
                         ;
-//            vtrc::this_thread::sleep_for( vtrc::chrono::milliseconds( 1000 ) );
-//            sleep( 1 );
-//            if( counter_ > max_clients_ ) {
-//                l->stop( );
-//            }
         }
 
         void on_stop_connection( server::listener *l,
                                  const common::connection_iface *c )
         {
-//            vtrc::unique_lock<vtrc::mutex> lock(counter_lock_);
             std::cout << "Close connection: "
                       << c->name( )
                       << "; count: " << --counter_
                       << "\n";
-//            if( counter_ == max_clients_ ) {
-//                l->start( );
-//            }
         }
 
         void start_retry_accept( server::listener_sptr l, unsigned rto )
@@ -208,10 +198,10 @@ namespace stress {
         }
 
 
-        vtrc_rpc::session_options options( const po::variables_map &params )
+        rpc::session_options options( const po::variables_map &params )
         {
             using server::listeners::default_options;
-            vtrc_rpc::session_options opts( default_options( ) );
+            rpc::session_options opts( default_options( ) );
 
             if( params.count( "message-size" ) ) {
                 opts.set_max_message_length(
@@ -249,7 +239,7 @@ namespace stress {
 
             using server::listeners::default_options;
 
-            vtrc_rpc::session_options opts( options( params ) );
+            rpc::session_options opts( options( params ) );
 
             unsigned retry_to = (params.count( "accept-retry" ) != 0)
                     ? params["accept-retry"].as<unsigned>( )

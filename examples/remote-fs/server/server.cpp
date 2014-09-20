@@ -37,7 +37,7 @@ public:
     }
 
     void configure_session( common::connection_iface* connection,
-                                    vtrc_rpc::session_options &opts )
+                                    rpc::session_options &opts )
     {
         opts.set_read_buffer_size( 44000 );
     }

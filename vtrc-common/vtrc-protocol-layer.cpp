@@ -55,10 +55,10 @@ namespace vtrc { namespace common {
         {
             switch ( wr ) {
             case WAIT_RESULT_CANCELED:
-                raise_error( vtrc_errors::ERR_CANCELED );
+                raise_error( rpc::errors::ERR_CANCELED );
                 break;
             case  WAIT_RESULT_TIMEOUT:
-                raise_error( vtrc_errors::ERR_TIMEOUT );
+                raise_error( rpc::errors::ERR_TIMEOUT );
                 break;
             default:
                 break;
@@ -78,7 +78,7 @@ namespace vtrc { namespace common {
             return lhs.id_ < rhs.id_;
         }
 #endif
-        typedef vtrc_rpc::lowlevel_unit              lowlevel_unit_type;
+        typedef rpc::lowlevel_unit                   lowlevel_unit_type;
         typedef vtrc::shared_ptr<lowlevel_unit_type> lowlevel_unit_sptr;
 
         typedef condition_queues <
@@ -89,7 +89,7 @@ namespace vtrc { namespace common {
 
         typedef std::map <
              const google::protobuf::MethodDescriptor *
-            ,vtrc::shared_ptr<vtrc_rpc::options>
+            ,vtrc::shared_ptr<rpc::options>
         > options_map_type;
 
         struct closure_holder_type {
@@ -178,10 +178,10 @@ namespace vtrc { namespace common {
 
         unsigned                     level_;
 
-        vtrc_rpc::session_options    session_opts_;
+        rpc::session_options         session_opts_;
 
         impl( transport_iface *c, bool oddside,
-              const vtrc_rpc::session_options &opts )
+                    const rpc::session_options &opts )
             :connection_(c)
             ,hash_maker_(common::hash::create_default( ))
             ,hash_checker_(common::hash::create_default( ))
@@ -224,7 +224,7 @@ namespace vtrc { namespace common {
         ~impl( )
         { }
 
-        void configure_session( const vtrc_rpc::session_options &opts )
+        void configure_session( const rpc::session_options &opts )
         {
             session_opts_.CopyFrom( opts );
             queue_->set_maximum_length( opts.max_message_length( ) );
@@ -576,7 +576,7 @@ namespace vtrc { namespace common {
         void call_rpc_method( uint64_t slot_id, const lowlevel_unit_type &llu )
         {
             if( !ready_ )
-                throw vtrc::common::exception( vtrc_errors::ERR_COMM );
+                throw vtrc::common::exception( rpc::errors::ERR_COMM );
             rpc_queue_.add_queue( slot_id );
             send_message( llu );
         }
@@ -584,7 +584,7 @@ namespace vtrc { namespace common {
         void call_rpc_method( const lowlevel_unit_type &llu )
         {
             if( !ready_ )
-                throw vtrc::common::exception( vtrc_errors::ERR_COMM );
+                throw vtrc::common::exception( rpc::errors::ERR_COMM );
             send_message( llu );
         }
 
@@ -633,26 +633,26 @@ namespace vtrc { namespace common {
             return level_;
         }
 
-        const vtrc_rpc::options *get_method_options(
+        const rpc::options *get_method_options(
                                     const gpb::MethodDescriptor *method)
         {
             upgradable_lock lck(options_map_lock_);
 
             options_map_type::const_iterator f(options_map_.find(method));
 
-            vtrc::shared_ptr<vtrc_rpc::options> result;
+            vtrc::shared_ptr<rpc::options> result;
 
             if( f == options_map_.end( ) ) {
 
-                const vtrc_rpc::options &serv (
+                const rpc::options &serv (
                         method->service( )->options( )
-                            .GetExtension( vtrc_rpc::service_options ));
+                            .GetExtension( rpc::service_options ));
 
-                const vtrc_rpc::options &meth (
+                const rpc::options &meth (
                         method->options( )
-                            .GetExtension( vtrc_rpc::method_options ));
+                            .GetExtension( rpc::method_options ));
 
-                result = vtrc::make_shared<vtrc_rpc::options>( serv );
+                result = vtrc::make_shared<rpc::options>( serv );
                 utilities::merge_messages( *result, meth );
 
                 upgrade_to_unique ulck( lck );
@@ -699,12 +699,12 @@ namespace vtrc { namespace common {
 
             if( holder->controller_->IsCanceled( ) ) {
 
-                errorcode = vtrc_errors::ERR_CANCELED;
+                errorcode = rpc::errors::ERR_CANCELED;
                 failed = true;
 
              } else if( holder->controller_->Failed( ) ) {
 
-                errorcode = vtrc_errors::ERR_INTERNAL;
+                errorcode = rpc::errors::ERR_INTERNAL;
                 failed = true;
 
             }
@@ -770,14 +770,14 @@ namespace vtrc { namespace common {
             protocol_layer::context_holder ch( parent_, llu.get( ) );
 
             if( ch.ctx_->depth( ) > session_opts_.max_stack_size( ) ) {
-                throw vtrc::common::exception( vtrc_errors::ERR_OVERFLOW );
+                throw vtrc::common::exception( rpc::errors::ERR_OVERFLOW );
             }
 
             common::rpc_service_wrapper_sptr
                     service(get_service(llu->call( ).service_id( )));
 
             if( !service || !service->service( ) ) {
-                throw vtrc::common::exception( vtrc_errors::ERR_BAD_FILE,
+                throw vtrc::common::exception( rpc::errors::ERR_BAD_FILE,
                                                "Service not found");
             }
 
@@ -785,10 +785,10 @@ namespace vtrc { namespace common {
                 (service->get_method(llu->call( ).method_id( )));
 
             if( !meth ) {
-                throw vtrc::common::exception( vtrc_errors::ERR_NO_FUNC );
+                throw vtrc::common::exception( rpc::errors::ERR_NO_FUNC );
             }
 
-            const vtrc_rpc::options *call_opts
+            const rpc::options *call_opts
                                         ( parent_->get_method_options( meth ) );
 
             ch.ctx_->set_call_options( call_opts );
@@ -841,11 +841,11 @@ namespace vtrc { namespace common {
                 llu->mutable_error( )->set_additional( ex.additional( ) );
 
             } catch ( const std::exception &ex ) {
-                errorcode = vtrc_errors::ERR_INTERNAL;
+                errorcode = rpc::errors::ERR_INTERNAL;
                 llu->mutable_error( )->set_additional( ex.what( ) );
 
             } catch ( ... ) {
-                errorcode = vtrc_errors::ERR_UNKNOWN;
+                errorcode = rpc::errors::ERR_UNKNOWN;
                 llu->mutable_error( )->set_additional( "..." );
             }
 
@@ -873,13 +873,13 @@ namespace vtrc { namespace common {
         {
             set_ready( false );
 
-            vtrc::shared_ptr<vtrc_rpc::lowlevel_unit>
-                            llu( new  vtrc_rpc::lowlevel_unit );
+            vtrc::shared_ptr<rpc::lowlevel_unit>
+                            llu( new  rpc::lowlevel_unit );
 
-            vtrc_errors::container *err_cont = llu->mutable_error( );
+            rpc::errors::container *err_cont = llu->mutable_error( );
 
             err_cont->set_code(err.value( ));
-            err_cont->set_category(vtrc_errors::CATEGORY_SYSTEM);
+            err_cont->set_category( rpc::errors::CATEGORY_SYSTEM );
             err_cont->set_fatal( true );
             err_cont->set_additional( add );
 
@@ -889,14 +889,14 @@ namespace vtrc { namespace common {
     };
 
     protocol_layer::protocol_layer( transport_iface *connection, bool oddside )
-        :impl_(new impl(connection, oddside, vtrc_rpc::session_options( )))
+        :impl_(new impl(connection, oddside, rpc::session_options( )))
     {
         impl_->parent_ = this;
     }
 
      protocol_layer::protocol_layer(transport_iface *connection,
                                     bool oddside,
-                                    const vtrc_rpc::session_options &opts)
+                                    const rpc::session_options &opts)
         :impl_(new impl(connection, oddside, opts ))
      {
          impl_->parent_ = this;
@@ -983,13 +983,13 @@ namespace vtrc { namespace common {
         impl_->copy_call_stack( other );
     }
 
-    const vtrc_rpc::options *protocol_layer::get_method_options(
+    const rpc::options *protocol_layer::get_method_options(
                               const gpb::MethodDescriptor *method)
     {
         return impl_->get_method_options( method );
     }
 
-    const vtrc_rpc::session_options &protocol_layer::session_options( ) const
+    const rpc::session_options &protocol_layer::session_options( ) const
     {
         return impl_->session_opts_;
     }
@@ -999,7 +999,7 @@ namespace vtrc { namespace common {
         return impl_->get_call_context( );
     }
 
-    void protocol_layer::configure_session( const vtrc_rpc::session_options &o )
+    void protocol_layer::configure_session( const rpc::session_options &o )
     {
         impl_->configure_session( o );
     }
