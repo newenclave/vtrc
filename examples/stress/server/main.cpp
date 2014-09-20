@@ -11,7 +11,7 @@ int start( const po::variables_map &params );
 void get_options( po::options_description& desc );
 
 po::variables_map create_cmd_params(int argc, char *argv[],
-                                    po::options_description const desc)
+                                    po::options_description const &desc)
 {
     po::variables_map vm;
     po::parsed_options parsed (
