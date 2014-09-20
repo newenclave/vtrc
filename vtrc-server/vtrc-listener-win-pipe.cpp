@@ -99,7 +99,7 @@ namespace {
         bool                     working_;
 
         pipe_listener( application &app,
-                const vtrc_rpc::session_options &opts, 
+                const rpc::session_options &opts, 
                 const std::string pipe_name,
                 size_t max_inst)
             :listener(app, opts)
@@ -270,7 +270,7 @@ namespace {
 
     namespace win_pipe {
         listener_sptr create( application &app, 
-                              const vtrc_rpc::session_options &opts,
+                              const rpc::session_options &opts,
                               const std::string &name )
         {
             vtrc::shared_ptr<pipe_listener>new_l
@@ -283,7 +283,7 @@ namespace {
 
         listener_sptr create( application &app, const std::string &name )
         {
-            vtrc_rpc::session_options def_opts(default_options( ));
+            rpc::session_options def_opts(default_options( ));
             return create( app, def_opts, name );
         }
 

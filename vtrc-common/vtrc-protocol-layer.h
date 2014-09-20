@@ -126,7 +126,7 @@ namespace vtrc { namespace common {
         const rpc::options *get_method_options(
                             const google::protobuf::MethodDescriptor* method );
 
-//        const vtrc_rpc::options *get_method_options(
+//        const rpc::options *get_method_options(
 //                            const lowlevel_unit_type &llu );
 
         const rpc::session_options &session_options( ) const;

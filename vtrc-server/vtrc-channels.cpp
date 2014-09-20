@@ -175,7 +175,7 @@ namespace vtrc { namespace server {
                 llu.mutable_info( )->set_message_type( message_type_ );
                 llu.mutable_opt( )->set_wait( false );
 
-//                const vtrc_rpc_lowlevel::options &call_opt
+//                const rpc_lowlevel::options &call_opt
 //                          ( clk->get_protocol( ).get_method_options(method));
 
                 if( clk ) {

@@ -21,16 +21,16 @@ namespace boost {
     }
 }
 
-namespace vtrc_errors {
-    class container;
-}
-
 namespace google { namespace protobuf {
     class RpcChannel;
     class Service;
 }}
 
 namespace vtrc {
+
+    namespace rpc { namespace errors {
+        class container;
+    }}
 
     namespace common {
         class pool_pair;
@@ -50,7 +50,7 @@ namespace client {
         vtrc_client & operator = ( const vtrc_client &other );
 
         VTRC_DECLARE_SIGNAL( on_init_error,
-                             void( const vtrc_errors::container &,
+                             void( const rpc::errors::container &,
                                    const char *message ) );
 
         VTRC_DECLARE_SIGNAL( on_connect,    void( ) );

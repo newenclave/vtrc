@@ -69,7 +69,7 @@ namespace vtrc { namespace client {
         { }
 
         /// ============= signals =============== /////
-        void on_init_error(const vtrc_errors::container &err,
+        void on_init_error(const rpc::errors::container &err,
                                    const char *message)
         {
             parent_->on_init_error_( err, message );
@@ -155,7 +155,7 @@ namespace vtrc { namespace client {
         void on_init_error_s( unsigned *failed,
                               std::string *res,
                               vtrc::condition_variable *cond,
-                              const vtrc_errors::container &,
+                              const rpc::errors::container &,
                               const char *message  )
         {
             (*failed) = 1;

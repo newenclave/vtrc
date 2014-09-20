@@ -11,11 +11,11 @@ namespace google { namespace protobuf {
     class MethodDescriptor;
 }}
 
-namespace vtrc_rpc {
-    class lowlevel_unit;
-}
-
 namespace vtrc {
+
+    namespace rpc {
+        class lowlevel_unit;
+    }
 
     namespace common {
         struct connection_iface;
