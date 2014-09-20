@@ -98,6 +98,11 @@ namespace vtrc { namespace common {
         return *impl_->rpc_;
     }
 
+    bool pool_pair::one_pool( ) const
+    {
+        return impl_->same_;
+    }
+
     void pool_pair::stop_all( )
     {
         impl_->stop_all( );

@@ -39,6 +39,8 @@ namespace vtrc { namespace common {
         thread_pool       &get_rpc_pool( );
         const thread_pool &get_rpc_pool( ) const;
 
+        bool one_pool( ) const;
+
         void stop_all( );
         void join_all( );
 
