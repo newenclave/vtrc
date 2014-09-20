@@ -214,6 +214,7 @@ namespace vtrc { namespace client {
         {
             vtrc::shared_ptr<client_tcp>
                             new_client(create_client_tcp(tcp_nodelay));
+
             connect_impl(vtrc::bind( &client_tcp::connect, new_client,
                                      address, service));
             if( tcp_nodelay ) {
