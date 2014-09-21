@@ -35,6 +35,9 @@ namespace vtrc { namespace common {
         unsigned    category( )   const;
     };
 
+    void throw_system_error( unsigned code );
+    void throw_system_error( unsigned code, const std::string &additional );
+
 }}
 
 #endif // VTRCERRORS_H

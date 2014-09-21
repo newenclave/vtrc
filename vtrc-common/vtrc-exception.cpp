@@ -93,4 +93,14 @@ namespace vtrc { namespace common {
         return category_;
     }
 
+    void throw_system_error( unsigned code )
+    {
+        throw exception( code, rpc::errors::CATEGORY_SYSTEM );
+    }
+
+    void throw_system_error( unsigned code, const std::string &additional )
+    {
+        throw exception( code, rpc::errors::CATEGORY_SYSTEM, additional );
+    }
+
 }}
