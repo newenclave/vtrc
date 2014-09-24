@@ -21,16 +21,21 @@ namespace vtrc { namespace common {
 
     public:
 
-        explicit rpc_service_wrapper( google::protobuf::Service *serv );
-        explicit rpc_service_wrapper(
-                     vtrc::shared_ptr<google::protobuf::Service> serv );
+        typedef google::protobuf::Service       service_type;
+        typedef service_type*                   service_ptr;
+        typedef vtrc::shared_ptr<service_type>  service_sptr;
+
+        typedef google::protobuf::MethodDescriptor method_type;
+        typedef method_type*                       method_ptr;
+
+        explicit rpc_service_wrapper( service_ptr *serv );
+        explicit rpc_service_wrapper( service_sptr serv );
 
         virtual ~rpc_service_wrapper( );
 
         /// names for protocol
         virtual const std::string &name( );
-        virtual const google::protobuf::MethodDescriptor *get_method (
-                                                const std::string &name ) const;
+        virtual const method_type *get_method ( const std::string &name ) const;
 
         google::protobuf::Service       *service( );
         const google::protobuf::Service *service( ) const;

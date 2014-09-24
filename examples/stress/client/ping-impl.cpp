@@ -47,7 +47,7 @@ namespace stress {
         return to;
     }
 
-    void ping(interface &iface, bool flood, unsigned count, unsigned payload)
+    void ping( interface &iface, bool flood, unsigned count, unsigned payload )
     {
         std::cout << "Start pinging...\n";
         size_t   res = 0;
