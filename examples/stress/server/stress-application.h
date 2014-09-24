@@ -2,6 +2,7 @@
 #define STRESS_APPLICATION_H
 
 #include "vtrc-memory.h"
+#include "vtrc-function.h"
 
 namespace vtrc { namespace server {
     class application;
@@ -33,6 +34,12 @@ namespace stress {
         void run( const boost::program_options::variables_map &params );
 
         void stop( );
+
+        typedef vtrc::function<bool (unsigned, unsigned)> timer_callback;
+
+        unsigned add_timer_event( unsigned microseconds, timer_callback );
+        void del_timer_event( unsigned id );
+
     };
 
 }

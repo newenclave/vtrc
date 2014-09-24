@@ -31,6 +31,14 @@ message recursive_call_res { }
 message shutdown_req { }
 message shutdown_res { }
 
+message timer_register_req {
+    optional uint32 microseconds = 1;
+}
+
+message timer_register_res {
+    optional uint32 id = 1;
+}
+
 service stress_service {
 
     rpc init (empty) returns (empty);
@@ -42,6 +50,9 @@ service stress_service {
 
     /// shutdown server
     rpc shutdown(shutdown_req) returns (shutdown_res);
+
+    rpc reg(timer_register_req)     returns (timer_register_res);
+    rpc unreg(timer_register_res)   returns (empty);
 }
 
 /// ============== events or callbacks ================== ///
@@ -60,5 +71,7 @@ service stress_events {
 
     /// make recursive_call if balance != 0
     rpc recursive_callback (recursive_call_req) returns (recursive_call_res);
+
+    rpc timer_event( timer_register_res ) returns ( empty );
 }
 

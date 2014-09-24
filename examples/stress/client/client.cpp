@@ -104,9 +104,11 @@ void get_options( po::options_description& desc )
         ("payload,l", po::value<unsigned>( ),
             "payload in bytes for commands such as ping; default = 64")
 
-        ("shutdown,S",
-            "shutdown remote server")
+        ("shutdown,S",  "shutdown remote server")
 
+        ("timer",  po::value< std::vector<unsigned> >( ),
+                    "register timer event" )
+        ("sleep",  po::value< unsigned >( ), "sleep before exit" )
         ;
 }
 
@@ -185,6 +187,15 @@ void start_recursive( vtrc::shared_ptr<stress::interface> impl,
     std::cout << "generate_events error: " << ex.what( ) << "\n";
 }
 
+void register_timers( vtrc::shared_ptr<stress::interface> impl,
+                      const std::vector<unsigned> &timers)
+{
+    typedef std::vector<unsigned>::const_iterator iter;
+    for( iter b(timers.begin( )), e(timers.end( )); b!=e; ++b ) {
+        impl->register_timer( *b );
+    }
+}
+
 int start( const po::variables_map &params )
 {
     if( params.count( "server" ) == 0 ) {
@@ -239,6 +250,17 @@ int start( const po::variables_map &params )
             : 0;
 
     boost::thread_group tg;
+
+    if( params.count( "timer" ) ) {
+
+        std::vector<unsigned> t(params["timer"].as< std::vector<unsigned> >( ));
+
+        std::cout << "Register timers ... ";
+        register_timers( impl, t );
+        std::cout << "Ok\n";
+    }
+
+    std::vector<unsigned> timers;
 
     if( params.count( "shutdown" ) ) {
 
@@ -335,6 +357,11 @@ int start( const po::variables_map &params )
 
         std::cout << "Ok\n";
 
+    }
+
+    if( params.count( "sleep" ) ) {
+        unsigned value = params["sleep"].as<unsigned>( );
+        sleep( value );
     }
 
     tg.join_all( );

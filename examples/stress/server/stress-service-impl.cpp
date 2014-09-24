@@ -9,6 +9,8 @@
 #include "vtrc-server/vtrc-application.h"
 #include "vtrc-common/vtrc-stub-wrapper.h"
 
+#include "vtrc-bind.h"
+
 #include "google/protobuf/descriptor.h"
 
 #include "stress-application.h"
@@ -18,15 +20,26 @@ using namespace vtrc;
 
 namespace  {
 
-    typedef vtrc_example::stress_events_Stub stub_type;
-    typedef common::stub_wrapper<stub_type>  stub_wrapper_type;
+    typedef vtrc_example::stress_events_Stub    stub_type;
+    typedef common::stub_wrapper<stub_type>     stub_wrapper_type;
+    typedef vtrc::shared_ptr<stub_wrapper_type> stub_wrapper_sptr;
+    typedef vtrc::weak_ptr<stub_wrapper_type>   stub_wrapper_wptr;
 
     using namespace server::channels;
+    using server::channels::unicast::create_event_channel;
+
+    stub_wrapper_type *create_event( common::connection_iface *c )
+    {
+        return new stub_wrapper_type(
+                    create_event_channel( c->shared_from_this( ) ),
+                    true );
+    }
 
     class stress_service_impl: public vtrc_example::stress_service {
 
         stress::application      &app_;
         common::connection_iface *c_;
+        stub_wrapper_sptr         event_channel_;
 
     public:
 
@@ -34,9 +47,59 @@ namespace  {
                              common::connection_iface *c )
             :app_(app)
             ,c_(c)
+            ,event_channel_(create_event(c_))
         { }
 
     private:
+
+        bool timer_cb( unsigned id, unsigned error_code,
+                       common::connection_iface_wptr client,
+                       stub_wrapper_wptr channel )
+        {
+            common::connection_iface_sptr lck( client.lock( ) );
+            if( !lck ) {
+                return false;
+            }
+
+            stub_wrapper_sptr eventor( channel.lock( ) );
+            if( !eventor ) {
+                return false;
+            }
+
+            std::cout << "Tick timer: " << id << " " << error_code << "\n";
+
+            vtrc_example::timer_register_res req;
+            req.set_id( id );
+            eventor->call_request( &stub_type::timer_event, &req );
+            return true;
+        }
+
+        void reg(::google::protobuf::RpcController* controller,
+                     const ::vtrc_example::timer_register_req* request,
+                     ::vtrc_example::timer_register_res* response,
+                     ::google::protobuf::Closure* done)
+        {
+            common::closure_holder holder(done);
+
+            stress::application::timer_callback cb(
+                        vtrc::bind( &stress_service_impl::timer_cb, this,
+                                    vtrc::placeholders::_1,
+                                    vtrc::placeholders::_2,
+                                    c_->weak_from_this( ),
+                                    stub_wrapper_wptr(event_channel_)));
+
+            response->set_id( app_.add_timer_event(
+                                  request->microseconds( ), cb ) );
+
+        }
+
+        void unreg(::google::protobuf::RpcController* controller,
+                     const ::vtrc_example::timer_register_res* request,
+                     ::vtrc_example::empty* response,
+                     ::google::protobuf::Closure* done)
+        {
+            common::closure_holder holder(done);
+        }
 
         void init(::google::protobuf::RpcController* controller,
                  const ::vtrc_example::empty* request,

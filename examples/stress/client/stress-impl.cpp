@@ -63,6 +63,15 @@ namespace {
             stub_.call_request( &stub_type::recursive_call, &req );
         }
 
+        unsigned register_timer( unsigned microsec )
+        {
+            vtrc_example::timer_register_req req;
+            vtrc_example::timer_register_res res;
+            req.set_microseconds( microsec );
+            stub_.call( &stub_type::reg, &req, &res );
+            return res.id( );
+        }
+
         void shutdown( )
         {
             stub_.call( &stub_type::shutdown );

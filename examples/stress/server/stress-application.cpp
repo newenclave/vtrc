@@ -32,12 +32,26 @@
 
 #include "google/protobuf/service.h"
 
+#include "vtrc-common/vtrc-delayed-call.h"
+#include "vtrc-common/vtrc-thread-pool.h"
+#include "vtrc-common/vtrc-mutex-typedefs.h"
+
 namespace stress {
 
     using namespace vtrc;
     namespace po = boost::program_options;
     namespace gpb = google::protobuf;
     namespace basio = boost::asio;
+    namespace bsys  = boost::system;
+
+    typedef vtrc::common::delayed_call            delayed_call;
+    typedef vtrc::shared_ptr<delayed_call>        delayed_call_sptr;
+
+    typedef std::pair<
+            delayed_call_sptr,
+            application::timer_callback > call_cb_pair;
+
+    typedef std::map<unsigned, call_cb_pair> delayed_map;
 
     namespace {
 
@@ -127,6 +141,11 @@ namespace stress {
         unsigned                            max_clients_;
         vtrc::mutex                         counter_lock_;
 
+        vtrc::atomic<unsigned>              next_id_;
+        common::thread_pool                 timer_pool_;
+        delayed_map                         map_;
+        vtrc::shared_mutex                  map_lock_;
+
         impl( unsigned io_threads )
             :pp_(io_threads)
             ,app_(pp_)
@@ -134,6 +153,8 @@ namespace stress {
             ,retry_timer_(pp_.get_io_service( ))
             ,accept_errors_(0)
             ,max_clients_(1000)
+            ,next_id_(0)
+            ,timer_pool_(1)
         { }
 
         impl( unsigned io_threads, unsigned rpc_threads )
@@ -142,7 +163,33 @@ namespace stress {
             ,counter_(0)
             ,retry_timer_(pp_.get_io_service( ))
             ,max_clients_(1000)
+            ,next_id_(0)
+            ,timer_pool_(1)
         { }
+
+        unsigned next_id( )
+        {
+            return ++next_id_;
+        }
+
+        void timer_handler( const bsys::error_code &err,
+                            unsigned id,  unsigned microsec,
+                            call_cb_pair tc )
+        {
+            unsigned err_code = err.value( );
+            if( tc.second( id, err_code )) {
+                start_timer( tc, id, microsec );
+            }
+        }
+
+        void start_timer( call_cb_pair &tc, unsigned id,  unsigned microsec )
+        {
+            tc.first->call_from_now(
+                        vtrc::bind( &impl::timer_handler, this,
+                                    vtrc::placeholders::error,
+                                    id, microsec, tc ),
+                        common::timer::microseconds( microsec ) );
+        }
 
         void on_new_connection( server::listener *l,
                                 const common::connection_iface *c )
@@ -291,6 +338,10 @@ namespace stress {
         void stop( )
         {
             std::cout << "Stopping server ...";
+
+            timer_pool_.stop( );
+            timer_pool_.join_all( );
+
             typedef std::vector<server::listener_sptr>::const_iterator citer;
             for( citer b(listeners_.begin( )), e(listeners_.end( )); b!=e; ++b){
                 (*b)->stop( );
@@ -337,6 +388,33 @@ namespace stress {
     void application::stop( )
     {
         impl_->stop( );
+    }
+
+    unsigned application::add_timer_event( unsigned microseconds,
+                                           timer_callback cb )
+    {
+        unsigned id = impl_->next_id( );
+        delayed_call_sptr md(
+                    new delayed_call( impl_->timer_pool_.get_io_service( )) );
+        call_cb_pair p( std::make_pair( md, cb ) );
+        impl_->start_timer( p, id, microseconds );
+
+        vtrc::unique_shared_lock usl(impl_->map_lock_);
+        impl_->map_.insert( std::make_pair( id, p ) );
+
+        std::cout << "Add timer " << id << " success\n";
+
+        return id;
+    }
+
+    void application::del_timer_event( unsigned id )
+    {
+        vtrc::shared_lock usl(impl_->map_lock_);
+        delayed_map::iterator f( impl_->map_.find( id ));
+        if( f != impl_->map_.end( ) ) {
+            f->second.first->cancel( );
+            impl_->map_.erase( f );
+        }
     }
 
 }

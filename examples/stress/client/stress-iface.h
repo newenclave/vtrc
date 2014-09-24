@@ -22,6 +22,7 @@ namespace stress {
                                       unsigned payload ) = 0;
 
         virtual void recursive_call( unsigned count, unsigned payload ) = 0;
+        virtual unsigned register_timer( unsigned microsec ) = 0;
 
         virtual void shutdown( ) = 0;
     };
