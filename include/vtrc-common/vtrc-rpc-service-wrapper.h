@@ -42,8 +42,7 @@ namespace vtrc { namespace common {
 
     protected:
 
-        const google::protobuf::MethodDescriptor *find_method (
-                                                const std::string &name ) const;
+        const method_type *find_method ( const std::string &name ) const;
 
     };
 
