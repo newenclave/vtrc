@@ -592,6 +592,7 @@ namespace vtrc { namespace client {
 
     service_sptr vtrc_client::get_rpc_handler(const std::string &name)
     {
+        std::cout << "Get handler " << name << "\n";
         return impl_->get_handler( name );
     }
 

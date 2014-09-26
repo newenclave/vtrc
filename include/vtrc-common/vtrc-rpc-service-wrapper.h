@@ -28,8 +28,8 @@ namespace vtrc { namespace common {
         typedef google::protobuf::MethodDescriptor method_type;
         typedef method_type*                       method_ptr;
 
-        explicit rpc_service_wrapper( service_ptr *serv );
-        explicit rpc_service_wrapper( service_sptr serv );
+        explicit rpc_service_wrapper( service_type *serv );
+        explicit rpc_service_wrapper( service_sptr  serv );
 
         virtual ~rpc_service_wrapper( );
 
