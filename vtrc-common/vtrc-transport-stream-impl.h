@@ -224,7 +224,7 @@ namespace vtrc { namespace common {
             struct handler_params {
                 size_t length_;
                 size_t total_;
-                common::connection_iface_sptr inst_;
+                common::connection_iface_wptr inst_;
                 handler_params( size_t length,
                                 size_t total,
                                 common::connection_iface_sptr inst )
@@ -263,10 +263,10 @@ namespace vtrc { namespace common {
                                 handler_params &params )
             {
 
-//                common::connection_iface_sptr lock(params.inst_.lock( ));
-//                if( !lock ) {
-//                    return;
-//                }
+                common::connection_iface_sptr lock(params.inst_.lock( ));
+                if( !lock ) {
+                    return;
+                }
 
                 message_holder &top_holder(*write_queue_.front( ));
 
