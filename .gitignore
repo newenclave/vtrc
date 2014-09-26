@@ -5,4 +5,5 @@ include/vtrc-common/config/vtrc-general-config.h
 *.user.*
 \#*
 vtrc-import.cmake
+*~
 
