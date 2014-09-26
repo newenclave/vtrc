@@ -382,6 +382,7 @@ namespace vtrc { namespace client {
         {
             vtrc::upgradable_lock lk(services_lock_);
             service_sptr result;
+
             service_weak_map::iterator f( weak_services_.find( name ) );
             if( f != weak_services_.end( ) ) {
                 result = f->second.lock( );
@@ -592,7 +593,6 @@ namespace vtrc { namespace client {
 
     service_sptr vtrc_client::get_rpc_handler(const std::string &name)
     {
-        std::cout << "Get handler " << name << "\n";
         return impl_->get_handler( name );
     }
 
