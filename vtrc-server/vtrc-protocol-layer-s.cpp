@@ -211,6 +211,8 @@ namespace vtrc { namespace server {
             common::connection_iface_sptr lcked( inst.lock( ) );
             if( lcked ) {
                 lcked->close( );
+//                unique_shared_lock lk( services_lock_ );
+//                services_.clear( );
             }
         }
 
