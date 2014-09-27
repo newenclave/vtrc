@@ -27,6 +27,14 @@
 
 #include "boost/thread.hpp" /// for thread_group
 
+#ifdef _MSC_VER
+#define sleep_ Sleep /// milliseconds
+#define MILLISECONDS( x ) x
+#else
+#define sleep_ usleep /// microseconds
+#define MILLISECONDS( x ) ((x) * 1000)
+#endif
+
 namespace po = boost::program_options;
 namespace gpb = google::protobuf;
 
@@ -361,7 +369,7 @@ int start( const po::variables_map &params )
 
     if( params.count( "sleep" ) ) {
         unsigned value = params["sleep"].as<unsigned>( );
-        sleep( value );
+        sleep_( MILLISECONDS(value) * 1000 );
     }
 
     tg.join_all( );
