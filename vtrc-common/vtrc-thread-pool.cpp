@@ -52,7 +52,9 @@ namespace vtrc { namespace common {
         ~impl( )
         {
             try {
-                stop( );
+                if( wrk_ ) {
+                    stop( );
+                }
                 join_all( );
             } catch( ... ) {
                 ;;;
