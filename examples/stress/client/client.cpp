@@ -167,8 +167,8 @@ namespace {
     }
 }
 
-void start_ping_flod( vtrc::shared_ptr<stress::interface> impl,
-                      bool flood, unsigned times, unsigned payload) try
+void start_ping_flood( vtrc::shared_ptr<stress::interface> impl,
+                       bool flood, unsigned times, unsigned payload) try
 {
     stress::ping( *impl, flood, times, payload );
 } catch ( const std::exception &ex ) {
@@ -281,7 +281,7 @@ int start( const po::variables_map &params )
         unsigned times = params["ping"].as<unsigned>( );
 
         for( unsigned i=0; i<threads; ++i ) {
-            tg.create_thread( vtrc::bind( start_ping_flod, impl,
+            tg.create_thread( vtrc::bind( start_ping_flood, impl,
                                           false, times, payload ) );
         }
 
@@ -292,7 +292,7 @@ int start( const po::variables_map &params )
         unsigned times = params["flood"].as<unsigned>( );
 
         for( unsigned i=0; i<threads; ++i ) {
-            tg.create_thread( vtrc::bind( start_ping_flod,
+            tg.create_thread( vtrc::bind( start_ping_flood,
                                           impl, true, times, payload ) );
         }
 
