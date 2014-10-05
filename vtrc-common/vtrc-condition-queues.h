@@ -250,8 +250,8 @@ namespace vtrc { namespace common {
         void cancel_all( )
         {
             vtrc::shared_lock lck(lock_);
-            typedef typename map_type::iterator iterator_type;
-            for( iterator_type b(store_.begin( )), e(store_.end( )); b!=e; ++b){
+            typedef typename map_type::iterator iter_type;
+            for( iter_type b(store_.begin( )), e(store_.end( )); b!=e; ++b ) {
                 cancel_value( *(b->second) );
             }
         }
