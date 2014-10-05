@@ -103,12 +103,12 @@ namespace vtrc { namespace server {
 
     application::application( boost::asio::io_service &ios )
         :impl_(new impl(&ios))
-    {}
+    { }
 
     application::application( boost::asio::io_service &ios,
                            boost::asio::io_service &rpc_ios)
      :impl_(new impl(&ios, &rpc_ios))
-    {}
+    { }
 
     application::~application( )
     {

@@ -28,7 +28,7 @@ namespace vtrc { namespace client {
 
         unsigned select_message_type ( unsigned flags )
         {
-            return (flags & common::rpc_channel::USE_CONTEXT_CALL)
+            return ( flags & common::rpc_channel::USE_CONTEXT_CALL )
                    ? message_info::MESSAGE_CLIENT_CALLBACK
                    : message_info::MESSAGE_CLIENT_CALL;
         }

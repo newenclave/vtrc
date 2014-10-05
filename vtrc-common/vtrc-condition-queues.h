@@ -78,7 +78,7 @@ namespace vtrc { namespace common {
                                         : f->second;
         }
 
-        static bool queue_empty_predic( hold_value_type_sptr value )
+        static bool queue_empty_predicate( hold_value_type_sptr value )
         {
             return (!value->data_.empty( )) || value->canceled_;
         }
@@ -175,7 +175,7 @@ namespace vtrc { namespace common {
                                hold_value_type_sptr &value )
         {
             value->cond_.wait( lck,
-                          vtrc::bind( &this_type::queue_empty_predic, value ));
+                       vtrc::bind( &this_type::queue_empty_predicate, value ) );
             return true;
         }
 
@@ -392,7 +392,7 @@ namespace vtrc { namespace common {
                         const vtrc::chrono::duration<Rep, Period>& duration)
         {
             return value->cond_.wait_for( lck, duration,
-                        vtrc::bind( &this_type::queue_empty_predic, value ));
+                        vtrc::bind( &this_type::queue_empty_predicate, value ));
         }
 
     public:
