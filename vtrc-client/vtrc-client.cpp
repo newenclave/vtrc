@@ -330,12 +330,12 @@ namespace vtrc { namespace client {
 
         bool ready( ) const
         {
-            return (protocol_ && protocol_->ready( ));
+            return ( protocol_ && protocol_->ready( ) );
         }
 
         void disconnect( )
         {
-            try {
+            if( connection_ ) try {
                 connection_->close( );
             } catch( ... ) { };
         }
