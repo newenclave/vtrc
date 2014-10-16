@@ -68,6 +68,7 @@ namespace server {
         virtual void start( )             = 0;
         virtual void stop ( )             = 0;
         virtual bool is_active( )   const = 0;
+        virtual bool is_local( )    const = 0;
 
     protected:
 

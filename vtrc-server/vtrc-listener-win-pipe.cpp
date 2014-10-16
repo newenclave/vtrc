@@ -46,6 +46,11 @@ namespace {
             return name_;
         }
 
+        bool is_local( ) const
+        {
+            return true;
+        }
+
         bool impersonate( )
         {
 //            BOOL imp = ImpersonateNamedPipeClient(

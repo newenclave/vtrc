@@ -50,6 +50,11 @@ namespace vtrc { namespace server { namespace listeners {
                 return oss.str( );
             }
 
+            bool is_local( ) const
+            {
+                return false;
+            }
+
             void connection_setup( vtrc::shared_ptr<connection_type> &con )
             {
                 if( no_delay_ )

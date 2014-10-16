@@ -96,6 +96,11 @@ namespace vtrc { namespace server { namespace listeners {
                 return oss.str( );
             }
 
+            bool is_local( ) const
+            {
+                return true;
+            }
+
             void connection_setup( vtrc::shared_ptr<connection_type> &con )
             {
                 std::ostringstream oss;
