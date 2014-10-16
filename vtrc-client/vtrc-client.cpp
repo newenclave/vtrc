@@ -57,9 +57,11 @@ namespace vtrc { namespace client {
         service_weak_map                weak_services_;
         service_shared_map              hold_services_;
         vtrc::shared_mutex              services_lock_;
+
         std::string                     session_key_;
         std::string                     session_id_;
         bool                            key_set_;
+        //vtrc::mutex                     session_info_lock_;
 
         impl( basio::io_service &ios, basio::io_service &rpc_ios )
             :ios_(ios)
@@ -98,6 +100,7 @@ namespace vtrc { namespace client {
 
         void set_session_key( const std::string &id, const std::string &key )
         {
+            //vtrc::lock_guard<vtrc::mutex> lck(session_info_lock_);
             key_set_     = true;
             session_id_.assign( id );
             session_key_.assign( key );
@@ -105,22 +108,45 @@ namespace vtrc { namespace client {
 
         void set_session_id( const std::string &id )
         {
+            //vtrc::lock_guard<vtrc::mutex> lck(session_info_lock_);
             session_id_.assign( id );
         }
 
         const std::string &get_session_key(  ) const
         {
+            //vtrc::lock_guard<vtrc::mutex> lck(session_info_lock_);
             return session_key_;
         }
 
         const std::string &get_session_id(  ) const
         {
+            //vtrc::lock_guard<vtrc::mutex> lck(session_info_lock_);
             return session_key_;
         }
 
         bool is_key_set( ) const
         {
+            //vtrc::lock_guard<vtrc::mutex> lck(session_info_lock_);
             return key_set_;
+        }
+
+        void  reset_session_id( )
+        {
+            //vtrc::lock_guard<vtrc::mutex> lck(session_info_lock_);
+            session_id_.clear( );
+        }
+
+        void  reset_session_key( )
+        {
+            //vtrc::lock_guard<vtrc::mutex> lck(session_info_lock_);
+            session_key_.clear( );
+            key_set_ = false;
+        }
+
+        void  reset_session_info( )
+        {
+            reset_session_id( );
+            reset_session_key( );
         }
 
         template<typename ClientType>
@@ -604,6 +630,21 @@ namespace vtrc { namespace client {
     void vtrc_client::erase_rpc_handler(const std::string &name)
     {
         impl_->erase_rpc_handler( name );
+    }
+
+    void  vtrc_client::reset_session_id( )
+    {
+        impl_->reset_session_id( );
+    }
+
+    void  vtrc_client::reset_session_key( )
+    {
+        impl_->reset_session_key( );
+    }
+
+    void  vtrc_client::reset_session_info( )
+    {
+        impl_->reset_session_info( );
     }
 
 }}

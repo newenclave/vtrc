@@ -104,6 +104,10 @@ namespace client {
         const std::string &get_session_id (  ) const;
         bool  is_key_set( ) const;
 
+        void  reset_session_id( );
+        void  reset_session_key( );
+        void  reset_session_info( ); // key and id
+
     public:
 
         const common::call_context *get_call_context( ) const;
