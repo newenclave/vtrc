@@ -189,6 +189,12 @@ namespace vtrc { namespace client {
             cond->notify_all( );
         }
 
+        static
+        void on_disconnect_s( vtrc::condition_variable *cond )
+        {
+            cond->notify_all( );
+        }
+
         bool on_ready_diconnect( unsigned *failed )
         {
             return ((*failed) != 0) || ready( );
@@ -361,9 +367,10 @@ namespace vtrc { namespace client {
 
         void disconnect( )
         {
-            if( connection_ ) try {
-                connection_->close( );
-            } catch( ... ) { };
+            connection_.reset( );
+//            if( connection_ ) try {
+//                connection_->close( );
+//            } catch( ... ) { };
         }
 
         rpc_channel_c *create_channel( )

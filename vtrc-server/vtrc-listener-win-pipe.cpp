@@ -139,6 +139,11 @@ namespace {
             return std::string("pipe://") + endpoint_;
         }
 
+        bool is_local( ) const
+        {
+            return true;
+        }
+
         void start_accept( bool throw_if_fail )
         {
             if( !working_ ) return;
