@@ -147,6 +147,7 @@ if( CUSTOM_CONFIG )
     if( CUSTOM_CONFIG_OUTPUT )
         set( custom_config_output ${CUSTOM_CONFIG_OUTPUT} )
     else( )
+        # /full/path/to/file.ext.in -> /full/path/to/file.ext
         string( REGEX REPLACE "\\.[^\\..]+$" ""
                 custom_config_output ${CUSTOM_CONFIG} )
     endif( )
