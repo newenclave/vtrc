@@ -139,16 +139,23 @@ if(WITH_EXAMPLES)
 
 endif(WITH_EXAMPLES)
 
-
 configure_file ("${PROJECT_SOURCE_DIR}/vtrc-import.cmake.in"
                 "${PROJECT_SOURCE_DIR}/vtrc-import.cmake" )
 
-if( CUSTOM_CONFIG_IN )
+if( CUSTOM_CONFIG )
+
+    if( CUSTOM_CONFIG_OUTPUT )
+        set( custom_config_output ${CUSTOM_CONFIG_OUTPUT} )
+    else( )
+        string( REGEX REPLACE "\\.[^\\..]+$" ""
+                custom_config_output ${CUSTOM_CONFIG} )
+    endif( )
+
     message( "Configuring custom config..."
-             "${CUSTOM_CONFIG_IN} -> "
-             "${CUSTOM_CONFIG_OUT}" )
-    configure_file ( "${CUSTOM_CONFIG_IN}"
-                     "${CUSTOM_CONFIG_OUT}" )
+             "${CUSTOM_CONFIG} -> ${custom_config_output}")
+
+    configure_file ( "${CUSTOM_CONFIG}" "${custom_config_output}" )
+
 endif( )
 
 

@@ -38,8 +38,8 @@ include_directories( ${${lib_name}_PROTOBUF_FILES_DIR} )
 
 foreach(next_proto ${protofiles})
 
-    get_filename_component(out_FILE ${next_proto} NAME_WE)
-    get_filename_component(in_PATH  ${next_proto} PATH)
+    get_filename_component( out_FILE ${next_proto} NAME_WE )
+    get_filename_component( in_PATH  ${next_proto} PATH )
 
     set( OUTPUT_FILES
              ${${lib_name}_PROTOBUF_FILES_OUTPUT}/${out_FILE}.pb.h
