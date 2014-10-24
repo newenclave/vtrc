@@ -131,11 +131,11 @@ add_subdirectory(vtrc-client)
 if(WITH_EXAMPLES)
 
     #add_subdirectory(examples/calculator)
-    add_subdirectory(examples/remote-fs)
-    add_subdirectory(examples/lukki-db)
-    add_subdirectory(examples/stress)
-    add_subdirectory(examples/hello)
-    add_subdirectory(examples/hello-events)
+    add_subdirectory( examples/remote-fs    )
+    add_subdirectory( examples/lukki-db     )
+    add_subdirectory( examples/stress       )
+    add_subdirectory( examples/hello        )
+    add_subdirectory( examples/hello-events )
 
 endif(WITH_EXAMPLES)
 
@@ -143,5 +143,12 @@ endif(WITH_EXAMPLES)
 configure_file ("${PROJECT_SOURCE_DIR}/vtrc-import.cmake.in"
                 "${PROJECT_SOURCE_DIR}/vtrc-import.cmake" )
 
+if( CUSTOM_CONFIG_IN )
+    message( "Configuring custom config..."
+             "${CUSTOM_CONFIG_IN} -> "
+             "${CUSTOM_CONFIG_OUT}" )
+    configure_file ( "${CUSTOM_CONFIG_IN}"
+                     "${CUSTOM_CONFIG_OUT}" )
+endif( )
 
 
