@@ -49,7 +49,8 @@ namespace client {
     private:
 
         rpc_channel::lowlevel_unit_sptr
-                            raw_call( rpc_channel::lowlevel_unit_sptr llu );
+                            raw_call( rpc_channel::lowlevel_unit_sptr llu,
+                                      common::lowlevel_closure_type callbacks);
 
         rpc_channel::lowlevel_unit_sptr make_lowlevel(
                             const google::protobuf::MethodDescriptor* method,

@@ -60,7 +60,8 @@ namespace vtrc { namespace common  {
     }
 
     rpc_channel::lowlevel_unit_sptr rpc_channel::raw_call(
-                                    rpc_channel::lowlevel_unit_sptr /*llu*/ )
+                                rpc_channel::lowlevel_unit_sptr /*llu*/,
+                                lowlevel_closure_type /*callbacks*/ )
     {
         ;;; /// nothing to do here
         return rpc_channel::lowlevel_unit_sptr( );
@@ -136,7 +137,7 @@ namespace vtrc { namespace common  {
             if( top->error( ).code( ) != rpc::errors::ERR_NO_ERROR ) {
                 wait = false;
             } else if( top->info( ).message_type( ) != mess_type ) {
-                cl->get_protocol( ).make_local_call( top );
+                // cl->get_protocol( ).make_local_call( top );
             } else {
                 wait = false;
             }

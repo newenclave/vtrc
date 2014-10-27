@@ -70,7 +70,7 @@ namespace vtrc { namespace server {
                 } else {
                     llu->mutable_opt( )->set_wait( call_opt.wait( ) );
                     llu->mutable_opt( )
-                        ->set_accept_callbacks( call_opt.accept_callbacks( ) );
+                       ->set_accept_callbacks( call_opt.accept_callbacks( ) );
                 }
 
                 configure_message( clnt, message_type_, *llu );

@@ -4,6 +4,7 @@
 #include "google/protobuf/service.h"
 
 #include "vtrc-connection-iface.h"
+#include "vtrc-common/vtrc-closure.h"
 
 namespace vtrc { namespace rpc {
     class lowlevel_unit;
@@ -51,9 +52,11 @@ namespace vtrc { namespace common  {
                             const google::protobuf::Message* request,
                                   google::protobuf::Message* response );
 
-        virtual lowlevel_unit_sptr raw_call( lowlevel_unit_sptr llu );
 
     protected:
+
+        virtual lowlevel_unit_sptr raw_call( lowlevel_unit_sptr llu,
+                    common::lowlevel_closure_type callbacks );
 
         void call_and_wait( google::protobuf::uint64 call_id,
                             const lowlevel_unit_type &llu,

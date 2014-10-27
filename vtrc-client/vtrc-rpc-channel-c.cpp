@@ -111,7 +111,8 @@ namespace vtrc { namespace client {
 
         }
 
-        lowlevel_unit_sptr send_raw( lowlevel_unit_sptr &llu )
+        lowlevel_unit_sptr send_raw( lowlevel_unit_sptr &llu,
+                                     common::lowlevel_closure_type /*cbacks*/ )
         {
             common::connection_iface_sptr clk(connection_.lock( ));
 
@@ -186,9 +187,10 @@ namespace vtrc { namespace client {
         return impl_->alive( );
     }
 
-    lowlevel_unit_sptr rpc_channel_c::raw_call( lowlevel_unit_sptr llu )
+    lowlevel_unit_sptr rpc_channel_c::raw_call( lowlevel_unit_sptr llu,
+                                    common::lowlevel_closure_type callbacks )
     {
-        return impl_->send_raw( llu );
+        return impl_->send_raw( llu, callbacks );
     }
 
     void rpc_channel_c::configure_message_for(common::connection_iface_sptr c,
