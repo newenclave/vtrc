@@ -11,12 +11,12 @@ namespace google { namespace protobuf {
     class Service;
 }}
 
-
 namespace vtrc { namespace rpc {
     namespace errors {
         class container;
     }
     class session_options;
+    class lowlevel_unit;
 }}
 
 namespace vtrc {
@@ -66,6 +66,7 @@ namespace server {
 
         virtual std::string get_session_key( common::connection_iface* conn,
                                              const std::string &id);
+
     };
 
 }}

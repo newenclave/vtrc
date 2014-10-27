@@ -126,6 +126,13 @@ namespace vtrc { namespace client {
         return impl_->id( );
     }
 
+    void client_unix_local::raw_call_local (
+                          vtrc::shared_ptr<rpc::lowlevel_unit> ll_mess,
+                          common::empty_closure_type done )
+    {
+        impl_->raw_call_local( ll_mess, done );
+    }
+
 }}
 
 

@@ -156,6 +156,23 @@ namespace vtrc { namespace server { namespace listeners {
                 return protocol_->get_call_context( );
             }
 
+            void success_closure( const rpc::errors::container &cont,
+                                  common::empty_closure_type &done )
+            {
+                done( );
+            }
+
+            void raw_call_local ( vtrc::shared_ptr<rpc::lowlevel_unit> ll_mess,
+                                  common::empty_closure_type done )
+            {
+                if( !protocol_ ) {
+                    throw std::runtime_error( "Not connected." );
+                }
+                protocol_->make_local_call( ll_mess,
+                           vtrc::bind( &this_type::success_closure, this,
+                                       vtrc::placeholders::_1, done ) );
+            }
+
             std::string prepare_for_write( const char *data, size_t length )
             {
                 return protocol_->prepare_data( data, length );

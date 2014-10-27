@@ -3,6 +3,7 @@
 
 #include "vtrc-memory.h"
 #include "vtrc-function.h"
+#include "vtrc-closure.h"
 
 namespace boost {
 
@@ -14,6 +15,10 @@ namespace boost {
         class io_service;
     }
 }
+
+namespace vtrc { namespace rpc {
+    class lowlevel_unit;
+} }
 
 namespace vtrc { namespace common {
 
@@ -47,6 +52,12 @@ namespace vtrc { namespace common {
         {
             return vtrc::weak_ptr<connection_iface const>( shared_from_this( ));
         }
+
+        /// ll_mess is IN OUT parameter
+        /// dont do this if not sure!
+        virtual void raw_call_local (
+                                vtrc::shared_ptr<rpc::lowlevel_unit> ll_mess,
+                                common::empty_closure_type done ) = 0;
 
     protected:
 

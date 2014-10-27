@@ -172,6 +172,22 @@ namespace { /// implementation.
             protocol_->on_write_error( err );
         }
 
+        void success_closure( const rpc::errors::container &cont,
+                              common::empty_closure_type &done )
+        {
+            done( );
+        }
+
+        void raw_call_local ( vtrc::shared_ptr<rpc::lowlevel_unit> ll_mess,
+                              common::empty_closure_type done )
+        {
+            if( !protocol_ ) {
+                throw std::runtime_error( "Not connected." );
+            }
+            protocol_->make_local_call( ll_mess,
+                       vtrc::bind( &this_type::success_closure, this,
+                                   vtrc::placeholders::_1, done ) );
+        }
     };
 
 }  // namespace {

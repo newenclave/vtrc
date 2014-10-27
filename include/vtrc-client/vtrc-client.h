@@ -154,10 +154,6 @@ namespace client {
 
         void erase_rpc_handler( const std::string &name );
 
-        /// ll_mess is IN OUT parameter
-        void raw_call_local ( vtrc::shared_ptr<rpc::lowlevel_unit> ll_mess,
-                              common::empty_closure_type done );
-
     };
 
     typedef vtrc::shared_ptr<vtrc_client> vtrc_client_sptr;
