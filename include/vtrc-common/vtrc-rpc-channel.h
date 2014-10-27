@@ -39,12 +39,13 @@ namespace vtrc { namespace common  {
 
         virtual bool alive( ) const = 0;
 
-    protected:
 
         lowlevel_unit_sptr create_lowlevel(
                           const google::protobuf::MethodDescriptor* method,
                           const google::protobuf::Message* request,
-                                google::protobuf::Message* response) const;
+                                google::protobuf::Message* response ) const;
+
+    protected:
 
         void call_and_wait( google::protobuf::uint64 call_id,
                             const lowlevel_unit_type &llu,

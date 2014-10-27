@@ -27,7 +27,6 @@ namespace vtrc { namespace common {
         virtual ~connection_iface( ) { }
 
         virtual       std::string name( ) const            = 0;
-
         virtual const std::string &id( ) const             = 0;
 
         virtual void close( )                              = 0;
