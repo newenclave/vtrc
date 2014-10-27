@@ -163,7 +163,6 @@ namespace vtrc { namespace common {
         vtrc::unique_ptr<hash_iface>             hash_checker_;
         vtrc::unique_ptr<transformer_iface>      transformer_;
         vtrc::unique_ptr<transformer_iface>      revertor_;
-
         vtrc::unique_ptr<data_queue::queue_base> queue_;
 
         rpc_queue_type               rpc_queue_;
