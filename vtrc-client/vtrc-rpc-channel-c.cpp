@@ -111,26 +111,25 @@ namespace vtrc { namespace client {
 
         }
 
-        void send_raw( lowlevel_unit_type &llu )
+        void send_raw( lowlevel_unit_sptr &llu )
         {
-//            common::connection_iface_sptr clk(connection_.lock( ));
-//            parent_->configure_message_for( clk, llu );
-//            uint64_t call_id = llu.id( );
+            common::connection_iface_sptr clk(connection_.lock( ));
+            parent_->configure_message_for( clk, *llu );
+            uint64_t call_id = llu->id( );
 
-//            rpc::options call_opt;
+            rpc::options call_opt;
 
-//            if( llu.opt( ).wait( ) ) {  /// Send and wait
+            if( llu->opt( ).wait( ) ) {  /// Send and wait
 
-//                context_holder ch( &get_protocol( clk ), &llu );
-//                ch.ctx_->set_call_options( &call_opt );
+                context_holder ch( &get_protocol( clk ), llu.get( ) );
+                ch.ctx_->set_call_options( &call_opt );
 
-//                parent_->call_and_wait( call_id, llu,
-//                                        llu.mutable_response( ),
-//                                        clk, &call_opt );
+                llu = parent_->call_and_wait_raw( call_id, *llu,
+                                                  clk, &call_opt );
 
-//            } else {                    /// Send and ... just send
-//                get_protocol( clk ).call_rpc_method( llu );
-//            }
+            } else {                    /// Send and ... just send
+                get_protocol( clk ).call_rpc_method( *llu );
+            }
         }
 
         rpc_channel::lowlevel_unit_sptr make_lowlevel(
@@ -179,9 +178,9 @@ namespace vtrc { namespace client {
         return impl_->alive( );
     }
 
-    void rpc_channel_c::raw_call( rpc_channel::lowlevel_unit_sptr llu )
+    void rpc_channel_c::raw_call(lowlevel_unit_sptr llu )
     {
-        impl_->send_raw( *llu );
+        impl_->send_raw( llu );
     }
 
     void rpc_channel_c::configure_message_for(common::connection_iface_sptr c,
