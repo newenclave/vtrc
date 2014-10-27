@@ -54,6 +54,43 @@ namespace vtrc { namespace server {
                 return client_.lock( ) != NULL;
             }
 
+            lowlevel_unit_sptr raw_call( lowlevel_unit_sptr llu )
+            {
+                common::connection_iface_sptr clnt (client_.lock( ));
+
+                if( clnt.get( ) == NULL ) {
+                    throw vtrc::common::exception( rpc::errors::ERR_CHANNEL,
+                                                   "Connection lost");
+                }
+
+                const rpc::options call_opt;
+
+                if( disable_wait_ ) {
+                    llu->mutable_opt( )->set_wait(false);
+                } else {
+                    llu->mutable_opt( )->set_wait( call_opt.wait( ) );
+                    llu->mutable_opt( )
+                        ->set_accept_callbacks( call_opt.accept_callbacks( ) );
+                }
+
+                configure_message( clnt, message_type_, *llu );
+                const gpb::uint64 call_id = llu->id( );
+
+                lowlevel_unit_sptr res;
+
+                if( llu->opt( ).wait( ) ) { /// Send and wait
+
+                    context_holder ch( &get_protocol(*clnt), llu.get( ) );
+                    ch.ctx_->set_call_options( &call_opt );
+
+                    res = call_and_wait_raw( call_id, *llu, clnt, &call_opt );
+
+                } else {                  /// Send and ... just send
+                    get_protocol( *clnt ).call_rpc_method( *llu );
+                }
+                return res;
+            }
+
             lowlevel_unit_sptr make_lowlevel(
                             const google::protobuf::MethodDescriptor* met,
                             const google::protobuf::Message* req,

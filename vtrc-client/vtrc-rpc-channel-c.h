@@ -48,7 +48,6 @@ namespace client {
 
     private:
 
-        /// llu is IN and OUT
         rpc_channel::lowlevel_unit_sptr
                             raw_call( rpc_channel::lowlevel_unit_sptr llu );
 

@@ -114,6 +114,12 @@ namespace vtrc { namespace client {
         lowlevel_unit_sptr send_raw( lowlevel_unit_sptr &llu )
         {
             common::connection_iface_sptr clk(connection_.lock( ));
+
+            if( clk.get( ) == NULL ) {
+                throw vtrc::common::exception( rpc::errors::ERR_CHANNEL,
+                                               "Connection lost");
+            }
+
             parent_->configure_message_for( clk, *llu );
             uint64_t call_id = llu->id( );
 
