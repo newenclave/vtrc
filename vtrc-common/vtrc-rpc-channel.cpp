@@ -59,6 +59,12 @@ namespace vtrc { namespace common  {
         return res;
     }
 
+    void rpc_channel::raw_call( rpc_channel::lowlevel_unit_sptr /*llu*/ )
+    {
+        ;;; /// nothing to do here
+    }
+
+
     bool can_accept_callbacks( const common::call_context *cc )
     {
 #if 1   /// yeap. we always set it up
@@ -105,7 +111,41 @@ namespace vtrc { namespace common  {
         }
     }
 
-    void rpc_channel::call_and_wait( google::protobuf::uint64 call_id,
+    rpc_channel::lowlevel_unit_sptr rpc_channel::call_and_wait_raw (
+                        google::protobuf::uint64 call_id,
+                        const lowlevel_unit_type &llu,
+                        common::connection_iface_sptr &cl,
+                        const rpc::options *call_opt ) const
+    {
+        cl->get_protocol( ).call_rpc_method( call_id, llu );
+
+        const unsigned mess_type( llu.info( ).message_type( ) );
+
+        bool wait = true;
+
+        lowlevel_unit_sptr top (vtrc::make_shared<lowlevel_unit_type>( ));
+
+        while( wait ) {
+
+            top->Clear( );
+
+            cl->get_protocol( ).read_slot_for( call_id, top,
+                                               call_opt->timeout( ) );
+
+            if( top->error( ).code( ) != rpc::errors::ERR_NO_ERROR ) {
+                wait = false;
+            } else if( top->info( ).message_type( ) != mess_type ) {
+                cl->get_protocol( ).make_local_call( top );
+            } else {
+                wait = false;
+            }
+        }
+        cl->get_protocol( ).erase_slot( call_id );
+        return top;
+    }
+
+    void rpc_channel::call_and_wait(
+                            google::protobuf::uint64 call_id,
                             const lowlevel_unit_type &llu,
                             google::protobuf::Message *response,
                             connection_iface_sptr &cl,
@@ -117,9 +157,11 @@ namespace vtrc { namespace common  {
 
         bool wait = true;
 
+        lowlevel_unit_sptr top (vtrc::make_shared<lowlevel_unit_type>( ));
+
         while( wait ) {
 
-            lowlevel_unit_sptr top (vtrc::make_shared<lowlevel_unit_type>( ));
+            top->Clear( );
 
             cl->get_protocol( ).read_slot_for( call_id, top,
                                                call_opt->timeout( ) );

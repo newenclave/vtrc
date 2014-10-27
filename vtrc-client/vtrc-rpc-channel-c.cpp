@@ -111,6 +111,28 @@ namespace vtrc { namespace client {
 
         }
 
+        void send_raw( lowlevel_unit_type &llu )
+        {
+//            common::connection_iface_sptr clk(connection_.lock( ));
+//            parent_->configure_message_for( clk, llu );
+//            uint64_t call_id = llu.id( );
+
+//            rpc::options call_opt;
+
+//            if( llu.opt( ).wait( ) ) {  /// Send and wait
+
+//                context_holder ch( &get_protocol( clk ), &llu );
+//                ch.ctx_->set_call_options( &call_opt );
+
+//                parent_->call_and_wait( call_id, llu,
+//                                        llu.mutable_response( ),
+//                                        clk, &call_opt );
+
+//            } else {                    /// Send and ... just send
+//                get_protocol( clk ).call_rpc_method( llu );
+//            }
+        }
+
         rpc_channel::lowlevel_unit_sptr make_lowlevel(
                             const google::protobuf::MethodDescriptor* method,
                             const google::protobuf::Message* request,
@@ -157,12 +179,16 @@ namespace vtrc { namespace client {
         return impl_->alive( );
     }
 
+    void rpc_channel_c::raw_call( rpc_channel::lowlevel_unit_sptr llu )
+    {
+        impl_->send_raw( *llu );
+    }
+
     void rpc_channel_c::configure_message_for(common::connection_iface_sptr c,
-                            common::rpc_channel::lowlevel_unit_type &llu) const
+                                   rpc_channel::lowlevel_unit_type &llu) const
     {
         configure_message( c, impl_->mess_type_, llu );
     }
-
 
     rpc_channel_c::lowlevel_unit_sptr rpc_channel_c::make_lowlevel(
                         const google::protobuf::MethodDescriptor* method,

@@ -48,6 +48,8 @@ namespace client {
 
     private:
 
+        void raw_call( rpc_channel::lowlevel_unit_sptr llu );
+
         rpc_channel::lowlevel_unit_sptr make_lowlevel(
                             const google::protobuf::MethodDescriptor* method,
                             const google::protobuf::Message* request,

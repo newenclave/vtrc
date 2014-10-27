@@ -51,11 +51,19 @@ namespace vtrc { namespace common  {
                             const google::protobuf::Message* request,
                                   google::protobuf::Message* response );
 
+        virtual void raw_call( lowlevel_unit_sptr llu );
+
     protected:
 
         void call_and_wait( google::protobuf::uint64 call_id,
                             const lowlevel_unit_type &llu,
                             google::protobuf::Message* response,
+                            common::connection_iface_sptr &cl,
+                            const rpc::options *call_opt ) const;
+
+        lowlevel_unit_sptr call_and_wait_raw(
+                            google::protobuf::uint64 call_id,
+                            const lowlevel_unit_type &llu,
                             common::connection_iface_sptr &cl,
                             const rpc::options *call_opt ) const;
 
