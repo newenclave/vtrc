@@ -111,25 +111,27 @@ namespace vtrc { namespace client {
 
         }
 
-        void send_raw( lowlevel_unit_sptr &llu )
+        lowlevel_unit_sptr send_raw( lowlevel_unit_sptr &llu )
         {
             common::connection_iface_sptr clk(connection_.lock( ));
             parent_->configure_message_for( clk, *llu );
             uint64_t call_id = llu->id( );
 
             rpc::options call_opt;
+            lowlevel_unit_sptr res;
 
             if( llu->opt( ).wait( ) ) {  /// Send and wait
 
                 context_holder ch( &get_protocol( clk ), llu.get( ) );
                 ch.ctx_->set_call_options( &call_opt );
 
-                llu = parent_->call_and_wait_raw( call_id, *llu,
+                res = parent_->call_and_wait_raw( call_id, *llu,
                                                   clk, &call_opt );
 
             } else {                    /// Send and ... just send
                 get_protocol( clk ).call_rpc_method( *llu );
             }
+            return res;
         }
 
         rpc_channel::lowlevel_unit_sptr make_lowlevel(
@@ -178,9 +180,9 @@ namespace vtrc { namespace client {
         return impl_->alive( );
     }
 
-    void rpc_channel_c::raw_call(lowlevel_unit_sptr llu )
+    lowlevel_unit_sptr rpc_channel_c::raw_call( lowlevel_unit_sptr llu )
     {
-        impl_->send_raw( llu );
+        return impl_->send_raw( llu );
     }
 
     void rpc_channel_c::configure_message_for(common::connection_iface_sptr c,

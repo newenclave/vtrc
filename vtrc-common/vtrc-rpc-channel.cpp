@@ -59,11 +59,12 @@ namespace vtrc { namespace common  {
         return res;
     }
 
-    void rpc_channel::raw_call( rpc_channel::lowlevel_unit_sptr /*llu*/ )
+    rpc_channel::lowlevel_unit_sptr rpc_channel::raw_call(
+                                    rpc_channel::lowlevel_unit_sptr /*llu*/ )
     {
         ;;; /// nothing to do here
+        return rpc_channel::lowlevel_unit_sptr( );
     }
-
 
     bool can_accept_callbacks( const common::call_context *cc )
     {

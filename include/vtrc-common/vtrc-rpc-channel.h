@@ -51,7 +51,7 @@ namespace vtrc { namespace common  {
                             const google::protobuf::Message* request,
                                   google::protobuf::Message* response );
 
-        virtual void raw_call( lowlevel_unit_sptr llu );
+        virtual lowlevel_unit_sptr raw_call( lowlevel_unit_sptr llu );
 
     protected:
 
