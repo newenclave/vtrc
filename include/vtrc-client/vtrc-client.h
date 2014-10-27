@@ -7,6 +7,7 @@
 
 #include "vtrc-common/vtrc-closure.h"
 #include "vtrc-common/vtrc-rpc-channel.h"
+#include "vtrc-common/vtrc-closure.h"
 
 #include "vtrc-memory.h"
 
@@ -27,6 +28,10 @@ namespace google { namespace protobuf {
 }}
 
 namespace vtrc {
+
+    namespace rpc {
+        class lowlevel_unit;
+    }
 
     namespace rpc { namespace errors {
         class container;
@@ -148,6 +153,10 @@ namespace client {
                           vtrc::shared_ptr<google::protobuf::Service> handler);
 
         void erase_rpc_handler( const std::string &name );
+
+        /// ll_mess is IN OUT parameter
+        void raw_call_local ( vtrc::shared_ptr<rpc::lowlevel_unit> ll_mess,
+                              common::empty_closure_type done );
 
     };
 

@@ -438,6 +438,22 @@ namespace vtrc { namespace client {
             if( wf != weak_services_.end( ) ) weak_services_.erase( wf );
         }
 
+        void success_closure( const rpc::errors::container &cont,
+                              common::empty_closure_type &done )
+        {
+            done( );
+        }
+
+        void raw_call_local ( vtrc::shared_ptr<rpc::lowlevel_unit> ll_mess,
+                              common::empty_closure_type &done )
+        {
+            if( !protocol_ ) {
+                throw std::runtime_error( "Not connected." );
+            }
+            protocol_->make_local_call( ll_mess,
+                       vtrc::bind( &this_type::success_closure, this,
+                                   vtrc::placeholders::_1, done ) );
+        }
     };
 
     vtrc_client::vtrc_client( boost::asio::io_service &ios,
@@ -652,6 +668,13 @@ namespace vtrc { namespace client {
     void  vtrc_client::reset_session_info( )
     {
         impl_->reset_session_info( );
+    }
+
+    void vtrc_client::raw_call_local (
+                    vtrc::shared_ptr<rpc::lowlevel_unit> ll_mess,
+                    common::empty_closure_type done )
+    {
+        impl_->raw_call_local( ll_mess, done );
     }
 
 }}
