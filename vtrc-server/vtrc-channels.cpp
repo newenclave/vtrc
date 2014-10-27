@@ -54,6 +54,36 @@ namespace vtrc { namespace server {
                 return client_.lock( ) != NULL;
             }
 
+            lowlevel_unit_sptr make_lowlevel(
+                            const google::protobuf::MethodDescriptor* met,
+                            const google::protobuf::Message* req,
+                                  google::protobuf::Message* res )
+            {
+                lowlevel_unit_sptr llu = create_lowlevel( met, req, res );
+
+                common::connection_iface_sptr clnt (client_.lock( ));
+                if( clnt.get( ) == NULL ) {
+                    throw vtrc::common::exception( rpc::errors::ERR_CHANNEL,
+                                                   "Connection lost");
+                }
+
+                const rpc::options *call_opt
+                         ( get_protocol( *clnt ).get_method_options( met ) );
+
+
+                if( disable_wait_ ) {
+                    llu->mutable_opt( )->set_wait(false);
+                } else {
+                    llu->mutable_opt( )->set_wait( call_opt->wait( ) );
+                    llu->mutable_opt( )
+                       ->set_accept_callbacks( call_opt->accept_callbacks( ) );
+                }
+
+                configure_message( clnt, message_type_, *llu );
+
+                return llu;
+            }
+
             void send_message(lowlevel_unit_type &llu,
                         const google::protobuf::MethodDescriptor* method,
                               google::protobuf::RpcController*  controller,
@@ -129,6 +159,27 @@ namespace vtrc { namespace server {
             bool alive( ) const
             {
                 return clients_.lock( ) != NULL;
+            }
+
+            lowlevel_unit_sptr make_lowlevel(
+                            const google::protobuf::MethodDescriptor* met,
+                            const google::protobuf::Message* req,
+                                  google::protobuf::Message* res )
+            {
+                lowlevel_unit_sptr llu = create_lowlevel( met, req, res );
+
+                common::connection_iface_sptr clk(sender_.lock( ));
+                vtrc::shared_ptr<common::connection_list>
+                                                    lck_list(clients_.lock( ));
+                if( !lck_list ) {
+                    throw vtrc::common::exception( rpc::errors::ERR_CHANNEL,
+                                                   "Clients lost");
+                }
+
+                llu->mutable_info( )->set_message_type( message_type_ );
+                llu->mutable_opt( )->set_wait( false );
+
+                return llu;
             }
 
             bool send_to_client( common::connection_iface_sptr  next,

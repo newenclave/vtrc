@@ -45,6 +45,12 @@ namespace vtrc { namespace common  {
                           const google::protobuf::Message* request,
                                 google::protobuf::Message* response );
 
+        virtual
+        lowlevel_unit_sptr make_lowlevel(
+                            const google::protobuf::MethodDescriptor* method,
+                            const google::protobuf::Message* request,
+                                  google::protobuf::Message* response );
+
     protected:
 
         void call_and_wait( google::protobuf::uint64 call_id,

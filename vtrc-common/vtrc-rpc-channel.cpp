@@ -49,6 +49,16 @@ namespace vtrc { namespace common  {
         return llu;
     }
 
+    rpc_channel::lowlevel_unit_sptr rpc_channel::make_lowlevel(
+                        const google::protobuf::MethodDescriptor* method,
+                        const google::protobuf::Message* request,
+                              google::protobuf::Message* response )
+    {
+        rpc_channel::lowlevel_unit_sptr res =
+                create_lowlevel( method, request, response );
+        return res;
+    }
+
     bool can_accept_callbacks( const common::call_context *cc )
     {
 #if 1   /// yeap. we always set it up

@@ -111,6 +111,25 @@ namespace vtrc { namespace client {
 
         }
 
+        rpc_channel::lowlevel_unit_sptr make_lowlevel(
+                            const google::protobuf::MethodDescriptor* method,
+                            const google::protobuf::Message* request,
+                                  google::protobuf::Message* response ) const
+        {
+            rpc_channel::lowlevel_unit_sptr res =
+                    create_lowlevel( method, request, response );
+
+            common::connection_iface_sptr clk(connection_.lock( ));
+
+            if( clk.get( ) == NULL ) {
+                throw vtrc::common::exception( rpc::errors::ERR_CHANNEL,
+                                               "Connection lost");
+            }
+
+            parent_->configure_message_for( clk, *res );
+            return res;
+        }
+
     };
 
     rpc_channel_c::rpc_channel_c( common::connection_iface_sptr c )
@@ -142,6 +161,15 @@ namespace vtrc { namespace client {
                             common::rpc_channel::lowlevel_unit_type &llu) const
     {
         configure_message( c, impl_->mess_type_, llu );
+    }
+
+
+    rpc_channel_c::lowlevel_unit_sptr rpc_channel_c::make_lowlevel(
+                        const google::protobuf::MethodDescriptor* method,
+                        const google::protobuf::Message* request,
+                              google::protobuf::Message* response )
+    {
+        return impl_->make_lowlevel( method, request, response );
     }
 
     void rpc_channel_c::send_message( lowlevel_unit_type &llu,
