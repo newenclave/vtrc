@@ -1,25 +1,15 @@
-package howto;
+package proxy;
 option cc_generic_services = true;
 
-message request_message {
-    optional string name = 1;
+message proxy_message {
+    optional string client_id = 1; // use just name of connection...for example
+    optional bytes  data      = 2;
 }
 
-message response_message {
-    optional string hello = 1;
-}
+message empty { }
 
-service hello_events_service {
-    rpc generate_events( request_message ) returns ( response_message );
-}
-
-message event_req { }
-message event_res {
-    optional string hello_from_client = 1;
-}
-
-service hello_events {
-    rpc hello_event(event_req) returns (event_res);
-    rpc hello_callback(event_req) returns (event_res);
+service transmitter {
+    rpc send_to(proxy_message) returns (proxy_message);
+    rpc reg_for_proxy(empty) returns (empty);
 }
 

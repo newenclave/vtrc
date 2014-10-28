@@ -8,86 +8,127 @@
 #include "vtrc-common/vtrc-closure-holder.h"
 #include "vtrc-common/vtrc-pool-pair.h"
 #include "vtrc-common/vtrc-stub-wrapper.h"
+#include "vtrc-common/protocol/vtrc-rpc-lowlevel.pb.h"
+
+#include "vtrc-mutex.h"
+#include "vtrc-bind.h"
 
 #include "protocol/proxy-calls.pb.h"   /// hello protocol
 #include "google/protobuf/descriptor.h" /// for descriptor( )->full_name( )
 #include "boost/lexical_cast.hpp"
 
+
 using namespace vtrc;
 
 namespace {
 
-class  hello_service_impl: public howto::hello_events_service {
+class proxy_application;
 
-    typedef howto::hello_events_service super_type;
+class transmitter_impl: public proxy::transmitter {
 
-    common::connection_iface *cl_;
-
-    void generate_events(::google::protobuf::RpcController* /*controller*/,
-                 const ::howto::request_message*            /*request*/,
-                 ::howto::response_message*                 /*response*/,
-                 ::google::protobuf::Closure* done)
-    {
-        common::closure_holder ch( done ); /// instead of done->Run( );
-        typedef howto::hello_events_Stub stub_type;
-
-        using   server::channels::unicast::create_callback_channel;
-        using   server::channels::unicast::create_event_channel;
-
-
-        { // do event. send and dont wait response
-            common::rpc_channel *ec =
-                            create_event_channel( cl_->shared_from_this( ) );
-
-            common::stub_wrapper<stub_type> event( ec );
-            event.call( &stub_type::hello_event );
-        }
-
-        { // do callback. wait response from client.
-            common::rpc_channel *cc =
-                            create_callback_channel( cl_->shared_from_this( ) );
-
-            common::stub_wrapper<stub_type> callback( cc );
-            howto::event_res response;
-
-            callback.call_response( &stub_type::hello_callback, &response );
-
-            std::cout << "Client string: "
-                      << response.hello_from_client( )
-                      << "\n"
-                      ;
-        }
-    }
+    proxy_application         *app_;
+    common::connection_iface  *connection_;
 
 public:
 
-    hello_service_impl( common::connection_iface *cl )
-        :cl_(cl)
+    transmitter_impl( proxy_application *app, common::connection_iface *c )
+        :app_(app)
+        ,connection_(c)
     { }
 
     static std::string const &service_name(  )
     {
-        return super_type::descriptor( )->full_name( );
+        return proxy::transmitter::descriptor( )->full_name( );
+    }
+
+private:
+
+    common::connection_iface_sptr client_by_id( const std::string &id ) const;
+
+    void register_client( );
+
+    void send_to( ::google::protobuf::RpcController* /*controller*/,
+                  const ::proxy::proxy_message* request,
+                  ::proxy::proxy_message* response,
+                  ::google::protobuf::Closure* done )
+    {
+        common::closure_holder holder( done );
+        common::connection_iface_sptr tgt =
+                                        client_by_id( request->client_id( ) );
+
+        vtrc::shared_ptr<rpc::lowlevel_unit> res;
+
+        if( tgt ) {
+            vtrc::shared_ptr<rpc::lowlevel_unit> llu(new rpc::lowlevel_unit);
+
+            llu->ParseFromString( request->data( ) );
+
+            vtrc::unique_ptr<common::rpc_channel> chan(
+                        server::channels::unicast::create( tgt ));
+
+            res = chan->raw_call( llu, common::lowlevel_closure_type( ) );
+
+        } else {
+            res.reset( new rpc::lowlevel_unit );
+            res->mutable_error( )->set_code( 1 );
+            res->mutable_error( )->set_additional( "Target channel is empty." );
+        }
+        response->set_data( res->SerializeAsString( ) );
+    }
+
+    void reg_for_proxy(::google::protobuf::RpcController* controller,
+             const ::proxy::empty* request,
+             ::proxy::empty* response,
+             ::google::protobuf::Closure* done)
+    {
+        common::closure_holder holder( done );
+        register_client( );
     }
 };
 
-class hello_application: public server::application {
+class proxy_application: public server::application {
 
     typedef common::rpc_service_wrapper     wrapper_type;
     typedef vtrc::shared_ptr<wrapper_type>  wrapper_sptr;
+    typedef std::map<std::string, common::connection_iface_wptr> clients_map;
+
+    clients_map  clients_;
+    vtrc::mutex  clients_lock_;
 
 public:
 
-    hello_application( common::pool_pair &pp )
+    proxy_application( common::pool_pair &pp )
         :server::application(pp)
     { }
+
+    void register_client( common::connection_iface* c,
+                          const std::string &id )
+    {
+        vtrc::unique_lock<vtrc::mutex> lck(clients_lock_);
+        clients_[id] = c->weak_from_this( );
+    }
+
+    common::connection_iface_sptr client_by_id( const std::string &id )
+    {
+        vtrc::unique_lock<vtrc::mutex> lck(clients_lock_);
+        clients_map::iterator f(clients_.find( id ));
+        common::connection_iface_sptr res;
+        if( f != clients_.end( ) ) {
+            res = f->second.lock( );
+            if( !res ) {
+                clients_.erase( f );
+            }
+        }
+        return res;
+    }
 
     wrapper_sptr get_service_by_name( common::connection_iface* connection,
                                       const std::string &service_name )
     {
-        if( service_name == hello_service_impl::service_name( ) ) {
+        if( service_name == transmitter_impl::service_name( ) ) {
 
-             hello_service_impl *new_impl = new hello_service_impl(connection);
+             transmitter_impl *new_impl =
+                     new transmitter_impl( this, connection );
 
              return vtrc::make_shared<wrapper_type>( new_impl );
 
@@ -96,6 +137,22 @@ public:
     }
 
 };
+
+common::connection_iface_sptr transmitter_impl::client_by_id(
+                                                const std::string &id  ) const
+{
+    return app_->client_by_id( id );
+}
+
+void transmitter_impl::register_client( )
+{
+    app_->register_client( connection_, connection_->name( ) );
+}
+
+void new_connection( const common::connection_iface *c, proxy_application *app )
+{
+    std::cout << c->name( ) << std::endl;
+}
 
 } // namespace
 
@@ -113,12 +170,15 @@ int main( int argc, const char **argv )
     }
 
     common::pool_pair pp( 0, 1 );
-    hello_application app( pp );
+    proxy_application app( pp );
 
     try {
 
         vtrc::shared_ptr<server::listener>
                 tcp( server::listeners::tcp::create( app, address, port ) );
+
+        tcp->on_new_connection_connect(
+                    vtrc::bind(new_connection, vtrc::placeholders::_1, &app) );
 
         tcp->start( );
 

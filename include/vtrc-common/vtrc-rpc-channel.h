@@ -53,10 +53,9 @@ namespace vtrc { namespace common  {
                                   google::protobuf::Message* response );
 
 
-    protected:
-
         virtual lowlevel_unit_sptr raw_call( lowlevel_unit_sptr llu,
-                    common::lowlevel_closure_type callbacks );
+                                   common::lowlevel_closure_type callbacks );
+    protected:
 
         void call_and_wait( google::protobuf::uint64 call_id,
                             const lowlevel_unit_type &llu,

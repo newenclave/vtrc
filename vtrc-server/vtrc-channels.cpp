@@ -66,14 +66,6 @@ namespace vtrc { namespace server {
 
                 const rpc::options call_opt;
 
-                if( disable_wait_ ) {
-                    llu->mutable_opt( )->set_wait(false);
-                } else {
-                    llu->mutable_opt( )->set_wait( call_opt.wait( ) );
-                    llu->mutable_opt( )
-                       ->set_accept_callbacks( call_opt.accept_callbacks( ) );
-                }
-
                 configure_message( clnt, message_type_, *llu );
                 const gpb::uint64 call_id = llu->id( );
 
