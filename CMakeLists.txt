@@ -136,6 +136,7 @@ if(WITH_EXAMPLES)
     add_subdirectory( examples/stress       )
     add_subdirectory( examples/hello        )
     add_subdirectory( examples/hello-events )
+    add_subdirectory( examples/proxy-test   )
 
 endif(WITH_EXAMPLES)
 
