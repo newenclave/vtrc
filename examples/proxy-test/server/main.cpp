@@ -151,7 +151,12 @@ void transmitter_impl::register_client( )
 
 void new_connection( const common::connection_iface *c, proxy_application *app )
 {
-    std::cout << c->name( ) << std::endl;
+    std::cout << "+" << c->name( ) << std::endl;
+}
+
+void del_connection( const common::connection_iface *c )
+{
+    std::cout << "-" << c->name( )  << std::endl;
 }
 
 } // namespace
@@ -179,6 +184,8 @@ int main( int argc, const char **argv )
 
         tcp->on_new_connection_connect(
                     vtrc::bind(new_connection, vtrc::placeholders::_1, &app) );
+
+        tcp->on_stop_connection_connect( del_connection );
 
         tcp->start( );
 

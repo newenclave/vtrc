@@ -1,0 +1,13 @@
+package proxy;
+option cc_generic_services = true;
+
+message hello_req {
+    optional string ping = 1;
+}
+message hello_res {
+    optional string pong = 1;
+}
+
+service hello {
+    rpc send_hello( hello_req ) returns ( hello_res );
+}
