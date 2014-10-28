@@ -59,6 +59,9 @@ namespace vtrc { namespace common {
                                 vtrc::shared_ptr<rpc::lowlevel_unit> ll_mess,
                                 common::empty_closure_type done ) = 0;
 
+        virtual void raw_write (
+                vtrc::shared_ptr<rpc::lowlevel_unit> ll_mess ) = 0;
+
     protected:
 
         friend class rpc_channel;

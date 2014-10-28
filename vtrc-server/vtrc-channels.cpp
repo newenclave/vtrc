@@ -54,7 +54,8 @@ namespace vtrc { namespace server {
                 return client_.lock( ) != NULL;
             }
 
-            lowlevel_unit_sptr raw_call( lowlevel_unit_sptr llu )
+            lowlevel_unit_sptr raw_call( lowlevel_unit_sptr llu,
+                                         common::lowlevel_closure_type events )
             {
                 common::connection_iface_sptr clnt (client_.lock( ));
 
@@ -83,7 +84,8 @@ namespace vtrc { namespace server {
                     context_holder ch( &get_protocol(*clnt), llu.get( ) );
                     ch.ctx_->set_call_options( &call_opt );
 
-                    res = call_and_wait_raw( call_id, *llu, clnt, &call_opt );
+                    res = call_and_wait_raw( call_id, *llu,
+                                             clnt, events, &call_opt );
 
                 } else {                  /// Send and ... just send
                     get_protocol( *clnt ).call_rpc_method( *llu );

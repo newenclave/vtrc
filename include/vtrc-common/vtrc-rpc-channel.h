@@ -64,10 +64,10 @@ namespace vtrc { namespace common  {
                             common::connection_iface_sptr &cl,
                             const rpc::options *call_opt ) const;
 
-        lowlevel_unit_sptr call_and_wait_raw(
-                            google::protobuf::uint64 call_id,
-                            const lowlevel_unit_type &llu,
+        lowlevel_unit_sptr call_and_wait_raw(google::protobuf::uint64 call_id,
+                            lowlevel_unit_type &llu,
                             common::connection_iface_sptr &cl,
+                            common::lowlevel_closure_type events,
                             const rpc::options *call_opt ) const;
 
         //typedef protocol_layer::context_holder context_holder;

@@ -112,7 +112,7 @@ namespace vtrc { namespace client {
         }
 
         lowlevel_unit_sptr send_raw( lowlevel_unit_sptr &llu,
-                                     common::lowlevel_closure_type /*cbacks*/ )
+                                     common::lowlevel_closure_type cbacks )
         {
             common::connection_iface_sptr clk(connection_.lock( ));
 
@@ -133,7 +133,7 @@ namespace vtrc { namespace client {
                 ch.ctx_->set_call_options( &call_opt );
 
                 res = parent_->call_and_wait_raw( call_id, *llu,
-                                                  clk, &call_opt );
+                                                  clk, cbacks, &call_opt );
 
             } else {                    /// Send and ... just send
                 get_protocol( clk ).call_rpc_method( *llu );

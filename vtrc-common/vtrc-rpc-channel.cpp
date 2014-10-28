@@ -115,8 +115,9 @@ namespace vtrc { namespace common  {
 
     rpc_channel::lowlevel_unit_sptr rpc_channel::call_and_wait_raw (
                         google::protobuf::uint64 call_id,
-                        const lowlevel_unit_type &llu,
+                        lowlevel_unit_type &llu,
                         common::connection_iface_sptr &cl,
+                        lowlevel_closure_type events,
                         const rpc::options *call_opt ) const
     {
         cl->get_protocol( ).call_rpc_method( call_id, llu );
@@ -126,6 +127,10 @@ namespace vtrc { namespace common  {
         bool wait = true;
 
         lowlevel_unit_sptr top (vtrc::make_shared<lowlevel_unit_type>( ));
+
+        if( !events ) {
+            llu.mutable_opt( )->set_accept_callbacks( false );
+        }
 
         while( wait ) {
 
@@ -137,7 +142,9 @@ namespace vtrc { namespace common  {
             if( top->error( ).code( ) != rpc::errors::ERR_NO_ERROR ) {
                 wait = false;
             } else if( top->info( ).message_type( ) != mess_type ) {
-                // cl->get_protocol( ).make_local_call( top );
+                if( events ) {
+                    events( *top );
+                }
             } else {
                 wait = false;
             }
