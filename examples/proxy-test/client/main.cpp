@@ -50,7 +50,7 @@ public:
         ,proxy_(parent_)
     { }
 
-    bool alive( ) const { return true; }
+    bool alive( ) const { return parent_->alive( ); }
 
     void send_message( lowlevel_unit_type &llu,
                 const google::protobuf::MethodDescriptor* method,
@@ -89,6 +89,24 @@ namespace {
     }
 }
 
+std::string make_call( client::vtrc_client_sptr cl, const char *target )
+{
+    typedef proxy::hello::Stub              stub_type;
+    typedef common::stub_wrapper<stub_type> hello_calls;
+
+    hello_channel hc( cl, target );
+
+    hello_calls call_hello(&hc);
+    proxy::hello_req req;
+    proxy::hello_res res;
+
+    req.set_ping( "Hello there!" );
+
+    call_hello.call( &stub_type::send_hello, &req, &res );
+
+    return res.pong( );
+}
+
 int main( int argc, const char **argv )
 {
     common::pool_pair pp( 1, 1 );
@@ -121,20 +139,7 @@ int main( int argc, const char **argv )
 
         if( target ) {
 
-            typedef proxy::hello::Stub              stub_type;
-            typedef common::stub_wrapper<stub_type> hello_calls;
-
-            hello_channel hc( cl, target );
-
-            hello_calls call_hello(&hc);
-            proxy::hello_req req;
-            proxy::hello_res res;
-
-            req.set_ping( "Hello there!" );
-
-            call_hello.call( &stub_type::send_hello, &req, &res );
-
-            std::cout << res.pong( ) << "\n";
+            std::cout << make_call( cl, target ) << "\n";
 
         } else {
             typedef proxy::transmitter::Stub                proxy_stub_type;
