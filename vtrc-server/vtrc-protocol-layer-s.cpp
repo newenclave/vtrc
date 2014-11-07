@@ -267,7 +267,17 @@ namespace vtrc { namespace server {
 
             if( id == rpc::auth::TRANSFORM_NONE ) {
 
-                set_client_ready( capsule );
+                if( !app_.session_key_required( connection_, client_id_ ) ) {
+                    set_client_ready( capsule );
+                } else {
+                    capsule.set_ready( false );
+                    rpc::errors::container *er(capsule.mutable_error( ));
+                    er->set_code( rpc::errors::ERR_ACCESS );
+                    er->set_category( rpc::errors::CATEGORY_INTERNAL );
+                    er->set_additional( "Session key is required" );
+                    send_and_close( capsule );
+                    return;
+                }
 
             } else if( id == rpc::auth::TRANSFORM_ERSEEFOR ) {
 

@@ -159,4 +159,10 @@ namespace vtrc { namespace server {
         return std::string( );
     }
 
+    bool application::session_key_required( common::connection_iface* conn,
+                                            const std::string &id)
+    {
+        return false;
+    }
+
 }}

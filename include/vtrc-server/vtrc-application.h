@@ -67,6 +67,9 @@ namespace server {
         virtual std::string get_session_key( common::connection_iface* conn,
                                              const std::string &id);
 
+        virtual bool session_key_required( common::connection_iface* conn,
+                                           const std::string &id);
+
     };
 
 }}
