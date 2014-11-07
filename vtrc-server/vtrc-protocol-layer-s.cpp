@@ -220,6 +220,8 @@ namespace vtrc { namespace server {
         {
             //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
 
+            std::cout << "On client transformer\n";
+
             using namespace common::transformers;
             rpc::auth::init_capsule capsule;
             bool check = get_pop_message( capsule );
@@ -250,10 +252,12 @@ namespace vtrc { namespace server {
             // client revertor is my transformer
             parent_->change_transformer( erseefor::create(
                                             key.c_str( ), key.size( ) ) );
+            //std::cout << "Set transformer " << key.c_str( ) << "\n";
 
             capsule.Clear( );
 
             set_client_ready( capsule );
+
         }
 
         void setup_transformer( unsigned id )
@@ -262,7 +266,6 @@ namespace vtrc { namespace server {
 
             using namespace common::transformers;
 
-            rpc::auth::transformer_setup ts;
             rpc::auth::init_capsule capsule;
 
             if( id == rpc::auth::TRANSFORM_NONE ) {
@@ -281,6 +284,7 @@ namespace vtrc { namespace server {
 
             } else if( id == rpc::auth::TRANSFORM_ERSEEFOR ) {
 
+                rpc::auth::transformer_setup ts;
                 std::string key(app_.get_session_key(connection_, client_id_));
 
                 generate_key_infos( key,                 // input
@@ -291,6 +295,7 @@ namespace vtrc { namespace server {
                 // client transformer is my revertor
                 parent_->change_revertor( erseefor::create(
                                               key.c_str( ), key.size( ) ) );
+                //std::cout << "Set revertor " << key.c_str( ) << "\n";
 
                 capsule.set_ready( true );
                 capsule.set_body( ts.SerializeAsString( ) );
@@ -314,7 +319,6 @@ namespace vtrc { namespace server {
         void on_client_selection( )
         {
             //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
-
             rpc::auth::init_capsule capsule;
             bool check = get_pop_message( capsule );
 

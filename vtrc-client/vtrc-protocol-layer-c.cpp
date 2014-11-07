@@ -287,10 +287,12 @@ namespace vtrc { namespace client {
             change_stage( STAGE_RPC );
 
             on_ready( true );
+
         }
 
         void on_trans_setup( )
         {
+
             using namespace common::transformers;
 
             rpc::auth::init_capsule capsule;
@@ -303,7 +305,6 @@ namespace vtrc { namespace client {
                 connection_->close( );
                 return;
             }
-
 
             if( !capsule.ready( ) ) {
                 parent_->on_init_error( capsule.error( ),
@@ -325,8 +326,10 @@ namespace vtrc { namespace client {
 
             parent_->change_transformer( erseefor::create(
                                                  key.c_str( ), key.size( ) ) );
+            //std::cout << "Set transformer " << key.c_str( ) << "\n";
 
             key.assign( client_->get_session_key( ) );
+
             generate_key_infos( key, s1, s2, key );
 
             tsetup.set_salt1( s1 );
@@ -334,6 +337,8 @@ namespace vtrc { namespace client {
 
             parent_->change_revertor( erseefor::create(
                                             key.c_str( ), key.size( ) ) );
+
+            //std::cout << "Set revertor " << key.c_str( ) << "\n";
 
             capsule.set_ready( true );
             capsule.set_body( tsetup.SerializeAsString( ) );
@@ -350,6 +355,7 @@ namespace vtrc { namespace client {
                 parent_->change_hash_maker(
                    common::hash::create_by_index( rpc::auth::HASH_CRC_32 ));
             }
+
         }
 
         static bool server_has_transformer( rpc::auth::init_capsule const &cap,
@@ -364,6 +370,7 @@ namespace vtrc { namespace client {
 
         void on_hello_call( )
         {
+
             rpc::auth::init_capsule capsule;
             bool check = parent_->parse_and_pop( capsule );
 
