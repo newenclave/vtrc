@@ -533,8 +533,7 @@ namespace vtrc { namespace client {
 
     void vtrc_client::set_session_key( const std::string &key )
     {
-        static const std::string empty_id;
-        set_session_key( empty_id, key );
+        set_session_key( impl_->get_session_id( ), key );
     }
 
     void vtrc_client::set_session_id( const std::string &id )
