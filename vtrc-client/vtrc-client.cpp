@@ -121,7 +121,7 @@ namespace vtrc { namespace client {
         const std::string &get_session_id(  ) const
         {
             //vtrc::lock_guard<vtrc::mutex> lck(session_info_lock_);
-            return session_key_;
+            return session_id_;
         }
 
         bool is_key_set( ) const
