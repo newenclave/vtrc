@@ -262,7 +262,7 @@ namespace vtrc { namespace common {
             /**
              * message =  message_header + <transform( message )>
             **/
-            transformer_->transform( body.empty( ) ? NULL : &body[0],
+            transformer_->transform( body.empty( ) ? "" : &body[0],
                                      body.size( ) );
 
             result.append( body.begin( ), body.end( ) );
