@@ -42,12 +42,11 @@ foreach( dep ${dependencies} )
 endforeach(dep)
 
 if(WIN32)
-    target_link_libraries(${exe_name} ws2_32.lib)
+    target_link_libraries( ${exe_name} ws2_32.lib )
 endif(WIN32)
 
 if(MINGW)
-    message( "MinGW detected" )
-    target_link_libraries(${exe_name} ws2_32)
+    target_link_libraries( ${exe_name} ws2_32 )
 endif(MINGW)
 
 set_target_properties(${exe_name}
