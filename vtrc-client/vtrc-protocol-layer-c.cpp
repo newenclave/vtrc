@@ -275,8 +275,14 @@ namespace vtrc { namespace client {
             }
 
             if( !capsule.ready( ) ) {
-                parent_->on_init_error(capsule.error( ),
-                                       "Server is not ready; stage: 'Ready'");
+                if( capsule.error( ).has_additional( ) ) {
+                    parent_->on_init_error( capsule.error( ),
+                                      capsule.error( ).additional( ).c_str( ) );
+
+                } else {
+                    parent_->on_init_error( capsule.error( ),
+                                       "Server is not ready; stage: 'Ready'" );
+                }
             }
 
             rpc::auth::session_setup ss;

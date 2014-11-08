@@ -275,7 +275,7 @@ namespace vtrc { namespace server {
                     rpc::errors::container *er(capsule.mutable_error( ));
                     er->set_code( rpc::errors::ERR_ACCESS );
                     er->set_category( rpc::errors::CATEGORY_INTERNAL );
-                    er->set_additional( "Session key is required" );
+                    er->set_additional( "Session key required" );
                     send_and_close( capsule );
                     return;
                 }
