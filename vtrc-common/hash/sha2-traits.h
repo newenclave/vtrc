@@ -52,11 +52,11 @@ namespace vtrc { namespace hash {
             return std::string( &result[0] );                                  \
         }                                                                      \
                                                                                \
-        static std::string data( const u_int8_t *data, size_t length )         \
+        static std::string data( const vtrc::uint8_t *data, size_t length )    \
         {                                                                      \
             digest_string_type result;                                         \
             NAME##_Data( data, length, result );                               \
-            return std::string( &result[0] );                                  \
+            return std::string( (const char *)&result[0] );                    \
         }                                                                      \
     }
 
