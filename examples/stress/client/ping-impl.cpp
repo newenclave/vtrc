@@ -10,7 +10,7 @@
 #include "vtrc-ref.h"
 #include "vtrc-thread.h"
 
-#ifdef _MSC_VER
+#if defined( _WIN32 )
 #define sleep_ Sleep /// milliseconds
 #define MILLISECONDS( x ) x
 #else
