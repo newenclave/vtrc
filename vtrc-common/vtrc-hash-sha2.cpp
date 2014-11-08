@@ -32,7 +32,7 @@ namespace vtrc { namespace common {  namespace hash {
                 typename HashTraits::context_type context;
                 HashTraits::init( &context );
                 HashTraits::update( &context,
-                    reinterpret_cast< const u_int8_t * >(data), length );
+                    reinterpret_cast<const vtrc::uint8_t *>(data), length );
 
                 HashTraits::fin( &context,
                                 reinterpret_cast<vtrc::uint8_t *>(result_hash));
