@@ -45,5 +45,9 @@ if(WIN32)
     target_link_libraries(${exe_name} ws2_32.lib)
 endif(WIN32)
 
+if(MINGW)
+    target_link_libraries( ${exe_name} ws2_32 mswsock )
+endif(MINGW)
+
 set_target_properties(${exe_name} PROPERTIES COMPILE_DEFINITIONS "STATIC")
 
