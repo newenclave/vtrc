@@ -46,6 +46,7 @@ if(WIN32)
 endif(WIN32)
 
 if(MINGW)
+    message( "MinGW detected" )
     target_link_libraries(${exe_name} ws2_32)
 endif(MINGW)
 
