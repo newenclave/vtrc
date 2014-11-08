@@ -28,14 +28,14 @@ namespace vtrc { namespace hash {
             NAME##_Update( context, data, len );                               \
         }                                                                      \
                                                                                \
-        static std::string finish( context_type *context )                     \
+        static std::string fin( context_type *context )                     \
         {                                                                      \
             digest_block_type data;                                            \
             NAME##_Final( data, context );                                     \
             return std::string( &data[0], &data[digest_length] );              \
         }                                                                      \
                                                                                \
-        static void finish( context_type *context, u_int8_t *result )          \
+        static void fin( context_type *context, u_int8_t *result )          \
         {                                                                      \
             NAME##_Final( result, context );                                   \
         }                                                                      \
