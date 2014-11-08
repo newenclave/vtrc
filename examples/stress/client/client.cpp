@@ -27,7 +27,7 @@
 
 #include "boost/thread.hpp" /// for thread_group
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(__MINGW32__ )
 #define sleep_ Sleep /// milliseconds
 #define MILLISECONDS( x ) x
 #else

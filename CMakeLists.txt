@@ -120,6 +120,7 @@ endif( )
 message( "Compiler ID: " ${CMAKE_CXX_COMPILER_ID} )
 message( "Compiler version: " ${CMAKE_CXX_COMPILER_VERSION} )
 message( "CMAKE_CXX_FLAGS: " ${CMAKE_CXX_FLAGS} )
+message( "Link type: "  ${VTRC_LINK_TYPE} )
 
 set( VTRC_COMMON_LIB_NAME vtrc_common )
 set( VTRC_SERVER_LIB_NAME vtrc_server )
