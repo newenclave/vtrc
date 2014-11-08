@@ -4,6 +4,8 @@
 #include <string>
 #include "sha2.h"
 
+#include "vtrc-stdint.h"
+
 namespace vtrc { namespace hash {
 
 #define HASH_TRAIT_DEFINE( NAME )                                              \
@@ -12,8 +14,8 @@ namespace vtrc { namespace hash {
         static const size_t digest_length        = NAME##_DIGEST_LENGTH;       \
         static const size_t digest_string_length = NAME##_DIGEST_STRING_LENGTH;\
                                                                                \
-        typedef u_int8_t digest_block_type[digest_length];                     \
-        typedef char     digest_string_type[digest_string_length];             \
+        typedef vtrc::uint8_t  digest_block_type[digest_length];                     \
+        typedef char           digest_string_type[digest_string_length];             \
                                                                                \
         typedef NAME##_CTX  context_type;                                      \
                                                                                \
@@ -23,19 +25,21 @@ namespace vtrc { namespace hash {
         }                                                                      \
                                                                                \
         static                                                                 \
-        void update( context_type *context, const u_int8_t *data, size_t len ) \
+        void update( context_type *context,                                    \
+                     const vtrc::uint8_t *data, size_t len )                   \
         {                                                                      \
             NAME##_Update( context, data, len );                               \
         }                                                                      \
                                                                                \
-        static std::string fin( context_type *context )                     \
+        static std::string fin( context_type *context )                        \
         {                                                                      \
             digest_block_type data;                                            \
             NAME##_Final( data, context );                                     \
-            return std::string( &data[0], &data[digest_length] );              \
+            return std::string( (const char *)&data[0],                        \
+                                (const char *)&data[digest_length] );          \
         }                                                                      \
                                                                                \
-        static void fin( context_type *context, u_int8_t *result )          \
+        static void fin( context_type *context, vtrc::uint8_t *result )        \
         {                                                                      \
             NAME##_Final( result, context );                                   \
         }                                                                      \
