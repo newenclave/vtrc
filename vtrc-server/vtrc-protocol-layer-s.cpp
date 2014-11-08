@@ -220,8 +220,6 @@ namespace vtrc { namespace server {
         {
             //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
 
-            std::cout << "On client transformer\n";
-
             using namespace common::transformers;
             rpc::auth::init_capsule capsule;
             bool check = get_pop_message( capsule );

@@ -244,7 +244,9 @@ namespace vtrc { namespace common {
         }
 #endif
 
-#if 1 /// variant uno
+#define VTRC_PROTOCOL_PACK_SIZE_DEFAULT 1
+
+#if VTRC_PROTOCOL_PACK_SIZE_DEFAULT /// variant uno
         std::string prepare_data( const char *data, size_t length )
         {
             /**
@@ -269,48 +271,8 @@ namespace vtrc { namespace common {
 
             return result;
         }
-#else
-        std::string prepare_data( const char *data, size_t length )
-        {
-            /**
-             * message_header = <packed_size(data_length + hash_length)>
-            **/
-            const size_t body_len = length + hash_maker_->hash_size( );
-
-            //std::string body( body_len + 32, '?' );
-            std::vector<char> body( body_len + 32 );
 
 
-            /**
-             *  Pack length of the data and the hash to vector
-             *  Get size of packed size value;
-            **/
-            size_t siz_len = size_policy_ns::pack_size_to( body_len, &body[0] );
-
-            /**
-             *  here is:
-             *  message_body = <hash(data)> + <data>
-            **/
-            hash_maker_->get_data_hash( data, length, &body[siz_len] );
-
-            if( length > 0 ) {
-                memcpy( &body[hash_maker_->hash_size( ) + siz_len],
-                         data, length );
-            }
-
-            /**
-             * message =  message_header + <transform( message )>
-            **/
-            transformer_->transform( body.empty( ) ? NULL : &body[0],
-                                     body.size( ) );
-
-//            body.resize( body_len + size_len );
-//            return body;
-
-            return std::string( body.begin( ),
-                                body.begin( ) + body_len + siz_len );
-        }
-#endif
         void process_data( const char *data, size_t length )
         {
             if( length > 0 ) {
@@ -355,6 +317,91 @@ namespace vtrc { namespace common {
             return checked;
         }
 
+#else
+        std::string prepare_data( const char *data, size_t length )
+        {
+            /**
+             * message_header = <packed_size(data_length + hash_length)>
+            **/
+            const size_t body_len = length + hash_maker_->hash_size( );
+
+            std::string body( body_len + 32, '?' );
+
+            /**
+             *  Pack length of the data and the hash to vector
+             *  Get size of packed size value;
+            **/
+            size_t siz_len = size_policy_ns::pack_size_to( body_len, &body[0] );
+
+            /**
+             *  here is:
+             *  message_body = <hash(data)> + <data>
+            **/
+            hash_maker_->get_data_hash( data, length, &body[siz_len] );
+
+            if( length > 0 ) {
+                memcpy( &body[hash_maker_->hash_size( ) + siz_len],
+                         data, length );
+            }
+
+            /**
+             * message = <transform( message_header + message )>
+            **/
+            body.resize( body_len + siz_len );
+
+            transformer_->transform( body.empty( ) ? NULL : &body[0],
+                                     body.size( ) );
+
+            return body;
+        }
+
+        void process_data( const char *data, size_t length )
+        {
+            if( length > 0 ) {
+
+                std::string next_data(data, data + length);
+
+                const size_t old_size = queue_->messages( ).size( );
+
+                /// revert data block
+                revertor_->transform( next_data.empty( ) ? NULL : &next_data[0],
+                                      next_data.size( ) );
+
+                /**
+                 * message = transformed(<size>data)
+                 * we must revert data here
+                **/
+
+                //queue_->append( &next_data[0], next_data.size( ));
+
+                queue_->append( next_data.empty( ) ? NULL : &next_data[0],
+                                next_data.size( ) );
+                queue_->process( );
+
+                if( queue_->messages( ).size( ) > old_size ) {
+                    parent_->on_data_ready( );
+                }
+            }
+
+        }
+
+        bool parse_and_pop( gpb::MessageLite &result )
+        {
+            std::string &data(queue_->messages( ).front( ));
+
+            /// check hash
+            bool checked = check_message( data );
+            if( checked ) {
+                /// parse
+                checked = parse_message( data, result );
+            }
+
+            /// in all cases we pop message
+            queue_->messages( ).pop_front( );
+            return checked;
+        }
+
+#endif
         size_t ready_messages_count( ) const
         {
             return queue_->messages( ).size( );

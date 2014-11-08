@@ -22,6 +22,7 @@ namespace vtrc { namespace common {
     };
 
     typedef vtrc::shared_ptr<hash_iface> hash_iface_sptr;
+    typedef vtrc::unique_ptr<hash_iface> hash_iface_uptr;
 
     namespace hash {
 
