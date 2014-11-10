@@ -645,9 +645,9 @@ namespace vtrc { namespace common {
             raise_wait_error( qwr );
         }
 
-        void read_slot_for(uint64_t slot_id,
-                           std::deque<lowlevel_unit_sptr> &data_list,
-                           uint64_t microsec )
+        void read_slot_for( uint64_t slot_id,
+                            std::deque<lowlevel_unit_sptr> &data_list,
+                            uint64_t microsec )
         {
             wait_result_codes qwr = rpc_queue_.read_queue( slot_id, data_list,
                                          vtrc::chrono::microseconds(microsec));
