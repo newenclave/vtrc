@@ -345,7 +345,7 @@ namespace vtrc { namespace common {
             }
 
             /**
-             * message = <transform( message_header + message )>
+             *  transform( <size><hash><message> )
             **/
             body.resize( body_len + siz_len );
 
@@ -450,11 +450,6 @@ namespace vtrc { namespace common {
             vtrc::unique_lock<vtrc::mutex> lck( ready_lock_ );
             return ready_var_.wait_for( lck, duration,
                      vtrc::bind( &this_type::state_predic, this, state ) );
-        }
-
-        void drop_first( )
-        {
-            queue_->messages( ).pop_front( );
         }
 
         void send_data( const char *data, size_t length )
