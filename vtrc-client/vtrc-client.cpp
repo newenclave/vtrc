@@ -376,6 +376,7 @@ namespace vtrc { namespace client {
         void disconnect( )
         {
             connection_.reset( );
+            parent_->on_disconnect_( );
 //            if( connection_ ) try {
 //                connection_->close( );
 //            } catch( ... ) { };
