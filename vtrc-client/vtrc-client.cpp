@@ -295,7 +295,15 @@ namespace vtrc { namespace client {
         {
             if( !err ) {
                 parent_->on_connect_( );
+            } else {
+                rpc::errors::container errc;
+                errc.set_code( err.value( ) );
+                errc.set_category( rpc::errors::CATEGORY_SYSTEM );
+                errc.set_fatal( true );
+                errc.set_additional( err.message( ) );
+                parent_->on_init_error_( errc, err.message( ).c_str() );
             }
+
             closure(err);
         }
 
