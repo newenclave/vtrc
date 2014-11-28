@@ -54,7 +54,7 @@ private:
     {
         common::closure_holder holder( done );
         common::connection_iface_sptr tgt =
-                                        client_by_id( request->client_id( ) );
+                                       client_by_id( request->client_id( ) );
 
         vtrc::shared_ptr<rpc::lowlevel_unit> res;
 
