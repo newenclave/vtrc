@@ -51,6 +51,8 @@ namespace vtrc { namespace common {
 
         const size_t depth( ) const;
 
+        const std::string &channel_data( ) const;
+
     };
 
     typedef vtrc::shared_ptr<call_context> call_context_sptr;

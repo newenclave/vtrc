@@ -52,6 +52,8 @@ message lowlevel_unit {
     optional call_info                    call =  4;
     optional vtrc.rpc.errors.container    error = 5;
     optional unit_options                  opt =  6;
+    optional bytes                channel_data =  7; // some optional data from
+                                                     // the OTHER side!
 
     // --- //
     optional bytes  request = 20;

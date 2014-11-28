@@ -120,5 +120,10 @@ namespace vtrc { namespace common {
         return impl_->depth_;
     }
 
+    const std::string &call_context::channel_data( ) const
+    {
+        return impl_->llu_->channel_data( );
+    }
+
 }}
 

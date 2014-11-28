@@ -10,6 +10,8 @@
 #include "vtrc-memory.h"
 #include "vtrc-chrono.h"
 
+#include "vtrc-common/vtrc-call-context.h"
+
 #include "protocol/client-calls.pb.h"
 #include "protocol/proxy-calls.pb.h"
 
@@ -18,6 +20,13 @@
 using namespace vtrc;
 
 class hello_service: public proxy::hello {
+
+    client::vtrc_client *cl_;
+
+public:
+    hello_service( client::vtrc_client_sptr cl )
+        :cl_(cl.get( ))
+    { }
     void send_hello(::google::protobuf::RpcController* controller,
                  const ::proxy::hello_req* request,
                  ::proxy::hello_res* response,
@@ -25,7 +34,17 @@ class hello_service: public proxy::hello {
     {
         common::closure_holder holder( done );
 
-        std::cout << "Request rcved!\n";
+        const common::call_context *cc = cl_->get_call_context( );
+
+        std::cout << "Request rcved! ";
+
+        if( cc ) {
+            std::cout << "channel data: " << cc->channel_data( );
+        } else {
+            std::cout << "Context is empty :(";
+        }
+
+        std::cout << std::endl;
 
         response->set_pong( request->ping( ) + ": pong" );
     }
@@ -129,7 +148,7 @@ int main( int argc, const char **argv )
         cl->on_ready_connect( on_ready );
         cl->on_disconnect_connect( on_disconnect );
 
-        cl->assign_rpc_handler( vtrc::make_shared<hello_service>( ) );
+        cl->assign_rpc_handler( vtrc::make_shared<hello_service>( cl ) );
 
         std::cout <<  "Connecting..." << std::endl;
 

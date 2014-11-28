@@ -18,8 +18,8 @@ namespace vtrc { namespace common  {
         rpc_channel( const rpc_channel & );
         rpc_channel&  operator = ( const rpc_channel & );
 
-        unsigned direct_call_type_;
-        unsigned callback_type_;
+        struct  impl;
+        impl   *impl_;
 
     public:
 
@@ -55,6 +55,10 @@ namespace vtrc { namespace common  {
 
         virtual lowlevel_unit_sptr raw_call( lowlevel_unit_sptr llu,
                                    common::lowlevel_closure_type callbacks );
+
+        void set_channel_data( const std::string &data );
+        const std::string &channel_data( );
+
     protected:
 
         void call_and_wait( google::protobuf::uint64 call_id,

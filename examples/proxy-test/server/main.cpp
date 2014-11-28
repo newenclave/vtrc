@@ -59,12 +59,17 @@ private:
         vtrc::shared_ptr<rpc::lowlevel_unit> res;
 
         if( tgt ) {
+
             vtrc::shared_ptr<rpc::lowlevel_unit> llu(new rpc::lowlevel_unit);
 
             llu->ParseFromString( request->data( ) );
 
             vtrc::unique_ptr<common::rpc_channel> chan(
                         server::channels::unicast::create( tgt ));
+
+            llu->set_channel_data( connection_->name( ) ) ;
+
+            std::cout << "set_channel_id " << chan->channel_data( ) << "\n";
 
             res = chan->raw_call( llu, common::lowlevel_closure_type( ) );
 

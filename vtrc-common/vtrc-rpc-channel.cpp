@@ -13,17 +13,26 @@ namespace vtrc { namespace common  {
 
     namespace gpb = google::protobuf;
 
-    namespace {
+    struct rpc_channel::impl {
 
-    }
+        unsigned direct_type_;
+        unsigned callback_type_;
+        std::string data_;
+
+        impl( unsigned direct_call_type, unsigned callback_type )
+            :direct_type_(direct_call_type)
+            ,callback_type_(callback_type)
+        { }
+    };
 
     rpc_channel::rpc_channel(unsigned direct_call_type, unsigned callback_type)
-        :direct_call_type_(direct_call_type)
-        ,callback_type_(callback_type)
+        :impl_(new impl(direct_call_type, callback_type))
     { }
 
     rpc_channel::~rpc_channel( )
-    { }
+    {
+        delete impl_;
+    }
 
     rpc_channel::lowlevel_unit_sptr rpc_channel::create_lowlevel(
                                         const gpb::MethodDescriptor *method,
@@ -67,6 +76,16 @@ namespace vtrc { namespace common  {
         return rpc_channel::lowlevel_unit_sptr( );
     }
 
+    void rpc_channel::set_channel_data( const std::string &data )
+    {
+        impl_->data_ = data;
+    }
+
+    const std::string &rpc_channel::channel_data( )
+    {
+        return impl_->data_;
+    }
+
     bool can_accept_callbacks( const common::call_context *cc )
     {
 #if 1   /// yeap. we always set it up
@@ -96,7 +115,7 @@ namespace vtrc { namespace common  {
 
         llu.set_id(c->get_protocol( ).next_index( ));
 
-        if( mess_type == callback_type_ ) {
+        if( mess_type == impl_->callback_type_ ) {
 
             if( cc && can_accept_callbacks( cc ) ) {
 
@@ -105,7 +124,7 @@ namespace vtrc { namespace common  {
 
             } else {
 
-                llu.mutable_info( )->set_message_type( direct_call_type_ );
+                llu.mutable_info( )->set_message_type( impl_->direct_type_ );
 
             }
         } else {
@@ -208,6 +227,9 @@ namespace vtrc { namespace common  {
                                         gpb::Closure *done)
     {
         lowlevel_unit_sptr llu( create_lowlevel( method, request, response ) );
+        if( !impl_->data_.empty( ) ) {
+            llu->set_channel_data( impl_->data_ );
+        }
         send_message( *llu, method, controller, request, response, done );
     }
 
