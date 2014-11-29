@@ -61,7 +61,8 @@ namespace vtrc { namespace common  {
 
     protected:
 
-        void call_and_wait( google::protobuf::uint64 call_id,
+        /// true == success
+        bool call_and_wait( google::protobuf::uint64 call_id,
                             const lowlevel_unit_type &llu,
                             google::protobuf::Message* response,
                             common::connection_iface_sptr &cl,

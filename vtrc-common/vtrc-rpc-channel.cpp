@@ -172,7 +172,7 @@ namespace vtrc { namespace common  {
         return top;
     }
 
-    void rpc_channel::call_and_wait(
+    bool rpc_channel::call_and_wait(
                             google::protobuf::uint64 call_id,
                             const lowlevel_unit_type &llu,
                             google::protobuf::Message *response,
@@ -199,6 +199,7 @@ namespace vtrc { namespace common  {
                 throw vtrc::common::exception( top->error( ).code( ),
                                          top->error( ).category( ),
                                          top->error( ).additional( ) );
+                return false;
             }
 
             /// from client: call, insertion_call
@@ -213,6 +214,7 @@ namespace vtrc { namespace common  {
             }
         }
         cl->get_protocol( ).erase_slot( call_id );
+        return true;
     }
 
     protocol_layer &rpc_channel::get_protocol(connection_iface &cl)
