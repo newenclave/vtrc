@@ -60,8 +60,10 @@ namespace vtrc { namespace server {
                 common::connection_iface_sptr clnt (client_.lock( ));
 
                 if( clnt.get( ) == NULL ) {
-                    throw vtrc::common::exception( rpc::errors::ERR_CHANNEL,
-                                                   "Connection lost");
+                    get_channel_error_callback( )( "Connection lost" );
+                    return lowlevel_unit_sptr( );
+//                    throw vtrc::common::exception( rpc::errors::ERR_CHANNEL,
+//                                                   "Connection lost");
                 }
 
                 const rpc::options call_opt;
@@ -94,8 +96,10 @@ namespace vtrc { namespace server {
 
                 common::connection_iface_sptr clnt (client_.lock( ));
                 if( clnt.get( ) == NULL ) {
-                    throw vtrc::common::exception( rpc::errors::ERR_CHANNEL,
-                                                   "Connection lost");
+                    get_channel_error_callback( )( "Connection lost" );
+                    return lowlevel_unit_sptr( );
+//                    throw vtrc::common::exception( rpc::errors::ERR_CHANNEL,
+//                                                   "Connection lost");
                 }
 
                 const rpc::options *call_opt
@@ -126,10 +130,12 @@ namespace vtrc { namespace server {
                 common::connection_iface_sptr clnt (client_.lock( ));
 
                 if( clnt.get( ) == NULL ) {
-                    if( controller )
+                    if( controller ) {
                         controller->SetFailed( "Connection lost" );
-                    throw vtrc::common::exception( rpc::errors::ERR_CHANNEL,
-                                                   "Connection lost");
+                    }
+                    get_channel_error_callback( )( "Connection lost" );
+//                    throw vtrc::common::exception( rpc::errors::ERR_CHANNEL,
+//                                                   "Connection lost");
                 }
 
                 const rpc::options *call_opt
@@ -203,8 +209,9 @@ namespace vtrc { namespace server {
                 vtrc::shared_ptr<common::connection_list>
                                                     lck_list(clients_.lock( ));
                 if( !lck_list ) {
-                    throw vtrc::common::exception( rpc::errors::ERR_CHANNEL,
-                                                   "Clients lost");
+                    get_channel_error_callback( )( "Connection lost" );
+//                    throw vtrc::common::exception( rpc::errors::ERR_CHANNEL,
+//                                                   "Clients lost");
                 }
 
                 llu->mutable_info( )->set_message_type( message_type_ );
@@ -250,8 +257,9 @@ namespace vtrc { namespace server {
                 vtrc::shared_ptr<common::connection_list>
                                                     lck_list(clients_.lock( ));
                 if( !lck_list ) {
-                    throw vtrc::common::exception( rpc::errors::ERR_CHANNEL,
-                                                   "Clients lost");
+                    get_channel_error_callback( )( "Connection lost" );
+//                    throw vtrc::common::exception( rpc::errors::ERR_CHANNEL,
+//                                                   "Clients lost");
                 }
 
                 llu.mutable_info( )->set_message_type( message_type_ );

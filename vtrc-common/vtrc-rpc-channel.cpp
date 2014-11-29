@@ -11,9 +11,37 @@
 #include "vtrc-protocol-layer.h"
 #include "vtrc-exception.h"
 
+#include "vtrc-bind.h"
+
 namespace vtrc { namespace common  {
 
     namespace gpb = google::protobuf;
+
+    namespace {
+
+        void default_error_cb( const rpc_channel::lowlevel_unit_type &llu )
+        {
+            throw vtrc::common::exception( llu.error( ).code( ),
+                                     llu.error( ).category( ),
+                                     llu.error( ).additional( ) );
+        }
+
+        void default_chan_error_cb( const char *message )
+        {
+            throw vtrc::common::exception( rpc::errors::ERR_CHANNEL,
+                                           message );
+        }
+
+        rpc_channel::proto_error_cb_type get_default_error_cb( )
+        {
+            return vtrc::bind( default_error_cb, vtrc::placeholders::_1 );
+        }
+
+        rpc_channel::channel_error_cb_type get_default_chan_error_cb( )
+        {
+            return vtrc::bind( default_chan_error_cb, vtrc::placeholders::_1 );
+        }
+    }
 
     struct rpc_channel::impl {
 
@@ -21,9 +49,14 @@ namespace vtrc { namespace common  {
         unsigned callback_type_;
         std::string data_;
 
+        rpc_channel::proto_error_cb_type    error_cb_;
+        rpc_channel::channel_error_cb_type  chan_error_cb_;
+
         impl( unsigned direct_call_type, unsigned callback_type )
             :direct_type_(direct_call_type)
             ,callback_type_(callback_type)
+            ,error_cb_(get_default_error_cb( ))
+            ,chan_error_cb_(get_default_chan_error_cb( ))
         { }
     };
 
@@ -174,6 +207,39 @@ namespace vtrc { namespace common  {
         return top;
     }
 
+    const rpc_channel::proto_error_cb_type &
+          rpc_channel::get_proto_error_callback( ) const
+    {
+        return impl_->error_cb_;
+    }
+
+    void rpc_channel::set_proto_error_callback(
+            const rpc_channel::proto_error_cb_type &value )
+    {
+        if( value ) {
+            impl_->error_cb_ = value;
+        } else {
+            impl_->error_cb_ = get_default_error_cb( );
+        }
+    }
+
+
+    const rpc_channel::channel_error_cb_type &
+          rpc_channel::get_channel_error_callback( ) const
+    {
+        return impl_->chan_error_cb_;
+    }
+
+    void rpc_channel::set_channel_error_callback(
+            const rpc_channel::channel_error_cb_type &value )
+    {
+        if( value ) {
+            impl_->chan_error_cb_ = value;
+        } else {
+            impl_->chan_error_cb_ = get_default_chan_error_cb( );
+        }
+    }
+
     bool rpc_channel::call_and_wait(
                             google::protobuf::uint64 call_id,
                             const lowlevel_unit_type &llu,
@@ -198,9 +264,10 @@ namespace vtrc { namespace common  {
 
             if( top->error( ).code( ) != rpc::errors::ERR_NO_ERROR ) {
                 cl->get_protocol( ).erase_slot( call_id );
-                throw vtrc::common::exception( top->error( ).code( ),
-                                         top->error( ).category( ),
-                                         top->error( ).additional( ) );
+                impl_->error_cb_( *top );
+//                throw vtrc::common::exception( top->error( ).code( ),
+//                                         top->error( ).category( ),
+//                                         top->error( ).additional( ) );
                 return false;
             }
 

@@ -33,6 +33,12 @@ namespace vtrc { namespace common  {
         typedef rpc::lowlevel_unit                   lowlevel_unit_type;
         typedef vtrc::shared_ptr<lowlevel_unit_type> lowlevel_unit_sptr;
 
+        typedef vtrc::function<
+            void (const lowlevel_unit_type &)
+        > proto_error_cb_type;
+
+        typedef vtrc::function< void (const char *) > channel_error_cb_type;
+
         rpc_channel( unsigned direct_call_type, unsigned callback_type );
         virtual ~rpc_channel( );
 
@@ -58,6 +64,12 @@ namespace vtrc { namespace common  {
 
         void set_channel_data( const std::string &data );
         const std::string &channel_data( );
+
+        const proto_error_cb_type &get_proto_error_callback( ) const;
+        void set_proto_error_callback( const proto_error_cb_type &value );
+
+        const channel_error_cb_type &get_channel_error_callback( ) const;
+        void set_channel_error_callback( const channel_error_cb_type &value );
 
     protected:
 
