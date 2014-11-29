@@ -898,12 +898,14 @@ namespace vtrc { namespace common {
 
                     /// here we must reset internal_closure
                     /// for preventing double call
-                    if( hold )
+                    if( hold ) {
                         hold->internal_closure_.reset( );
+                    }
 
                     /// call 'done';
-                    if( done )
+                    if( done ) {
                         done( llu->error( ) );
+                    }
                 }
             }
 
