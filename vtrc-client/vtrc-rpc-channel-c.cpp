@@ -77,8 +77,9 @@ namespace vtrc { namespace client {
             common::connection_iface_sptr clk(connection_.lock( ));
 
             if( clk.get( ) == NULL ) {
-                if( controller )
+                if( controller ) {
                     controller->SetFailed( "Connection lost" );
+                }
                 throw vtrc::common::exception( rpc::errors::ERR_CHANNEL,
                                                "Connection lost");
             }
