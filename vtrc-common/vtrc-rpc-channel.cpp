@@ -1,5 +1,7 @@
 
 #include <map>
+#include <iostream>
+
 #include "google/protobuf/descriptor.h"
 
 #include "vtrc-rpc-lowlevel.pb.h"
