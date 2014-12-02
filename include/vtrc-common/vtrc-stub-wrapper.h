@@ -27,7 +27,6 @@ namespace vtrc { namespace common {
         google::protobuf::RpcChannel                    *channel_;
         stub_type                                        stub_;
 
-
         template <typename ReqType, typename ResType>
         struct protobuf_call {
             typedef ReqType req_type;
