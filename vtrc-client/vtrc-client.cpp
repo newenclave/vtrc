@@ -539,8 +539,8 @@ namespace vtrc { namespace client {
         return impl_->create_channel( flags );
     }
 
-    void vtrc_client::set_session_key(const std::string &id,
-                                      const std::string &key )
+    void vtrc_client::set_session_key( const std::string &id,
+                                       const std::string &key )
     {
         impl_->set_session_key( id, key );
     }
