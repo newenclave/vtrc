@@ -181,7 +181,7 @@ namespace { /// implementation.
         void raw_call_local ( vtrc::shared_ptr<rpc::lowlevel_unit> ll_mess,
                               common::empty_closure_type done )
         {
-            if( !protocol_ ) {
+            if( !protocol_.get( ) ) {
                 throw std::runtime_error( "Not connected." );
             }
             protocol_->make_local_call( ll_mess,
