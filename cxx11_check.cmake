@@ -33,7 +33,7 @@ macro( get_cmd_cxx11 COMMAND_VAR )
 
     elseif( CMAKE_COMPILER_IS_GNUCXX )                  ### GNU
 
-        set( ${COMMAND_VAR} "-std=c++11" )
+        set( ${COMMAND_VAR} "-std=c++11 -std=gnu++11" )
 
     elseif( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" )    ### Clang
 
