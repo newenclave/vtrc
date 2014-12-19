@@ -263,7 +263,7 @@ namespace async_transport {
                             size_t const bytes,
                             size_t const length,
                             size_t       total,
-                            shared_type  /*this_inst*/)
+                            shared_type  /*this_inst*/ )
         {
             queue_value &top( *queue_top( ) );
 
@@ -274,8 +274,8 @@ namespace async_transport {
                     total += bytes;
 
                     const std::string &top_mess( top.message_ );
-                    async_write(top_mess.c_str( ) + total,
-                                top_mess.size( )  - total, total);
+                    async_write( top_mess.c_str( ) + total,
+                                 top_mess.size( )  - total, total );
 
                 } else {
 
