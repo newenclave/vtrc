@@ -371,7 +371,7 @@ namespace vtrc { namespace client {
             init.ParseFromString( cap.body( ) );
             return std::find( init.transform_supported( ).begin( ),
                       init.transform_supported( ).end( ),
-                      transformer_type) != init.transform_supported( ).end( );
+                      transformer_type ) != init.transform_supported( ).end( );
         }
 
         void on_hello_call( )

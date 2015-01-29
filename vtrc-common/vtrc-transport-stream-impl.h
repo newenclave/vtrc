@@ -20,7 +20,7 @@ namespace vtrc { namespace common {
     namespace basio = boost::asio;
     namespace bsys  = boost::system;
 
-#define TRANSPORT_USE_ASYNC_WRITE 0
+#define TRANSPORT_USE_SYNC_WRITE 0
 
     namespace {
 
@@ -55,7 +55,7 @@ namespace vtrc { namespace common {
             std::string                          name_;
 
 
-#ifndef TRANSPORT_USE_ASYNC_WRITE
+#ifndef TRANSPORT_USE_SYNC_WRITE
             vtrc::mutex                          write_lock_;
 #else
             std::deque<message_holder_sptr>      write_queue_;
@@ -147,7 +147,7 @@ namespace vtrc { namespace common {
             {
                 message_holder_sptr mh(make_holder(data, length));
 
-#ifndef TRANSPORT_USE_ASYNC_WRITE
+#ifndef TRANSPORT_USE_SYNC_WRITE
 
                 vtrc::unique_lock<vtrc::mutex> lck(write_lock_);
                 prepare_for_write( data->message_ );
@@ -166,7 +166,7 @@ namespace vtrc { namespace common {
                        const system_closure_type &success, bool on_send)
             {
 
-#ifndef TRANSPORT_USE_ASYNC_WRITE
+#ifndef TRANSPORT_USE_SYNC_WRITE
                 message_holder_sptr mh(make_holder(data, length));
                 vtrc::unique_lock<vtrc::mutex> lck(write_lock_);
                 prepare_for_write( data->message_ );
@@ -187,7 +187,7 @@ namespace vtrc { namespace common {
 #endif
             }
 
-#ifdef TRANSPORT_USE_ASYNC_WRITE
+#ifdef TRANSPORT_USE_SYNC_WRITE
 
             void async_write(  )
             {
