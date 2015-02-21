@@ -298,7 +298,6 @@ namespace vtrc { namespace client {
 
         void on_trans_setup( )
         {
-
             using namespace common::transformers;
 
             rpc::auth::init_capsule capsule;
