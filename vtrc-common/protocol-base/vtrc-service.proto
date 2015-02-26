@@ -4,7 +4,7 @@
 //import "vtrc-rpc-options.proto";
 //import "vtrc-types.proto";
 
-package vtrc_service;
+package vtrc.service;
 
 // index 54000
 
