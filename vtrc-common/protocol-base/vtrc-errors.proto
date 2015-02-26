@@ -6,7 +6,7 @@ import "google/protobuf/descriptor.proto";
 // index 52000
 
 extend google.protobuf.EnumValueOptions {
-    optional string description = 52001 [default = "Unknown error"];
+    optional string description = 52001;
 }
 
 enum error_category {
@@ -41,8 +41,8 @@ enum errors_numbers { // CATEGORY_INTERNAL
 }
 
 message container {
-    optional uint32 code        =  1 [default = 0]; // @errors_numbers
-    optional uint32 category    =  2 [default = 0]; // @error_category
+    optional uint32 code        =  1; // @errors_numbers
+    optional uint32 category    =  2; // @error_category
     optional bool   fatal       =  3;
     optional string additional  = 10;
 }

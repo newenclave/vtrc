@@ -47,7 +47,7 @@ message session_setup {
 }
 
 message init_capsule {
-    optional string                       text =  1;
+    optional string                       text  =  1;
     optional bool                         ready =  2;
     optional vtrc.rpc.errors.container    error =  3;
 
