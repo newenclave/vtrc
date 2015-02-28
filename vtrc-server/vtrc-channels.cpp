@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "vtrc-channels.h"
 #include "vtrc-protocol-layer-s.h"
 

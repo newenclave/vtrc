@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "vtrc-rpc-channel-c.h"
 
 #include "google/protobuf/service.h"

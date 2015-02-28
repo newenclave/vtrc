@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "vtrc-transformer-iface.h"
 #include "vtrc-auth.pb.h"
 

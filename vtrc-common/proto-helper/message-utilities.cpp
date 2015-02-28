@@ -1,5 +1,6 @@
-#include "message-utilities.h"
+#include <algorithm>
 
+#include "message-utilities.h"
 
 #include "boost/scoped_ptr.hpp"
 #include "google/protobuf/descriptor.h"

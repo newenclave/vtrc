@@ -1,4 +1,4 @@
-
+#include <algorithm>
 #include <memory.h>
 
 #include "vtrc-hash-iface.h"

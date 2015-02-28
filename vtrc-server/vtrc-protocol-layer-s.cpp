@@ -1,4 +1,4 @@
-
+#include <algorithm>
 #include "boost/asio.hpp"
 
 #include "vtrc-common/vtrc-mutex-typedefs.h"
