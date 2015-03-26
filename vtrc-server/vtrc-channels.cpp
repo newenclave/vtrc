@@ -28,6 +28,18 @@ namespace vtrc { namespace server {
         const unsigned direct_call_type = message_info::MESSAGE_SERVER_CALL;
         const unsigned callback_type    = message_info::MESSAGE_SERVER_CALLBACK;
 
+        unsigned select_message_type ( unsigned flags )
+        {
+            return ( flags & common::rpc_channel::USE_CONTEXT_CALL )
+                   ? message_info::MESSAGE_SERVER_CALLBACK
+                   : message_info::MESSAGE_SERVER_CALL;
+        }
+
+        bool select_message_wait ( unsigned flags )
+        {
+            return (flags & common::rpc_channel::DISABLE_WAIT);
+        }
+
         namespace gpb = google::protobuf;
 
         typedef rpc::lowlevel_unit                   lowlevel_unit_type;
@@ -38,8 +50,8 @@ namespace vtrc { namespace server {
         class unicast_channel: public common::rpc_channel {
 
             common::connection_iface_wptr client_;
-            const unsigned                message_type_;
-            const bool                    disable_wait_;
+            unsigned                      message_type_;
+            bool                          disable_wait_;
 
         public:
 
@@ -54,6 +66,12 @@ namespace vtrc { namespace server {
             bool alive( ) const
             {
                 return client_.lock( ) != NULL;
+            }
+
+            void set_flags( unsigned flags )
+            {
+                message_type_ = select_message_type(flags);
+                disable_wait_ = select_message_wait(flags);
             }
 
             lowlevel_unit_sptr raw_call( lowlevel_unit_sptr llu,

@@ -47,19 +47,25 @@ namespace vtrc { namespace client {
         vtrc::weak_ptr<common::connection_iface> connection_;
 
         rpc_channel_c *parent_;
-        const unsigned mess_type_;
-        const bool     disable_wait_;
+        unsigned       message_type_;
+        bool           disable_wait_;
 
         impl(vtrc::shared_ptr<common::connection_iface> c,
                               unsigned flags)
             :connection_(c)
-            ,mess_type_(select_message_type(flags))
+            ,message_type_(select_message_type(flags))
             ,disable_wait_(select_message_wait(flags))
         { }
 
         bool alive( ) const
         {
             return connection_.lock( ) != NULL;
+        }
+
+        void set_flags( unsigned flags )
+        {
+            message_type_ = select_message_type(flags);
+            disable_wait_ = select_message_wait(flags);
         }
 
         common::protocol_layer &get_protocol(common::connection_iface_sptr &clk)
@@ -194,6 +200,11 @@ namespace vtrc { namespace client {
         return impl_->alive( );
     }
 
+    void rpc_channel_c::set_flags( unsigned flags ) const
+    {
+        return impl_->set_flags( flags );
+    }
+
     lowlevel_unit_sptr rpc_channel_c::raw_call( lowlevel_unit_sptr llu,
                                     common::lowlevel_closure_type callbacks )
     {
@@ -203,7 +214,7 @@ namespace vtrc { namespace client {
     void rpc_channel_c::configure_message_for(common::connection_iface_sptr c,
                                    rpc_channel::lowlevel_unit_type &llu) const
     {
-        configure_message( c, impl_->mess_type_, llu );
+        configure_message( c, impl_->message_type_, llu );
     }
 
     rpc_channel_c::lowlevel_unit_sptr rpc_channel_c::make_lowlevel(
