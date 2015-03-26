@@ -46,6 +46,7 @@ namespace client {
 
         bool alive( ) const;
         void set_flags( unsigned flags ) const;
+        unsigned get_flags( ) const;
 
     private:
 

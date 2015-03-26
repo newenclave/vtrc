@@ -74,6 +74,14 @@ namespace vtrc { namespace server {
                 disable_wait_ = select_message_wait(flags);
             }
 
+            unsigned get_flags( ) const
+            {
+                return ( disable_wait_ ? common::rpc_channel::DISABLE_WAIT : 0 )
+                     | ( message_type_ == message_info::MESSAGE_SERVER_CALLBACK
+                                        ? common::rpc_channel::USE_CONTEXT_CALL
+                                        : 0 );
+            }
+
             lowlevel_unit_sptr raw_call( lowlevel_unit_sptr llu,
                                          common::lowlevel_closure_type events )
             {
@@ -216,6 +224,14 @@ namespace vtrc { namespace server {
             bool alive( ) const
             {
                 return clients_.lock( ) != NULL;
+            }
+
+            unsigned get_flags( ) const
+            {
+                return ( common::rpc_channel::DISABLE_WAIT )
+                     | ( message_type_ == message_info::MESSAGE_SERVER_CALLBACK
+                                        ? common::rpc_channel::USE_CONTEXT_CALL
+                                        : 0 );
             }
 
             lowlevel_unit_sptr make_lowlevel(

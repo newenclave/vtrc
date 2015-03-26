@@ -43,6 +43,7 @@ namespace vtrc { namespace common  {
         virtual ~rpc_channel( );
 
         virtual void set_flags( unsigned flags ) const { }
+        virtual unsigned get_flags( ) const = 0;
 
     public:
 

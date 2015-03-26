@@ -68,6 +68,14 @@ namespace vtrc { namespace client {
             disable_wait_ = select_message_wait(flags);
         }
 
+        unsigned get_flags( ) const
+        {
+            return ( disable_wait_ ? common::rpc_channel::DISABLE_WAIT : 0 )
+                 | ( message_type_ == message_info::MESSAGE_CLIENT_CALLBACK
+                                    ? common::rpc_channel::USE_CONTEXT_CALL
+                                    : 0 );
+        }
+
         common::protocol_layer &get_protocol(common::connection_iface_sptr &clk)
         {
             return parent_->get_protocol( *clk );
@@ -204,6 +212,12 @@ namespace vtrc { namespace client {
     {
         return impl_->set_flags( flags );
     }
+
+    unsigned rpc_channel_c::get_flags( ) const
+    {
+        return impl_->get_flags( );
+    }
+
 
     lowlevel_unit_sptr rpc_channel_c::raw_call( lowlevel_unit_sptr llu,
                                     common::lowlevel_closure_type callbacks )
