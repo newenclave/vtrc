@@ -220,7 +220,6 @@ namespace vtrc { namespace server {
                 ,message_type_(mess_type)
             { }
 
-
             bool alive( ) const
             {
                 return clients_.lock( ) != NULL;
