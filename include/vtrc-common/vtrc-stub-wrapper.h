@@ -12,20 +12,23 @@ namespace google { namespace protobuf {
 
 namespace vtrc { namespace common {
 
-    template <typename StubType>
+    template < typename StubType,
+               typename ChannelType = google::protobuf::RpcChannel
+             >
     class stub_wrapper {
 
     public:
 
-        typedef StubType stub_type;
+        typedef StubType    stub_type;
+        typedef ChannelType channel_type;
 
     private:
 
         typedef stub_wrapper<stub_type> this_type;
 
-        vtrc::shared_ptr<google::protobuf::RpcChannel>   channel_holder_;
-        google::protobuf::RpcChannel                    *channel_;
-        stub_type                                        stub_;
+        vtrc::shared_ptr<channel_type>   channel_holder_;
+        channel_type                    *channel_;
+        stub_type                        stub_;
 
         template <typename ReqType, typename ResType>
         struct protobuf_call {
@@ -52,24 +55,23 @@ namespace vtrc { namespace common {
 
     public:
 
-        google::protobuf::RpcChannel *channel( )
+        channel_type *channel( )
         {
             return channel_;
         }
 
-        const google::protobuf::RpcChannel *channel( ) const
+        const channel_type *channel( ) const
         {
             return channel_;
         }
 
-        stub_wrapper(google::protobuf::RpcChannel *channel,
-                                                   bool own_channel = false)
+        stub_wrapper(channel_type *channel, bool own_channel = false)
             :channel_holder_(own_channel ? channel : NULL)
             ,channel_(channel)
             ,stub_(channel_)
         { }
 
-        stub_wrapper(vtrc::shared_ptr<google::protobuf::RpcChannel> channel)
+        stub_wrapper(vtrc::shared_ptr<channel_type> channel)
             :channel_holder_(channel)
             ,channel_(channel_holder_.get( ))
             ,stub_(channel_)
