@@ -19,11 +19,11 @@ namespace vtrc { namespace common {
 
         /// compiletime derived check;
         /// StubType must be derived from google::protobuf::RpcChannel
-        typedef google::protobuf::RpcChannel gpb_channel;
-        static const char tc__( gpb_channel * );
-        enum {
-            is_gpb_channel__ = sizeof( tc__( static_cast<ChannelType *>(0) ) )
-        };
+//        typedef google::protobuf::RpcChannel gpb_channel;
+//        static const char tc__( gpb_channel * );
+//        enum {
+//            is_gpb_channel__ = sizeof( tc__( static_cast<ChannelType *>(0) ) )
+//        };
 
     public:
 
