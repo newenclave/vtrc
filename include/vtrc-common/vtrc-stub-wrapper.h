@@ -52,6 +52,16 @@ namespace vtrc { namespace common {
 
     public:
 
+        google::protobuf::RpcChannel *channel( )
+        {
+            return channel_;
+        }
+
+        const google::protobuf::RpcChannel *channel( ) const
+        {
+            return channel_;
+        }
+
         stub_wrapper(google::protobuf::RpcChannel *channel,
                                                    bool own_channel = false)
             :channel_holder_(own_channel ? channel : NULL)
