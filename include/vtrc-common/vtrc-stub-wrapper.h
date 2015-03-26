@@ -39,7 +39,6 @@ namespace vtrc { namespace common {
                  const req_type *, res_type *, google::protobuf::Closure *);
         };
 
-
         template <typename FuncType>
         struct call_args;
 
