@@ -142,12 +142,12 @@ namespace vtrc { namespace server {
 
     void listener::set_precall( const common::precall_closure_type &func )
     {
-
+        impl_->precall_ = func;
     }
 
     void listener::set_postcall( const common::postcall_closure_type &func )
     {
-
+        impl_->postcall_ = func;
     }
 
     namespace listeners {

@@ -6,6 +6,7 @@
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-closure-holder.h"
 #include "vtrc-common/vtrc-thread-pool.h"
+#include "vtrc-common/vtrc-closure.h"
 
 #include "protocol/hello.pb.h"          /// hello protocol
 #include "google/protobuf/descriptor.h" /// for descriptor( )->full_name( )
