@@ -146,6 +146,25 @@ namespace vtrc { namespace common {
 
 #endif  /// VTRC_DISABLE_CXX11
 
+        precall_function_type empty_pre( )
+        {
+            struct call_type {
+                static void call( const gpb::MethodDescriptor *,
+                                  rpc::lowlevel_unit & )
+                {}
+            };
+            namespace ph = vtrc::placeholders;
+            return vtrc::bind( &call_type::call, ph::_1, ph::_2 );
+        }
+
+        postcall_function_type empty_post( )
+        {
+            struct call_type {
+                static void call( rpc::lowlevel_unit & ) {}
+            };
+            namespace ph = vtrc::placeholders;
+            return vtrc::bind( &call_type::call, ph::_1 );
+        }
 
     }
 
@@ -179,6 +198,9 @@ namespace vtrc { namespace common {
 
         rpc::session_options         session_opts_;
 
+        precall_function_type        precall_;
+        postcall_function_type       postcall_;
+
         impl( transport_iface *c, bool oddside,
                     const rpc::session_options &opts )
             :connection_(c)
@@ -191,6 +213,8 @@ namespace vtrc { namespace common {
             ,ready_(false)
             ,level_(0)
             ,session_opts_(opts)
+            ,precall_(empty_pre( ))
+            ,postcall_(empty_post( ))
         { }
 
         /// call_stack pointer BOOST ///
@@ -829,10 +853,9 @@ namespace vtrc { namespace common {
                 throw vtrc::common::exception( rpc::errors::ERR_NO_FUNC );
             }
 
-            const rpc::options *call_opts
-                                        ( parent_->get_method_options( meth ) );
+            const rpc::options *call_opt( parent_->get_method_options( meth ) );
 
-            ch.ctx_->set_call_options( call_opts );
+            ch.ctx_->set_call_options( call_opt );
 
             closure_hold->req_.reset
                 (service->service( )->GetRequestPrototype( meth ).New( ));
@@ -850,6 +873,8 @@ namespace vtrc { namespace common {
 
             gpb::Closure* clos(make_closure(closure_hold, llu->opt( ).wait( )));
             ch.ctx_->set_done_closure( clos );
+
+            precall_( meth, *llu );
 
             service->service( )->CallMethod( meth,
                                      closure_hold->controller_.get( ),
@@ -890,10 +915,15 @@ namespace vtrc { namespace common {
                 llu->mutable_error( )->set_additional( "..." );
             }
 
+            if( failed ) {
+                llu->mutable_error( )->set_code( errorcode );
+                llu->clear_response( );
+            }
+
+            postcall_( *llu );
+
             if( llu->opt( ).wait( ) ) {
                 if( failed ) {
-                    llu->mutable_error( )->set_code( errorcode );
-                    llu->clear_response( );
                     send_message( *llu );
 
                     /// here we must reset internal_closure
@@ -927,6 +957,16 @@ namespace vtrc { namespace common {
             err_cont->set_additional( add );
 
             parent_->push_rpc_message_all( llu );
+        }
+
+        void set_precall( const precall_function_type &func )
+        {
+            precall_ = func ? func : empty_pre( );
+        }
+
+        void set_postcall( const postcall_function_type &func )
+        {
+            postcall_ = func ? func : empty_post( );;
         }
 
     };
@@ -1190,6 +1230,17 @@ namespace vtrc { namespace common {
     {
         impl_->on_system_error( err, "Transport read error." );
     }
+
+    void protocol_layer::set_precall( const precall_function_type &func )
+    {
+        impl_->set_precall( func );
+    }
+
+    void protocol_layer::set_postcall( const postcall_function_type &func )
+    {
+        impl_->set_postcall( func );
+    }
+
 
     std::string protocol_layer::get_service_name( gpb::Service *service )
     {
