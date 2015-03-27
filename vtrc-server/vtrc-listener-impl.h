@@ -148,6 +148,17 @@ namespace {
 
                     connection_setup( new_conn );
 
+                    namespace ph = vtrc::placeholders;
+
+                    new_conn->get_protocol( )
+                            .set_precall( vtrc::bind(
+                                              &listener::mk_precall, this,
+                                               ph::_1, ph::_2, ph::_3 ) );
+                    new_conn->get_protocol( )
+                            .set_postcall( vtrc::bind(
+                                              &listener::mk_postcall, this,
+                                               ph::_1, ph::_2 ) );
+
                     get_application( ).get_clients( )->store( new_conn );
                     new_connection( new_conn.get( ) );
 

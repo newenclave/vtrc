@@ -3,10 +3,40 @@
 
 #include "vtrc-common/vtrc-enviroment.h"
 #include "vtrc-atomic.h"
+#include "vtrc-bind.h"
 
 #include "vtrc-rpc-lowlevel.pb.h"
 
+
 namespace vtrc { namespace server {
+
+    namespace {
+
+        namespace  gpb = google::protobuf;
+
+        common::precall_closure_type empty_pre( )
+        {
+            struct call_type {
+                static void call( common::connection_iface &,
+                                  const gpb::MethodDescriptor *,
+                                  rpc::lowlevel_unit & )
+                { }
+            };
+            namespace ph = vtrc::placeholders;
+            return vtrc::bind( &call_type::call, ph::_1, ph::_2, ph::_3 );
+        }
+
+        common::postcall_closure_type empty_post( )
+        {
+            struct call_type {
+                static void call( common::connection_iface &,
+                                  rpc::lowlevel_unit & )
+                { }
+            };
+            namespace ph = vtrc::placeholders;
+            return vtrc::bind( &call_type::call, ph::_1, ph::_2 );
+        }
+    }
 
     struct listener::impl {
         application              &app_;
@@ -24,6 +54,8 @@ namespace vtrc { namespace server {
             ,env_(app_.get_enviroment( ))
             ,opts_(opts)
             ,client_count_(0)
+            ,precall_(empty_pre( ))
+            ,postcall_(empty_post( ))
         { }
     };
 
