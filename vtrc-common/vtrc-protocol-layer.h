@@ -49,14 +49,6 @@ namespace vtrc { namespace common {
     struct transport_iface;
     class  call_context;
 
-    typedef vtrc::function <
-        void ( const google::protobuf::MethodDescriptor *,
-               rpc::lowlevel_unit & )
-    > precall_function_type;
-    typedef vtrc::function <
-        void ( rpc::lowlevel_unit & )
-    > postcall_function_type;
-
     class protocol_layer {
 
         struct        impl;
@@ -102,8 +94,8 @@ namespace vtrc { namespace common {
 
     public:
 
-        void set_precall( const precall_function_type &func );
-        void set_postcall( const postcall_function_type &func );
+        void set_precall( const precall_closure_type &func );
+        void set_postcall( const postcall_closure_type &func );
 
         static std::string get_service_name(
                                 google::protobuf::Service *service );

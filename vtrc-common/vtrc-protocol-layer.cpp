@@ -146,7 +146,7 @@ namespace vtrc { namespace common {
 
 #endif  /// VTRC_DISABLE_CXX11
 
-        precall_function_type empty_pre( )
+        precall_closure_type empty_pre( )
         {
             struct call_type {
                 static void call( const gpb::MethodDescriptor *,
@@ -157,7 +157,7 @@ namespace vtrc { namespace common {
             return vtrc::bind( &call_type::call, ph::_1, ph::_2 );
         }
 
-        postcall_function_type empty_post( )
+        postcall_closure_type empty_post( )
         {
             struct call_type {
                 static void call( rpc::lowlevel_unit & ) {}
@@ -198,8 +198,8 @@ namespace vtrc { namespace common {
 
         rpc::session_options         session_opts_;
 
-        precall_function_type        precall_;
-        postcall_function_type       postcall_;
+        precall_closure_type         precall_;
+        postcall_closure_type        postcall_;
 
         impl( transport_iface *c, bool oddside,
                     const rpc::session_options &opts )
@@ -959,12 +959,12 @@ namespace vtrc { namespace common {
             parent_->push_rpc_message_all( llu );
         }
 
-        void set_precall( const precall_function_type &func )
+        void set_precall( const precall_closure_type &func )
         {
             precall_ = func ? func : empty_pre( );
         }
 
-        void set_postcall( const postcall_function_type &func )
+        void set_postcall( const postcall_closure_type &func )
         {
             postcall_ = func ? func : empty_post( );;
         }
@@ -1231,12 +1231,12 @@ namespace vtrc { namespace common {
         impl_->on_system_error( err, "Transport read error." );
     }
 
-    void protocol_layer::set_precall( const precall_function_type &func )
+    void protocol_layer::set_precall( const precall_closure_type &func )
     {
         impl_->set_precall( func );
     }
 
-    void protocol_layer::set_postcall( const postcall_function_type &func )
+    void protocol_layer::set_postcall(const postcall_closure_type &func )
     {
         impl_->set_postcall( func );
     }
