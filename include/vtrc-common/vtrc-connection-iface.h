@@ -27,6 +27,12 @@ namespace vtrc { namespace common {
     class call_context;
     class rpc_channel;
 
+    enum connection_type {
+         CONNECTION_TCP = 0
+        ,CONNECTION_UNIX_FILE = 1
+        ,CONNECTION_WIN_PIPE  = 2
+    };
+
     struct connection_iface: public enable_shared_from_this<connection_iface> {
 
         virtual ~connection_iface( ) { }
