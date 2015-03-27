@@ -92,6 +92,16 @@ namespace vtrc { namespace server {
         on_start_( );
     }
 
+    void listener::set_precall( const common::precall_closure_type &func )
+    {
+
+    }
+
+    void listener::set_postcall( const common::postcall_closure_type &func )
+    {
+
+    }
+
     namespace listeners {
         rpc::session_options default_options( )
         {
