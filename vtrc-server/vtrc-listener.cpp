@@ -16,6 +16,9 @@ namespace vtrc { namespace server {
         listener                 *parent_;
         vtrc::atomic<size_t>      client_count_;
 
+        common::precall_closure_type  precall_;
+        common::postcall_closure_type postcall_;
+
         impl( application &app, const rpc::session_options &opts )
             :app_(app)
             ,env_(app_.get_enviroment( ))
@@ -63,6 +66,19 @@ namespace vtrc { namespace server {
     vtrc::weak_ptr<const listener> listener::weak_from_this( ) const
     {
         return vtrc::weak_ptr<listener const>( shared_from_this( ));
+    }
+
+    void listener::mk_precall( common::connection_iface &connection,
+                               const google::protobuf::MethodDescriptor *method,
+                               rpc::lowlevel_unit &llu )
+    {
+        impl_->precall_( connection, method, llu );
+    }
+
+    void listener::mk_postcall( common::connection_iface &connection,
+                                rpc::lowlevel_unit &llu )
+    {
+        impl_->postcall_( connection, llu );
     }
 
     void listener::new_connection( const common::connection_iface *conn )

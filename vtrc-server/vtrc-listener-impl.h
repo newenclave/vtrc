@@ -145,6 +145,7 @@ namespace {
                 try {
                     new_conn = connection_type::create( *this, sock,
                                                          get_on_close_cb( ));
+
                     connection_setup( new_conn );
 
                     get_application( ).get_clients( )->store( new_conn );

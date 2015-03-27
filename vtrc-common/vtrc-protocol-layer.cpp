@@ -152,7 +152,7 @@ namespace vtrc { namespace common {
                 static void call( connection_iface &,
                                   const gpb::MethodDescriptor *,
                                   rpc::lowlevel_unit & )
-                {}
+                { }
             };
             namespace ph = vtrc::placeholders;
             return vtrc::bind( &call_type::call, ph::_1, ph::_2, ph::_3 );
@@ -162,7 +162,8 @@ namespace vtrc { namespace common {
         {
             struct call_type {
                 static void call( connection_iface &,
-                                  rpc::lowlevel_unit & ) {}
+                                  rpc::lowlevel_unit & )
+                { }
             };
             namespace ph = vtrc::placeholders;
             return vtrc::bind( &call_type::call, ph::_1, ph::_2 );

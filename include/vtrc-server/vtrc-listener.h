@@ -8,8 +8,13 @@
 
 #include "vtrc-memory.h"
 
+namespace google { namespace protobuf {
+    class MethodDescriptor;
+}}
+
 namespace vtrc { namespace rpc {
     class session_options;
+    class lowlevel_unit;
 }}
 
 namespace boost { namespace system {
@@ -76,6 +81,13 @@ namespace server {
         virtual bool is_local( )    const = 0;
 
     protected:
+
+        void mk_precall( common::connection_iface &connection,
+                         const google::protobuf::MethodDescriptor *method,
+                         rpc::lowlevel_unit &llu );
+
+        void mk_postcall( common::connection_iface &connection,
+                          rpc::lowlevel_unit &llu );
 
         void new_connection(  const common::connection_iface *conn );
         void stop_connection( const common::connection_iface *conn );
