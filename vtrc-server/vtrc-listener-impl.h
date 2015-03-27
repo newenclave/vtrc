@@ -99,6 +99,16 @@ namespace {
             return acceptor_.get( );
         }
 
+        void set_precall( const common::precall_closure_type &func )
+        {
+
+        }
+
+        void set_postcall( const common::postcall_closure_type &func )
+        {
+
+        }
+
         void start( )
         {
             working_ = true;

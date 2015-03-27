@@ -4,6 +4,8 @@
 #include <string>
 
 #include "vtrc-common/vtrc-signal-declaration.h"
+#include "vtrc-common/vtrc-closure.h"
+
 #include "vtrc-memory.h"
 
 namespace vtrc { namespace rpc {
@@ -63,6 +65,9 @@ namespace server {
         vtrc::weak_ptr<listener const> weak_from_this( ) const;
 
     public:
+
+        void set_precall( const common::precall_closure_type &func );
+        void set_postcall( const common::postcall_closure_type &func );
 
         virtual std::string name( ) const = 0;
         virtual void start( )             = 0;

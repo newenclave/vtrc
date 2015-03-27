@@ -20,15 +20,19 @@ namespace vtrc { namespace rpc {
 
 namespace vtrc { namespace common {
 
+    class connection_iface;
+
     typedef void (system_closure_sign)(const boost::system::error_code &);
     typedef void (protcol_closure_sign)(const rpc::errors::container &);
     typedef void (success_closure_sign)(bool);
     typedef void (lowlevel_closure_sign)(const rpc::lowlevel_unit &);
 
     typedef void (precall_closure_sign)
-                 (const google::protobuf::MethodDescriptor *,
-                  rpc::lowlevel_unit & );
-    typedef void (postcall_closure_sign)(rpc::lowlevel_unit & );
+                 ( connection_iface &,
+                   const google::protobuf::MethodDescriptor *,
+                   rpc::lowlevel_unit & );
+    typedef void (postcall_closure_sign)
+                 (connection_iface &, rpc::lowlevel_unit & );
 
     typedef vtrc::function<system_closure_sign>   system_closure_type;
     typedef vtrc::function<protcol_closure_sign>  protcol_closure_type;

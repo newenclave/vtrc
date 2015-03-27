@@ -149,21 +149,23 @@ namespace vtrc { namespace common {
         precall_closure_type empty_pre( )
         {
             struct call_type {
-                static void call( const gpb::MethodDescriptor *,
+                static void call( connection_iface &,
+                                  const gpb::MethodDescriptor *,
                                   rpc::lowlevel_unit & )
                 {}
             };
             namespace ph = vtrc::placeholders;
-            return vtrc::bind( &call_type::call, ph::_1, ph::_2 );
+            return vtrc::bind( &call_type::call, ph::_1, ph::_2, ph::_3 );
         }
 
         postcall_closure_type empty_post( )
         {
             struct call_type {
-                static void call( rpc::lowlevel_unit & ) {}
+                static void call( connection_iface &,
+                                  rpc::lowlevel_unit & ) {}
             };
             namespace ph = vtrc::placeholders;
-            return vtrc::bind( &call_type::call, ph::_1 );
+            return vtrc::bind( &call_type::call, ph::_1, ph::_2 );
         }
 
     }
@@ -874,7 +876,7 @@ namespace vtrc { namespace common {
             gpb::Closure* clos(make_closure(closure_hold, llu->opt( ).wait( )));
             ch.ctx_->set_done_closure( clos );
 
-            precall_( meth, *llu );
+            precall_( *connection_, meth, *llu );
 
             service->service( )->CallMethod( meth,
                                      closure_hold->controller_.get( ),
@@ -920,7 +922,11 @@ namespace vtrc { namespace common {
                 llu->clear_response( );
             }
 
-            postcall_( *llu );
+            try {
+                postcall_( *connection_, *llu );
+            } catch( ... ) {
+                ;;;
+            }
 
             if( llu->opt( ).wait( ) ) {
                 if( failed ) {
