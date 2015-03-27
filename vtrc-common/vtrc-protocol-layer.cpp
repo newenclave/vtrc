@@ -922,11 +922,11 @@ namespace vtrc { namespace common {
                 llu->clear_response( );
             }
 
-            try {
+//            try {
                 postcall_( *connection_, *llu );
-            } catch( ... ) {
-                ;;;
-            }
+//            } catch( ... ) {
+//                ;;;
+//            }
 
             if( llu->opt( ).wait( ) ) {
                 if( failed ) {
