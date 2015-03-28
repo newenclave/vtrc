@@ -101,7 +101,7 @@ namespace {
         size_t                   out_buf_size_;
 
         basio::windows::overlapped_ptr overlapped_;
-        bool                     working_;
+        bool                           working_;
 
         pipe_listener( application &app,
                 const rpc::session_options &opts, 
@@ -256,11 +256,11 @@ namespace {
 
                     new_conn->get_protocol( )
                             .set_precall( vtrc::bind(
-                                              &listener::mk_precall, this,
+                                              &this_type::mk_precall, this,
                                                ph::_1, ph::_2, ph::_3 ) );
                     new_conn->get_protocol( )
                             .set_postcall( vtrc::bind(
-                                              &listener::mk_postcall, this,
+                                              &this_type::mk_postcall, this,
                                                ph::_1, ph::_2 ) );
 
                     get_application( ).get_clients( )->store( new_conn );

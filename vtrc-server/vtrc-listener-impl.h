@@ -130,18 +130,18 @@ namespace {
 
         }
 
-        void precall_p( common::connection_iface &connection,
-                           const google::protobuf::MethodDescriptor *method,
-                           rpc::lowlevel_unit &llu )
-        {
-            mk_precall( connection, method, llu );
-        }
+//        void precall_p( common::connection_iface &connection,
+//                           const google::protobuf::MethodDescriptor *method,
+//                           rpc::lowlevel_unit &llu )
+//        {
+//            mk_precall( connection, method, llu );
+//        }
 
-        void postcall_p( common::connection_iface &connection,
-                                    rpc::lowlevel_unit &llu )
-        {
-            mk_postcall( connection, llu );
-        }
+//        void postcall_p( common::connection_iface &connection,
+//                                    rpc::lowlevel_unit &llu )
+//        {
+//            mk_postcall( connection, llu );
+//        }
 
 
         void on_accept( const bsys::error_code &error,
