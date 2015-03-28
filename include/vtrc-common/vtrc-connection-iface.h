@@ -68,7 +68,7 @@ namespace vtrc { namespace common {
 
         virtual native_handle_type native_handle( ) const = 0;
 
-        /// ll_mess is IN OUT parameter
+        /// llu is IN OUT parameter
         /// dont do this if not sure!
         virtual void raw_call_local ( vtrc::shared_ptr<rpc::lowlevel_unit> llu,
                                       common::empty_closure_type done ) = 0;
