@@ -66,7 +66,7 @@ namespace vtrc { namespace common {
         impl_->write( data, length, success, on_send_success );
     }
 
-    native_handle_type transport_tcp::native_hanlde( ) const
+    native_handle_type transport_tcp::native_handle( ) const
     {
         native_handle_type nh;
 #ifdef _WIN32

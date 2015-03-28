@@ -63,7 +63,7 @@ namespace vtrc { namespace common {
         impl_->write( data, length, success, on_send_success );
     }
 
-    native_handle_type transport_win_pipe::native_hanlde( ) const
+    native_handle_type transport_win_pipe::native_handle( ) const
     {
         native_handle_type nh;
         nh.value.win_handle = 
