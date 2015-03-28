@@ -33,12 +33,23 @@ endif( )
 
 set( Boost_USE_MULTITHREADED   ON)
 
+
 if( VTRC_CXX11_ENABLED )
 
-    find_package( Boost 1.53 COMPONENTS
-                        system
-                        thread  # for the shared mutexes
-                  REQUIRED)
+    if(MSVC)
+        find_package( Boost 1.53 COMPONENTS
+                            chrono
+                            date_time
+                            regex
+                            system
+                            thread  # for the shared mutexes
+                      REQUIRED)
+    else( )
+        find_package( Boost 1.53 COMPONENTS
+                            system
+                            thread  # for the shared mutexes
+                      REQUIRED)
+    endif( )
 
     set( VTRC_DISABLE_CXX11 0 )
 
@@ -62,6 +73,7 @@ else( )
     set( VTRC_DISABLE_CXX11 1 )
 
 endif( )
+
 
 find_package( Protobuf REQUIRED)
 
