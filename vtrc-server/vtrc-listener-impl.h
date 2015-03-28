@@ -130,6 +130,20 @@ namespace {
 
         }
 
+        void precall_p( common::connection_iface &connection,
+                           const google::protobuf::MethodDescriptor *method,
+                           rpc::lowlevel_unit &llu )
+        {
+            mk_precall( connection, method, llu );
+        }
+
+        void postcall_p( common::connection_iface &connection,
+                                    rpc::lowlevel_unit &llu )
+        {
+            mk_postcall( connection, llu );
+        }
+
+
         void on_accept( const bsys::error_code &error,
                         vtrc::shared_ptr<socket_type> sock,
                         vtrc::weak_ptr<listener> &inst )
@@ -152,11 +166,11 @@ namespace {
 
                     new_conn->get_protocol( )
                             .set_precall( vtrc::bind(
-                                              &listener::mk_precall, this,
+                                              &this_type::mk_precall, this,
                                                ph::_1, ph::_2, ph::_3 ) );
                     new_conn->get_protocol( )
                             .set_postcall( vtrc::bind(
-                                              &listener::mk_postcall, this,
+                                              &this_type::mk_postcall, this,
                                                ph::_1, ph::_2 ) );
 
                     get_application( ).get_clients( )->store( new_conn );

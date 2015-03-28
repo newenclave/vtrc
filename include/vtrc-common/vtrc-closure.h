@@ -20,7 +20,7 @@ namespace vtrc { namespace rpc {
 
 namespace vtrc { namespace common {
 
-    class connection_iface;
+    struct connection_iface;
 
     typedef void (system_closure_sign)(const boost::system::error_code &);
     typedef void (protcol_closure_sign)(const rpc::errors::container &);
