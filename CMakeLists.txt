@@ -44,12 +44,12 @@ if( VTRC_CXX11_ENABLED )
                             system
                             thread  # for the shared mutexes
                       REQUIRED)
-    else( )
+    else(MSVC)
         find_package( Boost 1.53 COMPONENTS
                             system
                             thread  # for the shared mutexes
                       REQUIRED)
-    endif( )
+    endif(MSVC)
 
     set( VTRC_DISABLE_CXX11 0 )
 
