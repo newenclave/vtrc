@@ -39,6 +39,8 @@ foreach( dep ${dependencies} )
     include_directories(    ${${dep}_INCLUDE_DIRS}  )
     target_link_libraries(  ${exe_name} ${${dep}_LIBRARIES} )
 
+    message( "Libs: " ${${dep}_LIBRARIES} )
+
 endforeach(dep)
 
 if(WIN32)

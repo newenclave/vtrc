@@ -63,6 +63,15 @@ namespace vtrc { namespace common {
         impl_->write( data, length, success, on_send_success );
     }
 
+    native_handle_type transport_win_pipe::native_hanlde( ) const
+    {
+        native_handle_type nh;
+        nh.value.win_handle = 
+            static_cast<native_handle_type::handle>
+                (impl_->get_socket( ).native_handle( ));
+        return nh;
+    }
+
     std::string transport_win_pipe::prepare_for_write(const char *data,
                                                              size_t len)
     {

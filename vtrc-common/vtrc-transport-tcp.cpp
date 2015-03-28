@@ -70,7 +70,9 @@ namespace vtrc { namespace common {
     {
         native_handle_type nh;
 #ifdef _WIN32
-        nh.value.win_handle = impl_->get_socket( ).native_handle( );
+        nh.value.win_handle = 
+            reinterpret_cast<native_handle_type::handle>
+                ((SOCKET)impl_->get_socket( ).native_handle( ));
 #else
         nh.value.unix_fd = impl_->get_socket( ).native_handle( );
 #endif

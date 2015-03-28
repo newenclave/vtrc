@@ -34,13 +34,15 @@ namespace vtrc { namespace common {
     };
 
     struct native_handle_type {
+        typedef void *pvoid;
+        typedef pvoid handle;
         union {
 #ifdef _WIN32
-            HANDLE  win_handle;
+            handle  win_handle;
 #else
             int     unix_fd;
 #endif
-            void *  ptr_;
+            handle  ptr_;
         } value;
     };
 
