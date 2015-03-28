@@ -66,6 +66,17 @@ namespace vtrc { namespace common {
         impl_->write( data, length, success, on_send_success );
     }
 
+    native_handle_type transport_tcp::native_hanlde( ) const
+    {
+        native_handle_type nh;
+#ifdef _WIN32
+        nh.value.win_handle = impl_->get_socket( ).native_handle( );
+#else
+        nh.value.unix_fd = impl_->get_socket( ).native_handle( );
+#endif
+        return nh;
+    }
+
     void transport_tcp::set_no_delay( bool value )
     {
         impl_->set_no_delay( value );

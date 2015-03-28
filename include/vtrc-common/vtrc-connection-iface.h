@@ -28,9 +28,20 @@ namespace vtrc { namespace common {
     class rpc_channel;
 
     enum connection_type {
-         CONNECTION_TCP = 0
+         CONNECTION_TCP       = 0
         ,CONNECTION_UNIX_FILE = 1
         ,CONNECTION_WIN_PIPE  = 2
+    };
+
+    struct native_handle_type {
+        union {
+#ifdef _WIN32
+            HANDLE  win_handle;
+#else
+            int     unix_fd;
+#endif
+            void *  ptr_;
+        } value;
     };
 
     struct connection_iface: public enable_shared_from_this<connection_iface> {
@@ -58,6 +69,8 @@ namespace vtrc { namespace common {
         {
             return vtrc::weak_ptr<connection_iface const>( shared_from_this( ));
         }
+
+        virtual native_handle_type native_hanlde( ) const = 0;
 
         /// ll_mess is IN OUT parameter
         /// dont do this if not sure!

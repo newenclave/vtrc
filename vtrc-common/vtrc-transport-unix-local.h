@@ -49,6 +49,8 @@ namespace vtrc { namespace common {
                     const system_closure_type &success,
                     bool on_send_success) ;
 
+        native_handle_type native_hanlde( ) const;
+
         virtual void on_write_error( const boost::system::error_code &err ) = 0;
 
     private:
