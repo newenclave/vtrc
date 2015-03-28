@@ -36,20 +36,10 @@ set( Boost_USE_MULTITHREADED   ON)
 
 if( VTRC_CXX11_ENABLED )
 
-    if(MSVC)
-        find_package( Boost 1.53 COMPONENTS
-                            chrono
-                            date_time
-                            regex
-                            system
-                            thread  # for the shared mutexes
-                      REQUIRED)
-    else(MSVC)
-        find_package( Boost 1.53 COMPONENTS
-                            system
-                            thread  # for the shared mutexes
-                      REQUIRED)
-    endif(MSVC)
+    find_package( Boost 1.53 COMPONENTS
+                        system
+                        thread  # for the shared mutexes
+                  REQUIRED)
 
     set( VTRC_DISABLE_CXX11 0 )
 
