@@ -70,12 +70,10 @@ namespace vtrc { namespace common {
 
         /// ll_mess is IN OUT parameter
         /// dont do this if not sure!
-        virtual void raw_call_local (
-                                vtrc::shared_ptr<rpc::lowlevel_unit> ll_mess,
-                                common::empty_closure_type done ) = 0;
+        virtual void raw_call_local ( vtrc::shared_ptr<rpc::lowlevel_unit> llu,
+                                      common::empty_closure_type done ) = 0;
 
-        virtual void raw_write (
-                vtrc::shared_ptr<rpc::lowlevel_unit> ll_mess ) = 0;
+        virtual void raw_write ( vtrc::shared_ptr<rpc::lowlevel_unit> llu ) = 0;
 
     protected:
 
