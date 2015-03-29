@@ -40,18 +40,19 @@
 namespace stress {
 
 namespace {
-void precall_closure( vtrc::common::connection_iface &,
-                      const google::protobuf::MethodDescriptor *m,
-                      vtrc::rpc::lowlevel_unit & )
-{
-    std::cout << "Precall " << m->full_name( ) << "\n";
-}
 
-void postcall_closure( vtrc::common::connection_iface &,
-                       vtrc::rpc::lowlevel_unit & )
-{
-    std::cout << "Postcall " << "\n";
-}
+    void precall_closure( vtrc::common::connection_iface &,
+                          const google::protobuf::MethodDescriptor *m,
+                          vtrc::rpc::lowlevel_unit & )
+    {
+        std::cout << "Precall " << m->full_name( ) << "\n";
+    }
+
+    void postcall_closure( vtrc::common::connection_iface &,
+                           vtrc::rpc::lowlevel_unit & )
+    {
+        std::cout << "Postcall " << "\n";
+    }
 
 }
 
