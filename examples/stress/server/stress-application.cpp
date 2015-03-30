@@ -35,8 +35,27 @@
 #include "vtrc-common/vtrc-delayed-call.h"
 #include "vtrc-common/vtrc-thread-pool.h"
 #include "vtrc-common/vtrc-mutex-typedefs.h"
+#include "vtrc-common/vtrc-closure.h"
 
 namespace stress {
+
+namespace {
+
+    void precall_closure( vtrc::common::connection_iface &c,
+                          const google::protobuf::MethodDescriptor *m,
+                          vtrc::rpc::lowlevel_unit & )
+    {
+        std::cout << "Precall " << m->full_name( ) << "\n";
+        c.close( );
+    }
+
+    void postcall_closure( vtrc::common::connection_iface &,
+                           vtrc::rpc::lowlevel_unit & )
+    {
+        std::cout << "Postcall " << "\n";
+    }
+
+}
 
     using namespace vtrc;
     namespace po = boost::program_options;
@@ -86,6 +105,8 @@ namespace stress {
                 ::unlink( params[0].c_str( ) ); /// unlink old file socket
 #endif
                 result = server::listeners::local::create(app, opts, params[0]);
+//                result->set_precall( &precall_closure );
+//                result->set_postcall( &postcall_closure );
 
             } else if( params.size( ) == 2 ) {  /// TCP
 

@@ -29,10 +29,12 @@ namespace {
         }
 
         impl( vtrc::shared_ptr<client::vtrc_client> &c,
-              common::rpc_channel::flags opts )
+              common::rpc_channel::flags opts, bool init )
             :stub_(get_channel(*c, opts))
         {
-            stub_.call( &stub_type::init );
+            if( init ) {
+                stub_.call( &stub_type::init );
+            }
         }
 
         void ping( unsigned payload )
@@ -81,9 +83,9 @@ namespace {
 }
 
     interface *create_stress_client(vtrc::shared_ptr<client::vtrc_client> c,
-                                    common::rpc_channel::flags opts)
+                                    common::rpc_channel::flags opts, bool init )
     {
-        return new impl( c, opts );
+        return new impl( c, opts, init );
     }
 
     interface *create_stress_client(

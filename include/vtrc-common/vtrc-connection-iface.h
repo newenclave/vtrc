@@ -27,12 +27,6 @@ namespace vtrc { namespace common {
     class call_context;
     class rpc_channel;
 
-    enum connection_type {
-         CONNECTION_TCP       = 0
-        ,CONNECTION_UNIX_FILE = 1
-        ,CONNECTION_WIN_PIPE  = 2
-    };
-
     struct native_handle_type {
         typedef void *pvoid;
         typedef pvoid handle;
@@ -72,16 +66,14 @@ namespace vtrc { namespace common {
             return vtrc::weak_ptr<connection_iface const>( shared_from_this( ));
         }
 
-        virtual native_handle_type native_hanlde( ) const = 0;
+        virtual native_handle_type native_handle( ) const = 0;
 
-        /// ll_mess is IN OUT parameter
+        /// llu is IN OUT parameter
         /// dont do this if not sure!
-        virtual void raw_call_local (
-                                vtrc::shared_ptr<rpc::lowlevel_unit> ll_mess,
-                                common::empty_closure_type done ) = 0;
+        virtual void raw_call_local ( vtrc::shared_ptr<rpc::lowlevel_unit> llu,
+                                      common::empty_closure_type done ) = 0;
 
-        virtual void raw_write (
-                vtrc::shared_ptr<rpc::lowlevel_unit> ll_mess ) = 0;
+        virtual void raw_write ( vtrc::shared_ptr<rpc::lowlevel_unit> llu ) = 0;
 
     protected:
 

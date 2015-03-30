@@ -47,7 +47,7 @@ namespace vtrc { namespace common {
         void write( const char *data, size_t length,
             const system_closure_type &success, bool on_send_success ) ;
 
-        native_handle_type native_hanlde( ) const;
+        native_handle_type native_handle( ) const;
         virtual void on_write_error( const boost::system::error_code &err ) = 0;
 
     private:

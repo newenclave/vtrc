@@ -60,7 +60,7 @@ namespace vtrc { namespace common {
         impl_->write( data, length, success, on_send_success );
     }
 
-    native_handle_type transport_unix_local::native_hanlde( ) const
+    native_handle_type transport_unix_local::native_handle( ) const
     {
         native_handle_type nh;
         nh.value.unix_fd = impl_->get_socket( ).native_handle( );

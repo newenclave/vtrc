@@ -29,7 +29,7 @@ namespace stress {
 
     interface *create_stress_client(
             vtrc::shared_ptr<vtrc::client::vtrc_client> c,
-            vtrc::common::rpc_channel::flags opts);
+            vtrc::common::rpc_channel::flags opts, bool init = false);
 
     interface *create_stress_client(
             vtrc::shared_ptr<vtrc::client::vtrc_client> c); /// default options
