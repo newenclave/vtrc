@@ -51,10 +51,10 @@ namespace {
             return true;
         }
 
-        static vtrc::shared_ptr<this_type> create(listener &listnr,
+        static vtrc::shared_ptr<this_type> create( listener &listnr,
                                  vtrc::shared_ptr<socket_type> sock,
                                  const close_closure &on_close_cb,
-                                 const std::string &name)
+                                 const std::string &name )
         {
             vtrc::shared_ptr<this_type> new_inst
                     (vtrc::make_shared<this_type>(vtrc::ref(listnr),
