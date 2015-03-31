@@ -29,15 +29,12 @@ int main( int argc, const char **argv )
 {
     common::thread_pool tp( 1 );
 
-    const char *address = "127.0.0.1";
-    unsigned short port = 56560;
+    const char *address = "\\\\.\\pipe\\hello_windows_impersonation_pipe";
 
     if( argc > 2 ) {
         address = argv[1];
-        port = boost::lexical_cast<unsigned short>( argv[2] );
-    } else if( argc > 1 ) {
-        port = boost::lexical_cast<unsigned short>( argv[1] );
     }
+
 
     try {
 
@@ -50,7 +47,7 @@ int main( int argc, const char **argv )
 
         std::cout <<  "Connecting..." << std::endl;
 
-        cl->connect( address, port );
+        cl->connect( address );
         std::cout << "Ok" << std::endl;
 
         vtrc::unique_ptr<common::rpc_channel> channel(cl->create_channel( ));

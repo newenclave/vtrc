@@ -51,26 +51,6 @@ namespace {
             return true;
         }
 
-        bool impersonate( )
-        {
-//            BOOL imp = ImpersonateNamedPipeClient(
-//                                    get_socket( ).native_handle( ) );
-//            if( imp ) {
-//                common::call_context *c
-//                          (get_protocol(  ).get_top_call_context( ));
-//                if( c ) c->set_impersonated( true );
-//            }
-//            return !!imp;
-            return false;
-        }
-
-        void revert( )
-        {
-//            common::call_context *c
-//                                (get_protocol( ).get_top_call_context( ));
-//            if( c && c->get_impersonated( ) ) RevertToSelf( );
-        }
-
         static vtrc::shared_ptr<this_type> create(listener &listnr,
                                  vtrc::shared_ptr<socket_type> sock,
                                  const close_closure &on_close_cb,
@@ -81,7 +61,14 @@ namespace {
                                         sock,
                                         vtrc::ref(on_close_cb),
                                         vtrc::ref(name)));
-            new_inst->protocol_ ->init( );
+
+            rpc::session_options const &opts(listnr.get_options( ));
+
+            new_inst->protocol_.reset(
+                    new protocol_layer_s( new_inst->app_,
+                                            new_inst.get( ), opts ) );
+
+            //new_inst->protocol_ ->init( );
             //new_inst->init( );
             return new_inst;
         }

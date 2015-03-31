@@ -2,6 +2,7 @@
 
 #include "vtrc-server/vtrc-application.h"
 #include "vtrc-server/vtrc-listener-tcp.h"
+#include "vtrc-server/vtrc-listener-local.h"
 
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-closure-holder.h"
@@ -73,7 +74,7 @@ class  hello_service_impl: public howto::hello_service {
             << " from hello_service_impl::send_hello!\n"
             << "Your transport name is '"
             << cl_->name( ) 
-            << "'.\nUser name" << un << "\n"
+            << "'.\nUser name " << un << "\n"
             << "Have a nice day.";
 
         response->set_hello( oss.str( ) );
@@ -124,14 +125,10 @@ public:
 int main( int argc, const char **argv )
 {
 
-    const char *address = "127.0.0.1";
-    unsigned short port = 56560;
+    const char *address = "\\\\.\\pipe\\hello_windows_impersonation_pipe";
 
     if( argc > 2 ) {
         address = argv[1];
-        port = boost::lexical_cast<unsigned short>( argv[2] );
-    } else if( argc > 1 ) {
-        port = boost::lexical_cast<unsigned short>( argv[1] );
     }
 
     common::thread_pool tp;
@@ -140,9 +137,12 @@ int main( int argc, const char **argv )
     try {
 
         vtrc::shared_ptr<server::listener>
-                tcp( server::listeners::tcp::create( app, address, port ) );
+             pipe( server::listeners::local::create( app, address ) );
 
-        tcp->start( );
+        pipe->set_precall( &precall_closure );
+        pipe->set_postcall( &postcall_closure);
+
+        pipe->start( );
 
         tp.attach( );
 
