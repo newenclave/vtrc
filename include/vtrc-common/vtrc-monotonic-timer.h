@@ -7,13 +7,13 @@
 
 namespace vtrc { namespace common { namespace timer {
 
-    using boost::posix_time::milliseconds;
-    using boost::posix_time::microseconds;
-    using boost::posix_time::seconds;
-    using boost::posix_time::minutes;
-    using boost::posix_time::hours;
-
     struct monotonic_traits {
+
+        typedef boost::posix_time::milliseconds milliseconds;
+        typedef boost::posix_time::microseconds microseconds;
+        typedef boost::posix_time::seconds seconds;
+        typedef boost::posix_time::minutes minutes;
+        typedef boost::posix_time::hours hours;
 
         typedef vtrc::chrono::steady_clock::time_point time_type;
         typedef boost::posix_time::time_duration duration_type;
@@ -23,8 +23,8 @@ namespace vtrc { namespace common { namespace timer {
             return vtrc::chrono::steady_clock::now( );
         }
 
-        static time_type add(const time_type& time,
-                             const duration_type& duration)
+        static time_type add( const time_type& time,
+                              const duration_type& duration )
         {
             return time +
                    vtrc::chrono::microseconds( duration.total_microseconds( ) );
@@ -33,10 +33,10 @@ namespace vtrc { namespace common { namespace timer {
         static duration_type subtract( const time_type& timeLhs,
                                        const time_type& timeRhs )
         {
-          vtrc::chrono::microseconds oChronoDuration_us(
+          vtrc::chrono::microseconds duration_us (
                 vtrc::chrono::duration_cast<vtrc::chrono::microseconds>
                                                         (timeLhs - timeRhs));
-          return boost::posix_time::microseconds(oChronoDuration_us.count( ));
+          return microseconds( duration_us.count( ) );
         }
 
         static bool less_than( const time_type& timeLhs,
@@ -45,8 +45,7 @@ namespace vtrc { namespace common { namespace timer {
             return timeLhs < timeRhs;
         }
 
-        static boost::posix_time::time_duration
-                      to_posix_duration( const duration_type& duration )
+        static duration_type to_posix_duration( const duration_type& duration )
         {
             return duration;
         }
