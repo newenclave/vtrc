@@ -135,8 +135,6 @@ namespace vtrc { namespace client {
 
             if( clk.get( ) == NULL ) {
                 parent_->get_channel_error_callback( )( "Connection lost" );
-//                throw vtrc::common::exception( rpc::errors::ERR_CHANNEL,
-//                                               "Connection lost");
                 return lowlevel_unit_sptr( );
             }
 
@@ -172,8 +170,6 @@ namespace vtrc { namespace client {
 
             if( clk.get( ) == NULL ) {
                 parent_->get_channel_error_callback( )( "Connection lost" );
-//                throw vtrc::common::exception( rpc::errors::ERR_CHANNEL,
-//                                               "Connection lost");
                 return rpc_channel::lowlevel_unit_sptr( );
             }
 
