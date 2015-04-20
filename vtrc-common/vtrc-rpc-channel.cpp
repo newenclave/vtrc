@@ -22,8 +22,8 @@ namespace vtrc { namespace common  {
         void default_error_cb( const rpc_channel::lowlevel_unit_type &llu )
         {
             throw vtrc::common::exception( llu.error( ).code( ),
-                                     llu.error( ).category( ),
-                                     llu.error( ).additional( ) );
+                                           llu.error( ).category( ),
+                                           llu.error( ).additional( ) );
         }
 
         void default_chan_error_cb( const char *message )
