@@ -16,6 +16,7 @@
 namespace vtrc { namespace common  {
 
     namespace gpb = google::protobuf;
+    namespace ph  = vtrc::placeholders;
 
     namespace {
 
@@ -34,12 +35,12 @@ namespace vtrc { namespace common  {
 
         rpc_channel::proto_error_cb_type get_default_error_cb( )
         {
-            return vtrc::bind( default_error_cb, vtrc::placeholders::_1 );
+            return vtrc::bind( default_error_cb, ph::_1 );
         }
 
         rpc_channel::channel_error_cb_type get_default_chan_error_cb( )
         {
-            return vtrc::bind( default_chan_error_cb, vtrc::placeholders::_1 );
+            return vtrc::bind( default_chan_error_cb, ph::_1 );
         }
     }
 
