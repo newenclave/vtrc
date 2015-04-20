@@ -266,9 +266,6 @@ namespace vtrc { namespace common  {
             if( top->error( ).code( ) != rpc::errors::ERR_NO_ERROR ) {
                 cl->get_protocol( ).erase_slot( call_id );
                 impl_->error_cb_( *top );
-//                throw vtrc::common::exception( top->error( ).code( ),
-//                                         top->error( ).category( ),
-//                                         top->error( ).additional( ) );
                 return false;
             }
 
