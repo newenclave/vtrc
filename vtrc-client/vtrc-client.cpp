@@ -587,29 +587,29 @@ namespace vtrc { namespace client {
     }
 #endif
 
-    void vtrc_client::connect(const std::string &address,
-                              unsigned short service, bool tcp_nodelay )
+    void vtrc_client::connect( const std::string &address,
+                               unsigned short service, bool tcp_nodelay )
     {
         impl_->connect( address, service, tcp_nodelay );
     }
 
-    void vtrc_client::async_connect(const std::string &local_name,
-                                    common::system_closure_type closure)
+    void vtrc_client::async_connect( const std::string &local_name,
+                                     common::system_closure_type closure )
     {
         impl_->async_connect( local_name, closure );
     }
 
 #ifdef _WIN32
 
-    void vtrc_client::async_connect(const std::wstring &local_name,
-                                    common::system_closure_type closure)
+    void vtrc_client::async_connect( const std::wstring &local_name,
+                                     common::system_closure_type closure )
     {
         impl_->async_connect( local_name, closure );
     }
 
 #endif
 
-    void vtrc_client::async_connect(const std::string &address,
+    void vtrc_client::async_connect( const std::string &address,
                             unsigned short service,
                             common::system_closure_type closure,
                             bool tcp_nodelay )
@@ -627,7 +627,7 @@ namespace vtrc { namespace client {
         impl_->disconnect( );
     }
 
-    void vtrc_client::assign_rpc_handler(vtrc::shared_ptr<gpb::Service> serv)
+    void vtrc_client::assign_rpc_handler( vtrc::shared_ptr<gpb::Service> serv )
     {
         impl_->assign_handler( serv );
     }
@@ -637,7 +637,7 @@ namespace vtrc { namespace client {
         impl_->assign_weak_handler( serv );
     }
 
-    service_sptr vtrc_client::get_rpc_handler(const std::string &name)
+    service_sptr vtrc_client::get_rpc_handler( const std::string &name )
     {
         return impl_->get_handler( name );
     }
