@@ -224,7 +224,6 @@ namespace vtrc { namespace common  {
         }
     }
 
-
     const rpc_channel::channel_error_cb_type &
           rpc_channel::get_channel_error_callback( ) const
     {

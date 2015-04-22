@@ -204,15 +204,14 @@ namespace vtrc { namespace common {
         precall_closure_type         precall_;
         postcall_closure_type        postcall_;
 
-        impl( transport_iface *c, bool oddside,
-                    const rpc::session_options &opts )
+        impl( transport_iface *c, bool odd, const rpc::session_options &opts )
             :connection_(c)
             ,hash_maker_(common::hash::create_default( ))
             ,hash_checker_(common::hash::create_default( ))
             ,transformer_(common::transformers::none::create( ))
             ,revertor_(common::transformers::none::create( ))
             ,queue_(size_policy_ns::create_parser(opts.max_message_length( )))
-            ,rpc_index_(oddside ? 101 : 100)
+            ,rpc_index_(odd ? 101 : 100)
             ,ready_(false)
             ,level_(0)
             ,session_opts_(opts)
