@@ -203,13 +203,16 @@ namespace {
             }
         }
 
+        typedef common::timer::monotonic_traits::microseconds microseconds;
+        typedef common::timer::monotonic_traits::milliseconds milliseconds;
+
         void start_timer( call_cb_pair &tc, unsigned id,  unsigned microsec )
         {
             tc.first->call_from_now(
                         vtrc::bind( &impl::timer_handler, this,
                                     vtrc::placeholders::error,
                                     id, microsec, tc ),
-                        common::timer::microseconds( microsec ) );
+                        microseconds( microsec ) );
         }
 
         void on_new_connection( server::listener *l,
@@ -237,7 +240,7 @@ namespace {
             retry_timer_.call_from_now(
                 vtrc::bind( &impl::retry_timer_handler, this,
                             l, rto, vtrc::placeholders::_1 ),
-                            common::timer::milliseconds( rto ));
+                            milliseconds( rto ));
         }
 
         void retry_timer_handler( server::listener_sptr l, unsigned retry_to,
