@@ -14,30 +14,30 @@ namespace vtrc { namespace common {
 
         rtti_wrapper( )
             :info_(&typeid(null_info))
-        {}
+        { }
 
         explicit rtti_wrapper(const std::type_info &info)
             :info_(&info)
-        {}
+        { }
 
         const std::type_info& get( ) const
         {
             return *info_;
         }
 
-        bool before(const rtti_wrapper& rhs) const
+        bool before( const rtti_wrapper& rhs ) const
         {
-            return !!info_->before(*rhs.info_);
+            return !!info_->before( *rhs.info_ );
         }
 
-        const char* name() const
+        const char* name( ) const
         {
             return info_->name( );
         }
     };
 
-    inline bool operator < (const rtti_wrapper& left,
-                            const rtti_wrapper& right)
+    inline bool operator < ( const rtti_wrapper& left,
+                             const rtti_wrapper& right )
     { return left.before(right); }
 
 }}
