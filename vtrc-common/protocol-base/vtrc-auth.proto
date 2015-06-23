@@ -1,3 +1,4 @@
+syntax="proto3";
 
 import "vtrc-errors.proto";
 import "vtrc-rpc-lowlevel.proto";
@@ -32,24 +33,24 @@ message init_protocol {
 }
 
 message client_selection {
-    optional uint32     hash                   =  1 [default = 2]; // CRC_32
-    optional uint32     transform              =  2; // default TRANSFORM_NONE
-    optional bytes      id                     =  3;
+    uint32     hash                   =  1; // CRC_32
+    uint32     transform              =  2; // default TRANSFORM_NONE
+    bytes      id                     =  3;
 }
 
 message transformer_setup {
-    optional bytes  salt1                      =  1;
-    optional bytes  salt2                      =  2;
+    bytes  salt1                      =  1;
+    bytes  salt2                      =  2;
 }
 
 message session_setup {
-    optional vtrc.rpc.session_options options = 1;
+    vtrc.rpc.session_options options = 1;
 }
 
 message init_capsule {
-    optional string                       text  =  1;
-    optional bool                         ready =  2;
-    optional vtrc.rpc.errors.container    error =  3;
+    string                       text  =  1;
+    bool                         ready =  2;
+    vtrc.rpc.errors.container    error =  3;
 
-    optional bytes                        body = 10;
+    bytes                        body = 10;
 }

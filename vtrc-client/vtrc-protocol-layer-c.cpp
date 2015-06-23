@@ -165,10 +165,10 @@ namespace vtrc { namespace client {
 
         void process_event( lowlevel_unit_sptr &llu )
         {
-            if ( llu->has_id( ) ) {
+            if ( llu->id( ) != 0 ) {
                 client_->get_rpc_service( ).post(
                     vtrc::bind( &this_type::process_event_impl, this,
-                             client_->weak_from_this( ), llu));
+                                 client_->weak_from_this( ), llu));
             } else {
                 parent_->push_rpc_message_all( llu );
             }
@@ -274,7 +274,7 @@ namespace vtrc { namespace client {
             }
 
             if( !capsule.ready( ) ) {
-                if( capsule.error( ).has_additional( ) ) {
+                if( !capsule.error( ).additional( ).empty( ) ) {
                     parent_->on_init_error( capsule.error( ),
                                       capsule.error( ).additional( ).c_str( ) );
 

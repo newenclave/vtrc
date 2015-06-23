@@ -242,7 +242,9 @@ namespace vtrc { namespace server { namespace listeners {
                     return;
                 }
 
-                if( !error ) {
+                if( bytes == 0 ) {
+                    close_drop(  );
+                } else if( !error ) {
                     try {
                         protocol_->process_data( &read_buff_[0], bytes );
                     } catch( const std::exception & /*ex*/ ) {

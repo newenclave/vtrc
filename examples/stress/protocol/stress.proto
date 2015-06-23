@@ -1,3 +1,4 @@
+syntax="proto3";
 
 package vtrc_example;
 option cc_generic_services = true;
@@ -5,25 +6,25 @@ option cc_generic_services = true;
 message empty { }
 
 message ping_req {
-    optional bytes payload = 1;
+    bytes payload = 1;
 }
 
 message ping_res { }
 
 message generate_events_req {
-    optional uint32 count         = 1;
-    optional bool   callback      = 2;
-    optional bool   wait          = 3;
-    optional uint32 payload_size  = 4 [default = 64];
+    uint32 count         = 1;
+    bool   callback      = 2;
+    bool   wait          = 3;
+    uint32 payload_size  = 4;
 }
 
 message generate_events_res {
-    optional uint32 count   = 1;
+    uint32 count   = 1;
 }
 
 message recursive_call_req {
-    optional uint32 balance = 1;
-    optional bytes  payload = 2;
+    uint32 balance = 1;
+    bytes  payload = 2;
 }
 
 message recursive_call_res { }
@@ -32,11 +33,11 @@ message shutdown_req { }
 message shutdown_res { }
 
 message timer_register_req {
-    optional uint32 microseconds = 1;
+    uint32 microseconds = 1;
 }
 
 message timer_register_res {
-    optional uint32 id = 1;
+    uint32 id = 1;
 }
 
 service stress_service {
@@ -58,9 +59,9 @@ service stress_service {
 /// ============== events or callbacks ================== ///
 
 message event_req {
-    optional uint32 id            = 1;
-    optional bool   is_event      = 2;
-    optional bytes  payload       = 4;
+    uint32 id            = 1;
+    bool   is_event      = 2;
+    bytes  payload       = 4;
 }
 
 message event_res { }

@@ -1,3 +1,4 @@
+syntax="proto3";
 
 import "vtrc-errors.proto";
 
@@ -6,17 +7,17 @@ package vtrc.rpc;
 // index 53000
 
 message unit_options {
-    optional bool   wait             = 2 [default = true];
-    optional bool   accept_callbacks = 4 [default = true];
-    optional bool   accept_response  = 5 [default = true];
+    bool   wait             = 2;
+    bool   accept_callbacks = 4;
+    bool   accept_response  = 5;
 }
 
 message session_options {
-    optional uint32 max_active_calls    = 1 [default = 5];      //per user
-    optional uint32 max_message_length  = 2 [default = 65536];  //per user
-//    optional uint32 max_total_calls     = 3 [default = 20];
-    optional uint32 max_stack_size      = 4 [default = 64];     //per user
-    optional uint32 read_buffer_size    = 5 [default = 4096];   //per user
+    uint32 max_active_calls    = 1;  //per user
+    uint32 max_message_length  = 2;   //per user
+//   uint32 max_total_calls     = 3;
+    uint32 max_stack_size      = 4;   //per user
+    uint32 read_buffer_size    = 5;   //per user
 }
 
 message message_info {
@@ -35,28 +36,28 @@ message message_info {
         MESSAGE_INTERNAL        = 6; // intervals
     }
 
-    optional uint32 message_type    = 1 [default = 0]; // @message_type_enum
+    uint32 message_type    = 1; // @message_type_enum
 }
 
 message call_info {
-    optional bytes service_id = 1; // we can use name, full_name or crc :]
-    optional bytes method_id  = 2;
+    bytes service_id = 1; // we can use name, full_name or crc :]
+    bytes method_id  = 2;
 }
 
 message lowlevel_unit {
 
     // --- header --- //
-    optional uint64                         id =  1;
-    optional uint64                  target_id =  2;
-    optional message_info                 info =  3;
-    optional call_info                    call =  4;
-    optional vtrc.rpc.errors.container    error = 5;
-    optional unit_options                  opt =  6;
-    optional bytes                channel_data =  7; // some optional data from
+    uint64                         id  =  1;
+    uint64                  target_id  =  2;
+    message_info                 info  =  3;
+    call_info                    call  =  4;
+    vtrc.rpc.errors.container    error =  5;
+    unit_options                  opt  =  6;
+    bytes                channel_data  =  7; // some optional data from
                                                      // the OTHER side!
 
     // --- //
-    optional bytes  request = 20;
-    optional bytes response = 21;
+    bytes  request = 20;
+    bytes response = 21;
 }
 

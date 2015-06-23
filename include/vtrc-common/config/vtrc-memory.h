@@ -1,7 +1,7 @@
 #ifndef VTRC_MEMORY_H
 #define VTRC_MEMORY_H
 
-#if 0
+#if 1
 #include <iostream>
 
 #define DEBUG_LINE( c ) std::cout <<    \

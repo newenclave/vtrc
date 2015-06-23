@@ -977,8 +977,18 @@ namespace vtrc { namespace common {
 
     };
 
+    static rpc::session_options default_rpc_opts( )
+    {
+        rpc::session_options res;
+        res.set_max_active_calls  ( 5 );
+        res.set_max_message_length( 65536 );
+        res.set_max_stack_size    ( 64 );
+        res.set_read_buffer_size  ( 4096 );
+        return res;
+    }
+
     protocol_layer::protocol_layer( transport_iface *connection, bool oddside )
-        :impl_(new impl(connection, oddside, rpc::session_options( )))
+        :impl_(new impl(connection, oddside, default_rpc_opts( )))
     {
         impl_->parent_ = this;
     }
