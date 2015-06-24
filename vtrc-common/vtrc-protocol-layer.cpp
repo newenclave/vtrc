@@ -700,10 +700,22 @@ namespace vtrc { namespace common {
             return level_;
         }
 
+        /// TODO: fix it; need to invent a system for set defaults;
+        /// cuz protobuffer3 doesn't have defaults :(
+        static rpc::options default_meth_options( )
+        {
+            rpc::options res;
+            res.set_timeout( 30000000 ); // microseconds
+            res.set_wait( true );
+            res.set_accept_callbacks( true );
+            return res;
+        }
+
         const rpc::options *get_method_options(
                                     const gpb::MethodDescriptor *method)
         {
             upgradable_lock lck(options_map_lock_);
+            static rpc::options defaults( default_meth_options( ) );
 
             options_map_type::const_iterator f(options_map_.find(method));
 
@@ -720,6 +732,7 @@ namespace vtrc { namespace common {
                             .GetExtension( rpc::method_options ));
 
                 result = vtrc::make_shared<rpc::options>( serv );
+                utilities::merge_messages( *result, defaults );
                 utilities::merge_messages( *result, meth );
 
                 upgrade_to_unique ulck( lck );
