@@ -96,11 +96,6 @@ namespace vtrc {
 
 #endif
 
-//    template <typename T>
-//    struct shared_ptr { typedef boost::shared_ptr<T> type; };
-
-//    template <typename T>
-//    struct weak_ptr { typedef boost::weak_ptr<T> type; };
 }
 
 #else
