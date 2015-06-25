@@ -13,14 +13,14 @@ namespace vtrc { namespace server {
 
     struct application::impl {
 
-        common::enviroment                  env_;
-        boost::asio::io_service            *ios_;
-        const bool                          own_ios_;
+        common::enviroment         env_;
+        boost::asio::io_service   *ios_;
+        const bool                 own_ios_;
 
-        boost::asio::io_service            *rpc_ios_;
-        const bool                          own_rpc_ios_;
+        boost::asio::io_service   *rpc_ios_;
+        const bool                 own_rpc_ios_;
 
-        vtrc::shared_ptr<common::connection_list>   clients_;
+        vtrc::shared_ptr<common::connection_list> clients_;
 
         impl( )
             :ios_(new boost::asio::io_service)
