@@ -57,8 +57,9 @@ namespace vtrc { namespace server {
             clients_->foreach_while( close_all_connection );
         }
 
-        ~impl( ) try
-        {
+        ~impl( )
+        { try {
+
             stop_all_clients( );
             clients_->clear( );
 
@@ -66,8 +67,8 @@ namespace vtrc { namespace server {
             if( own_rpc_ios_ )  delete rpc_ios_;
 
         } catch ( ... ) {
-
-        }
+            ;;;
+        } }
 
         common::enviroment &get_enviroment( )
         {
