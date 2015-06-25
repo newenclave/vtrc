@@ -140,8 +140,8 @@ namespace vtrc { namespace server {
         return impl_->get_clients( );
     }
 
-    void application::configure_session(common::connection_iface *  /*c*/,
-                                        rpc::session_options & /*opts*/)
+    void application::configure_session( common::connection_iface *  /*c*/,
+                                         rpc::session_options & /*opts*/ )
     {
         /// use default settings
     }
