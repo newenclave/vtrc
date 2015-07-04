@@ -50,7 +50,7 @@ message lowlevel_unit {
     optional uint64                  target_id  = 2;
     optional message_info                 info  = 3;
     optional call_info                    call  = 4;
-    optional vtrc.rpc.errors.container    error = 5;
+    optional vtrc.rpc.errors.container   error  = 5;
     optional unit_options                  opt  = 6;
     optional bytes                channel_data  = 7; // some optional data from
                                                      // the OTHER side!
