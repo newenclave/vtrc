@@ -110,22 +110,22 @@ namespace vtrc { namespace server {
 
         // accessor ===================================
 
-        void set_transformer( transformer_iface *ti )
+        void set_transformer( common::transformer_iface *ti )
         {
             parent_->change_transformer( ti );
         }
 
-        void set_revertor( transformer_iface *ti )
+        void set_revertor( common::transformer_iface *ti )
         {
             parent_->change_revertor( ti );
         }
 
-        void set_hash_maker( hash_iface *hi )
+        void set_hash_maker( common::hash_iface *hi )
         {
             parent_->change_hash_maker( hi );
         }
 
-        void set_hash_cheker( hash_iface *hi )
+        void set_hash_cheker( common::hash_iface *hi )
         {
             parent_->change_hash_checker( hi );
         }
