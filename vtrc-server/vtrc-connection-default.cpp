@@ -128,8 +128,6 @@ namespace vtrc { namespace server {
 
             void set_client_ready( rpc::auth::init_capsule &capsule )
             {
-                //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
-
                 keepalive_calls_.cancel( );
 
                 capsule.set_ready( true );
@@ -154,8 +152,6 @@ namespace vtrc { namespace server {
 
             void on_client_transformer( const std::string &data )
             {
-                //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
-
                 using namespace common::transformers;
                 rpc::auth::init_capsule capsule;
 
