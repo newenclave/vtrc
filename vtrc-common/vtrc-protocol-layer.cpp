@@ -343,6 +343,28 @@ namespace vtrc { namespace common {
             return checked;
         }
 
+        bool raw_pop( std::string &result )
+        {
+            std::string &data( queue_->messages( ).front( ) );
+
+            /// revert message
+            revertor_->transform( data.empty( ) ? NULL : &data[0],
+                                  data.size( ) );
+
+            /// check hash
+            bool checked = check_message( data );
+            if( checked ) {
+                const size_t hash_length = hash_checker_->hash_size( );
+                result.assign( data.c_str( ) + hash_length,
+                               data.size( )  - hash_length );
+            }
+
+            /// in all cases we pop message
+            queue_->messages( ).pop_front( );
+
+            return checked;
+        }
+
 #else
         std::string prepare_data( const char *data, size_t length )
         {
@@ -1175,6 +1197,11 @@ namespace vtrc { namespace common {
     bool protocol_layer::parse_and_pop( gpb::MessageLite &result )
     {
         return impl_->parse_and_pop( result );
+    }
+
+    bool protocol_layer::raw_pop( std::string &result )
+    {
+        return impl_->raw_pop( result );
     }
 
     uint64_t protocol_layer::next_index( )

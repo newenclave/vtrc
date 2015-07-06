@@ -177,8 +177,8 @@ namespace vtrc { namespace common {
                 vtrc::shared_ptr<system_closure_type>
                        closure(vtrc::make_shared<system_closure_type>(success));
 
-                message_holder_sptr mh(make_holder(data, length,
-                                                   closure, on_send));
+                message_holder_sptr mh( make_holder( data, length,
+                                                     closure, on_send ) );
                 DEBUG_LINE(parent_);
 
                 write_dispatcher_.post(

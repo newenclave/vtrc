@@ -210,6 +210,8 @@ namespace vtrc { namespace common {
         /// protocol violation; we have to close connection in this case
         bool   parse_and_pop( google::protobuf::MessageLite &result );
 
+        bool   raw_pop( std::string &result );
+
         void change_hash_maker  ( hash_iface *new_hasher );
         void change_hash_checker( hash_iface *new_hasher );
 

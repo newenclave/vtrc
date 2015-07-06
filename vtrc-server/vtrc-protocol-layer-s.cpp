@@ -29,7 +29,7 @@
 #include "vtrc-atomic.h"
 #include "vtrc-common/vtrc-random-device.h"
 #include "vtrc-common/vtrc-delayed-call.h"
-
+#include "vtrc-common/vtrc-protocol-accessor-iface.h"
 
 namespace vtrc { namespace server {
 
@@ -64,8 +64,9 @@ namespace vtrc { namespace server {
     }
 
     namespace data_queue = common::data_queue;
+    typedef common::protocol_accessor paccessor;
 
-    struct protocol_layer_s::impl {
+    struct protocol_layer_s::impl: common::protocol_accessor {
 
         typedef impl             this_type;
         typedef protocol_layer_s parent_type;
@@ -106,6 +107,38 @@ namespace vtrc { namespace server {
                                      vtrc::placeholders::_1 ),
                         boost::posix_time::seconds( 10 ));
         }
+
+        // accessor ===================================
+
+        void set_transformer( transformer_iface *ti )
+        {
+            parent_->change_transformer( ti );
+        }
+
+        void set_revertor( transformer_iface *ti )
+        {
+            parent_->change_revertor( ti );
+        }
+
+        void set_hash_maker( hash_iface *hi )
+        {
+            parent_->change_hash_maker( hi );
+        }
+
+        void set_hash_cheker( hash_iface *hi )
+        {
+            parent_->change_hash_checker( hi );
+        }
+
+        void write( const std::string &data,
+                    common::system_closure_type cb,
+                    bool on_send_success )
+        {
+            connection_->write( data.c_str( ), data.size( ),
+                                cb, on_send_success );
+        }
+
+        // accessor ===================================
 
         common::connection_iface_sptr lock_connection( )
         {
@@ -371,8 +404,8 @@ namespace vtrc { namespace server {
                         common::connection_iface_sptr /*conn*/ )
         {
             parent_->make_local_call( llu,
-                vtrc::bind(&this_type::call_done, this,
-                            vtrc::placeholders::_1 ));
+                vtrc::bind( &this_type::call_done, this,
+                             vtrc::placeholders::_1 ));
         }
 
         void send_busy( lowlevel_unit_type &llu )
