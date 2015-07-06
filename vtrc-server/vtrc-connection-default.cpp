@@ -158,7 +158,11 @@ namespace vtrc { namespace server {
 
                 using namespace common::transformers;
                 rpc::auth::init_capsule capsule;
-                capsule.ParseFromString( data );
+
+                if(!capsule.ParseFromString( data )) {
+                    pa_->close( );
+                    return;
+                }
 
                 if( !capsule.ready( ) ) {
                     conn( )->close( );
@@ -247,7 +251,11 @@ namespace vtrc { namespace server {
             {
                 //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
                 rpc::auth::init_capsule capsule;
-                capsule.ParseFromString( data );
+
+                if(!capsule.ParseFromString( data )) {
+                    pa_->close( );
+                    return;
+                }
 
                 if( !capsule.ready( ) ) {
                     failed_ = true;
