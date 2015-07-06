@@ -377,6 +377,9 @@ namespace vtrc { namespace client {
         {
 
             rpc::auth::init_capsule capsule;
+
+            std::cout << "Server said Hello!\n";
+
             bool check = parent_->parse_and_pop( capsule );
 
             if( !check ) {

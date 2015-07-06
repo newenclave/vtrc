@@ -34,14 +34,14 @@
 
 namespace vtrc { namespace server {
 
-    typedef common::connection_setup_iface connection_setup_iface;
-    connection_setup_iface *create_default_setup( );
-
-    typedef vtrc::unique_ptr<connection_setup_iface> connection_setup_uptr;
-
     namespace gpb   = google::protobuf;
     namespace bsys  = boost::system;
     namespace basio = boost::asio;
+
+    typedef common::connection_setup_iface connection_setup_iface;
+    connection_setup_iface *create_default_setup( application &a );
+
+    typedef vtrc::unique_ptr<connection_setup_iface> connection_setup_uptr;
 
 #if 1
 #define VPROTOCOL_S_LOCK_CONN( conn, ret )          \
@@ -72,6 +72,13 @@ namespace vtrc { namespace server {
     namespace data_queue = common::data_queue;
     typedef common::protocol_accessor paccessor;
 
+    void def_cb( const boost::system::error_code & )
+    {
+
+    }
+
+#define TEST_CONN_SETUP   1
+
     struct protocol_layer_s::impl: common::protocol_accessor {
 
         typedef impl             this_type;
@@ -82,6 +89,7 @@ namespace vtrc { namespace server {
         common::connection_iface_wptr    keeper_;
         protocol_layer_s                *parent_;
         bool                             ready_;
+        bool                             closed_;
 
         service_map                      services_;
         shared_mutex                     services_lock_;
@@ -93,32 +101,50 @@ namespace vtrc { namespace server {
         common::delayed_call             keepalive_calls_;
 
         typedef vtrc::function<void (void)> stage_function_type;
-        stage_function_type      stage_function_;
+        stage_function_type              stage_function_;
 
-        connection_setup_uptr    conn_setup_;
+        connection_setup_uptr            conn_setup_;
 
         impl( application &a, common::transport_iface *c )
             :app_(a)
             ,connection_(c)
             ,keeper_(c->weak_from_this( ))
             ,ready_(false)
+            ,closed_(false)
             ,current_calls_(0)
             ,keepalive_calls_(a.get_io_service( ))
-            ,conn_setup_(create_default_setup( ))
+            ,conn_setup_(create_default_setup( a ))
         {
+#if TEST_CONN_SETUP
+            stage_function_ =
+                    vtrc::bind( &this_type::call_setup_function, this );
+#else
             stage_function_ =
                     vtrc::bind( &this_type::on_client_selection, this );
-
             /// client has only 10 seconds for init connection
             /// todo: think about setting  for this timeout value
             keepalive_calls_.call_from_now(
                         vtrc::bind( &this_type::on_init_timeout, this,
                                      vtrc::placeholders::_1 ),
                         boost::posix_time::seconds( 10 ));
+#endif
+        }
+
+        void call_setup_function( )
+        {
+            std::string data;
+            if( !parent_->raw_pop( data ) ) {
+                connection_->close( );
+            }
+
+            if( !conn_setup_->next( data ) && !closed_ ) {
+                stage_function_ =
+                        vtrc::bind( &this_type::on_rcp_call_ready, this );
+                conn_setup_.reset( );
+            }
         }
 
         // accessor ===================================
-
         void set_transformer( common::transformer_iface *ti )
         {
             parent_->change_transformer( ti );
@@ -134,7 +160,7 @@ namespace vtrc { namespace server {
             parent_->change_hash_maker( hi );
         }
 
-        void set_hash_cheker( common::hash_iface *hi )
+        void set_hash_checker( common::hash_iface *hi )
         {
             parent_->change_hash_checker( hi );
         }
@@ -145,6 +171,22 @@ namespace vtrc { namespace server {
         {
             connection_->write( data.c_str( ), data.size( ),
                                 cb, on_send_success );
+        }
+
+        void set_client_id( const std::string &id )
+        {
+            client_id_.assign( id );
+        }
+
+        void close( )
+        {
+            closed_ = true;
+            connection_->close( );
+        }
+
+        common::connection_iface *connection( )
+        {
+            return connection_;
         }
 
         // accessor ===================================
@@ -524,15 +566,23 @@ namespace vtrc { namespace server {
 
         void init( )
         {
+#if TEST_CONN_SETUP
+            conn_setup_->init( this, def_cb );
+#else
             //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
             static const std::string data(first_message( ));
             connection_->write(data.c_str( ), data.size( ));
+#endif
         }
 
         void init_success( common::system_closure_type clos )
         {
+#if TEST_CONN_SETUP
+            conn_setup_->init( this, clos );
+#else
             static const std::string data(first_message( ));
             connection_->write(data.c_str( ), data.size( ), clos, true );
+#endif
         }
 
         void data_ready( )
