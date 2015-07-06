@@ -8,9 +8,14 @@ namespace vtrc { namespace server {
 
         struct iface: public common::connection_setup_iface {
 
-            void init( protocol_accessor *pa )
-            {
+            common::protocol_accessor *pa_;
 
+            iface( )
+            { }
+
+            void init( common::protocol_accessor *pa )
+            {
+                pa_ = pa;
             }
 
             bool next( const std::string &data )
@@ -30,6 +35,10 @@ namespace vtrc { namespace server {
         };
     }
 
+    common::connection_setup_iface *create_default_setup( )
+    {
+        return new iface;
+    }
 
 }}
 

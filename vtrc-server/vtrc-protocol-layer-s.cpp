@@ -30,8 +30,14 @@
 #include "vtrc-common/vtrc-random-device.h"
 #include "vtrc-common/vtrc-delayed-call.h"
 #include "vtrc-common/vtrc-protocol-accessor-iface.h"
+#include "vtrc-common/vtrc-connection-setup-iface.h"
 
 namespace vtrc { namespace server {
+
+    typedef common::connection_setup_iface connection_setup_iface;
+    connection_setup_iface *create_default_setup( );
+
+    typedef vtrc::unique_ptr<connection_setup_iface> connection_setup_uptr;
 
     namespace gpb   = google::protobuf;
     namespace bsys  = boost::system;
@@ -89,6 +95,8 @@ namespace vtrc { namespace server {
         typedef vtrc::function<void (void)> stage_function_type;
         stage_function_type      stage_function_;
 
+        connection_setup_uptr    conn_setup_;
+
         impl( application &a, common::transport_iface *c )
             :app_(a)
             ,connection_(c)
@@ -96,6 +104,7 @@ namespace vtrc { namespace server {
             ,ready_(false)
             ,current_calls_(0)
             ,keepalive_calls_(a.get_io_service( ))
+            ,conn_setup_(create_default_setup( ))
         {
             stage_function_ =
                     vtrc::bind( &this_type::on_client_selection, this );
