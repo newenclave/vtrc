@@ -3,9 +3,9 @@
 
 #include "vtrc-closure.h"
 
-namespace vtrc { namespace rpc {
-
-} }
+namespace vtrc { namespace rpc { namespace errors {
+    class container;
+}}}
 
 namespace vtrc { namespace common {
 
@@ -14,8 +14,8 @@ namespace vtrc { namespace common {
     struct connection_setup_iface {
         virtual ~connection_setup_iface( ) { }
         virtual void init( protocol_accessor *pa ) = 0;
-        virtual bool next( )             = 0;
-        virtual bool error( )            = 0;
+        virtual bool error( rpc::errors::container *err ) = 0;
+        virtual bool next( const std::string &data ) = 0;
         virtual bool close_connection( ) = 0;
     };
 
