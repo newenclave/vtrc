@@ -29,9 +29,7 @@ namespace vtrc { namespace server {
     namespace {
 
         void default_cb( bs::error_code const & )
-        {
-
-        }
+        { }
 
         typedef vtrc::function<void (const std::string &)> stage_function_type;
 
@@ -56,12 +54,10 @@ namespace vtrc { namespace server {
             return cap.SerializeAsString( );
         }
 
-        struct iface: public common::connection_setup_iface {
+        struct iface: common::connection_setup_iface {
 
             common::protocol_accessor *pa_;
             application               &app_;
-            rpc::errors::container     err_;
-            bool                       failed_;
             bool                       ready_;
             common::delayed_call       keepalive_calls_;
             stage_function_type        stage_function_;
@@ -71,7 +67,6 @@ namespace vtrc { namespace server {
             iface( application &a, const rpc::session_options &opts )
                 :pa_(NULL)
                 ,app_(a)
-                ,failed_(false)
                 ,ready_(false)
                 ,keepalive_calls_(a.get_io_service( ))
                 ,session_opts_(opts)
@@ -89,8 +84,11 @@ namespace vtrc { namespace server {
             void on_init_timeout( const bs::error_code &error )
             {
                 if( !error ) {
-                    failed_ = true;
-                    err_.set_code( rpc::errors::ERR_TIMEOUT );
+                    /// timeout for client init
+                    rpc::auth::init_capsule cap;
+                    cap.mutable_error( )->set_code( rpc::errors::ERR_TIMEOUT );
+                    cap.set_ready( false );
+                    send_and_close( cap );
                 }
             }
 
@@ -255,7 +253,6 @@ namespace vtrc { namespace server {
                 }
 
                 if( !capsule.ready( ) ) {
-                    failed_ = true;
                     return;
                 }
 
@@ -269,7 +266,7 @@ namespace vtrc { namespace server {
                             common::hash::create_by_index( cs.hash( ) ) );
 
                 if( !new_maker.get( ) || !new_checker.get( ) ) {
-                    failed_ = true;
+                    pa_->close( );
                     return;
                 }
 

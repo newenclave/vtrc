@@ -17,6 +17,9 @@
 #include "vtrc-common/vtrc-random-device.h"
 #include "vtrc-common/vtrc-transport-iface.h"
 
+#include "vtrc-common/vtrc-connection-setup-iface.h"
+#include "vtrc-common/vtrc-protocol-accessor-iface.h"
+
 #include "vtrc-protocol-layer-c.h"
 
 #include "vtrc-client.h"
@@ -29,6 +32,7 @@ namespace vtrc { namespace client {
     namespace gpb = google::protobuf;
 
     namespace {
+
         typedef vtrc::shared_ptr<rpc::lowlevel_unit> lowlevel_unit_sptr;
 
         typedef vtrc::shared_ptr<gpb::Service> service_str;
@@ -42,7 +46,7 @@ namespace vtrc { namespace client {
 
     }
 
-    struct protocol_layer_c::impl {
+    struct protocol_layer_c::impl: common::protocol_accessor {
 
         typedef impl this_type;
         typedef protocol_layer_c parent_type;
@@ -56,12 +60,15 @@ namespace vtrc { namespace client {
         protocol_signals            *callbacks_;
         protocol_stage               stage_;
 
+        bool                         closed_;
+
         impl( common::transport_iface *c, vtrc_client *client,
               protocol_signals *cb )
             :connection_(c)
             ,client_(client)
             ,callbacks_(cb)
             ,stage_(STAGE_HELLO)
+            ,closed_(false)
         {
             stage_call_ = vtrc::bind( &this_type::on_hello_call, this );
         }
@@ -84,6 +91,54 @@ namespace vtrc { namespace client {
                 break;
             }
         }
+
+        //// ================ accessor =================
+        ///
+        void set_transformer( common::transformer_iface *ti )
+        {
+            parent_->change_transformer( ti );
+        }
+
+        void set_revertor( common::transformer_iface *ti )
+        {
+            parent_->change_revertor( ti );
+        }
+
+        void set_hash_maker( common::hash_iface *hi )
+        {
+            parent_->change_hash_maker( hi );
+        }
+
+        void set_hash_checker( common::hash_iface *hi )
+        {
+            parent_->change_hash_checker( hi );
+        }
+
+        void set_client_id( const std::string &id )
+        {
+            ;;;
+        }
+
+        void write( const std::string &data,
+                    common::system_closure_type cb,
+                    bool on_send_success )
+        {
+            connection_->write( data.c_str( ), data.size( ),
+                                cb, on_send_success );
+        }
+
+        common::connection_iface *connection( )
+        {
+            return connection_;
+        }
+
+        void close( )
+        {
+            closed_ = true;
+            connection_->close( );
+        }
+
+        //// ================ accessor =================
 
         void init( )
         {
