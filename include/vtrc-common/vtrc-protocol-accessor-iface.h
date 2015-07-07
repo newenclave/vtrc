@@ -7,6 +7,10 @@ namespace vtrc { namespace common {
     struct connection_iface;
 }}
 
+namespace vtrc { namespace rpc { namespace auth {
+    class session_setup;
+}}}
+
 namespace vtrc { namespace common {
 
     struct transformer_iface;
@@ -26,6 +30,10 @@ namespace vtrc { namespace common {
         virtual void write( const std::string &data,
                             system_closure_type cb, bool on_send_success ) = 0;
         virtual common::connection_iface *connection( ) = 0;
+
+        virtual void configure_session( const vtrc::rpc::auth::session_setup &)
+        { }
+
         virtual void close( ) = 0;
     };
 

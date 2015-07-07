@@ -35,8 +35,7 @@ namespace vtrc { namespace client {
                                  const char *)> init_error_cb;
 
     common::connection_setup_iface *create_default_setup( vtrc_client *client,
-                                    init_error_cb init_error,
-                                    rpc::auth::session_setup &ss );
+                                    init_error_cb init_error );
     namespace {
 
 
@@ -72,7 +71,6 @@ namespace vtrc { namespace client {
 
         bool                         closed_;
         connection_setup_uptr        conn_setup_;
-        rpc::auth::session_setup     ss_;
 
         impl( common::transport_iface *c, vtrc_client *client,
               protocol_signals *cb )
@@ -121,7 +119,6 @@ namespace vtrc { namespace client {
             if( !conn_setup_->next( data ) && !closed_ ) {
                 stage_call_ = vtrc::bind( &this_type::on_rpc_process, this );
                 conn_setup_.reset( );
-                parent_->configure_session( ss_.options( ) );
                 on_ready( true );
             }
         }
@@ -170,6 +167,11 @@ namespace vtrc { namespace client {
             connection_->close( );
         }
 
+        void configure_session( const vtrc::rpc::auth::session_setup &opts )
+        {
+            parent_->configure_session( opts.options( ) );
+        }
+
         //// ================ accessor =================
 
         void init( )
@@ -177,7 +179,7 @@ namespace vtrc { namespace client {
             conn_setup_.reset( create_default_setup( client_,
                         vtrc::bind( &parent_type::on_init_error, parent_,
                                     vtrc::placeholders::_1,
-                                    vtrc::placeholders::_2 ), ss_ ) );
+                                    vtrc::placeholders::_2 ) ) );
             conn_setup_->init( this, common::system_closure_type( ) );
         }
 

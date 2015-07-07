@@ -50,16 +50,13 @@ namespace vtrc { namespace client {
             vtrc_client                *client_;
             protocol_stage              stage_;
             init_error_cb               init_error_;
-            rpc::auth::session_setup    &ss_;
 
-            iface( vtrc_client *client, init_error_cb init_error,
-                   rpc::auth::session_setup &ss )
+            iface( vtrc_client *client, init_error_cb init_error )
                 :pa_(NULL)
                 ,ready_(false)
                 ,client_(client)
                 ,stage_(STAGE_HELLO)
                 ,init_error_( init_error )
-                ,ss_(ss)
             {
 
             }
@@ -228,7 +225,10 @@ namespace vtrc { namespace client {
                     }
                 }
 
-                ss_.ParseFromString( capsule.body( ) );
+                rpc::auth::session_setup opts;
+                opts.ParseFromString( capsule.body( ) );
+                pa_->configure_session( opts );
+
                 ready_ = true;
             }
 
@@ -303,10 +303,9 @@ namespace vtrc { namespace client {
     }
 
     common::connection_setup_iface *create_default_setup(vtrc_client *client,
-                                    init_error_cb init_error,
-                                    rpc::auth::session_setup &ss )
+                                    init_error_cb init_error )
     {
-        return new iface( client, init_error, ss );
+        return new iface( client, init_error );
     }
 
 }}
