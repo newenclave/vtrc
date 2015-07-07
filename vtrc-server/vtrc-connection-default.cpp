@@ -145,7 +145,6 @@ namespace vtrc { namespace server {
                 capsule.set_body( session_setup.SerializeAsString( ) );
 
                 ready_ = true;
-                //parent_->set_ready( true );
 
                 send_proto_message( capsule );
 
