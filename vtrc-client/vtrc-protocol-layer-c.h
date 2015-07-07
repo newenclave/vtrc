@@ -27,16 +27,16 @@ namespace client {
 
         virtual void on_init_error(const rpc::errors::container & /*err*/,
                                    const char * /*message*/)
-        {}
+        { }
 
         virtual void on_connect( )
-        {}
+        { }
 
         virtual void on_disconnect( )
-        {}
+        { }
 
         virtual void on_ready( )
-        {}
+        { }
 
     };
 

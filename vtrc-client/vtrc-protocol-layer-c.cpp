@@ -525,8 +525,8 @@ namespace vtrc { namespace client {
         impl_->data_ready( );
     }
 
-    void protocol_layer_c::on_init_error(const rpc::errors::container &error,
-                                         const char *message)
+    void protocol_layer_c::on_init_error( const rpc::errors::container &error,
+                                          const char *message )
     {
         impl_->callbacks_->on_init_error( error, message );
     }

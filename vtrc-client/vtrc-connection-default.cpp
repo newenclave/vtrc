@@ -38,6 +38,8 @@ namespace vtrc { namespace client {
         void default_cb( bs::error_code const & )
         { }
 
+        typedef vtrc::function<void (const rpc::errors::container &,
+                                     const char *)> init_error_cb;
         typedef vtrc::function<void (const std::string &)> stage_function_type;
 
         struct iface: common::connection_setup_iface {
@@ -47,8 +49,9 @@ namespace vtrc { namespace client {
             stage_function_type         stage_call_;
             vtrc_client                *client_;
             protocol_stage              stage_;
+            init_error_cb               init_error_;
 
-            iface( vtrc_client *client )
+            iface( vtrc_client *client, init_error_cb init_error )
                 :pa_(NULL)
                 ,ready_(false)
                 ,client_(client)
@@ -61,6 +64,16 @@ namespace vtrc { namespace client {
             {
                 std::string s(mess.SerializeAsString( ));
                 pa_->write( s, closure, on_send );
+            }
+
+            rpc::errors::container create_error( unsigned code,
+                                                 const std::string &add )
+            {
+                rpc::errors::container cont;
+                cont.set_code( code );
+                cont.set_category( rpc::errors::CATEGORY_INTERNAL );
+                cont.set_additional( add );
+                return cont;
             }
 
             static
@@ -85,9 +98,10 @@ namespace vtrc { namespace client {
 //                case STAGE_SETUP:
 //                    stage_call_ = vtrc::bind( &iface::on_trans_setup, this );
 //                    break;
-//                case STAGE_READY:
-//                    stage_call_ = vtrc::bind( &iface::on_server_ready, this );
-//                    break;
+                case STAGE_READY:
+                    stage_call_ = vtrc::bind( &iface::on_server_ready, this,
+                                              vtrc::placeholders::_1 );
+                    break;
 //                case STAGE_RPC:
 //                    stage_call_ = vtrc::bind( &iface::on_rpc_process, this );
 //                    break;
@@ -102,6 +116,41 @@ namespace vtrc { namespace client {
                 }
             }
 
+            void on_server_ready( const std::string &data )
+            {
+
+                rpc::auth::init_capsule capsule;
+                bool check = capsule.ParseFromString( data );
+
+                if( !check ) {
+                    init_error_( create_error( rpc::errors::ERR_INTERNAL, "" ),
+                           "Server's 'Ready' has bad hash. Bad session key." );
+                    pa_->close( );
+                    return;
+                }
+
+                if( !capsule.ready( ) ) {
+                    if( capsule.error( ).has_additional( ) ) {
+                        init_error_( capsule.error( ),
+                                     capsule.error( ).additional( ).c_str( ) );
+
+                    } else {
+                        init_error_( capsule.error( ),
+                                     "Server is not ready; stage: 'Ready'" );
+                    }
+                }
+
+                rpc::auth::session_setup ss;
+                ss.ParseFromString( capsule.body( ) );
+
+                //parent_->configure_session( ss.options( ) );
+
+                change_stage( STAGE_RPC );
+
+                //on_ready( true );
+
+            }
+
             void on_hello_call( const std::string &data )
             {
 
@@ -110,17 +159,15 @@ namespace vtrc { namespace client {
                 bool check = capsule.ParseFromString( data );
 
                 if( !check ) {
-//                    parent_->on_init_error(
-//                                create_error( rpc::errors::ERR_INTERNAL, "" ),
-//                                "Server's 'Hello' has bad hash." );
+                    init_error_( create_error( rpc::errors::ERR_INTERNAL, "" ),
+                                 "Server's 'Hello' has bad hash." );
                     pa_->close( );
                     return;
                 }
 
                 if( !capsule.ready( ) ) {
-//                    parent_->on_init_error(capsule.error( ),
-//                                           "Server is not ready; stage: "
-//                                           "'Hello'");
+                    init_error_( capsule.error( ),
+                                 "Server is not ready; stage: 'Hello'");
                     pa_->close( );
                     return;
                 }
@@ -172,9 +219,10 @@ namespace vtrc { namespace client {
 
     }
 
-    common::connection_setup_iface *create_default_setup( vtrc_client *client )
+    common::connection_setup_iface *create_default_setup( vtrc_client *client,
+                                    init_error_cb init_error )
     {
-        return new iface( client );
+        return new iface( client, init_error );
     }
 
 }}
