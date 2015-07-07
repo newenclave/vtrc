@@ -87,9 +87,7 @@ namespace vtrc { namespace common  {
             llu->set_request( request->SerializeAsString( ) );
         }
 
-        if( !response ) {
-            llu->mutable_opt( )->set_accept_response( false );
-        }
+        llu->mutable_opt( )->set_accept_response( response != NULL );
 
         return llu;
     }

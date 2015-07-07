@@ -342,7 +342,6 @@ namespace vtrc { namespace client {
                 case rpc::message_info::MESSAGE_INTERNAL:
                     process_internal( llu );
                     break;
-
                 /// answers; use id
                 case rpc::message_info::MESSAGE_CLIENT_CALL:
                 case rpc::message_info::MESSAGE_CLIENT_CALLBACK:
