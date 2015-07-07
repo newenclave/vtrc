@@ -33,7 +33,6 @@ namespace vtrc { namespace client {
              STAGE_HELLO = 1
             ,STAGE_SETUP = 2
             ,STAGE_READY = 3
-            ,STAGE_RPC   = 4
         };
 
         void default_cb( bs::error_code const & )
@@ -119,9 +118,8 @@ namespace vtrc { namespace client {
                     stage_call_ = vtrc::bind( &iface::on_server_ready, this,
                                               vtrc::placeholders::_1 );
                     break;
-//                case STAGE_RPC:
-//                    stage_call_ = vtrc::bind( &iface::on_rpc_process, this );
-//                    break;
+                default:
+                    break;
                 }
             }
 
@@ -141,7 +139,6 @@ namespace vtrc { namespace client {
                     init_error_( create_error( rpc::errors::ERR_INTERNAL, "" ),
                                  "Bad session key.");
                     break;
-                case STAGE_RPC:
                 default:
                     break;
                 }

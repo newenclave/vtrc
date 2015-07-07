@@ -83,8 +83,8 @@ namespace vtrc { namespace client {
             ,stage_(STAGE_HELLO)
             ,closed_(false)
         {
-            //stage_call_ = vtrc::bind( &this_type::call_setup_function, this );
-            stage_call_ = vtrc::bind( &this_type::on_hello_call, this );
+            stage_call_ = vtrc::bind( &this_type::call_setup_function, this );
+            //stage_call_ = vtrc::bind( &this_type::on_hello_call, this );
         }
 
         void change_stage( protocol_stage stage )

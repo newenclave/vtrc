@@ -8,7 +8,7 @@ package vtrc.rpc;
 message unit_options {
     optional bool   wait             = 2; //[default = true];
     optional bool   accept_callbacks = 4; //[default = true];
-    optional bool   accept_response  = 5 [default = true];
+    optional bool   accept_response  = 5; //[default = true];
 }
 
 message session_options {
