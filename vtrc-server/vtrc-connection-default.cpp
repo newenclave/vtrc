@@ -191,8 +191,6 @@ namespace vtrc { namespace server {
 
             void setup_transformer( unsigned id )
             {
-                //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
-
                 using namespace common::transformers;
 
                 rpc::auth::init_capsule capsule;
@@ -248,7 +246,7 @@ namespace vtrc { namespace server {
 
             void on_client_selection( const std::string &data )
             {
-                //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
+
                 rpc::auth::init_capsule capsule;
 
                 if(!capsule.ParseFromString( data )) {

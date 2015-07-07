@@ -57,8 +57,7 @@ namespace vtrc { namespace server { namespace listeners {
 
             void connection_setup( vtrc::shared_ptr<connection_type> &con )
             {
-                if( no_delay_ )
-                    con->set_no_delay( true );
+                con->set_no_delay( no_delay_ );
                 std::ostringstream oss;
                 oss << "tcp://" << con->get_socket( ).remote_endpoint( );
                 con->set_name( oss.str( ) );
