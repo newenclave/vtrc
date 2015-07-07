@@ -36,7 +36,6 @@ namespace vtrc { namespace client {
 
     common::connection_setup_iface *create_default_setup( vtrc_client *client,
                                     init_error_cb init_error,
-                                    protocol_signals *callbacks,
                                     rpc::auth::session_setup &ss );
     namespace {
 
@@ -124,7 +123,6 @@ namespace vtrc { namespace client {
                 conn_setup_.reset( );
                 parent_->configure_session( ss_.options( ) );
                 on_ready( true );
-                //parent_->set_ready( true );
             }
         }
 
@@ -179,8 +177,7 @@ namespace vtrc { namespace client {
             conn_setup_.reset( create_default_setup( client_,
                         vtrc::bind( &parent_type::on_init_error, parent_,
                                     vtrc::placeholders::_1,
-                                    vtrc::placeholders::_2 ), callbacks_,
-                                    ss_ ) );
+                                    vtrc::placeholders::_2 ), ss_ ) );
             conn_setup_->init( this, common::system_closure_type( ) );
         }
 

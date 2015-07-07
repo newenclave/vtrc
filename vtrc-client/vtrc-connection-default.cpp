@@ -50,18 +50,15 @@ namespace vtrc { namespace client {
             vtrc_client                *client_;
             protocol_stage              stage_;
             init_error_cb               init_error_;
-            protocol_signals            *callbacks_;
             rpc::auth::session_setup    &ss_;
 
             iface( vtrc_client *client, init_error_cb init_error,
-                   protocol_signals *callbacks,
                    rpc::auth::session_setup &ss )
                 :pa_(NULL)
                 ,ready_(false)
                 ,client_(client)
                 ,stage_(STAGE_HELLO)
                 ,init_error_( init_error )
-                ,callbacks_(callbacks)
                 ,ss_(ss)
             {
 
@@ -305,12 +302,11 @@ namespace vtrc { namespace client {
 
     }
 
-    common::connection_setup_iface *create_default_setup( vtrc_client *client,
+    common::connection_setup_iface *create_default_setup(vtrc_client *client,
                                     init_error_cb init_error,
-                                    protocol_signals *callbacks,
                                     rpc::auth::session_setup &ss )
     {
-        return new iface( client, init_error, callbacks, ss );
+        return new iface( client, init_error, ss );
     }
 
 }}
