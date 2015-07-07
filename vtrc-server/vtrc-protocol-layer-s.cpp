@@ -9,8 +9,6 @@
 
 #include "vtrc-common/vtrc-monotonic-timer.h"
 #include "vtrc-common/vtrc-data-queue.h"
-#include "vtrc-common/vtrc-hash-iface.h"
-#include "vtrc-common/vtrc-transformer-iface.h"
 
 #include "vtrc-transport-iface.h"
 
@@ -22,13 +20,10 @@
 #include "vtrc-application.h"
 
 #include "vtrc-errors.pb.h"
-#include "vtrc-auth.pb.h"
 #include "vtrc-rpc-lowlevel.pb.h"
 
 #include "vtrc-chrono.h"
 #include "vtrc-atomic.h"
-#include "vtrc-common/vtrc-random-device.h"
-#include "vtrc-common/vtrc-delayed-call.h"
 #include "vtrc-common/vtrc-protocol-accessor-iface.h"
 #include "vtrc-common/vtrc-connection-setup-iface.h"
 
@@ -44,22 +39,7 @@ namespace vtrc { namespace server {
 
     typedef vtrc::unique_ptr<connection_setup_iface> connection_setup_uptr;
 
-#if 1
-#define VPROTOCOL_S_LOCK_CONN( conn, ret )          \
-    common::connection_iface_sptr lckd( conn );     \
-    if( !lckd ) {                                   \
-        return ret;                                 \
-    }
-#else
-    #define VPROTOCOL_S_LOCK_CONN( conn, ret )
-#endif
-
     namespace {
-        enum init_stage_enum {
-             stage_begin             = 1
-            ,stage_client_select     = 2
-            ,stage_client_ready      = 3
-        };
 
         typedef std::map <
             std::string,
@@ -215,7 +195,6 @@ namespace vtrc { namespace server {
 
         void send_and_close( const gpb::MessageLite &mess )
         {
-            VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
             DEBUG_LINE(connection_);
 
             send_proto_message( mess,
@@ -359,7 +338,6 @@ namespace vtrc { namespace server {
             if( !lckd ) {
                 return;
             }
-            //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
             stage_function_( );
         }
 
