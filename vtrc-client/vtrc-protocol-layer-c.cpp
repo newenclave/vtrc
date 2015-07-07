@@ -31,7 +31,18 @@ namespace vtrc { namespace client {
 
     namespace gpb = google::protobuf;
 
+    typedef vtrc::function<void (const rpc::errors::container &,
+                                 const char *)> init_error_cb;
+
+    common::connection_setup_iface *create_default_setup( vtrc_client *client,
+                                    init_error_cb init_error,
+                                    protocol_signals *callbacks,
+                                    rpc::auth::session_setup &ss );
     namespace {
+
+
+        typedef common::connection_setup_iface connection_setup_iface;
+        typedef vtrc::unique_ptr<connection_setup_iface> connection_setup_uptr;
 
         typedef vtrc::shared_ptr<rpc::lowlevel_unit> lowlevel_unit_sptr;
 
@@ -61,6 +72,8 @@ namespace vtrc { namespace client {
         protocol_stage               stage_;
 
         bool                         closed_;
+        connection_setup_uptr        conn_setup_;
+        rpc::auth::session_setup     ss_;
 
         impl( common::transport_iface *c, vtrc_client *client,
               protocol_signals *cb )
@@ -70,6 +83,7 @@ namespace vtrc { namespace client {
             ,stage_(STAGE_HELLO)
             ,closed_(false)
         {
+            //stage_call_ = vtrc::bind( &this_type::call_setup_function, this );
             stage_call_ = vtrc::bind( &this_type::on_hello_call, this );
         }
 
@@ -93,7 +107,27 @@ namespace vtrc { namespace client {
         }
 
         //// ================ accessor =================
-        ///
+
+        void call_setup_function( )
+        {
+            std::string data;
+            if( !parent_->raw_pop( data ) ) {
+                parent_->on_init_error(
+                            create_error( rpc::errors::ERR_INTERNAL, "" ),
+                            "Bad hash." );
+                connection_->close( );
+                return;
+            }
+
+            if( !conn_setup_->next( data ) && !closed_ ) {
+                stage_call_ = vtrc::bind( &this_type::on_rpc_process, this );
+                conn_setup_.reset( );
+                parent_->configure_session( ss_.options( ) );
+                on_ready( true );
+                //parent_->set_ready( true );
+            }
+        }
+
         void set_transformer( common::transformer_iface *ti )
         {
             parent_->change_transformer( ti );
@@ -142,7 +176,12 @@ namespace vtrc { namespace client {
 
         void init( )
         {
-
+            conn_setup_.reset( create_default_setup( client_,
+                        vtrc::bind( &parent_type::on_init_error, parent_,
+                                    vtrc::placeholders::_1,
+                                    vtrc::placeholders::_2 ), callbacks_,
+                                    ss_ ) );
+            conn_setup_->init( this, common::system_closure_type( ) );
         }
 
         void check_disconnect_stage( )

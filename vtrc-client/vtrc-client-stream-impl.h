@@ -76,9 +76,9 @@ namespace { /// implementation.
 
         void init(  )
         {
-            protocol_.reset(new protocol_layer_c( parent_,
-                                                  client_,
+            protocol_.reset(new protocol_layer_c( parent_, client_,
                                                   callbacks_ ));
+            protocol_->init( );
         }
 
         void on_close( )

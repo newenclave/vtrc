@@ -19,6 +19,7 @@
 #include "boost/asio.hpp"
 
 #include <stdlib.h>
+#include "vtrc-protocol-layer-c.h"
 
 namespace vtrc { namespace client {
 
@@ -50,13 +51,28 @@ namespace vtrc { namespace client {
             vtrc_client                *client_;
             protocol_stage              stage_;
             init_error_cb               init_error_;
+            protocol_signals            *callbacks_;
+            rpc::auth::session_setup    &ss_;
 
-            iface( vtrc_client *client, init_error_cb init_error )
+            iface( vtrc_client *client, init_error_cb init_error,
+                   protocol_signals *callbacks,
+                   rpc::auth::session_setup &ss )
                 :pa_(NULL)
                 ,ready_(false)
                 ,client_(client)
                 ,stage_(STAGE_HELLO)
-            { }
+                ,init_error_( init_error )
+                ,callbacks_(callbacks)
+                ,ss_(ss)
+            {
+
+            }
+
+            void send_proto_message( const gpb::MessageLite &mess )
+            {
+                std::string s(mess.SerializeAsString( ));
+                pa_->write( s, default_cb, true );
+            }
 
             void send_proto_message( const gpb::MessageLite &mess,
                                      common::system_closure_type closure,
@@ -95,9 +111,10 @@ namespace vtrc { namespace client {
                     stage_call_ = vtrc::bind( &iface::on_hello_call, this,
                                               vtrc::placeholders::_1 );
                     break;
-//                case STAGE_SETUP:
-//                    stage_call_ = vtrc::bind( &iface::on_trans_setup, this );
-//                    break;
+                case STAGE_SETUP:
+                    stage_call_ = vtrc::bind( &iface::on_trans_setup, this,
+                                              vtrc::placeholders::_1 );
+                    break;
                 case STAGE_READY:
                     stage_call_ = vtrc::bind( &iface::on_server_ready, this,
                                               vtrc::placeholders::_1 );
@@ -108,12 +125,89 @@ namespace vtrc { namespace client {
                 }
             }
 
+            void check_disconnect_stage( )
+            {
+                switch ( stage_ ) {
+                case STAGE_HELLO:
+                    init_error_( create_error( rpc::errors::ERR_BUSY, "" ),
+                                 "Server in not ready");
+                    break;
+                case STAGE_SETUP:
+                    init_error_( create_error( rpc::errors::ERR_INVALID_VALUE,
+                                               "" ),
+                                "Bad setup info.");
+                    break;
+                case STAGE_READY:
+                    init_error_( create_error( rpc::errors::ERR_INTERNAL, "" ),
+                                 "Bad session key.");
+                    break;
+                case STAGE_RPC:
+                default:
+                    break;
+                }
+            }
+
             void set_options( const boost::system::error_code &err )
             {
                 if( !err ) {
                     pa_->set_hash_maker(
                        common::hash::create_by_index( rpc::auth::HASH_CRC_32 ));
                 }
+            }
+
+            void on_trans_setup( const std::string &data )
+            {
+                using namespace common::transformers;
+
+                rpc::auth::init_capsule capsule;
+                bool check = capsule.ParseFromString( data );
+
+                if( !check ) {
+                    init_error_( create_error( rpc::errors::ERR_INTERNAL, "" ),
+                           "Server's 'Ready' has bad hash. Bad session key." );
+                    pa_->close( );
+                    return;
+                }
+
+                if( !capsule.ready( ) ) {
+                    init_error_( capsule.error( ),
+                                 "Server is not ready; stage: 'Setup'" );
+                    pa_->close( );
+                    return;
+                }
+
+                rpc::auth::transformer_setup tsetup;
+
+                tsetup.ParseFromString( capsule.body( ) );
+
+                std::string key(client_->get_session_key( ));
+
+                std::string s1(tsetup.salt1( ));
+                std::string s2(tsetup.salt2( ));
+
+                create_key( key, s1, s2, key );
+
+                pa_->set_transformer( erseefor::create(
+                                                key.c_str( ), key.size( ) ) );
+
+                key.assign( client_->get_session_key( ) );
+
+                generate_key_infos( key, s1, s2, key );
+
+                tsetup.set_salt1( s1 );
+                tsetup.set_salt2( s2 );
+
+                pa_->set_revertor( erseefor::create(
+                                             key.c_str( ), key.size( ) ) );
+
+                //std::cout << "Set revertor " << key.c_str( ) << "\n";
+
+                capsule.set_ready( true );
+                capsule.set_body( tsetup.SerializeAsString( ) );
+
+                change_stage( STAGE_READY );
+
+                send_proto_message( capsule );
             }
 
             void on_server_ready( const std::string &data )
@@ -140,15 +234,8 @@ namespace vtrc { namespace client {
                     }
                 }
 
-                rpc::auth::session_setup ss;
-                ss.ParseFromString( capsule.body( ) );
-
-                //parent_->configure_session( ss.options( ) );
-
-                change_stage( STAGE_RPC );
-
-                //on_ready( true );
-
+                ss_.ParseFromString( capsule.body( ) );
+                ready_ = true;
             }
 
             void on_hello_call( const std::string &data )
@@ -206,13 +293,15 @@ namespace vtrc { namespace client {
             }
 
             void init( common::protocol_accessor *pa,
-                       common::system_closure_type cb )
+                       common::system_closure_type /*cb*/ )
             {
                 pa_ = pa;
+                change_stage( stage_ );
             }
 
             bool next( const std::string &data )
             {
+                stage_call_( data );
                 return !ready_;
             }
         };
@@ -220,9 +309,11 @@ namespace vtrc { namespace client {
     }
 
     common::connection_setup_iface *create_default_setup( vtrc_client *client,
-                                    init_error_cb init_error )
+                                    init_error_cb init_error,
+                                    protocol_signals *callbacks,
+                                    rpc::auth::session_setup &ss )
     {
-        return new iface( client, init_error );
+        return new iface( client, init_error, callbacks, ss );
     }
 
 }}

@@ -77,7 +77,7 @@ namespace vtrc { namespace server {
 
         vtrc::atomic<unsigned>           current_calls_;
 
-        stage_function_type              stage_function_;
+        stage_function_type              stage_call_;
 
         connection_setup_uptr            conn_setup_;
 
@@ -89,8 +89,7 @@ namespace vtrc { namespace server {
             ,closed_(false)
             ,current_calls_(0)
         {
-            stage_function_ =
-                    vtrc::bind( &this_type::call_setup_function, this );
+            stage_call_ = vtrc::bind( &this_type::call_setup_function, this );
         }
 
         void call_setup_function( )
@@ -98,10 +97,11 @@ namespace vtrc { namespace server {
             std::string data;
             if( !parent_->raw_pop( data ) ) {
                 connection_->close( );
+                return;
             }
 
             if( !conn_setup_->next( data ) && !closed_ ) {
-                stage_function_ =
+                stage_call_ =
                         vtrc::bind( &this_type::on_rcp_call_ready, this );
                 conn_setup_.reset( );
                 parent_->set_ready( true );
@@ -338,7 +338,7 @@ namespace vtrc { namespace server {
             if( !lckd ) {
                 return;
             }
-            stage_function_( );
+            stage_call_( );
         }
 
     };

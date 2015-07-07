@@ -293,7 +293,7 @@ namespace vtrc { namespace server {
                 keepalive_calls_.call_from_now(
                             vtrc::bind( &iface::on_init_timeout, this,
                                          vtrc::placeholders::_1 ),
-                            boost::posix_time::seconds( 10 ));
+                            boost::posix_time::seconds( 100000 ));
 
             }
 
