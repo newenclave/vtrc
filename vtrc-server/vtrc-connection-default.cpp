@@ -66,13 +66,15 @@ namespace vtrc { namespace server {
             common::delayed_call       keepalive_calls_;
             stage_function_type        stage_function_;
             std::string                client_id_;
+            rpc::session_options       session_opts_;
 
-            iface( application &a )
+            iface( application &a, const rpc::session_options &opts )
                 :pa_(NULL)
                 ,app_(a)
                 ,failed_(false)
                 ,ready_(false)
                 ,keepalive_calls_(a.get_io_service( ))
+                ,session_opts_(opts)
             {
                 stage_function_ =
                         vtrc::bind( &iface::on_client_selection, this,
@@ -133,10 +135,11 @@ namespace vtrc { namespace server {
                 capsule.set_ready( true );
                 capsule.set_text( "Kiva nahda sinut!" );
 
+
                 rpc::auth::session_setup session_setup;
 
-//                session_setup.mutable_options( )
-//                             ->CopyFrom( parent_->session_options( ) );
+                session_setup.mutable_options( )
+                             ->CopyFrom( session_opts_ );
 
                 app_.configure_session( conn( ),
                                        *session_setup.mutable_options( ) );
@@ -304,17 +307,13 @@ namespace vtrc { namespace server {
                 stage_function_( data );
                 return !ready_;
             }
-
-            bool close_connection( )
-            {
-                return failed_;
-            }
         };
     }
 
-    common::connection_setup_iface *create_default_setup( application &a )
+    common::connection_setup_iface *create_default_setup( application &a,
+                                        const rpc::session_options &opts )
     {
-        return new iface( a );
+        return new iface( a, opts );
     }
 
 }}

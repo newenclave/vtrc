@@ -9,7 +9,8 @@ namespace vtrc { namespace common {
 
     struct connection_setup_iface {
         virtual ~connection_setup_iface( ) { }
-        virtual void init( protocol_accessor *pa, system_closure_type cb ) = 0;
+        virtual void init( protocol_accessor *pa,
+                           system_closure_type ready_cb ) = 0;
         virtual bool next( const std::string &data ) = 0;
     };
 

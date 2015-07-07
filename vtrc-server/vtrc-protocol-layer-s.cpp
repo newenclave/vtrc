@@ -39,7 +39,8 @@ namespace vtrc { namespace server {
     namespace basio = boost::asio;
 
     typedef common::connection_setup_iface connection_setup_iface;
-    connection_setup_iface *create_default_setup( application &a );
+    connection_setup_iface *create_default_setup( application &a,
+                                            const rpc::session_options &opts );
 
     typedef vtrc::unique_ptr<connection_setup_iface> connection_setup_uptr;
 
@@ -113,7 +114,6 @@ namespace vtrc { namespace server {
             ,closed_(false)
             ,current_calls_(0)
             ,keepalive_calls_(a.get_io_service( ))
-            ,conn_setup_(create_default_setup( a ))
         {
 #if TEST_CONN_SETUP
             stage_function_ =
@@ -141,6 +141,7 @@ namespace vtrc { namespace server {
                 stage_function_ =
                         vtrc::bind( &this_type::on_rcp_call_ready, this );
                 conn_setup_.reset( );
+                parent_->set_ready( true );
             }
         }
 
@@ -567,6 +568,9 @@ namespace vtrc { namespace server {
         void init( )
         {
 #if TEST_CONN_SETUP
+            conn_setup_.reset(create_default_setup( app_,
+                                              parent_->session_options( ) ) );
+
             conn_setup_->init( this, def_cb );
 #else
             //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
@@ -578,6 +582,8 @@ namespace vtrc { namespace server {
         void init_success( common::system_closure_type clos )
         {
 #if TEST_CONN_SETUP
+            conn_setup_.reset(create_default_setup( app_,
+                                              parent_->session_options( ) ) );
             conn_setup_->init( this, clos );
 #else
             static const std::string data(first_message( ));
