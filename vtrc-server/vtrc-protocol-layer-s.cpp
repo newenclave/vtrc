@@ -66,19 +66,17 @@ namespace vtrc { namespace server {
             common::rpc_service_wrapper_sptr
         > service_map;
 
+        typedef vtrc::function<void (void)> stage_function_type;
+
         typedef rpc::lowlevel_unit                   lowlevel_unit_type;
         typedef vtrc::shared_ptr<lowlevel_unit_type> lowlevel_unit_sptr;
+
+        void def_cb( const boost::system::error_code & )
+        { }
     }
 
     namespace data_queue = common::data_queue;
     typedef common::protocol_accessor paccessor;
-
-    void def_cb( const boost::system::error_code & )
-    {
-
-    }
-
-#define TEST_CONN_SETUP   1
 
     struct protocol_layer_s::impl: common::protocol_accessor {
 
@@ -99,9 +97,6 @@ namespace vtrc { namespace server {
 
         vtrc::atomic<unsigned>           current_calls_;
 
-        common::delayed_call             keepalive_calls_;
-
-        typedef vtrc::function<void (void)> stage_function_type;
         stage_function_type              stage_function_;
 
         connection_setup_uptr            conn_setup_;
@@ -113,21 +108,9 @@ namespace vtrc { namespace server {
             ,ready_(false)
             ,closed_(false)
             ,current_calls_(0)
-            ,keepalive_calls_(a.get_io_service( ))
         {
-#if TEST_CONN_SETUP
             stage_function_ =
                     vtrc::bind( &this_type::call_setup_function, this );
-#else
-            stage_function_ =
-                    vtrc::bind( &this_type::on_client_selection, this );
-            /// client has only 10 seconds for init connection
-            /// todo: think about setting  for this timeout value
-            keepalive_calls_.call_from_now(
-                        vtrc::bind( &this_type::on_init_timeout, this,
-                                     vtrc::placeholders::_1 ),
-                        boost::posix_time::seconds( 10 ));
-#endif
         }
 
         void call_setup_function( )
@@ -204,8 +187,6 @@ namespace vtrc { namespace server {
             common::rpc_service_wrapper_sptr result;
             service_map::iterator f( services_.find( name ) );
 
-            //VPROTOCOL_S_LOCK_CONN( lock_connection( ), result );
-
             if( f != services_.end( ) ) {
                 result = f->second;
             } else {
@@ -224,29 +205,10 @@ namespace vtrc { namespace server {
             return client_id_;
         }
 
-        void on_init_timeout( const boost::system::error_code &error )
-        {
-            if( !error ) {
-                /// timeout for client init
-                rpc::auth::init_capsule cap;
-                cap.mutable_error( )->set_code( rpc::errors::ERR_TIMEOUT );
-                cap.set_ready( false );
-                send_and_close( cap );
-            }
-        }
-
-        void send_proto_message( const gpb::MessageLite &mess )
-        {
-            //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
-            std::string s( mess.SerializeAsString( ) );
-            connection_->write( s.c_str( ), s.size( ) );
-        }
-
         void send_proto_message( const gpb::MessageLite &mess,
                                  common::system_closure_type closure,
                                  bool on_send)
         {
-            //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
             std::string s( mess.SerializeAsString( ) );
             connection_->write( s.c_str( ), s.size( ), closure, on_send );
         }
@@ -259,35 +221,8 @@ namespace vtrc { namespace server {
             send_proto_message( mess,
                                 vtrc::bind( &this_type::close_client, this,
                                              vtrc::placeholders::_1,
-                                             connection_->weak_from_this( )),
+                                             connection_->weak_from_this( ) ),
                                 true );
-        }
-
-        void set_client_ready( rpc::auth::init_capsule &capsule )
-        {
-            //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
-
-            keepalive_calls_.cancel( );
-            stage_function_ =
-                    vtrc::bind( &this_type::on_rcp_call_ready, this );
-
-            capsule.set_ready( true );
-            capsule.set_text( "Kiva nahda sinut!" );
-
-            rpc::auth::session_setup session_setup;
-
-            session_setup.mutable_options( )
-                         ->CopyFrom( parent_->session_options( ) );
-
-            app_.configure_session( connection_,
-                                   *session_setup.mutable_options( ) );
-
-            capsule.set_body( session_setup.SerializeAsString( ) );
-
-            parent_->set_ready( true );
-
-            send_proto_message( capsule );
-
         }
 
         void close_client( const bsys::error_code &      /*err */,
@@ -296,150 +231,11 @@ namespace vtrc { namespace server {
             common::connection_iface_sptr lcked( inst.lock( ) );
             if( lcked ) {
                 lcked->close( );
-//                unique_shared_lock lk( services_lock_ );
-//                services_.clear( );
             }
-        }
-
-        void on_client_transformer( )
-        {
-            //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
-
-            using namespace common::transformers;
-            rpc::auth::init_capsule capsule;
-            bool check = get_pop_message( capsule );
-
-            if( !check ) {
-                capsule.Clear( );
-                capsule.mutable_error( )->set_code( rpc::errors::ERR_INTERNAL );
-                send_and_close( capsule );
-                return;
-            }
-
-            if( !capsule.ready( ) ) {
-                connection_->close( );
-                return;
-            }
-
-            rpc::auth::transformer_setup tsetup;
-
-            tsetup.ParseFromString( capsule.body( ) );
-
-            std::string key(app_.get_session_key( connection_, client_id_ ));
-
-            create_key( key,             // input
-                        tsetup.salt1( ), // input
-                        tsetup.salt2( ), // input
-                        key );           // output
-
-            // client revertor is my transformer
-            parent_->change_transformer( erseefor::create(
-                                            key.c_str( ), key.size( ) ) );
-            //std::cout << "Set transformer " << key.c_str( ) << "\n";
-
-            capsule.Clear( );
-
-            set_client_ready( capsule );
-
-        }
-
-        void setup_transformer( unsigned id )
-        {
-            //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
-
-            using namespace common::transformers;
-
-            rpc::auth::init_capsule capsule;
-
-            if( id == rpc::auth::TRANSFORM_NONE ) {
-
-                if( !app_.session_key_required( connection_, client_id_ ) ) {
-                    set_client_ready( capsule );
-                } else {
-                    capsule.set_ready( false );
-                    rpc::errors::container *er(capsule.mutable_error( ));
-                    er->set_code( rpc::errors::ERR_ACCESS );
-                    er->set_category( rpc::errors::CATEGORY_INTERNAL );
-                    er->set_additional( "Session key required" );
-                    send_and_close( capsule );
-                    return;
-                }
-
-            } else if( id == rpc::auth::TRANSFORM_ERSEEFOR ) {
-
-                rpc::auth::transformer_setup ts;
-                std::string key(app_.get_session_key(connection_, client_id_));
-
-                generate_key_infos( key,                 // input
-                                   *ts.mutable_salt1( ), // output
-                                   *ts.mutable_salt2( ), // output
-                                    key );               // output
-
-                // client transformer is my revertor
-                parent_->change_revertor( erseefor::create(
-                                              key.c_str( ), key.size( ) ) );
-                //std::cout << "Set revertor " << key.c_str( ) << "\n";
-
-                capsule.set_ready( true );
-                capsule.set_body( ts.SerializeAsString( ) );
-
-                stage_function_ =
-                        vtrc::bind( &this_type::on_client_transformer, this );
-
-                send_proto_message( capsule );
-
-            } else {
-                capsule.set_ready( false );
-                rpc::errors::container *er(capsule.mutable_error( ));
-                er->set_code( rpc::errors::ERR_INVALID_VALUE );
-                er->set_category( rpc::errors::CATEGORY_INTERNAL );
-                er->set_additional( "Invalid transformer" );
-                send_and_close( capsule );
-                return;
-            }
-        }
-
-        void on_client_selection( )
-        {
-            //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
-            rpc::auth::init_capsule capsule;
-            bool check = get_pop_message( capsule );
-
-            if( !check ) {
-                connection_->close( );
-                return;
-            }
-
-            if( !capsule.ready( ) ) {
-                connection_->close( );
-                return;
-            }
-
-            rpc::auth::client_selection cs;
-            cs.ParseFromString( capsule.body( ) );
-
-            vtrc::ptr_keeper<common::hash_iface> new_checker (
-                        common::hash::create_by_index( cs.hash( ) ) );
-
-            vtrc::ptr_keeper<common::hash_iface> new_maker(
-                        common::hash::create_by_index( cs.hash( ) ) );
-
-            if( !new_maker.get( ) || !new_checker.get( ) ) {
-                connection_->close( );
-                return;
-            }
-
-            client_id_.assign( cs.id( ) );
-            parent_->change_hash_checker( new_checker.release( ) );
-            parent_->change_hash_maker( new_maker.release( ) );
-
-            setup_transformer( cs.transform( ) );
-
         }
 
         bool get_pop_message( gpb::MessageLite &capsule )
         {
-            //VPROTOCOL_S_LOCK_CONN( lock_connection( ), false );
             bool check = parent_->parse_and_pop( capsule );
             if( !check ) {
                 connection_->close( );
@@ -478,7 +274,6 @@ namespace vtrc { namespace server {
 
         void process_call( lowlevel_unit_sptr &llu )
         {
-            //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
             DEBUG_LINE(connection_);
 
             if( ++current_calls_ <= max_calls( ) ) {
@@ -544,51 +339,18 @@ namespace vtrc { namespace server {
             }
         }
 
-        std::string first_message( )
-        {
-            rpc::auth::init_capsule cap;
-            rpc::auth::init_protocol hello_mess;
-            cap.set_text( "Tervetuloa!" );
-            cap.set_ready( true );
-
-            hello_mess.add_hash_supported( rpc::auth::HASH_NONE     );
-            hello_mess.add_hash_supported( rpc::auth::HASH_CRC_16   );
-            hello_mess.add_hash_supported( rpc::auth::HASH_CRC_32   );
-            hello_mess.add_hash_supported( rpc::auth::HASH_CRC_64   );
-            hello_mess.add_hash_supported( rpc::auth::HASH_SHA2_256 );
-
-            hello_mess.add_transform_supported( rpc::auth::TRANSFORM_NONE );
-            hello_mess.add_transform_supported( rpc::auth::TRANSFORM_ERSEEFOR );
-
-            cap.set_body( hello_mess.SerializeAsString( ) );
-
-            return cap.SerializeAsString( );
-        }
-
         void init( )
         {
-#if TEST_CONN_SETUP
             conn_setup_.reset(create_default_setup( app_,
                                               parent_->session_options( ) ) );
-
             conn_setup_->init( this, def_cb );
-#else
-            //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
-            static const std::string data(first_message( ));
-            connection_->write(data.c_str( ), data.size( ));
-#endif
         }
 
         void init_success( common::system_closure_type clos )
         {
-#if TEST_CONN_SETUP
             conn_setup_.reset(create_default_setup( app_,
                                               parent_->session_options( ) ) );
             conn_setup_->init( this, clos );
-#else
-            static const std::string data(first_message( ));
-            connection_->write(data.c_str( ), data.size( ), clos, true );
-#endif
         }
 
         void data_ready( )
@@ -596,7 +358,6 @@ namespace vtrc { namespace server {
             common::connection_iface_sptr lckd( keeper_.lock( ) );
             if( !lckd ) {
                 return;
-                //throw std::runtime_error( "failed" );
             }
             //VPROTOCOL_S_LOCK_CONN( lock_connection( ),  );
             stage_function_( );
