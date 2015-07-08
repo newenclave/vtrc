@@ -7,9 +7,9 @@ namespace vtrc { namespace common {
     struct connection_iface;
 }}
 
-namespace vtrc { namespace rpc { namespace auth {
-    class session_setup;
-}}}
+namespace vtrc { namespace rpc {
+    class session_options;
+}}
 
 namespace vtrc { namespace common {
 
@@ -31,7 +31,8 @@ namespace vtrc { namespace common {
                             system_closure_type cb, bool on_send_success ) = 0;
         virtual common::connection_iface *connection( ) = 0;
 
-        virtual void configure_session( const vtrc::rpc::auth::session_setup &)
+        /// for client-side only
+        virtual void configure_session( const vtrc::rpc::session_options & )
         { }
 
         virtual void close( ) = 0;

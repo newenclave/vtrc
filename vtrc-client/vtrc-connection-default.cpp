@@ -227,7 +227,7 @@ namespace vtrc { namespace client {
 
                 rpc::auth::session_setup opts;
                 opts.ParseFromString( capsule.body( ) );
-                pa_->configure_session( opts );
+                pa_->configure_session( opts.options( ) );
 
                 ready_ = true;
             }

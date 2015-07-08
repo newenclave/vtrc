@@ -167,9 +167,9 @@ namespace vtrc { namespace client {
             connection_->close( );
         }
 
-        void configure_session( const vtrc::rpc::auth::session_setup &opts )
+        void configure_session( const vtrc::rpc::session_options &opts )
         {
-            parent_->configure_session( opts.options( ) );
+            parent_->configure_session( opts );
         }
 
         //// ================ accessor =================
