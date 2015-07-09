@@ -32,10 +32,10 @@ namespace vtrc { namespace server { namespace listeners {
             typedef connection_impl<super_type>      this_type;
             typedef typename super_type::socket_type socket_type;
 
-            listener                     &endpoint_;
-            application                  &app_;
-            basio::io_service            &ios_;
-            common::enviroment            env_;
+            listener                           &endpoint_;
+            application                        &app_;
+            basio::io_service                  &ios_;
+            common::enviroment                  env_;
 
             std::vector<char>                   read_buff_;
 

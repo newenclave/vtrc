@@ -5,6 +5,7 @@
 
 #include "vtrc-common/vtrc-signal-declaration.h"
 #include "vtrc-common/vtrc-closure.h"
+#include "vtrc-common/vtrc-protocol-accessor-iface.h"
 
 #include "vtrc-memory.h"
 
@@ -100,9 +101,6 @@ namespace server {
 
     typedef vtrc::shared_ptr<listener> listener_sptr;
 
-    namespace listeners {
-        rpc::session_options default_options( );
-    }
 }}
 
 #endif

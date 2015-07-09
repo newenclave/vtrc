@@ -42,6 +42,17 @@ namespace vtrc { namespace common {
     namespace bsys  = boost::system;
     namespace basio = boost::asio;
 
+    /// include/vtrc-common/vtrc-protocol-accessor.h
+    vtrc::rpc::session_options default_session_options( )
+    {
+        rpc::session_options res;
+        res.set_max_active_calls  ( 5 );
+        res.set_max_message_length( 65536 );
+        res.set_max_stack_size    ( 64 );
+        res.set_read_buffer_size  ( 4096 );
+        return res;
+    }
+
     namespace {
 
         typedef protocol_layer::message_queue_type message_queue_type;
@@ -170,6 +181,8 @@ namespace vtrc { namespace common {
         }
 
     }
+
+
 
     struct protocol_layer::impl {
 
@@ -1010,18 +1023,8 @@ namespace vtrc { namespace common {
 
     };
 
-    static rpc::session_options default_rpc_opts( )
-    {
-        rpc::session_options res;
-        res.set_max_active_calls  ( 5 );
-        res.set_max_message_length( 65536 );
-        res.set_max_stack_size    ( 64 );
-        res.set_read_buffer_size  ( 4096 );
-        return res;
-    }
-
     protocol_layer::protocol_layer( transport_iface *connection, bool oddside )
-        :impl_(new impl(connection, oddside, default_rpc_opts( )))
+        :impl_(new impl(connection, oddside, default_session_options( )))
     {
         impl_->parent_ = this;
     }

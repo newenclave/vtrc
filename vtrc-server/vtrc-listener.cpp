@@ -150,16 +150,4 @@ namespace vtrc { namespace server {
         impl_->postcall_ = func;
     }
 
-    namespace listeners {
-        rpc::session_options default_options( )
-        {
-            rpc::session_options res;
-            res.set_max_active_calls  ( 5 );
-            res.set_max_message_length( 65536 );
-            res.set_max_stack_size    ( 64 );
-            res.set_read_buffer_size  ( 4096 );
-            return res;
-        }
-    }
-
 }}

@@ -4,6 +4,7 @@
 #include "boost/asio/local/stream_protocol.hpp"
 
 #include "vtrc-common/vtrc-transport-unix-local.h"
+#include "vtrc-common/vtrc-protocol-accessor-iface.h"
 
 #include "vtrc-listener-impl.h"
 #include "vtrc-connection-impl.h"
@@ -144,7 +145,8 @@ namespace vtrc { namespace server { namespace listeners {
 
         listener_sptr create( application &app, const std::string &name )
         {
-            const rpc::session_options def_opts(default_options( ));
+            const rpc::session_options
+                    def_opts( common::default_session_options( ) );
             return create( app, def_opts, name );
         }
 

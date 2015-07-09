@@ -2,6 +2,7 @@
 #define VTRC_APPLICATION_IFACE_H
 
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"
+#include "vtrc-common/vtrc-protocol-accessor-iface.h"
 
 namespace boost { namespace asio {
     class io_service;

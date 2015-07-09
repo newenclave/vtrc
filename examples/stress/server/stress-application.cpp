@@ -280,8 +280,8 @@ namespace {
 
         rpc::session_options options( const po::variables_map &params )
         {
-            using server::listeners::default_options;
-            rpc::session_options opts( default_options( ) );
+            using common::default_session_options;
+            rpc::session_options opts( default_session_options( ) );
 
             if( params.count( "message-size" ) ) {
                 opts.set_max_message_length(
@@ -316,8 +316,6 @@ namespace {
 
             bool use_only_pool = !!params.count( "only-pool" );
             bool tcp_nodelay   = !!params.count( "tcp-nodelay" );
-
-            using server::listeners::default_options;
 
             rpc::session_options opts( options( params ) );
 
