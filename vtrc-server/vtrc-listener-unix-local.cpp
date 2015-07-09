@@ -146,7 +146,7 @@ namespace vtrc { namespace server { namespace listeners {
         listener_sptr create( application &app, const std::string &name )
         {
             const rpc::session_options
-                    def_opts( common::default_session_options( ) );
+                    def_opts( common::defaults::session_options( ) );
             return create( app, def_opts, name );
         }
 

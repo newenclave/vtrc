@@ -16,6 +16,7 @@
 #include "vtrc-condition-variable.h"
 
 #include "vtrc-protocol-layer.h"
+#include "vtrc-protocol-defaults.h"
 
 #include "vtrc-data-queue.h"
 #include "vtrc-hash-iface.h"
@@ -41,17 +42,6 @@ namespace vtrc { namespace common {
     namespace gpb   = google::protobuf;
     namespace bsys  = boost::system;
     namespace basio = boost::asio;
-
-    /// include/vtrc-common/vtrc-protocol-accessor.h
-    vtrc::rpc::session_options default_session_options( )
-    {
-        rpc::session_options res;
-        res.set_max_active_calls  ( 5 );
-        res.set_max_message_length( 65536 );
-        res.set_max_stack_size    ( 64 );
-        res.set_read_buffer_size  ( 4096 );
-        return res;
-    }
 
     namespace {
 
@@ -181,8 +171,6 @@ namespace vtrc { namespace common {
         }
 
     }
-
-
 
     struct protocol_layer::impl {
 
@@ -735,20 +723,11 @@ namespace vtrc { namespace common {
             return level_;
         }
 
-        static rpc::options default_meth_options( )
-        {
-            rpc::options res;
-            res.set_timeout( 30000000 ); // microseconds
-            res.set_wait( true );
-            res.set_accept_callbacks( true );
-            return res;
-        }
-
         const rpc::options *get_method_options(
                                     const gpb::MethodDescriptor *method)
         {
             upgradable_lock lck(options_map_lock_);
-            static rpc::options defaults( default_meth_options( ) );
+            static rpc::options defaults( common::defaults::method_options( ) );
 
             options_map_type::const_iterator f(options_map_.find(method));
 
@@ -1024,7 +1003,7 @@ namespace vtrc { namespace common {
     };
 
     protocol_layer::protocol_layer( transport_iface *connection, bool oddside )
-        :impl_(new impl(connection, oddside, default_session_options( )))
+        :impl_(new impl(connection, oddside, defaults::session_options( )))
     {
         impl_->parent_ = this;
     }

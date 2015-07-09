@@ -5,7 +5,7 @@
 
 #include "vtrc-common/vtrc-signal-declaration.h"
 #include "vtrc-common/vtrc-closure.h"
-#include "vtrc-common/vtrc-protocol-accessor-iface.h"
+#include "vtrc-common/vtrc-protocol-defaults.h"
 
 #include "vtrc-memory.h"
 

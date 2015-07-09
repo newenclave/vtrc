@@ -38,8 +38,6 @@ namespace vtrc { namespace common {
         virtual void close( ) = 0;
     };
 
-    /// vtrc-common/vtrc-protocol-layer.cpp
-    vtrc::rpc::session_options default_session_options( );
 }}
 
 #endif // VTRCP_ROTOCOL_ACCESSOR_IFACE_H

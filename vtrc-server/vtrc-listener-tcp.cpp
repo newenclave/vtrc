@@ -88,7 +88,7 @@ namespace vtrc { namespace server { namespace listeners {
                               unsigned short service, bool tcp_nodelay )
         {
             const rpc::session_options
-                    def_opts( common::default_session_options( ) );
+                    def_opts( common::defaults::session_options( ) );
 
             return create( app, def_opts, address, service, tcp_nodelay );
         }

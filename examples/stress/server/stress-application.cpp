@@ -280,8 +280,8 @@ namespace {
 
         rpc::session_options options( const po::variables_map &params )
         {
-            using common::default_session_options;
-            rpc::session_options opts( default_session_options( ) );
+            using common::defaults::session_options;
+            rpc::session_options opts( session_options( ) );
 
             if( params.count( "message-size" ) ) {
                 opts.set_max_message_length(
