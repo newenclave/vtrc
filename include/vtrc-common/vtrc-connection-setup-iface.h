@@ -1,6 +1,7 @@
 #ifndef VTRC_CONNECTION_SETUP_IFACE_H
 #define VTRC_CONNECTION_SETUP_IFACE_H
 
+#include <string>
 #include "vtrc-closure.h"
 
 namespace vtrc { namespace common {
