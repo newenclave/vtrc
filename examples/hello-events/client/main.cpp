@@ -69,7 +69,7 @@ int main( int argc, const char **argv )
 {
     common::pool_pair pp( 1, 1 );
 
-    const char *address = "127.0.0.1";
+    const char *address = "0.0.0.0";
     unsigned short port = 56560;
 
     if( argc > 2 ) {

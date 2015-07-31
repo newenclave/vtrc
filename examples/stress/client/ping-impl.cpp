@@ -33,7 +33,7 @@ namespace stress {
     size_t ping_impl( interface &iface, unsigned payload )
     {
 
-        std::cout << "Send ping with " << payload << " bytes as payload...";
+        //std::cout << "Send ping with " << payload << " bytes as payload...";
 
         time_point start = chrono::high_resolution_clock::now( );
 
@@ -42,8 +42,8 @@ namespace stress {
         time_point stop = chrono::high_resolution_clock::now( );
 
         size_t to = cast(stop - start);
-        std::cout << "ok; " << to
-                  << " microseconds\n";
+//        std::cout << "ok; " << to
+//                  << " microseconds\n";
         return to;
     }
 
