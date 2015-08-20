@@ -117,15 +117,17 @@ namespace vtrc { namespace common {
                 }
             }
 
-            ~closure_holder_type( ) try
+            ~closure_holder_type( )
             {
-                if( proto_closure_ ) {
-                    delete proto_closure_;
-                }
+                try {
+                    if( proto_closure_ ) {
+                        delete proto_closure_;
+                    }
 
-                call_internal( );
+                    call_internal( );
 
-            } catch( ... ) { ;;; }
+                } catch( ... ) { ;;; }
+            }
 
         };
 
