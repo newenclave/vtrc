@@ -32,10 +32,12 @@ namespace vtrc { namespace common {
             return old;
         }
 
-        ~closure_holder( ) try
-        {
+        ~closure_holder( )
+        { try {
             if( done_ ) done_->Run( );
-        } catch( ... ) { ;;; }
+        } catch( ... ) {
+            ;;;
+        }}
 
     };
 }}
