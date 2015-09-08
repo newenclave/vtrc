@@ -31,8 +31,8 @@ namespace vtrc { namespace common {  namespace hash {
                 true, true> crc64_type;
 
         struct hasher_crc64: public hasher_crc_base<crc64_type> {
-            std::string get_data_hash(const void *data,
-                                      size_t      length) const
+            std::string get_data_hash( const void *data,
+                                       size_t      length ) const
             {
                 crc64_type res;
                 res.process_bytes(data, length);
@@ -51,8 +51,8 @@ namespace vtrc { namespace common {  namespace hash {
                 return result;
             }
 
-            void get_data_hash(const void *data, size_t length,
-                                     void *result_hash ) const
+            void get_data_hash( const void *data, size_t length,
+                                      void *result_hash ) const
             {
 
                 crc64_type res;
@@ -74,8 +74,8 @@ namespace vtrc { namespace common {  namespace hash {
         };
 
         struct hasher_crc32: public hasher_crc_base<boost::crc_32_type> {
-            std::string get_data_hash(const void *data,
-                                      size_t      length) const
+            std::string get_data_hash( const void *data,
+                                       size_t      length ) const
             {
                 boost::crc_32_type res;
                 res.process_bytes(data, length);
@@ -111,8 +111,8 @@ namespace vtrc { namespace common {  namespace hash {
 
         struct hasher_crc16: public hasher_crc_base<boost::crc_16_type> {
 
-            std::string get_data_hash(const void *data,
-                                      size_t      length) const
+            std::string get_data_hash( const void *data,
+                                       size_t      length ) const
             {
                 boost::crc_16_type res;
                 res.process_bytes(data, length);
@@ -126,8 +126,8 @@ namespace vtrc { namespace common {  namespace hash {
                 return result;
             }
 
-            void get_data_hash(const void *data, size_t length,
-                                     void *result_hash ) const
+            void get_data_hash( const void *data, size_t length,
+                                      void *result_hash ) const
             {
                 boost::crc_16_type res;
                 res.process_bytes(data, length);
