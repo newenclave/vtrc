@@ -17,7 +17,7 @@ namespace vtrc { namespace common { namespace defaults {
 
     vtrc::rpc::options method_options( )
     {
-        rpc::options res;
+        vtrc::rpc::options res;
         res.set_timeout( 30000000 ); // microseconds
         res.set_wait( true );
         res.set_accept_callbacks( true );
@@ -26,7 +26,7 @@ namespace vtrc { namespace common { namespace defaults {
 
     vtrc::rpc::unit_options unit_options( )
     {
-        rpc::unit_options res;
+        vtrc::rpc::unit_options res;
         res.set_wait( true );
         res.set_accept_callbacks( true );
         res.set_accept_response( true );
