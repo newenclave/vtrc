@@ -28,7 +28,7 @@ namespace vtrc { namespace common {  namespace hash {
         typedef boost::crc_optimal <
                 64,
                 0xad93d23594c935a9ULL, 0ULL, 0ULL,
-                true, true> crc64_type;
+                true, true > crc64_type;
 
         struct hasher_crc64: public hasher_crc_base<crc64_type> {
             std::string get_data_hash( const void *data,
