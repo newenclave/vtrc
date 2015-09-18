@@ -27,10 +27,9 @@ namespace vtrc { namespace common  {
                                            llu.error( ).additional( ) );
         }
 
-        void default_chan_error_cb( const char *message )
+        void default_chan_error_cb( const char *mess )
         {
-            throw vtrc::common::exception( rpc::errors::ERR_CHANNEL,
-                                           message );
+            throw vtrc::common::exception( rpc::errors::ERR_CHANNEL, mess );
         }
 
         rpc_channel::proto_error_cb_type get_default_error_cb( )
