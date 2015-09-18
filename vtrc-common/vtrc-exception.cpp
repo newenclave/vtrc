@@ -106,4 +106,9 @@ namespace vtrc { namespace common {
         throw exception( code, rpc::errors::CATEGORY_SYSTEM, additional );
     }
 
+    std::string error_code_to_string( unsigned code, unsigned category )
+    {
+        return get_error_code_string( code, category );
+    }
+
 }}

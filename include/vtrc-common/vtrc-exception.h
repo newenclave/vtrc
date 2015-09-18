@@ -37,6 +37,7 @@ namespace vtrc { namespace common {
 
     void throw_system_error( unsigned code );
     void throw_system_error( unsigned code, const std::string &additional );
+    std::string error_code_to_string( unsigned code, unsigned category );
 
 }}
 
