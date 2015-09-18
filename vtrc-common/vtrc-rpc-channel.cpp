@@ -20,11 +20,9 @@ namespace vtrc { namespace common  {
 
     namespace {
 
-        void default_error_cb( const rpc_channel::lowlevel_unit_type &llu )
+        void default_error_cb( unsigned code, unsigned cat, const char *mess )
         {
-            throw vtrc::common::exception( llu.error( ).code( ),
-                                           llu.error( ).category( ),
-                                           llu.error( ).additional( ) );
+            throw vtrc::common::exception( code, cat, mess );
         }
 
         void default_chan_error_cb( const char *mess )
@@ -34,7 +32,7 @@ namespace vtrc { namespace common  {
 
         rpc_channel::proto_error_cb_type get_default_error_cb( )
         {
-            return vtrc::bind( default_error_cb, ph::_1 );
+            return vtrc::bind( default_error_cb, ph::_1, ph::_2, ph::_3 );
         }
 
         rpc_channel::channel_error_cb_type get_default_chan_error_cb( )
@@ -261,7 +259,9 @@ namespace vtrc { namespace common  {
 
             if( top->error( ).code( ) != rpc::errors::ERR_NO_ERROR ) {
                 cl->get_protocol( ).erase_slot( call_id );
-                impl_->error_cb_( *top );
+                impl_->error_cb_( top->error( ).code( ),
+                                  top->error( ).category( ),
+                                  top->error( ).additional( ).c_str( ) );
                 return false;
             }
 

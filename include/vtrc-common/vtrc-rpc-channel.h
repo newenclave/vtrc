@@ -34,7 +34,7 @@ namespace vtrc { namespace common  {
         typedef vtrc::shared_ptr<lowlevel_unit_type> lowlevel_unit_sptr;
 
         typedef vtrc::function<
-            void (const lowlevel_unit_type &)
+            void (unsigned code, unsigned cat, const char *mess)
         > proto_error_cb_type;
 
         typedef vtrc::function<void (const char *)> channel_error_cb_type;
