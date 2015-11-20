@@ -188,8 +188,8 @@ namespace vtrc { namespace client {
                 tsetup.set_salt1( s1 );
                 tsetup.set_salt2( s2 );
 
-                pa_->set_revertor( erseefor::create(
-                                             key.c_str( ), key.size( ) ) );
+                pa_->set_revertor( erseefor::create( key.c_str( ),
+                                                     key.size( ) ) );
 
                 //std::cout << "Set revertor " << key.c_str( ) << "\n";
 
