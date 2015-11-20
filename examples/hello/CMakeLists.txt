@@ -24,9 +24,9 @@ if( VTRC_CXX11_ENABLED )
     find_package( Boost 1.50 COMPONENTS
                     system
                     thread
-																				chrono
-																				date_time
-																				regex
+                    chrono
+                    date_time
+                    regex
                   REQUIRED)
 
 else( )
