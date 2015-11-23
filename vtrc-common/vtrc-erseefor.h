@@ -46,8 +46,9 @@ namespace vtrc { namespace common { namespace crypt {
 
             memset(state_, 0, sizeof(state_));
 
-            for(i=0; i < 256; i++)
+            for(i=0; i < 256; i++) {
                 state_[i] = static_cast<uchar_type>(i);
+            }
 
             si1_ = si2_ = 0;
 
