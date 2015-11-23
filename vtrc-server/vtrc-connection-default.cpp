@@ -217,8 +217,8 @@ namespace vtrc { namespace server {
                                         key );               // output
 
                     // client transformer is my revertor
-                    pa_->set_revertor( erseefor::create(
-                                                key.c_str( ), key.size( ) ) );
+                    pa_->set_revertor( erseefor::create( key.c_str( ),
+                                                         key.size( ) ) );
                     //std::cout << "Set revertor " << key.c_str( ) << "\n";
 
                     capsule.set_ready( true );
@@ -292,7 +292,7 @@ namespace vtrc { namespace server {
                 keepalive_calls_.call_from_now(
                             vtrc::bind( &iface::on_init_timeout, this,
                                          vtrc::placeholders::_1 ),
-                            boost::posix_time::seconds( 100000 ));
+                            boost::posix_time::seconds( 10 ));
 
             }
 

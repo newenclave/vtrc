@@ -29,6 +29,8 @@ namespace vtrc { namespace client {
 
     namespace {
 
+        const unsigned default_hash_value = rpc::auth::HASH_CRC_32;
+
         enum protocol_stage {
              STAGE_HELLO = 1
             ,STAGE_SETUP = 2
@@ -142,7 +144,7 @@ namespace vtrc { namespace client {
             {
                 if( !err ) {
                     pa_->set_hash_maker(
-                       common::hash::create_by_index( rpc::auth::HASH_CRC_32 ));
+                       common::hash::create_by_index( default_hash_value ));
                 }
             }
 
@@ -270,12 +272,12 @@ namespace vtrc { namespace client {
                     init.set_transform( rpc::auth::TRANSFORM_NONE );
                 }
 
-                init.set_hash( rpc::auth::HASH_CRC_32 );
+                init.set_hash( default_hash_value );
 
                 capsule.set_body( init.SerializeAsString( ) );
 
                 pa_->set_hash_checker(
-                     common::hash::create_by_index( rpc::auth::HASH_CRC_32 ) );
+                     common::hash::create_by_index( default_hash_value ) );
 
                 change_stage( key_set ? STAGE_SETUP : STAGE_READY );
 
