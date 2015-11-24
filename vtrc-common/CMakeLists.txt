@@ -5,6 +5,7 @@ list(APPEND src_dirs
         .
         ./hash
         ./proto-helper
+        ./crypt/chacha
         ${VTRC_INCLUDE_DIR}/vtrc-common
         ${VTRC_INCLUDE_DIR}/vtrc-common/config
     )
