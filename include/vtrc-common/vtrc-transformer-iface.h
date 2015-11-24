@@ -23,6 +23,11 @@ namespace vtrc { namespace common {
         namespace erseefor {
             transformer_iface *create( const char *key, size_t length);
         }
+
+        namespace chacha {
+            transformer_iface *create( const char *key, size_t length);
+        }
+
         transformer_iface *create( unsigned id, const char *key, size_t length);
 
         void generate_key_infos( const std::string &key,

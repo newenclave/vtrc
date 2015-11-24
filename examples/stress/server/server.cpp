@@ -46,6 +46,9 @@ void get_options( po::options_description& desc )
         ("stack-size,S", po::value<unsigned>( ),
             "maximum recursion depth for both side")
 
+        ("key,k", po::value<std::string>( ),
+            "key for access to server; password")
+
         ;
 }
 

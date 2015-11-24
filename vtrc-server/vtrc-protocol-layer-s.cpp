@@ -101,8 +101,7 @@ namespace vtrc { namespace server {
             }
 
             if( !conn_setup_->next( data ) && !closed_ ) {
-                stage_call_ =
-                        vtrc::bind( &this_type::on_rcp_call_ready, this );
+                stage_call_ = vtrc::bind( &this_type::on_rcp_call_ready, this );
                 conn_setup_.reset( );
                 parent_->set_ready( true );
             }

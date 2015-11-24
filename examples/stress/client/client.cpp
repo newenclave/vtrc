@@ -117,6 +117,10 @@ void get_options( po::options_description& desc )
         ("timer",  po::value< std::vector<unsigned> >( ),
                     "register timer event" )
         ("sleep",  po::value< unsigned >( ), "sleep before exit" )
+
+        ("key,k", po::value<std::string>( ),
+                "key for access to server; password")
+
         ;
 }
 
@@ -232,6 +236,11 @@ int start( const po::variables_map &params )
     std::cout << "Creating client ... " ;
 
     client::vtrc_client_sptr client = client::vtrc_client::create( pp );
+
+    if( params.count( "key" ) ) {
+        std::string key = params["key"].as<std::string>( );
+        client->set_session_key( key );
+    }
 
     client->on_connect_connect   ( on_connect );
     client->on_ready_connect     ( on_ready );

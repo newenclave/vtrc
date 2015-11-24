@@ -44,6 +44,8 @@ namespace vtrc { namespace client {
                                      const char *)> init_error_cb;
         typedef vtrc::function<void (const std::string &)> stage_function_type;
 
+        namespace default_cypher = common::transformers::chacha;
+
         struct iface: common::connection_setup_iface {
 
             common::protocol_accessor  *pa_;
@@ -180,8 +182,8 @@ namespace vtrc { namespace client {
 
                 create_key( key, s1, s2, key );
 
-                pa_->set_transformer( erseefor::create(
-                                                key.c_str( ), key.size( ) ) );
+                pa_->set_transformer( default_cypher::create( key.c_str( ),
+                                                              key.size( ) ) );
 
                 key.assign( client_->get_session_key( ) );
 
@@ -190,8 +192,8 @@ namespace vtrc { namespace client {
                 tsetup.set_salt1( s1 );
                 tsetup.set_salt2( s2 );
 
-                pa_->set_revertor( erseefor::create( key.c_str( ),
-                                                     key.size( ) ) );
+                pa_->set_revertor( default_cypher::create( key.c_str( ),
+                                                           key.size( ) ) );
 
                 //std::cout << "Set revertor " << key.c_str( ) << "\n";
 

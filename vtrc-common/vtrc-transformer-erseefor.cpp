@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "vtrc-transformer-iface.h"
 #include "vtrc-erseefor.h"
 #include "vtrc-random-device.h"
@@ -18,6 +20,10 @@ namespace vtrc { namespace common {
                 :crypt_((const unsigned char *)transform_key, t_length)
             {
                 crypt_.drop( drop_key_init );
+
+//                std::cout << "RC4 Key is! "
+//                          << transform_key << ":" << t_length
+//                          << "\n";
             }
 
             void transform( char *data, size_t length )

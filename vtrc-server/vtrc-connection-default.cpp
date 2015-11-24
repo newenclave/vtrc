@@ -31,6 +31,8 @@ namespace vtrc { namespace server {
         void default_cb( bs::error_code const & )
         { }
 
+        namespace default_cypher = common::transformers::chacha;
+
         typedef vtrc::function<void (const std::string &)> stage_function_type;
 
         std::string first_message( )
@@ -177,7 +179,7 @@ namespace vtrc { namespace server {
                             key );           // output
 
                 // client revertor is my transformer
-                pa_->set_transformer( erseefor::create(
+                pa_->set_transformer( default_cypher::create(
                                             key.c_str( ), key.size( ) ) );
 
                 capsule.Clear( );
@@ -217,8 +219,8 @@ namespace vtrc { namespace server {
                                         key );               // output
 
                     // client transformer is my revertor
-                    pa_->set_revertor( erseefor::create( key.c_str( ),
-                                                         key.size( ) ) );
+                    pa_->set_revertor( default_cypher::create( key.c_str( ),
+                                                               key.size( ) ) );
                     //std::cout << "Set revertor " << key.c_str( ) << "\n";
 
                     capsule.set_ready( true );

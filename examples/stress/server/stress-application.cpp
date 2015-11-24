@@ -124,6 +124,7 @@ namespace {
         public:
 
             stress::application *parent_app_;
+            std::string key_;
 
             app_impl( common::pool_pair &pp )
                 :server::application(pp)
@@ -136,6 +137,18 @@ namespace {
                 res.set_max_message_length( 65536 );
                 res.set_max_stack_size    ( 64 );
                 res.set_read_buffer_size  ( 4096 );
+            }
+
+            bool session_key_required( common::connection_iface* /*conn*/,
+                                               const std::string &/*id*/)
+            {
+                return !key_.empty( );
+            }
+
+            std::string get_session_key( common::connection_iface* /*conn*/,
+                                         const std::string & /*id*/)
+            {
+                return key_;
             }
 
             vtrc::shared_ptr<common::rpc_service_wrapper>
@@ -313,6 +326,10 @@ namespace {
             typedef string_vector::const_iterator vec_citer;
 
             string_vector ser = params["server"].as<string_vector>( );
+
+            if( params.count( "key" ) ) {
+                app_.key_ = params["key"].as<std::string>( );
+            }
 
             bool use_only_pool = !!params.count( "only-pool" );
             bool tcp_nodelay   = !!params.count( "tcp-nodelay" );
