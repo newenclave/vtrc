@@ -31,6 +31,7 @@
 #include "boost/asio/error.hpp"
 
 #include "google/protobuf/service.h"
+#include "google/protobuf/descriptor.h"
 
 #include "vtrc-common/vtrc-delayed-call.h"
 #include "vtrc-common/vtrc-thread-pool.h"
