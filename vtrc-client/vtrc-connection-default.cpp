@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include "boost/asio.hpp"
 
 #include "vtrc-common/vtrc-connection-setup-iface.h"
 #include "vtrc-common/vtrc-protocol-accessor-iface.h"
@@ -16,9 +18,6 @@
 
 #include "vtrc-client.h"
 
-#include "boost/asio.hpp"
-
-#include <stdlib.h>
 #include "vtrc-protocol-layer-c.h"
 
 namespace vtrc { namespace client {
@@ -30,6 +29,7 @@ namespace vtrc { namespace client {
     namespace {
 
         const unsigned default_hash_value = rpc::auth::HASH_CRC_32;
+        namespace default_cypher = common::transformers::chacha;
 
         enum protocol_stage {
              STAGE_HELLO = 1
@@ -43,8 +43,6 @@ namespace vtrc { namespace client {
         typedef vtrc::function<void (const rpc::errors::container &,
                                      const char *)> init_error_cb;
         typedef vtrc::function<void (const std::string &)> stage_function_type;
-
-        namespace default_cypher = common::transformers::chacha;
 
         struct iface: common::connection_setup_iface {
 
