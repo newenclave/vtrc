@@ -115,10 +115,9 @@ namespace vtrc { namespace server {
                 return res;
             }
 
-            lowlevel_unit_sptr make_lowlevel(
-                            const google::protobuf::MethodDescriptor* met,
-                            const google::protobuf::Message* req,
-                                  google::protobuf::Message* res )
+            lowlevel_unit_sptr make_lowlevel( const gpb::MethodDescriptor* met,
+                                              const gpb::Message* req,
+                                                    gpb::Message* res )
             {
                 lowlevel_unit_sptr llu = create_lowlevel( met, req, res );
 
@@ -147,12 +146,12 @@ namespace vtrc { namespace server {
                 return llu;
             }
 
-            void send_message(lowlevel_unit_type &llu,
-                        const google::protobuf::MethodDescriptor* method,
-                              google::protobuf::RpcController*  controller,
-                        const google::protobuf::Message*        /*request   */,
-                              google::protobuf::Message*          response,
-                              google::protobuf::Closure*          done )
+            void send_message( lowlevel_unit_type &llu,
+                               const gpb::MethodDescriptor* method,
+                                     gpb::RpcController*  controller,
+                               const gpb::Message*        /*request   */,
+                                     gpb::Message*          response,
+                                     gpb::Closure*          done )
             {
                 common::closure_holder        done_holder(done);
                 common::connection_iface_sptr clnt (client_.lock( ));
