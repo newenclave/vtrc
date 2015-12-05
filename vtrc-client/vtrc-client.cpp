@@ -63,7 +63,7 @@ namespace vtrc { namespace client {
         bool                            key_set_;
         //vtrc::mutex                     session_info_lock_;
 
-        service_factory                 factory_;
+        service_factory_type                 factory_;
         vtrc::shared_mutex              factory_lock_;
 
         impl( basio::io_service &ios, basio::io_service &rpc_ios )
@@ -425,7 +425,7 @@ namespace vtrc { namespace client {
             }
         }
 
-        void assign_service_factory( service_factory factory )
+        void assign_service_factory( service_factory_type factory )
         {
             vtrc::unique_shared_lock lck(factory_lock_);
             factory_ = factory;
@@ -647,7 +647,7 @@ namespace vtrc { namespace client {
         impl_->assign_weak_handler( serv );
     }
 
-    void vtrc_client::assign_service_factory( service_factory factory )
+    void vtrc_client::assign_service_factory( service_factory_type factory )
     {
         impl_->assign_service_factory( factory );
     }

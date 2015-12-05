@@ -48,7 +48,7 @@ namespace client {
 
     typedef vtrc::function<
                vtrc::shared_ptr<google::protobuf::Service> (const std::string &)
-            > service_factory;
+            > service_factory_type;
 
     class vtrc_client: public vtrc::enable_shared_from_this<vtrc_client> {
 
@@ -147,12 +147,14 @@ namespace client {
 
         void disconnect( );
 
+        /// This handlers (rpc_handler, weak_rpc_handler) always have priority
+        /// over the handlers from the factory
         void assign_rpc_handler(
                           vtrc::shared_ptr<google::protobuf::Service> handler);
         void assign_weak_rpc_handler(
                           vtrc::weak_ptr<google::protobuf::Service> handler);
 
-        void assign_service_factory( service_factory factory );
+        void assign_service_factory( service_factory_type factory );
 
         vtrc::shared_ptr<google::protobuf::Service> get_rpc_handler(
                                                     const std::string &name );
