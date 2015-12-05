@@ -165,11 +165,11 @@ namespace {
                     namespace ph = vtrc::placeholders;
 
                     new_conn->get_protocol( )
-                            .set_precall( vtrc::bind(
+                             .set_precall( vtrc::bind(
                                               &this_type::mk_precall, this,
                                                ph::_1, ph::_2, ph::_3 ) );
                     new_conn->get_protocol( )
-                            .set_postcall( vtrc::bind(
+                             .set_postcall( vtrc::bind(
                                               &this_type::mk_postcall, this,
                                                ph::_1, ph::_2 ) );
 
