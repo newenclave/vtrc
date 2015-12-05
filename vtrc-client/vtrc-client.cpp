@@ -271,17 +271,17 @@ namespace vtrc { namespace client {
         void connect( const std::string &local_name )
         {
 
-#ifndef _WIN32
-            vtrc::shared_ptr<client_unix_local>
-                            new_client(create_client<client_unix_local>( ));
-            connect_impl(vtrc::bind( &client_unix_local::connect, new_client,
-                                     local_name));
-#else
+#ifdef _WIN32
             vtrc::shared_ptr<client_win_pipe>
                              new_client(create_client<client_win_pipe>( ));
             connect_impl(vtrc::bind( &impl::win_connect,
                                       vtrc::ref(*new_client),
                                       vtrc::ref(local_name)));
+#else
+            vtrc::shared_ptr<client_unix_local>
+                            new_client(create_client<client_unix_local>( ));
+            connect_impl(vtrc::bind( &client_unix_local::connect, new_client,
+                                     local_name));
 #endif
         }
 
@@ -308,7 +308,7 @@ namespace vtrc { namespace client {
         }
 
 #ifdef _WIN32
-        void connect(const std::wstring &local_name)
+        void connect( const std::wstring &local_name )
         {
             vtrc::shared_ptr<client_win_pipe>
                          new_client(create_client<client_win_pipe>( ));
@@ -317,8 +317,8 @@ namespace vtrc { namespace client {
                                       vtrc::ref(local_name)));
         }
 
-        void async_connect(const std::wstring &local_name,
-                           common::system_closure_type closure)
+        void async_connect( const std::wstring &local_name,
+                            common::system_closure_type closure )
         {
             vtrc::shared_ptr<client_win_pipe>
                          new_client(create_client<client_win_pipe>( ));
@@ -329,19 +329,11 @@ namespace vtrc { namespace client {
                             closure ));
         }
 #endif
-        void async_connect(const std::string &local_name,
-                           common::system_closure_type closure)
+        void async_connect( const std::string &local_name,
+                            common::system_closure_type closure )
         {
-#ifndef _WIN32
-            vtrc::shared_ptr<client_unix_local>
-                         new_client(create_client<client_unix_local>( ));
 
-            new_client->async_connect( local_name,
-            vtrc::bind( &this_type::async_connect_success,
-                         this,
-                         vtrc::placeholders::error,
-                         closure ));
-#else
+#ifdef _WIN32
             vtrc::shared_ptr<client_win_pipe>
                          new_client(create_client<client_win_pipe>( ));
 
@@ -350,6 +342,15 @@ namespace vtrc { namespace client {
                             this,
                             vtrc::placeholders::error,
                             closure ));
+#else
+            vtrc::shared_ptr<client_unix_local>
+                         new_client(create_client<client_unix_local>( ));
+
+            new_client->async_connect( local_name,
+            vtrc::bind( &this_type::async_connect_success,
+                         this,
+                         vtrc::placeholders::error,
+                         closure ));
 #endif
         }
 
