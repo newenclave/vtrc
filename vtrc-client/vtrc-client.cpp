@@ -382,10 +382,6 @@ namespace vtrc { namespace client {
                 } catch( ... ) { }
             };
             connection_.reset( );
-//            parent_->on_disconnect_( );
-//            if( connection_ ) try {
-//                connection_->close( );
-//            } catch( ... ) { };
         }
 
         rpc_channel_c *create_channel( )
@@ -481,12 +477,12 @@ namespace vtrc { namespace client {
         return new_inst;
     }
 
-    vtrc::shared_ptr<vtrc_client> vtrc_client::create(common::pool_pair &pools)
+    vtrc::shared_ptr<vtrc_client> vtrc_client::create( common::pool_pair &pool )
     {
         vtrc::shared_ptr<vtrc_client>
                 new_inst( new vtrc_client(
-                              pools.get_io_service( ),
-                              pools.get_rpc_service( )));
+                              pool.get_io_service( ),
+                              pool.get_rpc_service( )));
         return new_inst;
     }
 
@@ -601,13 +597,11 @@ namespace vtrc { namespace client {
     }
 
 #ifdef _WIN32
-
     void vtrc_client::async_connect( const std::wstring &local_name,
                                      common::system_closure_type closure )
     {
         impl_->async_connect( local_name, closure );
     }
-
 #endif
 
     void vtrc_client::async_connect( const std::string &address,

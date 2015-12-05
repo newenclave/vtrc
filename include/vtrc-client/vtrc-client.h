@@ -85,7 +85,7 @@ namespace client {
         vtrc::shared_ptr<vtrc_client> create(boost::asio::io_service &ios,
                                              boost::asio::io_service &rpc_ios );
         static
-        vtrc::shared_ptr<vtrc_client> create( common::pool_pair &pools );
+        vtrc::shared_ptr<vtrc_client> create( common::pool_pair &pool );
 
     public:
 
