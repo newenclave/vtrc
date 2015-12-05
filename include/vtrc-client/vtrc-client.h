@@ -10,6 +10,7 @@
 #include "vtrc-common/vtrc-closure.h"
 
 #include "vtrc-memory.h"
+#include "vtrc-function.h"
 
 namespace boost {
 
@@ -44,6 +45,10 @@ namespace vtrc {
     }
 
 namespace client {
+
+    typedef vtrc::function<
+               vtrc::shared_ptr<google::protobuf::Service> (const std::string &)
+            > service_factory;
 
     class vtrc_client: public vtrc::enable_shared_from_this<vtrc_client> {
 
@@ -146,6 +151,8 @@ namespace client {
                           vtrc::shared_ptr<google::protobuf::Service> handler);
         void assign_weak_rpc_handler(
                           vtrc::weak_ptr<google::protobuf::Service> handler);
+
+        void assign_service_factory( service_factory factory );
 
         vtrc::shared_ptr<google::protobuf::Service> get_rpc_handler(
                                                     const std::string &name );

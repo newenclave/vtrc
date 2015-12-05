@@ -63,6 +63,9 @@ namespace vtrc { namespace client {
         bool                            key_set_;
         //vtrc::mutex                     session_info_lock_;
 
+        service_factory                 factory_;
+        vtrc::shared_mutex              factory_lock_;
+
         impl( basio::io_service &ios, basio::io_service &rpc_ios )
             :ios_(ios)
             ,rpc_ios_(rpc_ios)
@@ -422,6 +425,12 @@ namespace vtrc { namespace client {
             }
         }
 
+        void assign_service_factory( service_factory factory )
+        {
+            vtrc::unique_shared_lock lck(factory_lock_);
+            factory_ = factory;
+        }
+
         service_sptr get_handler( const std::string &name )
         {
             vtrc::upgradable_lock lk(services_lock_);
@@ -435,6 +444,12 @@ namespace vtrc { namespace client {
                     weak_services_.erase( f );
                 }
             }
+
+            if( !result && factory_ ) {
+                vtrc::shared_lock shl( factory_lock_ );
+                result = factory_( name );
+            }
+
             return result;
         }
 
@@ -630,6 +645,11 @@ namespace vtrc { namespace client {
     void vtrc_client::assign_weak_rpc_handler(vtrc::weak_ptr<gpb::Service> serv)
     {
         impl_->assign_weak_handler( serv );
+    }
+
+    void vtrc_client::assign_service_factory( service_factory factory )
+    {
+        impl_->assign_service_factory( factory );
     }
 
     service_sptr vtrc_client::get_rpc_handler( const std::string &name )

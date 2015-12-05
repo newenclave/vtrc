@@ -11,6 +11,7 @@
 #include "boost/lexical_cast.hpp"
 
 using namespace vtrc;
+namespace gpb = google::protobuf;
 
 namespace {
     void on_connect( )
@@ -65,6 +66,14 @@ class hello_event_impl: public howto::hello_events {
     }
 };
 
+vtrc::shared_ptr<gpb::Service> m_events( const std::string &name )
+{
+    if( name == howto::hello_events::descriptor( )->full_name( ) ) {
+        return vtrc::make_shared<hello_event_impl>( );
+    }
+    return vtrc::shared_ptr<gpb::Service>( );
+}
+
 int main( int argc, const char **argv )
 {
     common::pool_pair pp( 1, 1 );
@@ -87,7 +96,9 @@ int main( int argc, const char **argv )
         cl->on_ready_connect( on_ready );
         cl->on_disconnect_connect( on_disconnect );
 
-        cl->assign_rpc_handler( vtrc::make_shared<hello_event_impl>( ) );
+        cl->assign_service_factory( m_events );
+
+        //cl->assign_rpc_handler( vtrc::make_shared<hello_event_impl>( ) );
 
         std::cout <<  "Connecting..." << std::endl;
 
