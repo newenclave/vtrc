@@ -14,8 +14,8 @@ namespace vtrc { namespace hash {
         static const size_t digest_length        = NAME##_DIGEST_LENGTH;       \
         static const size_t digest_string_length = NAME##_DIGEST_STRING_LENGTH;\
                                                                                \
-        typedef vtrc::uint8_t  digest_block_type[digest_length];                     \
-        typedef char           digest_string_type[digest_string_length];             \
+        typedef vtrc::uint8_t  digest_block_type[digest_length];               \
+        typedef char           digest_string_type[digest_string_length];       \
                                                                                \
         typedef NAME##_CTX  context_type;                                      \
                                                                                \
