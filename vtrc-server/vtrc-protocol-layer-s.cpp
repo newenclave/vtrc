@@ -319,14 +319,14 @@ namespace vtrc { namespace server {
 
         void init( )
         {
-            conn_setup_.reset(create_default_setup( app_,
+            conn_setup_.reset( create_default_setup( app_,
                                               parent_->session_options( ) ) );
             conn_setup_->init( this, def_cb );
         }
 
         void init_success( common::system_closure_type clos )
         {
-            conn_setup_.reset(create_default_setup( app_,
+            conn_setup_.reset( create_default_setup( app_,
                                               parent_->session_options( ) ) );
             conn_setup_->init( this, clos );
         }
