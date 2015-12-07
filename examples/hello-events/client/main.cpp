@@ -10,6 +10,8 @@
 
 #include "boost/lexical_cast.hpp"
 
+#include "google/protobuf/descriptor.h"
+
 using namespace vtrc;
 namespace gpb = google::protobuf;
 
