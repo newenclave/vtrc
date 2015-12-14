@@ -34,6 +34,9 @@ endif( )
 set( Boost_USE_MULTITHREADED   ON)
 
 find_package(OpenSSL)
+
+set(VTRC_OPENSSL_FOUND 0)
+
 if( OPENSSL_FOUND )
     set(VTRC_OPENSSL_FOUND 1)
 endif( OPENSSL_FOUND )

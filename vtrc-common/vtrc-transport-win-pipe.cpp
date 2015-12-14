@@ -29,6 +29,11 @@ namespace vtrc { namespace common {
             return get_parent( )->prepare_for_write( data, len );
         }
 
+        void close_handle( )
+        {
+            get_socket( ).close( );
+        }
+
     };
 
     transport_win_pipe::transport_win_pipe( vtrc::shared_ptr<socket_type> sock )

@@ -54,13 +54,7 @@ namespace vtrc { namespace common {
 
             std::string                          name_;
 
-
-#ifndef TRANSPORT_USE_SYNC_WRITE
-            vtrc::mutex                          write_lock_;
-#else
             std::deque<message_holder_sptr>      write_queue_;
-
-#endif
 
             transport_impl( vtrc::shared_ptr<stream_type> s,
                             const std::string &n )
@@ -101,10 +95,13 @@ namespace vtrc { namespace common {
                 vtrc::lock_guard<vtrc::mutex> lk(close_lock_);
                 if( !closed_ ) {
                     closed_ = true;
-                    stream_->close( );
+                    //stream_->close( );
+                    close_handle( );
                     parent_->on_close( );
                 }
             }
+
+            virtual void close_handle( ) = 0;
 
             bool closed( ) const
             {
@@ -147,33 +144,18 @@ namespace vtrc { namespace common {
             {
                 message_holder_sptr mh(make_holder(data, length));
 
-#ifndef TRANSPORT_USE_SYNC_WRITE
-
-                vtrc::unique_lock<vtrc::mutex> lck(write_lock_);
-                prepare_for_write( data->message_ );
-                basio::write( *stream_, basio::buffer( mh->message_ ) );
-#else
                 DEBUG_LINE(parent_);
 
                 write_dispatcher_.post(
                        vtrc::bind( &this_type::write_impl, this, mh,
                                     vtrc::shared_ptr<system_closure_type>( ),
                                     parent_->shared_from_this( )));
-#endif
             }
 
             void write(const char *data, size_t length,
                        const system_closure_type &success, bool on_send)
             {
 
-#ifndef TRANSPORT_USE_SYNC_WRITE
-                message_holder_sptr mh(make_holder(data, length));
-                vtrc::unique_lock<vtrc::mutex> lck(write_lock_);
-                prepare_for_write( data->message_ );
-                bsys::error_code ec;
-                basio::write( *stream_, basio::buffer( mh->message_ ), ec );
-                success( ec );
-#else
                 vtrc::shared_ptr<system_closure_type>
                        closure(vtrc::make_shared<system_closure_type>(success));
 
@@ -184,10 +166,8 @@ namespace vtrc { namespace common {
                 write_dispatcher_.post(
                        vtrc::bind( &this_type::write_impl, this, mh,
                                     closure, parent_->shared_from_this( )));
-#endif
             }
 
-#ifdef TRANSPORT_USE_SYNC_WRITE
 
             void async_write(  )
             {
@@ -301,7 +281,7 @@ namespace vtrc { namespace common {
                     parent_->on_write_error( error );
                 }
             }
-#endif
+
             stream_type &get_socket( )
             {
                 return *stream_;

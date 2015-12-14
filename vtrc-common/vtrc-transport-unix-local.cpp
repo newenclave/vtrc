@@ -26,6 +26,10 @@ namespace vtrc { namespace common {
             return get_parent( )->prepare_for_write( data, len );
         }
 
+        void close_handle( )
+        {
+            get_socket( ).close( );
+        }
     };
 
     transport_unix_local::transport_unix_local(vtrc::shared_ptr<socket_type> s )

@@ -32,6 +32,11 @@ namespace vtrc { namespace common {
             get_socket( ).set_option( bip::tcp::no_delay( value ) );
         }
 
+        void close_handle( )
+        {
+            get_socket( ).close( );
+        }
+
     };
 
     transport_tcp::transport_tcp( vtrc::shared_ptr<socket_type> sock )

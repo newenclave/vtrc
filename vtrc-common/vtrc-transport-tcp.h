@@ -1,3 +1,5 @@
+#ifndef VTRC_TRANSPORT_TCP_H
+#define VTRC_TRANSPORT_TCP_H
 
 #include "vtrc-transport-iface.h"
 
@@ -59,3 +61,4 @@ namespace vtrc { namespace common {
 
 }}
 
+#endif
