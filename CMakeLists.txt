@@ -33,6 +33,10 @@ endif( )
 
 set( Boost_USE_MULTITHREADED   ON)
 
+find_package(OpenSSL)
+if( OPENSSL_FOUND )
+    set(VTRC_OPENSSL_FOUND 1)
+endif( OPENSSL_FOUND )
 
 if( VTRC_CXX11_ENABLED )
 

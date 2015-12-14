@@ -9,9 +9,11 @@
   * --------------------------------------------------------------------------
  **/
 
-#define VTRC_DISABLE_CXX11 @VTRC_DISABLE_CXX11@
+#define VTRC_DISABLE_CXX11      @VTRC_DISABLE_CXX11@
 
-#define VTRC_THREAD_LOCAL  @VTRC_THREAD_LOCAL@
+#define VTRC_THREAD_LOCAL       @VTRC_THREAD_LOCAL@
+
+#define VTRC_OPENSSL_ENABLED    @VTRC_OPENSSL_FOUND@
 
 #endif // VTRC_GENERAL_CONFIG_H
 
