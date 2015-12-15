@@ -12,6 +12,7 @@
 #include "vtrc-connection-impl.h"
 
 #include "vtrc-memory.h"
+#include "vtrc-ref.h"
 
 //
 //
@@ -182,7 +183,7 @@ namespace vtrc { namespace server { namespace listeners {
             void start( )
             {
                 context_.set_options(
-                    bssl::context::default_workarounds
+                      bssl::context::default_workarounds
                     | bssl::context::no_sslv2
                     | bssl::context::single_dh_use);
 //                context_.set_password_callback(

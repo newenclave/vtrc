@@ -15,6 +15,12 @@ namespace vtrc { namespace common {
 
     public:
 
+        typedef timer::monotonic_traits::milliseconds   milliseconds;
+        typedef timer::monotonic_traits::microseconds   microseconds;
+        typedef timer::monotonic_traits::seconds        seconds;
+        typedef timer::monotonic_traits::minutes        minutes;
+        typedef timer::monotonic_traits::hours          hours;
+
         delayed_call( boost::asio::io_service &ios )
             :timer_(ios)
         { }

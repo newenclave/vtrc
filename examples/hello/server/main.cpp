@@ -8,6 +8,7 @@
 #include "vtrc-common/vtrc-closure-holder.h"
 #include "vtrc-common/vtrc-thread-pool.h"
 #include "vtrc-common/vtrc-closure.h"
+#include "vtrc-common/vtrc-delayed-call.h"
 
 #include "protocol/hello.pb.h"          /// hello protocol
 #include "google/protobuf/descriptor.h" /// for descriptor( )->full_name( )
@@ -96,6 +97,10 @@ int main( int argc, const char **argv )
     hello_application app( tp );
 
     try {
+
+        vtrc::common::delayed_call dc(tp.get_io_service( ));
+//        dc.call_from_now( [&tp]( ... ){ tp.stop( ); },
+//                          boost::posix_time::seconds(20) );
 
         vtrc::shared_ptr<server::listener>
                 tcp( server::listeners::tcp_ssl::create( app, address, port ) );
