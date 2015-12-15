@@ -25,10 +25,13 @@ foreach( dep ${internal} )
 endforeach(dep)
 
 list(APPEND dependencies
-    OPENSSL
     Boost
     PROTOBUF
     )
+
+if(OPENSSL_FOUND)
+    list( APPEND dependencies OPENSSL )
+endif(OPENSSL_FOUND)
 
 message( "-- Seting up dependencies for " ${exe_name} )
 foreach( dep ${dependencies} )
