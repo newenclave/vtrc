@@ -34,10 +34,10 @@ namespace client {
 
         typedef vtrc::shared_ptr<client_tcp> shared_type;
 
-        static shared_type create (
-                            boost::asio::io_service &ios,
-                            vtrc_client *client, protocol_signals *callbacks,
-                            bool tcp_nodelay );
+        static shared_type create ( boost::asio::io_service &ios,
+                                    vtrc_client *client,
+                                    protocol_signals *callbacks,
+                                    bool tcp_nodelay );
 
         ~client_tcp( );
         void init( );

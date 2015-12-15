@@ -7,6 +7,7 @@
 
 #include "vtrc-client.h"
 #include "vtrc-client-tcp.h"
+#include "vtrc-client-ssl.h"
 #include "vtrc-client-unix-local.h"
 #include "vtrc-client-win-pipe.h"
 #include "vtrc-rpc-channel-c.h"
@@ -173,6 +174,19 @@ namespace vtrc { namespace client {
 
             return new_client_inst;
         }
+
+#if VTRC_OPENSSL_ENABLED
+        vtrc::shared_ptr<client_ssl> create_client_ssl( bool tcp_nodelay )
+        {
+            vtrc::shared_ptr<client_ssl> new_client_inst
+                    (client_ssl::create( ios_, parent_, this, tcp_nodelay ));
+
+            connection_ =   new_client_inst;
+            protocol_   =  &new_client_inst->get_protocol( );
+
+            return new_client_inst;
+        }
+#endif
 
         static
         void on_ready_s( vtrc::condition_variable *cond )

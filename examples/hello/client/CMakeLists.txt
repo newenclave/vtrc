@@ -25,6 +25,7 @@ foreach( dep ${internal} )
 endforeach(dep)
 
 list(APPEND dependencies
+    OPENSSL
     Boost
     PROTOBUF
     )
