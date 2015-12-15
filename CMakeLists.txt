@@ -26,12 +26,16 @@ if( NOT DEFINED VTRC_LINK_TYPE )
     set( VTRC_LINK_TYPE STATIC )
 endif( )
 
-if( ${VTRC_LINK_TYPE} MATCHES ${VTRC_LINK_TYPE_STATIC} )
-    set(Boost_USE_STATIC_LIBS     ON)
-    set(Boost_USE_STATIC_RUNTIME  ON)
-endif( )
-
-set( Boost_USE_MULTITHREADED   ON)
+###################### OPEN SSL ######################
+#
+# OPENSSL_ROOT_DIR - Set this variable to the root installation of OpenSSL
+#
+# Read-Only variables:
+#
+# OPENSSL_FOUND - system has the OpenSSL library
+# OPENSSL_INCLUDE_DIR - the OpenSSL include directory
+# OPENSSL_LIBRARIES - The libraries needed to use OpenSSL
+# OPENSSL_VERSION - This is set to $major.$minor.$revision$path (eg. 0.9.8s)
 
 find_package(OpenSSL)
 
@@ -40,6 +44,15 @@ set(VTRC_OPENSSL_FOUND 0)
 if( OPENSSL_FOUND )
     set(VTRC_OPENSSL_FOUND 1)
 endif( OPENSSL_FOUND )
+#######################################################
+
+
+if( ${VTRC_LINK_TYPE} MATCHES ${VTRC_LINK_TYPE_STATIC} )
+    set(Boost_USE_STATIC_LIBS     ON)
+    set(Boost_USE_STATIC_RUNTIME  ON)
+endif( )
+
+set( Boost_USE_MULTITHREADED   ON)
 
 if( VTRC_CXX11_ENABLED )
 
