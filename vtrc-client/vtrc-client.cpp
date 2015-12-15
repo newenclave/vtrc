@@ -32,6 +32,7 @@ namespace vtrc { namespace client {
     namespace bsys  = boost::system;
     namespace gpb   = google::protobuf;
     namespace bs2   = boost::signals2;
+    namespace ph    = vtrc::placeholders;
 
     namespace {
 
@@ -235,7 +236,7 @@ namespace vtrc { namespace client {
             new_client->set_verify_callback( cb );
             new_client->async_connect( address, service,
                     vtrc::bind( &this_type::async_connect_success, this,
-                                vtrc::placeholders::error, closure ));
+                                ph::error, closure ));
         }
 
         void async_connect_ssl( const std::string &address,
@@ -249,7 +250,7 @@ namespace vtrc { namespace client {
 
             new_client->async_connect( address, service,
                     vtrc::bind( &this_type::async_connect_success, this,
-                                vtrc::placeholders::error, closure ));
+                                ph::error, closure ));
         }
 
 #endif
@@ -298,9 +299,7 @@ namespace vtrc { namespace client {
             bs2::scoped_connection fc( parent_->on_init_error_connect(
                             vtrc::bind( impl::on_init_error_s,
                                         &failed, &failed_message,
-                                        &cond,
-                                        vtrc::placeholders::_1,
-                                        vtrc::placeholders::_2 )) );
+                                        &cond, ph::_1, ph::_2 )) );
 
             vtrc::unique_lock<vtrc::mutex> ul(cond_lock);
 
@@ -408,8 +407,7 @@ namespace vtrc { namespace client {
 
             new_client->async_connect( local_name,
                 vtrc::bind( &this_type::async_connect_success, this,
-                            vtrc::placeholders::error,
-                            closure ));
+                            ph::error, closure ));
         }
 #endif
         void async_connect( const std::string &local_name,
@@ -422,18 +420,14 @@ namespace vtrc { namespace client {
 
             new_client->async_connect( local_name,
                 vtrc::bind( &this_type::async_connect_success,
-                            this,
-                            vtrc::placeholders::error,
-                            closure ));
+                            this, ph::error, closure ));
 #else
             vtrc::shared_ptr<client_unix_local>
                          new_client(create_client<client_unix_local>( ));
 
             new_client->async_connect( local_name,
             vtrc::bind( &this_type::async_connect_success,
-                         this,
-                         vtrc::placeholders::error,
-                         closure ));
+                         this, ph::error, closure ));
 #endif
         }
 
@@ -447,9 +441,7 @@ namespace vtrc { namespace client {
 
             new_client->async_connect( address, service,
                     vtrc::bind( &this_type::async_connect_success,
-                                this,
-                                vtrc::placeholders::error,
-                                closure ));
+                                this, ph::error, closure ));
         }
 
         bool ready( ) const

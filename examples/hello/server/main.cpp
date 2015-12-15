@@ -103,7 +103,7 @@ int main( int argc, const char **argv )
 //                          boost::posix_time::seconds(20) );
 
         vtrc::shared_ptr<server::listener>
-                tcp( server::listeners::tcp_ssl::create( app, address, port ) );
+                tcp( server::listeners::tcp::create( app, address, port ) );
 
         tcp->start( );
 
