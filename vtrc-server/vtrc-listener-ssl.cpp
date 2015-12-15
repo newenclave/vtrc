@@ -1,9 +1,12 @@
 #include "vtrc-general-config.h"
 
-#if 0 // VTRC_OPENSSL_ENABLED
+#if VTRC_OPENSSL_ENABLED
+
+#include <iostream>
 
 #include "vtrc-common/vtrc-transport-ssl.h"
 #include "vtrc-common/vtrc-protocol-accessor-iface.h"
+#include "vtrc-common/vtrc-delayed-call.h"
 
 #include "vtrc-listener-impl.h"
 #include "vtrc-connection-impl.h"
@@ -18,7 +21,6 @@ namespace vtrc { namespace server { namespace listeners {
 
     namespace {
 
-        namespace basio = boost::asio;
         namespace bssl  = boost::asio::ssl;
         namespace bip   = basio::ip;
 
@@ -36,7 +38,8 @@ namespace vtrc { namespace server { namespace listeners {
         struct commection_impl: public connection_impl_type {
 
             typedef commection_impl this_type;
-            std::string name_;
+            std::string             name_;
+            common::delayed_call    keepalive_calls_;
 
             commection_impl( listener &listen,
                                   vtrc::shared_ptr<socket_type> sock,
@@ -44,7 +47,15 @@ namespace vtrc { namespace server { namespace listeners {
                                   const std::string &name )
                 :connection_impl_type(listen, sock, on_close_cb)
                 ,name_(name)
+                ,keepalive_calls_(listen.get_application( ).get_io_service( ))
             { }
+
+            void on_init_timeout( const bsys::error_code &error )
+            {
+                if( !error ) {
+                    close( );
+                }
+            }
 
             std::string name(  ) const
             {
@@ -62,7 +73,7 @@ namespace vtrc { namespace server { namespace listeners {
             }
 
             void start_read_clos( bsys::error_code const & /*err*/,
-                                  common::connection_iface_wptr &inst)
+                                  common::connection_iface_wptr &inst )
             {
                 common::connection_iface_sptr lck(inst.lock( ));
                 if( lck ) {
@@ -70,13 +81,39 @@ namespace vtrc { namespace server { namespace listeners {
                 }
             }
 
+            void ssl_handshake_handler( bsys::error_code const & err,
+                                        common::connection_iface_wptr &inst )
+            {
+                common::connection_iface_sptr lck(inst.lock( ));
+                if( !lck ) {
+                    return;
+                }
+
+                keepalive_calls_.cancel( );
+
+                if( !err ) {
+                    protocol_->init_success(
+                                vtrc::bind( &this_type::start_read_clos, this,
+                                            vtrc::placeholders::error,
+                                            this->weak_from_this( )));
+                } else {
+                    close( );
+                }
+            }
+
             void init( )
             {
-                protocol_->init_success(
-                            vtrc::bind( &this_type::start_read_clos, this,
-                                        vtrc::placeholders::error,
-                                        this->weak_from_this( )));
-                //start_reading( );
+                namespace ph = vtrc::placeholders;
+
+                keepalive_calls_.call_from_now(
+                            vtrc::bind( &this_type::on_init_timeout, this,
+                                        ph::error ),
+                            boost::posix_time::seconds( 5 ));
+
+                get_socket( ).async_handshake( bssl::stream_base::server,
+                    vtrc::bind( &this_type::ssl_handshake_handler, this,
+                                 ph::error,
+                                 this->weak_from_this( ) ) );
             }
 
             static vtrc::shared_ptr<this_type> create( listener &listnr,
@@ -85,8 +122,7 @@ namespace vtrc { namespace server { namespace listeners {
             {
                 vtrc::shared_ptr<this_type> new_inst
                         (vtrc::make_shared<this_type>(vtrc::ref(listnr),
-                                            sock,
-                                            vtrc::ref(on_close_cb),
+                                            sock, vtrc::ref(on_close_cb),
                                             "" ) );
 
                 rpc::session_options const &opts(listnr.get_options( ));
@@ -104,7 +140,6 @@ namespace vtrc { namespace server { namespace listeners {
         {
             return endpoint_type(bip::address::from_string(address), port);
         }
-
 
         struct listener_ssl: public listener {
 
@@ -179,7 +214,9 @@ namespace vtrc { namespace server { namespace listeners {
 
             void stop ( )
             {
-
+                working_ = false;
+                acceptor_->close( );
+                //stop_impl( );
             }
 
             bool is_active( ) const
@@ -225,12 +262,7 @@ namespace vtrc { namespace server { namespace listeners {
 
                         new_conn->init( );
 
-    //                    get_application( ).get_io_service( )
-    //                        .dispatch( vtrc::bind( &connection_type::init,
-    //                                                new_conn ) );
-
                     } catch( ... ) {
-                        //sock->close( );
                         if( new_conn.get( ) )  {
                             get_application( ).get_clients( )
                                              ->drop( new_conn.get( ) );

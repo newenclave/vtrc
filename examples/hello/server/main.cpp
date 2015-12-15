@@ -2,6 +2,7 @@
 
 #include "vtrc-server/vtrc-application.h"
 #include "vtrc-server/vtrc-listener-tcp.h"
+#include "vtrc-server/vtrc-listener-ssl.h"
 
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-closure-holder.h"
@@ -97,7 +98,7 @@ int main( int argc, const char **argv )
     try {
 
         vtrc::shared_ptr<server::listener>
-                tcp( server::listeners::tcp::create( app, address, port ) );
+                tcp( server::listeners::tcp_ssl::create( app, address, port ) );
 
         tcp->start( );
 

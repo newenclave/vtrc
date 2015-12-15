@@ -1,5 +1,5 @@
-#ifndef VTRC_ENDPOINT_TCP_H
-#define VTRC_ENDPOINT_TCP_H
+#ifndef VTRC_LISTENER_TCP_H
+#define VTRC_LISTENER_TCP_H
 
 #include <string>
 
