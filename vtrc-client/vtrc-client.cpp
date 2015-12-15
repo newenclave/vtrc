@@ -176,16 +176,82 @@ namespace vtrc { namespace client {
         }
 
 #if VTRC_OPENSSL_ENABLED
-        vtrc::shared_ptr<client_ssl> create_client_ssl( bool tcp_nodelay )
+
+        vtrc::shared_ptr<client_ssl> create_client_ssl(
+                        const std::string &verify_file, bool tcp_nodelay )
         {
             vtrc::shared_ptr<client_ssl> new_client_inst
-                    (client_ssl::create( ios_, parent_, this, tcp_nodelay ));
+                    (client_ssl::create( ios_, parent_, this,
+                                         verify_file, tcp_nodelay ));
 
             connection_ =   new_client_inst;
             protocol_   =  &new_client_inst->get_protocol( );
 
             return new_client_inst;
         }
+
+        void connect_ssl( const std::string &address,
+                          unsigned short service,
+                          const std::string &verfile,
+                          verify_callback_type cb,
+                          bool tcp_nodelay )
+        {
+            vtrc::shared_ptr<client_ssl>
+                            new_client(create_client_ssl(verfile, tcp_nodelay));
+
+            new_client->set_verify_callback( cb );
+            connect_impl( vtrc::bind( &client_ssl::connect, new_client,
+                                       address, service) );
+            if( tcp_nodelay ) {
+                new_client->set_no_delay( true );
+            }
+        }
+
+        void connect_ssl( const std::string &address,
+                          unsigned short service,
+                          const std::string &verfile,
+                          bool tcp_nodelay )
+        {
+            vtrc::shared_ptr<client_ssl>
+                            new_client(create_client_ssl(verfile, tcp_nodelay));
+
+            connect_impl( vtrc::bind( &client_ssl::connect, new_client,
+                                       address, service) );
+            if( tcp_nodelay ) {
+                new_client->set_no_delay( true );
+            }
+        }
+
+        void async_connect_ssl( const std::string &address,
+                                unsigned short     service,
+                                common::system_closure_type closure,
+                                const std::string &verfil,
+                                verify_callback_type cb,
+                                bool tcp_nodelay )
+        {
+            vtrc::shared_ptr<client_ssl>
+                          new_client( create_client_ssl(verfil, tcp_nodelay ) );
+
+            new_client->set_verify_callback( cb );
+            new_client->async_connect( address, service,
+                    vtrc::bind( &this_type::async_connect_success, this,
+                                vtrc::placeholders::error, closure ));
+        }
+
+        void async_connect_ssl( const std::string &address,
+                                unsigned short     service,
+                                common::system_closure_type closure,
+                                const std::string &verfil,
+                                bool tcp_nodelay )
+        {
+            vtrc::shared_ptr<client_ssl>
+                          new_client( create_client_ssl(verfil, tcp_nodelay ) );
+
+            new_client->async_connect( address, service,
+                    vtrc::bind( &this_type::async_connect_success, this,
+                                vtrc::placeholders::error, closure ));
+        }
+
 #endif
 
         static
@@ -624,6 +690,47 @@ namespace vtrc { namespace client {
     {
         impl_->async_connect( local_name, closure );
     }
+
+#if VTRC_OPENSSL_ENABLED
+    void vtrc_client::connect_ssl( const std::string &address,
+                      unsigned short service,
+                      const std::string &verify_file,
+                      verify_callback_type cb,
+                      bool tcp_nodelay )
+    {
+        impl_->connect_ssl( address, service, verify_file, cb, tcp_nodelay);
+    }
+
+    void vtrc_client::connect_ssl( const std::string &address,
+                      unsigned short service,
+                      const std::string &verify_file,
+                      bool tcp_nodelay )
+    {
+        impl_->connect_ssl( address, service, verify_file, tcp_nodelay);
+    }
+
+    void vtrc_client::async_connect_ssl( const std::string &address,
+                            unsigned short     service,
+                            common::system_closure_type closure,
+                            const std::string &verify_file,
+                            verify_callback_type cb,
+                            bool tcp_nodelay )
+    {
+        impl_->async_connect_ssl( address, service, closure,
+                                  verify_file, cb, tcp_nodelay );
+    }
+
+    void vtrc_client::async_connect_ssl( const std::string &address,
+                            unsigned short     service,
+                            common::system_closure_type closure,
+                            const std::string &verify_file,
+                            bool tcp_nodelay )
+    {
+        impl_->async_connect_ssl( address, service, closure,
+                                  verify_file, tcp_nodelay );
+    }
+
+#endif
 
 #ifdef _WIN32
     void vtrc_client::async_connect( const std::wstring &local_name,

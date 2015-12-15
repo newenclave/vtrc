@@ -1,6 +1,8 @@
 #ifndef VTRC_CLIENT_H
 #define VTRC_CLIENT_H
 
+#include "vtrc-general-config.h"
+
 #include "vtrc-common/vtrc-signal-declaration.h"
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-closure-holder.h"
@@ -21,6 +23,11 @@ namespace boost {
     namespace asio {
         class io_service;
     }
+#if VTRC_OPENSSL_ENABLED
+    namespace asio { namespace ssl {
+        class verify_context;
+    }}
+#endif
 }
 
 namespace google { namespace protobuf {
@@ -49,6 +56,11 @@ namespace client {
     typedef vtrc::function<
                vtrc::shared_ptr<google::protobuf::Service> (const std::string &)
             > service_factory_type;
+#if VTRC_OPENSSL_ENABLED
+    typedef vtrc::function<
+        bool ( bool, boost::asio::ssl::verify_context& )
+    > verify_callback_type;
+#endif
 
     class vtrc_client: public vtrc::enable_shared_from_this<vtrc_client> {
 
@@ -124,6 +136,31 @@ namespace client {
 
     public:
 
+#if VTRC_OPENSSL_ENABLED
+        void connect_ssl( const std::string &address,
+                          unsigned short service,
+                          const std::string &verify_file,
+                          verify_callback_type cb,
+                          bool tcp_nodelay = false );
+
+        void connect_ssl( const std::string &address,
+                          unsigned short service,
+                          const std::string &verify_file,
+                          bool tcp_nodelay = false );
+
+        void async_connect_ssl( const std::string &address,
+                                unsigned short     service,
+                                common::system_closure_type closure,
+                                const std::string &verify_file,
+                                verify_callback_type cb,
+                                bool tcp_nodelay = false );
+
+        void async_connect_ssl( const std::string &address,
+                                unsigned short     service,
+                                common::system_closure_type closure,
+                                const std::string &verify_file,
+                                bool tcp_nodelay = false );
+#endif
         void connect( const std::string &local_name );
 
         void connect( const std::string &address,
