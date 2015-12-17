@@ -128,17 +128,6 @@ get_target_property(${lib_name}_LOCATION ${lib_name} LOCATION)
 
 set(${lib_name}_DEFINITIONS "-D${VTRC_LINK_TYPE}" PARENT_SCOPE)
 
-set(${lib_name}_INCLUDE_DIRS
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${${lib_name}_PROTOBUF_FILES_DIR}
-    ${${lib_name}_PROTOBUF_FILES_OUTPUT}
-    ${CONFIG_FILES_DIRECTORY}
-    ${Boost_INCLUDE_DIRS}
-    ${PROTOBUF_INCLUDE_DIRS}
-    ${OPENSSL_INCLUDE_DIRS}
-    PARENT_SCOPE
-)
-
 set( ${lib_name}_PROTOBUF_FILES_OUTPUT
      ${${lib_name}_PROTOBUF_FILES_OUTPUT}
      PARENT_SCOPE
@@ -152,6 +141,17 @@ set( ${lib_name}_PROJECT_SOURCE_DIR
 set( ${lib_name}_POTOBUF_IMPORT_DIR
      ${${lib_name}_POTOBUF_IMPORT_DIR}
      PARENT_SCOPE
+)
+
+set(${lib_name}_INCLUDE_DIRS
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${${lib_name}_PROTOBUF_FILES_DIR}
+    ${${lib_name}_PROTOBUF_FILES_OUTPUT}
+    ${CONFIG_FILES_DIRECTORY}
+    ${Boost_INCLUDE_DIRS}
+    ${PROTOBUF_INCLUDE_DIRS}
+    ${OPENSSL_INCLUDE_DIRS}
+    PARENT_SCOPE
 )
 
 set(${lib_name}_LIBRARIES ${${lib_name}_LOCATION} PARENT_SCOPE)
