@@ -133,9 +133,11 @@ set(${lib_name}_INCLUDE_DIRS
     ${${lib_name}_PROTOBUF_FILES_DIR}
     ${${lib_name}_PROTOBUF_FILES_OUTPUT}
     ${CONFIG_FILES_DIRECTORY}
+    ${Boost_INCLUDE_DIRS}
+    ${PROTOBUF_INCLUDE_DIRS}
+    ${OPENSSL_INCLUDE_DIRS}
     PARENT_SCOPE
 )
-
 
 set( ${lib_name}_PROTOBUF_FILES_OUTPUT
      ${${lib_name}_PROTOBUF_FILES_OUTPUT}
