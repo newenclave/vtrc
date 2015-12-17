@@ -42,7 +42,9 @@ find_package(OpenSSL)
 set(VTRC_OPENSSL_FOUND 0)
 
 if( OPENSSL_FOUND )
-    set(VTRC_OPENSSL_FOUND 1)
+    set( VTRC_OPENSSL_FOUND 1 )
+    #small hack =)
+    set( OPENSSL_INCLUDE_DIRS ${OPENSSL_INCLUDE_DIR} )
 endif( OPENSSL_FOUND )
 #######################################################
 
