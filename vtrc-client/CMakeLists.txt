@@ -46,5 +46,6 @@ get_target_property(${lib_name}_LOCATION ${lib_name} LOCATION)
 
 set(${lib_name}_DEFINITIONS "-D${VTRC_LINK_TYPE}" PARENT_SCOPE)
 set(${lib_name}_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE)
-set(${lib_name}_LIBRARIES ${${lib_name}_LOCATION} PARENT_SCOPE)
+set(${lib_name}_LIBRARIES ${${lib_name}_LOCATION}
+                          ${${VTRC_COMMON_LIB_NAME}_LIBRARIES} PARENT_SCOPE )
 

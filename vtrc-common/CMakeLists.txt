@@ -153,3 +153,19 @@ set( ${lib_name}_POTOBUF_IMPORT_DIR
 )
 
 set(${lib_name}_LIBRARIES ${${lib_name}_LOCATION} PARENT_SCOPE)
+
+if( OPENSSL_FOUND )
+    set(${lib_name}_LIBRARIES
+        ${${lib_name}_LOCATION}
+        ${Boost_LIBRARIES}
+        ${PROTOBUF_LIBRARIES}
+        ${OPENSSL_LIBRARIES}
+        PARENT_SCOPE)
+else(OPENSSL_FOUND)
+    set(${lib_name}_LIBRARIES
+        ${${lib_name}_LOCATION}
+        ${Boost_LIBRARIES}
+        ${PROTOBUF_LIBRARIES}
+        PARENT_SCOPE)
+endif(OPENSSL_FOUND)
+
