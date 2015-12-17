@@ -17,7 +17,7 @@ add_library(${lib_name} ${VTRC_LINK_TYPE} ${lib_src})
 
 list(APPEND dependencies  
     ${VTRC_COMMON_LIB_NAME}
-    )
+)
 
 message( "-- Seting up dependencies for " ${lib_name} )
 foreach( dep ${dependencies} )
@@ -40,6 +40,8 @@ set(${lib_name}_INCLUDE_DIRS
     ${${VTRC_COMMON_LIB_NAME}_INCLUDE_DIRS}
     PARENT_SCOPE
 )
+
+set(${lib_name}_LIBRARY ${${lib_name}_LOCATION} PARENT_SCOPE )
 
 set(${lib_name}_LIBRARIES
     ${${lib_name}_LOCATION}
