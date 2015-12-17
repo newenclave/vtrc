@@ -8,7 +8,6 @@ add_executable(${exe_name} ${src_dir})
 list( APPEND internal
     ${INTERNAL_PROJECT_NAME}_protocol_s
     vtrc_client
-    #vtrc_common
     )
 
 include_directories( ${${INTERNAL_PROJECT_NAME}_protocol_s_INCLUDE_DIRS}  )
@@ -24,27 +23,6 @@ foreach( dep ${internal} )
     include_directories(    ${${dep}_INCLUDE_DIRS}  )
 
 endforeach(dep)
-
-#list(APPEND dependencies
-#    Boost
-#    PROTOBUF
-#    )
-
-#if(OPENSSL_FOUND)
-#    list( APPEND dependencies OPENSSL )
-#endif(OPENSSL_FOUND)
-
-#message( "-- Seting up dependencies for " ${exe_name} )
-#foreach( dep ${dependencies} )
-
-#    message( "\tAdd dependence: " ${dep} )
-
-#    add_dependencies(       ${exe_name} ${dep}      )
-#    add_definitions(        ${${dep}_DEFINITIONS}   )
-#    include_directories(    ${${dep}_INCLUDE_DIRS}  )
-#    target_link_libraries(  ${exe_name} ${${dep}_LIBRARIES} )
-
-#endforeach(dep)
 
 if(WIN32)
     target_link_libraries(${exe_name} ws2_32.lib)
