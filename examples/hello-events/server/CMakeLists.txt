@@ -23,6 +23,23 @@ foreach( dep ${internal} )
 
 endforeach(dep)
 
+list(APPEND dependencies
+    Boost
+    PROTOBUF
+    )
+
+message( "-- Seting up dependencies for " ${exe_name} )
+foreach( dep ${dependencies} )
+
+    message( "\tAdd dependence: " ${dep} )
+
+    add_dependencies(       ${exe_name} ${dep}      )
+    add_definitions(        ${${dep}_DEFINITIONS}   )
+    include_directories(    ${${dep}_INCLUDE_DIRS}  )
+    target_link_libraries(  ${exe_name} ${${dep}_LIBRARIES} )
+
+endforeach(dep)
+
 if(WIN32)
     target_link_libraries(${exe_name} ws2_32.lib)
 endif(WIN32)
