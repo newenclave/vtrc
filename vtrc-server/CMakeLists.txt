@@ -15,6 +15,10 @@ include_directories( ${VTRC_INCLUDE_DIR}/vtrc-server)
 
 add_library(${lib_name} ${VTRC_LINK_TYPE} ${lib_src})
 
+if( OPENSSL_FOUND )
+    list( APPEND dependencies  OPENSSL )
+endif( OPENSSL_FOUND )
+
 list(APPEND dependencies  
     ${VTRC_COMMON_LIB_NAME}
     Boost

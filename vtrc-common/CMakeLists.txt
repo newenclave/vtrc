@@ -100,6 +100,10 @@ endforeach( )
 
 add_library(${lib_name} ${VTRC_LINK_TYPE} ${lib_src})
 
+if( OPENSSL_FOUND )
+    list( APPEND dependencies  OPENSSL )
+endif( OPENSSL_FOUND )
+
 list(APPEND dependencies
     Boost
     PROTOBUF
