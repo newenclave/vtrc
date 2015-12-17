@@ -21,6 +21,7 @@ foreach( dep ${internal} )
     add_dependencies(       ${exe_name} ${dep}      )
     add_definitions(        ${${dep}_DEFINITIONS}   )
     target_link_libraries(  ${exe_name} ${${dep}_LIBRARIES} )
+    include_directories(    ${${dep}_INCLUDE_DIRS}  )
 
 endforeach(dep)
 
