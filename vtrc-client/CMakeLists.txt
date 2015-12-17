@@ -17,13 +17,13 @@ include_directories( ${VTRC_INCLUDE_DIR}/vtrc-client )
 add_library(${lib_name} ${VTRC_LINK_TYPE} ${lib_src})
 
 if( OPENSSL_FOUND )
-    list( APPEND dependencies  OPENSSL )
+    #list( APPEND dependencies  OPENSSL )
 endif( OPENSSL_FOUND )
 
 list(APPEND dependencies
     ${VTRC_COMMON_LIB_NAME}
-    Boost
-    PROTOBUF
+#    Boost
+#    PROTOBUF
     )
 
 message( "-- Seting up dependencies for " ${lib_name} )
@@ -52,6 +52,9 @@ set(${lib_name}_INCLUDE_DIRS
     PARENT_SCOPE
 )
 
-set(${lib_name}_LIBRARIES ${${lib_name}_LOCATION}
-                          ${${VTRC_COMMON_LIB_NAME}_LIBRARIES} PARENT_SCOPE )
+set(${lib_name}_LIBRARIES
+    ${${lib_name}_LOCATION}
+    ${${VTRC_COMMON_LIB_NAME}_LIBRARIES}
+    PARENT_SCOPE
+)
 
