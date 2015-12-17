@@ -121,9 +121,10 @@ foreach( dep ${dependencies} )
 
 endforeach(dep)
 
-set_target_properties(${lib_name}
-                      PROPERTIES
-                        COMPILE_DEFINITIONS "${VTRC_LINK_TYPE}")
+set_target_properties( ${lib_name}
+                       PROPERTIES
+                       COMPILE_DEFINITIONS "${VTRC_LINK_TYPE}")
+
 get_target_property(${lib_name}_LOCATION ${lib_name} LOCATION)
 
 set(${lib_name}_DEFINITIONS "-D${VTRC_LINK_TYPE}" PARENT_SCOPE)
