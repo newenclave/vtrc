@@ -187,15 +187,16 @@ namespace vtrc { namespace server { namespace listeners {
 
             void start( )
             {
-                context_.set_options(
-                      bssl::context::default_workarounds
-                    | bssl::context::no_sslv2
-                    | bssl::context::single_dh_use);
-//                context_.set_password_callback(
-//                            vtrc::bind( &server::get_password, this ) );
-                context_.use_certificate_chain_file("server.crt");
-                context_.use_private_key_file("server.key", bssl::context::pem);
-                context_.use_tmp_dh_file("dh1024.pem");
+                setup_cb_( context_ );
+//                context_.set_options(
+//                      bssl::context::default_workarounds
+//                    | bssl::context::no_sslv2
+//                    | bssl::context::single_dh_use);
+////                context_.set_password_callback(
+////                            vtrc::bind( &server::get_password, this ) );
+//                context_.use_certificate_chain_file("server.crt");
+//                context_.use_private_key_file("server.key", bssl::context::pem);
+//                context_.use_tmp_dh_file("dh1024.pem");
 
                 working_ = true;
                 acceptor_.reset(new acceptor_type(ios_, endpoint_));
