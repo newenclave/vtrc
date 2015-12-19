@@ -8,6 +8,7 @@
 #include "vtrc-common/vtrc-protocol-accessor-iface.h"
 #include "vtrc-common/vtrc-delayed-call.h"
 
+#include "vtrc-listener-ssl.h"
 #include "vtrc-listener-impl.h"
 #include "vtrc-connection-impl.h"
 
@@ -152,17 +153,21 @@ namespace vtrc { namespace server { namespace listeners {
             bool                            working_;
             bool                            no_delay_;
             basio::ssl::context             context_;
+            ssl::setup_function_type        setup_cb_;
 
             listener_ssl( application &app,
                           const rpc::session_options &opts,
                           const std::string &address,
-                          unsigned short port, bool no_delay )
+                          unsigned short port,
+                          ssl::setup_function_type setup_cb,
+                          bool no_delay )
                 :listener(app, opts)
                 ,ios_(app.get_io_service( ))
                 ,endpoint_(make_endpoint(address, port))
                 ,working_(false)
                 ,no_delay_(no_delay)
                 ,context_(bssl::context::sslv23)
+                ,setup_cb_(setup_cb)
             { }
 
             void on_client_destroy( vtrc::weak_ptr<listener> inst,
@@ -307,7 +312,9 @@ namespace vtrc { namespace server { namespace listeners {
 
         listener_sptr create(application &app,
                              const rpc::session_options &opts,
-                             const std::string &address, unsigned short service,
+                             const std::string &address,
+                             unsigned short service,
+                             vtrc::server::ssl::setup_function_type setup,
                              bool tcp_nodelay)
         {
 
@@ -315,18 +322,21 @@ namespace vtrc { namespace server { namespace listeners {
                     (vtrc::make_shared<listener_ssl>(
                              vtrc::ref(app), vtrc::ref(opts),
                              vtrc::ref(address), service,
-                             tcp_nodelay ));
+                             setup, tcp_nodelay ));
             return new_l;
         }
 
         listener_sptr create( application &app,
                               const std::string &address,
-                              unsigned short service, bool tcp_nodelay )
+                              unsigned short service,
+                              vtrc::server::ssl::setup_function_type setup,
+                              bool tcp_nodelay )
         {
             const rpc::session_options
                     def_opts( common::defaults::session_options( ) );
 
-            return create( app, def_opts, address, service, tcp_nodelay );
+            return create( app, def_opts, address,
+                           service, setup, tcp_nodelay );
         }
 
     }
