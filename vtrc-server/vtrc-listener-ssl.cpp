@@ -192,8 +192,8 @@ namespace vtrc { namespace server { namespace listeners {
 //                      bssl::context::default_workarounds
 //                    | bssl::context::no_sslv2
 //                    | bssl::context::single_dh_use);
-////                context_.set_password_callback(
-////                            vtrc::bind( &server::get_password, this ) );
+//                context_.set_password_callback(
+//                            vtrc::bind( &server::get_password, this ) );
 //                context_.use_certificate_chain_file("server.crt");
 //                context_.use_private_key_file("server.key", bssl::context::pem);
 //                context_.use_tmp_dh_file("dh1024.pem");
