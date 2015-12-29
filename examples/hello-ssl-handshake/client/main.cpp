@@ -15,6 +15,53 @@ using namespace vtrc;
 
 const std::string VERIFY_CSR = "../server.csr";
 const std::string CERTF = "../server.crt";
+#ifndef HEXDUMP_COLS
+#define HEXDUMP_COLS 16
+#endif
+void hexdump(const void *mem, unsigned int len)
+{
+        unsigned int i, j;
+
+        for(i = 0; i < len + ((len % HEXDUMP_COLS) ? (HEXDUMP_COLS - len % HEXDUMP_COLS) : 0); i++)
+        {
+                /* print offset */
+                if(i % HEXDUMP_COLS == 0)
+                {
+                        printf("0x%06x: ", i);
+                }
+
+                /* print hex data */
+                if(i < len)
+                {
+                        printf("%02x ", 0xFF & ((char*)mem)[i]);
+                }
+                else /* end of block, just aligning for ASCII dump */
+                {
+                        printf("   ");
+                }
+
+                /* print ASCII dump */
+                if(i % HEXDUMP_COLS == (HEXDUMP_COLS - 1))
+                {
+                        for(j = i - (HEXDUMP_COLS - 1); j <= i; j++)
+                        {
+                                if(j >= len) /* end of block, not really printing */
+                                {
+                                        putchar(' ');
+                                }
+                                else if(isprint(((char*)mem)[j])) /* printable char */
+                                {
+                                        putchar(0xFF & ((char*)mem)[j]);
+                                }
+                                else /* other char */
+                                {
+                                        putchar('.');
+                                }
+                        }
+                        putchar('\n');
+                }
+        }
+}
 
 namespace {
 
@@ -57,13 +104,16 @@ void connect_handshake( stub_wrap &stub )
     howto::response_message res;
 
     SSL     *ssl;
-    SSL_CTX *ctx = SSL_CTX_new(SSLv23_client_method( ));
+    SSL_CTX *ctx = SSL_CTX_new(TLSv1_2_client_method( ));
 
     if( !ctx ) {
         ssl_throw("SSL_CTX_new");
     }
 
-    SSL_CTX_set_mode( ctx, SSL_MODE_RELEASE_BUFFERS );
+    SSL_CTX_set_mode( ctx, SSL_MODE_AUTO_RETRY           );
+    SSL_CTX_set_mode( ctx, SSL_MODE_ENABLE_PARTIAL_WRITE );
+    SSL_CTX_set_mode( ctx, SSL_MODE_RELEASE_BUFFERS      );
+
     SSL_CTX_set_cert_verify_callback( ctx, verify_dont_fail_cb, 0 );
 
     int err = SSL_CTX_load_verify_locations( ctx, CERTF.c_str( ), 0 );
@@ -89,7 +139,7 @@ void connect_handshake( stub_wrap &stub )
     SSL_set_connect_state( ssl );
 
     while (!SSL_is_init_finished(ssl)) {
-        int n = SSL_connect(ssl);
+        int n = SSL_do_handshake(ssl);
         if( n <= 0 ) {
             int err = SSL_get_error( ssl, n );
             if( err == SSL_ERROR_WANT_READ ) {
@@ -104,10 +154,25 @@ void connect_handshake( stub_wrap &stub )
         }
         char *data;
         size_t length = BIO_get_mem_data( wbio, &data );
-        req.set_block( data, length );
+        hexdump(data, length);
+        std::vector<char> raw_data(length);
+
+        BIO_read( wbio, &raw_data[0], length );
+        req.set_block( &raw_data[0], length );
         stub.call( &stub_type::send_block, &req, &res );
+
         BIO_write( rbio, res.block( ).c_str( ), res.block( ).size( ) );
+        BIO_flush( rbio );
+        BIO_flush( wbio );
     }
+
+    std::string hello = "Hello, world!";
+    SSL_write( ssl, hello.c_str( ), hello.size( ) );
+    char *data;
+    size_t length = BIO_get_mem_data( wbio, &data );
+
+    req.set_block( data, length );
+    stub.call( &stub_type::send_block, &req, &res );
 
 }
 

@@ -19,6 +19,56 @@
 
 using namespace vtrc;
 
+#ifndef HEXDUMP_COLS
+#define HEXDUMP_COLS 16
+#endif
+
+void hexdump(const void *mem, unsigned int len)
+{
+        unsigned int i, j;
+
+        for(i = 0; i < len + ((len % HEXDUMP_COLS) ? (HEXDUMP_COLS - len % HEXDUMP_COLS) : 0); i++)
+        {
+                /* print offset */
+                if(i % HEXDUMP_COLS == 0)
+                {
+                        printf("0x%06x: ", i);
+                }
+
+                /* print hex data */
+                if(i < len)
+                {
+                        printf("%02x ", 0xFF & ((char*)mem)[i]);
+                }
+                else /* end of block, just aligning for ASCII dump */
+                {
+                        printf("   ");
+                }
+
+                /* print ASCII dump */
+                if(i % HEXDUMP_COLS == (HEXDUMP_COLS - 1))
+                {
+                        for(j = i - (HEXDUMP_COLS - 1); j <= i; j++)
+                        {
+                                if(j >= len) /* end of block, not really printing */
+                                {
+                                        putchar(' ');
+                                }
+                                else if(isprint(((char*)mem)[j])) /* printable char */
+                                {
+                                        putchar(0xFF & ((char*)mem)[j]);
+                                }
+                                else /* other char */
+                                {
+                                        putchar('.');
+                                }
+                        }
+                        putchar('\n');
+                }
+        }
+}
+
+
 namespace {
 
 const std::string CERTF = "../server.crt";
@@ -55,6 +105,7 @@ class  hello_ssl_service_impl: public howto::hello_ssl_service {
 
         std::cout << "Block: " << block_size << "\n";
 
+        BIO_reset( in_ );
         BIO_write( in_, request->block( ).c_str( ), request->block( ).size( ) );
 
         if( !SSL_is_init_finished( ssl_ ) ) {
@@ -75,8 +126,20 @@ class  hello_ssl_service_impl: public howto::hello_ssl_service {
             }
             char *data;
             size_t length = BIO_get_mem_data( out_, &data );
-            response->set_block( data, length );
+
+            std::vector<char> raw_data(length);
+
+            BIO_read( out_, &raw_data[0], length );
+
+            response->set_block( &raw_data[0], length );
+            hexdump( data, length );
+            BIO_flush( in_ );
+            BIO_flush( out_ );
             return;
+        } else {
+            std::vector<char> raw_data(1024);
+            int r = SSL_read( ssl_, &raw_data[0], 1024 );
+            std::cout << &raw_data[0] << "\n";
         }
     }
 
@@ -89,7 +152,7 @@ public:
         ,in_(NULL)
         ,out_(NULL)
     {
-        const SSL_METHOD *meth = SSLv23_server_method( );
+        const SSL_METHOD *meth = TLSv1_2_server_method( );
         ctx_ = SSL_CTX_new (meth);
         if ( !ctx_ ) {
             ssl_throw( "SSL_CTX_new" );
