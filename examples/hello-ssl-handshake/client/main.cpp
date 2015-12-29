@@ -63,7 +63,70 @@ int verify_dont_fail_cb( X509_STORE_CTX *x509, void *p )
     return 1;
 }
 
+class my_ssl_wrapper: public ssl_wrapper_client {
+public:
+    my_ssl_wrapper( )
+        :ssl_wrapper_client(TLSv1_2_client_method( ))
+    { }
+private:
+    void init_context( )
+    {
+        SSL_CTX_set_mode( get_context( ), SSL_MODE_AUTO_RETRY           );
+        SSL_CTX_set_mode( get_context( ), SSL_MODE_ENABLE_PARTIAL_WRITE );
+        SSL_CTX_set_mode( get_context( ), SSL_MODE_RELEASE_BUFFERS      );
+
+        SSL_CTX_set_cert_verify_callback( get_context( ), verify_dont_fail_cb, 0 );
+
+        int err = SSL_CTX_load_verify_locations( get_context( ), CERTF.c_str( ), 0 );
+        if( err == 0 ) {
+            ssl_throw("SSL_CTX_load_verify_locations");
+        }
+    }
+};
+
+
 void connect_handshake( stub_wrap &stub )
+{
+    my_ssl_wrapper ssl;
+    ssl.init( );
+    howto::request_message  req;
+    howto::response_message res;
+    std::string data;
+    while (!ssl.init_finished( )) {
+        std::string res_data = ssl.do_handshake( "" );
+        req.set_block( res_data );
+        stub.call( &stub_type::send_block, &req, &res );
+        data = res.block( );
+        BIO_write( ssl.get_in( ), data.c_str( ), data.size( ) );
+    }
+
+    std::string hello = "Hello, world!";
+    SSL_write( ssl.get_ssl( ), hello.c_str( ), hello.size( ) );
+    char *wdata;
+    size_t length = BIO_get_mem_data( ssl.get_out( ), &wdata );
+
+    req.set_block( wdata, length );
+    stub.call( &stub_type::send_block, &req, &res );
+
+    BIO_write( ssl.get_in( ), res.block( ).c_str( ), res.block( ).size( ) );
+
+    length = BIO_get_mem_data( ssl.get_out( ), &wdata );
+
+    std::string result(1024, 0);
+    int n = SSL_read( ssl.get_ssl( ), &result[0], result.size( ) );
+    result.resize( n );
+
+    std::cout << "response: " << result << " " << n << "\n";
+
+//    data = "Hello, world!";
+//    req.set_block( ssl.encrypt( data ) );
+//    stub.call( &stub_type::send_block, &req, &res );
+//    std::cout << "Response: ";
+//    std::cout <<  res.block( ) << "\n";
+//    std::cout <<  ssl.decrypt(res.block( )) << "\n";
+}
+
+void connect_handshake_( stub_wrap &stub )
 {
     howto::request_message  req;
     howto::response_message res;
@@ -133,7 +196,16 @@ void connect_handshake( stub_wrap &stub )
 
     req.set_block( data, length );
     stub.call( &stub_type::send_block, &req, &res );
-    std::cout << "response: " << res.block( ) << "\n";
+
+    BIO_write( rbio, res.block( ).c_str( ), res.block( ).size( ) );
+
+    length = BIO_get_mem_data( wbio, &data );
+
+    std::string result(1024, 0);
+    int n = SSL_read( ssl, &result[0], result.size( ) );
+    result.resize( n );
+
+    std::cout << "response: " << result << " " << n << "\n";
 }
 
 int main( int argc, const char **argv )

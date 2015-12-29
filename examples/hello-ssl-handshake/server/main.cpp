@@ -82,8 +82,14 @@ class  hello_ssl_service_impl: public howto::hello_ssl_service {
         } else {
             std::vector<char> raw_data(1024);
             int r = SSL_read( ssl_, &raw_data[0], 1024 );
-            response->set_block( "World, hello!" );
             std::cout << &raw_data[0] << "\n";
+
+            SSL_write( ssl_, "World, hello!", 14 );
+            char *data;
+            size_t length = BIO_get_mem_data( out_, &data );
+            BIO_read( out_, data, length );
+            response->set_block( data, length );
+
         }
     }
 

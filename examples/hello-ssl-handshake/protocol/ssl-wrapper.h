@@ -4,7 +4,7 @@
 #include <string>
 #include "openssl/ssl.h"
 
-class ssw_wrapper {
+class ssl_wrapper {
 
     SSL     *ssl_;
     SSL_CTX *ctx_;
@@ -13,7 +13,7 @@ class ssw_wrapper {
     const SSL_METHOD *meth_;
 
 protected:
-    ssw_wrapper( const SSL_METHOD *meth )
+    ssl_wrapper( const SSL_METHOD *meth )
         :ssl_(NULL)
         ,ctx_(NULL)
         ,in_(NULL)
@@ -23,12 +23,19 @@ protected:
 
 public:
 
-    virtual ~ssw_wrapper( ) { }
+    virtual ~ssl_wrapper( )
+    {
+        if( ssl_ ) {
+            SSL_free( ssl_ );
+        }
+        if( ctx_ ) {
+            SSL_CTX_free( ctx_ );
+        }
+    }
 
     void init( )
     {
-        const SSL_METHOD *meth = TLSv1_2_server_method( );
-        ctx_ = SSL_CTX_new (meth);
+        ctx_ = SSL_CTX_new (meth_);
         if ( !ctx_ ) {
             ssl_throw( "SSL_CTX_new" );
         }
@@ -44,6 +51,9 @@ public:
         if( !in_ || !out_ ) {
             ssl_throw( "BIO_new(BIO_s_mem)" );
         }
+        SSL_set_bio( ssl_, in_, out_ );
+
+        init_ssl( );
     }
 
     virtual void init_context( ) = 0;
@@ -69,9 +79,19 @@ public:
         return ctx_;
     }
 
+    BIO *get_in( )
+    {
+        return in_;
+    }
+
+    BIO *get_out( )
+    {
+        return out_;
+    }
+
     bool init_finished( ) const
     {
-        return !!SSL_is_init_finished(ssl_);
+        return SSL_is_init_finished(ssl_);
     }
 
     std::string do_handshake( const std::string &data )
@@ -82,7 +102,7 @@ public:
     std::string do_handshake( const char *data, size_t length )
     {
         if( length ) {
-            BIO_reset( in_ );
+            (void)BIO_reset( in_ );
             if( BIO_write( in_, data, length ) < 0 ) {
                 ssl_throw( "do_handshake -> BIO_write" );
             }
@@ -91,7 +111,7 @@ public:
         int n = SSL_do_handshake( ssl_ );
 
         if( n <= 0 ) {
-            int err = SSL_get_error( ssl, n );
+            int err = SSL_get_error( ssl_, n );
             if( err == SSL_ERROR_WANT_READ ) {
             } else if( err == SSL_ERROR_WANT_WRITE ) {
             } else if( err == SSL_ERROR_NONE ) {
@@ -99,12 +119,66 @@ public:
               ssl_throw( "do_handshake" );
             }
         }
+        return get_bio( out_ );
+    }
+
+    std::string encrypt( const std::string &data )
+    {
+        return encrypt( data.c_str( ), data.size( ) );
+    }
+
+    std::string encrypt( const char *data, size_t length )
+    {
+        int n = SSL_write( ssl_, data, length );
+        if( n <= 0 ) {
+            ssl_throw( "SSL_write" );
+        }
+
+        return get_bio( out_ );
+    }
+
+    std::string decrypt( const std::string &data )
+    {
+        return decrypt( data.c_str( ), data.size( ) );
+    }
+
+    std::string decrypt( const char *data, size_t length )
+    {
+        if( 0 == length ) {
+            return std::string( );
+        }
+
+        (void)BIO_reset( in_ );
+        (void)BIO_reset( out_ );
+        int n = BIO_write( in_, data, length );
+        //BIO_flush( in_ );
+        if( n <= 0 ) {
+            ssl_throw( "BIO_write" );
+        }
+
         char *wdata;
         size_t wlength = BIO_get_mem_data( out_, &wdata );
-        return std::string( wdata, wdata + wlength );
+        std::string res( 10000, '\0' );
+        n = SSL_read( ssl_, &res[0], res.size( ));
+        if( n < 0 ) {
+            ssl_throw( "SSL_read" );
+        }
+        return res;
     }
 
     protected:
+
+        std::string get_bio( BIO *b, bool reset = true )
+        {
+            char *data;
+            size_t length = BIO_get_mem_data( b, &data );
+            std::string res( data, length );
+            if( reset ) {
+                BIO_reset( b );
+            }
+            return res;
+        }
+
         void ssl_throw( const char *add )
         {
             std::string err(add);
@@ -115,6 +189,30 @@ public:
                                 &err[final], err.size( ) - final );
             throw std::runtime_error( err );
         }
+};
+
+class ssl_wrapper_server: public ssl_wrapper {
+public:
+    ssl_wrapper_server(const SSL_METHOD *meth)
+        :ssl_wrapper(meth)
+    { }
+private:
+    void init_ssl( )
+    {
+        SSL_set_accept_state( get_ssl( ) );
+    }
+};
+
+class ssl_wrapper_client: public ssl_wrapper {
+public:
+    ssl_wrapper_client(const SSL_METHOD *meth)
+        :ssl_wrapper(meth)
+    { }
+private:
+    void init_ssl( )
+    {
+        SSL_set_connect_state(  get_ssl( ) );
+    }
 };
 
 #endif // SSL_WRAPPER_H
