@@ -8,9 +8,15 @@
 
 #include "boost/lexical_cast.hpp"
 
+#include "openssl/ssl.h"
+
 using namespace vtrc;
 
 namespace {
+
+    typedef howto::hello_ssl_service_Stub   stub_type;
+    typedef common::stub_wrapper<stub_type> stub_wrap;
+
     void on_connect( )
     {
         std::cout << "connect...";
@@ -25,6 +31,14 @@ namespace {
     }
 }
 
+void connect_handshake( stub_wrap &stub )
+{
+    howto::request_message  req;
+    howto::response_message res;
+    req.set_block( "12121" );
+    stub.call( &stub_type::send_block, &req, &res );
+}
+
 int main( int argc, const char **argv )
 {
     common::thread_pool tp( 1 );
@@ -32,12 +46,16 @@ int main( int argc, const char **argv )
     const char *address = "127.0.0.1";
     unsigned short port = 56560;
 
+
     if( argc > 2 ) {
         address = argv[1];
         port = boost::lexical_cast<unsigned short>( argv[2] );
     } else if( argc > 1 ) {
         port = boost::lexical_cast<unsigned short>( argv[1] );
     }
+
+    SSL_load_error_strings( );
+    SSLeay_add_ssl_algorithms( );
 
     try {
 
@@ -55,18 +73,9 @@ int main( int argc, const char **argv )
 
         vtrc::unique_ptr<common::rpc_channel> channel(cl->create_channel( ));
 
-        typedef howto::hello_ssl_service_Stub stub_type;
+        stub_wrap hello(channel.get( ));
 
-        common::stub_wrapper<stub_type> hello(channel.get( ));
-
-        howto::request_message  req;
-        howto::response_message res;
-
-        req.set_name( "%USERNAME%" );
-
-        hello.call( &stub_type::send_block, &req, &res );
-
-        std::cout <<  res.hello( ) << std::endl;
+        connect_handshake( hello );
 
     } catch( const std::exception &ex ) {
         std::cerr << "Hello, world failed: " << ex.what( ) << "\n";
