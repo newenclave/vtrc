@@ -51,12 +51,17 @@ class  hello_ssl_service_impl: public howto::hello_ssl_service {
         common::closure_holder ch( done ); /// instead of done->Run( );
         std::ostringstream oss;
 
+        size_t block_size = request->block( ).size( );
+
+        std::cout << "Block: " << block_size << "\n";
+
         BIO_write( in_, request->block( ).c_str( ), request->block( ).size( ) );
 
         if( !SSL_is_init_finished( ssl_ ) ) {
             int n = SSL_do_handshake( ssl_ );
             if( n <= 0 ) {
                 int err = SSL_get_error( ssl_, n );
+                std::cout << "Err: " << err << "\n";
                 if( err == SSL_ERROR_WANT_READ ) {
                     std::cout << "More encrypted data required for handshake\n";
                 } else if( err == SSL_ERROR_WANT_WRITE ) {
@@ -68,6 +73,9 @@ class  hello_ssl_service_impl: public howto::hello_ssl_service {
                 }
                 response->set_error( err );
             }
+            char *data;
+            size_t length = BIO_get_mem_data( out_, &data );
+            response->set_block( data, length );
             return;
         }
     }
