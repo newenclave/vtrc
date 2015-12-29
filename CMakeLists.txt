@@ -161,6 +161,11 @@ if(WITH_EXAMPLES)
     add_subdirectory( examples/lukki-db     )
     add_subdirectory( examples/stress       )
     add_subdirectory( examples/hello        )
+
+if(OPENSSL_FOUND)
+    add_subdirectory( examples/hello-ssl-handshake )
+endif(OPENSSL_FOUND)
+
 if(MSVC)
     add_subdirectory( examples/hello-win-impersonate )
 endif(MSVC)
