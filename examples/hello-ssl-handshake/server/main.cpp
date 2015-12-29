@@ -19,56 +19,6 @@
 
 using namespace vtrc;
 
-#ifndef HEXDUMP_COLS
-#define HEXDUMP_COLS 16
-#endif
-
-void hexdump(const void *mem, unsigned int len)
-{
-        unsigned int i, j;
-
-        for(i = 0; i < len + ((len % HEXDUMP_COLS) ? (HEXDUMP_COLS - len % HEXDUMP_COLS) : 0); i++)
-        {
-                /* print offset */
-                if(i % HEXDUMP_COLS == 0)
-                {
-                        printf("0x%06x: ", i);
-                }
-
-                /* print hex data */
-                if(i < len)
-                {
-                        printf("%02x ", 0xFF & ((char*)mem)[i]);
-                }
-                else /* end of block, just aligning for ASCII dump */
-                {
-                        printf("   ");
-                }
-
-                /* print ASCII dump */
-                if(i % HEXDUMP_COLS == (HEXDUMP_COLS - 1))
-                {
-                        for(j = i - (HEXDUMP_COLS - 1); j <= i; j++)
-                        {
-                                if(j >= len) /* end of block, not really printing */
-                                {
-                                        putchar(' ');
-                                }
-                                else if(isprint(((char*)mem)[j])) /* printable char */
-                                {
-                                        putchar(0xFF & ((char*)mem)[j]);
-                                }
-                                else /* other char */
-                                {
-                                        putchar('.');
-                                }
-                        }
-                        putchar('\n');
-                }
-        }
-}
-
-
 namespace {
 
 const std::string CERTF = "../server.crt";
@@ -103,7 +53,7 @@ class  hello_ssl_service_impl: public howto::hello_ssl_service {
 
         size_t block_size = request->block( ).size( );
 
-        std::cout << "Block: " << block_size << "\n";
+        //std::cout << "Block: " << block_size << "\n";
 
         BIO_reset( in_ );
         BIO_write( in_, request->block( ).c_str( ), request->block( ).size( ) );
@@ -112,13 +62,12 @@ class  hello_ssl_service_impl: public howto::hello_ssl_service {
             int n = SSL_do_handshake( ssl_ );
             if( n <= 0 ) {
                 int err = SSL_get_error( ssl_, n );
-                std::cout << "Err: " << err << "\n";
                 if( err == SSL_ERROR_WANT_READ ) {
-                    std::cout << "More encrypted data required for handshake\n";
+                    //std::cout << "More encrypted data required for handshake\n";
                 } else if( err == SSL_ERROR_WANT_WRITE ) {
-                    std::cout << "Writting of data required for handshake\n";
+                    //std::cout << "Writting of data required for handshake\n";
                 } else if( err == SSL_ERROR_NONE ) {
-                    std::cout << "No error but not accepted connection\n";
+                    //std::cout << "No error but not accepted connection\n";
                 } else {
                   ssl_throw( "SSL_accept" );
                 }
@@ -126,19 +75,14 @@ class  hello_ssl_service_impl: public howto::hello_ssl_service {
             }
             char *data;
             size_t length = BIO_get_mem_data( out_, &data );
-
-            std::vector<char> raw_data(length);
-
-            BIO_read( out_, &raw_data[0], length );
-
-            response->set_block( &raw_data[0], length );
-            hexdump( data, length );
-            BIO_flush( in_ );
-            BIO_flush( out_ );
+            BIO_read( out_, data, length );
+            response->set_block( data, length );
+            BIO_reset( out_ );
             return;
         } else {
             std::vector<char> raw_data(1024);
             int r = SSL_read( ssl_, &raw_data[0], 1024 );
+            response->set_block( "World, hello!" );
             std::cout << &raw_data[0] << "\n";
         }
     }

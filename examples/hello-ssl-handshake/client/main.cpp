@@ -11,57 +11,11 @@
 #include "openssl/ssl.h"
 #include "openssl/err.h"
 
+#include "../protocol/ssl-wrapper.h"
+
 using namespace vtrc;
 
-const std::string VERIFY_CSR = "../server.csr";
 const std::string CERTF = "../server.crt";
-#ifndef HEXDUMP_COLS
-#define HEXDUMP_COLS 16
-#endif
-void hexdump(const void *mem, unsigned int len)
-{
-        unsigned int i, j;
-
-        for(i = 0; i < len + ((len % HEXDUMP_COLS) ? (HEXDUMP_COLS - len % HEXDUMP_COLS) : 0); i++)
-        {
-                /* print offset */
-                if(i % HEXDUMP_COLS == 0)
-                {
-                        printf("0x%06x: ", i);
-                }
-
-                /* print hex data */
-                if(i < len)
-                {
-                        printf("%02x ", 0xFF & ((char*)mem)[i]);
-                }
-                else /* end of block, just aligning for ASCII dump */
-                {
-                        printf("   ");
-                }
-
-                /* print ASCII dump */
-                if(i % HEXDUMP_COLS == (HEXDUMP_COLS - 1))
-                {
-                        for(j = i - (HEXDUMP_COLS - 1); j <= i; j++)
-                        {
-                                if(j >= len) /* end of block, not really printing */
-                                {
-                                        putchar(' ');
-                                }
-                                else if(isprint(((char*)mem)[j])) /* printable char */
-                                {
-                                        putchar(0xFF & ((char*)mem)[j]);
-                                }
-                                else /* other char */
-                                {
-                                        putchar('.');
-                                }
-                        }
-                        putchar('\n');
-                }
-        }
-}
 
 namespace {
 
@@ -94,7 +48,18 @@ namespace {
 
 int verify_dont_fail_cb( X509_STORE_CTX *x509, void *p )
 {
-    std::cout << "Verify call: " << "\n";
+    char subject[512];
+    int ver = X509_verify_cert(x509);
+    if( !ver ) {
+        std::cout << "Cert is not valid\n";
+    }
+    X509 *cc = X509_STORE_CTX_get_current_cert( x509 );
+    if( !cc ) {
+        ssl_throw("ds");
+    }
+    X509_NAME *sn = X509_get_subject_name( cc );
+    X509_NAME_oneline(sn, subject, 256);
+    std::cout << "Verify call: " << subject << "\n";
     return 1;
 }
 
@@ -143,27 +108,22 @@ void connect_handshake( stub_wrap &stub )
         if( n <= 0 ) {
             int err = SSL_get_error( ssl, n );
             if( err == SSL_ERROR_WANT_READ ) {
-                std::cout << "More encrypted data required for handshake\n";
+                //std::cout << "More encrypted data required for handshake\n";
             } else if( err == SSL_ERROR_WANT_WRITE ) {
-                std::cout << "Writting of data required for handshake\n";
+                //std::cout << "Writting of data required for handshake\n";
             } else if( err == SSL_ERROR_NONE ) {
-                std::cout << "No error but not accepted connection\n";
+                //std::cout << "No error but not accepted connection\n";
             } else {
               ssl_throw( "SSL_accept" );
             }
         }
         char *data;
         size_t length = BIO_get_mem_data( wbio, &data );
-        hexdump(data, length);
-        std::vector<char> raw_data(length);
-
-        BIO_read( wbio, &raw_data[0], length );
-        req.set_block( &raw_data[0], length );
+        req.set_block( data, length );
+        (void)BIO_reset( wbio );
         stub.call( &stub_type::send_block, &req, &res );
 
         BIO_write( rbio, res.block( ).c_str( ), res.block( ).size( ) );
-        BIO_flush( rbio );
-        BIO_flush( wbio );
     }
 
     std::string hello = "Hello, world!";
@@ -173,7 +133,7 @@ void connect_handshake( stub_wrap &stub )
 
     req.set_block( data, length );
     stub.call( &stub_type::send_block, &req, &res );
-
+    std::cout << "response: " << res.block( ) << "\n";
 }
 
 int main( int argc, const char **argv )
