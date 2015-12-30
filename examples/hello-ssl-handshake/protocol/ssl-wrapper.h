@@ -155,6 +155,23 @@ public:
         return n;
     }
 
+    void write_all( const std::string &data )
+    {
+        write_all( data.c_str( ), data.size( ) );
+    }
+
+    void write_all( const char *data, size_t length )
+    {
+        size_t blen = 0;
+        while( blen < length ) {
+            int n = SSL_write( ssl_, &data[blen], length - blen );
+            if( n < 0 ) {
+                ssl_throw( "SSL_write" );
+            }
+            blen += n;
+        }
+    }
+
     std::string read( size_t max )
     {
         std::string res(max, 0);
@@ -166,6 +183,30 @@ public:
         return res;
     }
 
+    std::string read_all( )
+    {
+        char *wdata;
+        size_t wlength = BIO_get_mem_data( in_, &wdata );
+        std::string res( wlength, '\0' );
+
+        size_t len = 0;
+
+        int n   = 0;
+
+        while( true ) {
+            n = SSL_read( ssl_, &res[len], res.size( ) - len);
+            if( n < 0 ) {
+                if( SSL_get_error( ssl_, n ) == SSL_ERROR_WANT_READ ) {
+                    break;
+                }
+                ssl_throw( "SSL_read" );
+            }
+            len += n;
+        }
+        res.resize( len );
+        return res;
+    }
+
     std::string encrypt( const std::string &data )
     {
         return encrypt( data.c_str( ), data.size( ) );
@@ -173,11 +214,7 @@ public:
 
     std::string encrypt( const char *data, size_t length )
     {
-        int n = SSL_write( ssl_, data, length );
-        if( n < 0 ) {
-            ssl_throw( "SSL_write" );
-        }
-
+        write_all( data, length );
         return read_bio( out_ );
     }
 
@@ -196,18 +233,19 @@ public:
         if( n < 0 ) {
             ssl_throw( "BIO_write" );
         }
+        return read_all( );
+//        char *wdata;
+//        size_t wlength = BIO_get_mem_data( in_, &wdata );
+//        std::string res( wlength, '\0' );
 
-        char *wdata;
-        size_t wlength = BIO_get_mem_data( in_, &wdata );
-        std::string res( wlength, '\0' );
-        n = SSL_read( ssl_, &res[0], res.size( ));
+//        n = SSL_read( ssl_, &res[0], res.size( ));
 
-        if( n < 0 ) {
-            ssl_throw( "SSL_read" );
-        }
+//        if( n < 0 ) {
+//            ssl_throw( "SSL_read" );
+//        }
 
-        res.resize( n );
-        return res;
+//        res.resize( n );
+//        return res;
     }
 
     protected:
@@ -231,8 +269,9 @@ public:
             err += ": ";
             size_t final = err.size( );
             err.resize( final + 1024 );
-            ERR_error_string_n( ERR_get_error( ),
-                                &err[final], err.size( ) - final );
+            int error_code = ERR_get_error( );
+            ERR_error_string_n( error_code, &err[final], err.size( ) - final );
+            err.resize( strlen( err.c_str( ) ) );
             throw std::runtime_error( err );
         }
 };

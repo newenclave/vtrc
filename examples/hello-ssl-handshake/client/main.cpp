@@ -97,9 +97,12 @@ std::string send_data( stub_wrap &stub, my_ssl_wrapper &ssl,
     howto::response_message res;
 
     req.set_block( ssl.encrypt( data ) );
+    std::cout << "packed: " << req.block( ).size( ) << "\n";
+
     stub.call( &stub_type::send_block, &req, &res );
     std::string result = ssl.decrypt( res.block( ) );
-    //std::cout << "result: " << result.size( ) << "\n";
+    std::cout << "result: " << result.size( ) << " "
+              << res.block( ).size( ) << "\n";
     return result;
 }
 
@@ -130,6 +133,9 @@ void connect_handshake( stub_wrap &stub )
     std::cout << i++ << ": " << send_data( stub, ssl, "Hello, World1" ) << "\n";
     std::cout << i++ << ": " << send_data( stub, ssl, "Hello, World2" ) << "\n";
     std::cout << i++ << ": " << send_data( stub, ssl, "Hello, World3" ) << "\n";
+
+    std::string test(41000, '!');
+    std::cout << i++ << ": " << send_data( stub, ssl, test ) << "\n";
 }
 
 int main( int argc, const char **argv )
