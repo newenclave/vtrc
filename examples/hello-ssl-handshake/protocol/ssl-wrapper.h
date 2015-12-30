@@ -23,6 +23,19 @@ protected:
 
 public:
 
+    bool error_fatal( int err ) const
+    {
+        switch (err) {
+        case SSL_ERROR_WANT_READ:
+        case SSL_ERROR_WANT_WRITE:
+        case SSL_ERROR_NONE:
+            return false;
+        default:
+            break;
+        }
+        return true;
+    }
+
     virtual ~ssl_wrapper( )
     {
         if( ssl_ ) {
@@ -117,11 +130,8 @@ public:
 
         if( n <= 0 ) {
             int err = SSL_get_error( ssl_, n );
-            if( err == SSL_ERROR_WANT_READ ) {
-            } else if( err == SSL_ERROR_WANT_WRITE ) {
-            } else if( err == SSL_ERROR_NONE ) {
-            } else {
-              ssl_throw( "do_handshake" );
+            if( error_fatal(err) ) {
+                ssl_throw( "do_handshake" );
             }
         }
         return read_bio( out_ );
@@ -185,25 +195,20 @@ public:
 
     std::string read_all( )
     {
-        char *wdata;
-        size_t wlength = BIO_get_mem_data( in_, &wdata );
-        std::string res( wlength, '\0' );
-
-        size_t len = 0;
-
-        int n   = 0;
-
+        std::string res;
+        res.reserve( 4096 );
+        char buf[4096];
+        int n = 0;
         while( true ) {
-            n = SSL_read( ssl_, &res[len], res.size( ) - len);
+            n = SSL_read( ssl_, buf, sizeof(buf) );
             if( n < 0 ) {
                 if( SSL_get_error( ssl_, n ) == SSL_ERROR_WANT_READ ) {
                     break;
                 }
                 ssl_throw( "SSL_read" );
             }
-            len += n;
+            res.append( buf, buf + n );
         }
-        res.resize( len );
         return res;
     }
 
@@ -234,18 +239,6 @@ public:
             ssl_throw( "BIO_write" );
         }
         return read_all( );
-//        char *wdata;
-//        size_t wlength = BIO_get_mem_data( in_, &wdata );
-//        std::string res( wlength, '\0' );
-
-//        n = SSL_read( ssl_, &res[0], res.size( ));
-
-//        if( n < 0 ) {
-//            ssl_throw( "SSL_read" );
-//        }
-
-//        res.resize( n );
-//        return res;
     }
 
     protected:
