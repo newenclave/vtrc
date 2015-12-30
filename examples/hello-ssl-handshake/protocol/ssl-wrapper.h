@@ -205,6 +205,7 @@ public:
         if( n < 0 ) {
             ssl_throw( "SSL_read" );
         }
+
         res.resize( n );
         return res;
     }
