@@ -7,7 +7,6 @@ message request_message {
 
 message response_message {
     optional bytes block = 1;
-    optional int32 error = 2;
 }
 
 service hello_ssl_service {

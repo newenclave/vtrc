@@ -84,6 +84,16 @@ private:
     }
 };
 
+std::string send_data( stub_wrap &stub, my_ssl_wrapper &ssl,
+                       const std::string &data )
+{
+    howto::request_message  req;
+    howto::response_message res;
+
+    req.set_block( ssl.encrypt( data ) );
+    stub.call( &stub_type::send_block, &req, &res );
+    return ssl.decrypt( res.block( ) );
+}
 
 void connect_handshake( stub_wrap &stub )
 {
@@ -93,37 +103,26 @@ void connect_handshake( stub_wrap &stub )
     howto::response_message res;
     std::string data;
     while (!ssl.init_finished( )) {
-        std::string res_data = ssl.do_handshake( "" );
-        req.set_block( res_data );
-        stub.call( &stub_type::send_block, &req, &res );
-        data = res.block( );
-        BIO_write( ssl.get_in( ), data.c_str( ), data.size( ) );
+
+        std::string res_data = ssl.do_handshake( );
+
+        if( !res_data.empty( ) ) {
+            req.set_block( res_data );
+            stub.call( &stub_type::send_block, &req, &res );
+            data = res.block( );
+            if( !data.empty( ) ) { //
+                ssl.in_write( data.c_str( ), data.size( ) );
+            }
+        }
     }
 
-    std::string hello = "Hello, world!";
-    SSL_write( ssl.get_ssl( ), hello.c_str( ), hello.size( ) );
-    char *wdata;
-    size_t length = BIO_get_mem_data( ssl.get_out( ), &wdata );
+    std::cout << "Init success!\n";
 
-    req.set_block( wdata, length );
-    stub.call( &stub_type::send_block, &req, &res );
-
-    BIO_write( ssl.get_in( ), res.block( ).c_str( ), res.block( ).size( ) );
-
-    length = BIO_get_mem_data( ssl.get_out( ), &wdata );
-
-    std::string result(1024, 0);
-    int n = SSL_read( ssl.get_ssl( ), &result[0], result.size( ) );
-    result.resize( n );
-
-    std::cout << "response: " << result << " " << n << "\n";
-
-//    data = "Hello, world!";
-//    req.set_block( ssl.encrypt( data ) );
-//    stub.call( &stub_type::send_block, &req, &res );
-//    std::cout << "Response: ";
-//    std::cout <<  res.block( ) << "\n";
-//    std::cout <<  ssl.decrypt(res.block( )) << "\n";
+    int i = 0;
+    std::cout << i++ << ": " << send_data( stub, ssl, "Hello, World1" ) << "\n";
+    std::cout << i++ << ": " << send_data( stub, ssl, "Hello, World2" ) << "\n";
+    std::cout << i++ << ": " << send_data( stub, ssl, "Hello, World3" ) << "\n";
+    std::cout << i++ << ": " << send_data( stub, ssl, "Hello, World4" ) << "\n";
 }
 
 void connect_handshake_( stub_wrap &stub )

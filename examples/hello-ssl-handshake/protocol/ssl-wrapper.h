@@ -99,6 +99,11 @@ public:
         return do_handshake( data.data( ), data.size( ) );
     }
 
+    std::string do_handshake(  )
+    {
+        return do_handshake( NULL, 0 );
+    }
+
     std::string do_handshake( const char *data, size_t length )
     {
         if( length ) {
@@ -122,6 +127,45 @@ public:
         return get_bio( out_ );
     }
 
+    int in_write( const std::string &data )
+    {
+        return in_write( data.c_str( ), data.size( ) );
+    }
+
+    int in_write( const char *data, size_t length )
+    {
+        int n = BIO_write( in_, data, length );
+        if( n < 0 ) {
+            ssl_throw( "BIO_write" );
+        }
+        return n;
+    }
+
+    std::string out_read(  )
+    {
+        return get_bio( out_, true );
+    }
+
+    size_t write( const std::string &data )
+    {
+        int n = SSL_write( ssl_, data.c_str( ), data.size( ) );
+        if( n < 0 ) {
+            ssl_throw( "SSL_write" );
+        }
+        return n;
+    }
+
+    std::string read( size_t max )
+    {
+        std::string res(max, 0);
+        int n = SSL_read( ssl_, &res[0], res.size( ) );
+        if( n < 0 ) {
+            ssl_throw( "SSL_read" );
+        }
+        res.resize( n );
+        return res;
+    }
+
     std::string encrypt( const std::string &data )
     {
         return encrypt( data.c_str( ), data.size( ) );
@@ -130,7 +174,7 @@ public:
     std::string encrypt( const char *data, size_t length )
     {
         int n = SSL_write( ssl_, data, length );
-        if( n <= 0 ) {
+        if( n < 0 ) {
             ssl_throw( "SSL_write" );
         }
 
@@ -148,21 +192,20 @@ public:
             return std::string( );
         }
 
-        (void)BIO_reset( in_ );
-        (void)BIO_reset( out_ );
         int n = BIO_write( in_, data, length );
-        //BIO_flush( in_ );
-        if( n <= 0 ) {
+        if( n < 0 ) {
             ssl_throw( "BIO_write" );
         }
 
         char *wdata;
-        size_t wlength = BIO_get_mem_data( out_, &wdata );
-        std::string res( 10000, '\0' );
+        size_t wlength = BIO_get_mem_data( in_, &wdata );
+        std::string res( wlength, '\0' );
         n = SSL_read( ssl_, &res[0], res.size( ));
+
         if( n < 0 ) {
             ssl_throw( "SSL_read" );
         }
+        res.resize( n );
         return res;
     }
 
@@ -172,11 +215,13 @@ public:
         {
             char *data;
             size_t length = BIO_get_mem_data( b, &data );
-            std::string res( data, length );
-            if( reset ) {
-                BIO_reset( b );
+            if( length ) {
+                std::string res( length, 0 );
+                BIO_read( b, &res[0], length );
+                return res;
+            } else {
+                return std::string( );
             }
-            return res;
         }
 
         void ssl_throw( const char *add )
