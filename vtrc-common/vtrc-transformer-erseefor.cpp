@@ -26,9 +26,9 @@ namespace vtrc { namespace common {
 //                          << "\n";
             }
 
-            void transform( char *data, size_t length )
+            void transform( std::string &data )
             {
-                crypt_.transform( data, data + length );
+                crypt_.transform( data.begin( ), data.end( ) );
             }
         };
 

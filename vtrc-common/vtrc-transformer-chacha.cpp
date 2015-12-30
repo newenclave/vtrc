@@ -49,13 +49,14 @@ namespace vtrc { namespace common {
                               key.size( ) * 8, 0);
             }
 
-            void transform( char *data, size_t length )
+            void transform( std::string &data )
             {
-
+                char s;
+                char *ptr = data.empty( ) ? &s : &data[0];
                 ECRYPT_encrypt_bytes( &ctx_,
-                                      reinterpret_cast<const uint8_t *>(data),
-                                      reinterpret_cast<      uint8_t *>(data),
-                                      length );
+                                      reinterpret_cast<const uint8_t *>( ptr ),
+                                      reinterpret_cast<      uint8_t *>( ptr ),
+                                      data.size( ) );
             }
 
         };

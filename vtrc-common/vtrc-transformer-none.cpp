@@ -4,7 +4,7 @@ namespace vtrc { namespace common {
 
     namespace {
         struct transformer_none: public transformer_iface {
-            void transform( char * /*data*/, size_t /*length*/ )
+            void transform( std::string & )
             {
 
             }

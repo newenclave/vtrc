@@ -10,7 +10,8 @@ namespace vtrc { namespace common {
 
     struct transformer_iface {
         virtual ~transformer_iface( ) { }
-        virtual void transform( char *data, size_t length ) = 0;
+        virtual void transform( std::string &in_out_data ) = 0;
+        //virtual void transform( char *data, size_t length ) = 0;
     };
 
     typedef vtrc::shared_ptr<transformer_iface> transformer_iface_sptr;

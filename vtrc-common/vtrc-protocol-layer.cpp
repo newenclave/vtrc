@@ -293,8 +293,9 @@ namespace vtrc { namespace common {
             /**
              * message =  message_header + <transform( message )>
             **/
-            transformer_->transform( body.empty( ) ? NULL : &body[0],
-                                     body.size( ) );
+            transformer_->transform( body );
+//            transformer_->transform( body.empty( ) ? NULL : &body[0],
+//                                     body.size( ) );
 
             result.append( body.begin( ), body.end( ) );
 
@@ -332,8 +333,9 @@ namespace vtrc { namespace common {
             std::string &data(queue_->messages( ).front( ));
 
             /// revert message
-            revertor_->transform( data.empty( ) ? NULL : &data[0],
-                                  data.size( ) );
+            revertor_->transform( data );
+//            revertor_->transform( data.empty( ) ? NULL : &data[0],
+//                                  data.size( ) );
             /// check hash
             bool checked = check_message( data );
             if( checked ) {
@@ -351,8 +353,9 @@ namespace vtrc { namespace common {
             std::string &data( queue_->messages( ).front( ) );
 
             /// revert message
-            revertor_->transform( data.empty( ) ? NULL : &data[0],
-                                  data.size( ) );
+            revertor_->transform( data );
+//            revertor_->transform( data.empty( ) ? NULL : &data[0],
+//                                  data.size( ) );
 
             /// check hash
             bool checked = check_message( data );
@@ -400,8 +403,7 @@ namespace vtrc { namespace common {
             **/
             body.resize( body_len + siz_len );
 
-            transformer_->transform( body.empty( ) ? NULL : &body[0],
-                                     body.size( ) );
+            transformer_->transform( body );
 
             return body;
         }
@@ -415,8 +417,7 @@ namespace vtrc { namespace common {
                 const size_t old_size = queue_->messages( ).size( );
 
                 /// revert data block
-                revertor_->transform( next_data.empty( ) ? NULL : &next_data[0],
-                                      next_data.size( ) );
+                revertor_->transform( next_data );
 
                 /**
                  * message = transformed(<size>data)
@@ -433,7 +434,30 @@ namespace vtrc { namespace common {
                     parent_->on_data_ready( );
                 }
             }
+        }
 
+        bool raw_pop( std::string &result )
+        {
+            /// doesntwork
+            std::string &data( queue_->messages( ).front( ) );
+
+            /// revert message
+            revertor_->transform( data );
+//            revertor_->transform( data.empty( ) ? NULL : &data[0],
+//                                  data.size( ) );
+
+            /// check hash
+            bool checked = check_message( data );
+            if( checked ) {
+                const size_t hash_length = hash_checker_->hash_size( );
+                result.assign( data.c_str( ) + hash_length,
+                               data.size( )  - hash_length );
+            }
+
+            /// in all cases we pop message
+            queue_->messages( ).pop_front( );
+
+            return checked;
         }
 
         bool parse_and_pop( gpb::MessageLite &result )
