@@ -50,8 +50,11 @@ int verify_callback( X509_STORE_CTX *x509, void */*p*/ )
 {
     char subject[512];
     int ver = X509_verify_cert(x509);
-    if( !ver ) {
-        std::cout << "Cert is not valid\n";
+    if( ver <= 0 ) {
+        int err = X509_STORE_CTX_get_error(x509);
+        char errorbuf[1024];
+        ERR_error_string_n(err, errorbuf, 1024);
+        std::cout << "Cert is not valid " << errorbuf << "\n";
     }
     X509 *cc = X509_STORE_CTX_get_current_cert( x509 );
     if( !cc ) {
@@ -60,6 +63,8 @@ int verify_callback( X509_STORE_CTX *x509, void */*p*/ )
     X509_NAME *sn = X509_get_subject_name( cc );
     X509_NAME_oneline(sn, subject, 256);
     std::cout << "Verify call: " << subject << "\n";
+
+    /// we don't care, cuz "Hello, world!"
     return 1;
 }
 
