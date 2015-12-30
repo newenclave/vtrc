@@ -124,7 +124,7 @@ public:
               ssl_throw( "do_handshake" );
             }
         }
-        return get_bio( out_ );
+        return read_bio( out_ );
     }
 
     int in_write( const std::string &data )
@@ -143,7 +143,7 @@ public:
 
     std::string out_read(  )
     {
-        return get_bio( out_, true );
+        return read_bio( out_ );
     }
 
     size_t write( const std::string &data )
@@ -178,7 +178,7 @@ public:
             ssl_throw( "SSL_write" );
         }
 
-        return get_bio( out_ );
+        return read_bio( out_ );
     }
 
     std::string decrypt( const std::string &data )
@@ -211,7 +211,7 @@ public:
 
     protected:
 
-        std::string get_bio( BIO *b, bool reset = true )
+        std::string read_bio( BIO *b )
         {
             char *data;
             size_t length = BIO_get_mem_data( b, &data );

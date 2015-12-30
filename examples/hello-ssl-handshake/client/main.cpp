@@ -46,7 +46,7 @@ namespace {
     }
 }
 
-int verify_dont_fail_cb( X509_STORE_CTX *x509, void *p )
+int verify_callback( X509_STORE_CTX *x509, void */*p*/ )
 {
     char subject[512];
     int ver = X509_verify_cert(x509);
@@ -75,9 +75,10 @@ private:
         SSL_CTX_set_mode( get_context( ), SSL_MODE_ENABLE_PARTIAL_WRITE );
         SSL_CTX_set_mode( get_context( ), SSL_MODE_RELEASE_BUFFERS      );
 
-        SSL_CTX_set_cert_verify_callback( get_context( ), verify_dont_fail_cb, 0 );
+        SSL_CTX_set_cert_verify_callback( get_context( ), verify_callback, 0 );
 
-        int err = SSL_CTX_load_verify_locations( get_context( ), CERTF.c_str( ), 0 );
+        int err = SSL_CTX_load_verify_locations( get_context( ),
+                                                 CERTF.c_str( ), 0 );
         if( err == 0 ) {
             ssl_throw("SSL_CTX_load_verify_locations");
         }
@@ -123,88 +124,6 @@ void connect_handshake( stub_wrap &stub )
     std::cout << i++ << ": " << send_data( stub, ssl, "Hello, World2" ) << "\n";
     std::cout << i++ << ": " << send_data( stub, ssl, "Hello, World3" ) << "\n";
     std::cout << i++ << ": " << send_data( stub, ssl, "Hello, World4" ) << "\n";
-}
-
-void connect_handshake_( stub_wrap &stub )
-{
-    howto::request_message  req;
-    howto::response_message res;
-
-    SSL     *ssl;
-    SSL_CTX *ctx = SSL_CTX_new(TLSv1_2_client_method( ));
-
-    if( !ctx ) {
-        ssl_throw("SSL_CTX_new");
-    }
-
-    SSL_CTX_set_mode( ctx, SSL_MODE_AUTO_RETRY           );
-    SSL_CTX_set_mode( ctx, SSL_MODE_ENABLE_PARTIAL_WRITE );
-    SSL_CTX_set_mode( ctx, SSL_MODE_RELEASE_BUFFERS      );
-
-    SSL_CTX_set_cert_verify_callback( ctx, verify_dont_fail_cb, 0 );
-
-    int err = SSL_CTX_load_verify_locations( ctx, CERTF.c_str( ), 0 );
-
-    if( err == 0 ) {
-        ssl_throw("SSL_CTX_load_verify_locations");
-    }
-
-    ssl = SSL_new( ctx );
-
-    if( !ssl ) {
-        ssl_throw("SSL_new");
-    }
-
-    BIO *rbio = BIO_new( BIO_s_mem( ) );
-    BIO *wbio = BIO_new( BIO_s_mem( ) );
-
-    if( !rbio || !wbio ) {
-        ssl_throw("BIO_new(BIO_s_mem");
-    }
-
-    SSL_set_bio( ssl, rbio, wbio );
-    SSL_set_connect_state( ssl );
-
-    while (!SSL_is_init_finished(ssl)) {
-        int n = SSL_do_handshake(ssl);
-        if( n <= 0 ) {
-            int err = SSL_get_error( ssl, n );
-            if( err == SSL_ERROR_WANT_READ ) {
-                //std::cout << "More encrypted data required for handshake\n";
-            } else if( err == SSL_ERROR_WANT_WRITE ) {
-                //std::cout << "Writting of data required for handshake\n";
-            } else if( err == SSL_ERROR_NONE ) {
-                //std::cout << "No error but not accepted connection\n";
-            } else {
-              ssl_throw( "SSL_accept" );
-            }
-        }
-        char *data;
-        size_t length = BIO_get_mem_data( wbio, &data );
-        req.set_block( data, length );
-        (void)BIO_reset( wbio );
-        stub.call( &stub_type::send_block, &req, &res );
-
-        BIO_write( rbio, res.block( ).c_str( ), res.block( ).size( ) );
-    }
-
-    std::string hello = "Hello, world!";
-    SSL_write( ssl, hello.c_str( ), hello.size( ) );
-    char *data;
-    size_t length = BIO_get_mem_data( wbio, &data );
-
-    req.set_block( data, length );
-    stub.call( &stub_type::send_block, &req, &res );
-
-    BIO_write( rbio, res.block( ).c_str( ), res.block( ).size( ) );
-
-    length = BIO_get_mem_data( wbio, &data );
-
-    std::string result(1024, 0);
-    int n = SSL_read( ssl, &result[0], result.size( ) );
-    result.resize( n );
-
-    std::cout << "response: " << result << " " << n << "\n";
 }
 
 int main( int argc, const char **argv )
