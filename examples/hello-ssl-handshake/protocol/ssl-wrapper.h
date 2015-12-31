@@ -84,6 +84,12 @@ namespace howto {
             ,own_(false)
         { }
 
+        void swap( bio_wrapper &other )
+        {
+            std::swap( b_,   other.b_   );
+            std::swap( own_, other.own_ );
+        }
+
         BIO *release( )
         {
             BIO
@@ -297,9 +303,13 @@ public:
             ssl_throw( "SSL_new" );
         }
 
-        in_ .reset(BIO_new( BIO_s_mem( ) ), false);
-        out_.reset(BIO_new( BIO_s_mem( ) ), false);
-        SSL_set_bio( ssl_, in_.get( ), out_.get( ) );
+        howto::bio_wrapper in(BIO_s_mem( ));
+        howto::bio_wrapper out(BIO_s_mem( ));
+
+        in_ .swap(in);
+        out_.swap(out);
+
+        SSL_set_bio( ssl_, in_.give( ), out_.give( ) );
 
         init_ssl( );
     }
@@ -325,16 +335,6 @@ public:
     const SSL_CTX *get_context( ) const
     {
         return ctx_;
-    }
-
-    BIO *get_in( )
-    {
-        return in_.get( );
-    }
-
-    BIO *get_out( )
-    {
-        return out_.get( );
     }
 
     bool init_finished( ) const
