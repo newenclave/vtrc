@@ -2,22 +2,260 @@
 #define SSL_WRAPPER_H
 
 #include <string>
+#include <stdexcept>
 #include "openssl/ssl.h"
 
-class ssl_wrapper {
 
-    SSL     *ssl_;
-    SSL_CTX *ctx_;
-    BIO     *in_;
-    BIO     *out_;
+namespace howto {
+
+    class ssl_exception: public std::runtime_error {
+        std::string set_what( const std::string &arg )
+        {
+            std::string err;
+            if( !arg.empty( ) ) {
+                err.append( arg.begin( ), arg.end( ) ).append( ": " );
+            }
+            size_t final = err.size( );
+            err.resize( final + 1024 );
+            int error_code = ERR_get_error( );
+            ERR_error_string_n( error_code, &err[final], err.size( ) - final );
+            return err;
+        }
+    public:
+        ssl_exception( )
+            :runtime_error(set_what(NULL).c_str( ))
+        { }
+
+        ssl_exception( const std::string &arg )
+            :runtime_error(set_what(arg).c_str( ))
+        { }
+
+        static void raise( )
+        {
+            throw ssl_exception( );
+        }
+
+        static void raise( const std::string &ex )
+        {
+            throw ssl_exception(ex);
+        }
+    };
+
+    class bio_wrapper {
+        BIO * b_;
+        bool  own_;
+
+        void free_bio( )
+        {
+            if( own_ && b_ ) {
+                BIO_free(b_);
+            }
+        }
+
+        BIO *make_new(BIO_METHOD *meth)
+        {
+            BIO *b = BIO_new(meth);
+            if( !b ) {
+                ssl_exception::raise("BIO_new");
+            }
+            return b;
+        }
+
+        static bool not_fatal( int err )
+        {
+            switch (err) {
+            case SSL_ERROR_WANT_READ:
+            case SSL_ERROR_WANT_WRITE:
+            case SSL_ERROR_NONE:
+                return true;
+            }
+            return false;
+        }
+
+    public:
+
+        bio_wrapper(BIO_METHOD *meth)
+            :b_(make_new(meth))
+            ,own_(true)
+        { }
+
+        bio_wrapper( )
+            :b_(NULL)
+            ,own_(false)
+        { }
+
+        BIO *release( )
+        {
+            BIO
+            *b = b_;
+            b_ = NULL;
+            return b;
+        }
+
+        BIO *give( )
+        {
+            own_ = false;
+            return b_;
+        }
+
+        void reset( BIO * b, bool own = true )
+        {
+            if( b != b_ ) {
+                free_bio(  );
+            }
+            b_ = b;
+            own_ = own;
+        }
+
+        void hold( BIO * b )
+        {
+            reset( b, false );
+        }
+
+        void own( BIO * b )
+        {
+            reset( b, true );
+        }
+
+        bool owned( ) const
+        {
+            return own_;
+        }
+
+        BIO *get( )
+        {
+            return b_;
+        }
+
+        const BIO *get( ) const
+        {
+            return b_;
+        }
+
+        ~bio_wrapper( )
+        {
+            free_bio( );
+        }
+
+        size_t size( ) const
+        {
+            char *_;
+            size_t len = BIO_get_mem_data( b_, &_ );
+            return len;
+        }
+
+        char *ptr( )
+        {
+            char *ptr;
+            BIO_get_mem_data( b_, &ptr );
+            return ptr;
+        }
+
+        size_t write( const void *data, size_t max )
+        {
+            const char *ptr = static_cast<const char *>(data);
+            int n = 0;
+            size_t total = 0;
+            while( total < max ) {
+                n = BIO_write( b_, &ptr[total], max - total );
+                if( n < 0 ) {
+                    int err = ERR_get_error( );
+                    if( not_fatal( err ) ) {
+                        break;
+                    }
+                    ssl_exception::raise( "SSL_write" );
+                }
+                total += n;
+            }
+            return total;
+        }
+
+        size_t read( void *data, size_t max )
+        {
+            char *ptr = static_cast<char *>(data);
+            int n = 0;
+            size_t total = 0;
+            while( total < max ) {
+                n = BIO_read( b_, &ptr[total], max - total );
+                if( n < 0 ) {
+                    int err = ERR_get_error( );
+                    if( not_fatal( err ) ) {
+                        break;
+                    }
+                    ssl_exception::raise( "SSL_read" );
+                }
+                total += n;
+            }
+            return total;
+        }
+
+        std::string read( size_t max )
+        {
+            static const size_t buf_size = 4096;
+            std::string res;
+            res.reserve(buf_size);
+            char buf[buf_size];
+            int n = 0;
+            while( max > 0 ) {
+                n = BIO_read( b_, buf, std::min( buf_size, max) );
+                if( n < 0 ) {
+                    int err = ERR_get_error( );
+                    if( not_fatal( err ) ) {
+                        break;
+                    }
+                    ssl_exception::raise( "SSL_read" );
+                }
+                max -= n;
+                res.append( buf, buf + n );
+            }
+            return res;
+        }
+
+        std::string read_all( )
+        {
+            static const size_t buf_size = 4096;
+            std::string res;
+            res.reserve(buf_size);
+            char buf[buf_size];
+            int n = 0;
+            while( true ) {
+                n = BIO_read( b_, buf, buf_size );
+                if( n < 0 ) {
+                    int err = ERR_get_error( );
+                    if( not_fatal( err ) ) {
+                        break;
+                    }
+                    ssl_exception::raise( "SSL_read" );
+                }
+                res.append( buf, buf + n );
+            }
+            return res;
+        }
+    };
+
+    class ssl_bio_wrapper {
+        SSL     *ssl_;
+        SSL_CTX *ctx_;
+        ssl_bio_wrapper( const SSL_METHOD *meth )
+            :ssl_(NULL)
+        { }
+    };
+
+}
+
+class ssl_bio_wrapper {
+
+    SSL         *ssl_;
+    SSL_CTX     *ctx_;
+    howto::bio_wrapper  in_;
+    howto::bio_wrapper  out_;
     const SSL_METHOD *meth_;
 
 protected:
-    ssl_wrapper( const SSL_METHOD *meth )
+
+    ssl_bio_wrapper( const SSL_METHOD *meth )
         :ssl_(NULL)
         ,ctx_(NULL)
-        ,in_(NULL)
-        ,out_(NULL)
         ,meth_(meth)
     { }
 
@@ -36,7 +274,7 @@ public:
         return true;
     }
 
-    virtual ~ssl_wrapper( )
+    virtual ~ssl_bio_wrapper( )
     {
         if( ssl_ ) {
             SSL_free( ssl_ );
@@ -59,12 +297,9 @@ public:
             ssl_throw( "SSL_new" );
         }
 
-        in_  = BIO_new( BIO_s_mem( ) );
-        out_ = BIO_new( BIO_s_mem( ) );
-        if( !in_ || !out_ ) {
-            ssl_throw( "BIO_new(BIO_s_mem)" );
-        }
-        SSL_set_bio( ssl_, in_, out_ );
+        in_ .reset(BIO_new( BIO_s_mem( ) ), false);
+        out_.reset(BIO_new( BIO_s_mem( ) ), false);
+        SSL_set_bio( ssl_, in_.get( ), out_.get( ) );
 
         init_ssl( );
     }
@@ -94,12 +329,12 @@ public:
 
     BIO *get_in( )
     {
-        return in_;
+        return in_.get( );
     }
 
     BIO *get_out( )
     {
-        return out_;
+        return out_.get( );
     }
 
     bool init_finished( ) const
@@ -120,10 +355,7 @@ public:
     std::string do_handshake( const char *data, size_t length )
     {
         if( length ) {
-            (void)BIO_reset( in_ );
-            if( BIO_write( in_, data, length ) < 0 ) {
-                ssl_throw( "do_handshake -> BIO_write" );
-            }
+            in_.write( data, length );
         }
 
         int n = SSL_do_handshake( ssl_ );
@@ -134,7 +366,7 @@ public:
                 ssl_throw( "do_handshake" );
             }
         }
-        return read_bio( out_ );
+        return out_.read_all( );
     }
 
     int in_write( const std::string &data )
@@ -144,16 +376,12 @@ public:
 
     int in_write( const char *data, size_t length )
     {
-        int n = BIO_write( in_, data, length );
-        if( n < 0 ) {
-            ssl_throw( "BIO_write" );
-        }
-        return n;
+        return in_.write( data, length );
     }
 
     std::string out_read(  )
     {
-        return read_bio( out_ );
+        return out_.read_all( );
     }
 
     size_t write( const std::string &data )
@@ -220,7 +448,7 @@ public:
     std::string encrypt( const char *data, size_t length )
     {
         write_all( data, length );
-        return read_bio( out_ );
+        return out_.read_all( );
     }
 
     std::string decrypt( const std::string &data )
@@ -234,10 +462,7 @@ public:
             return std::string( );
         }
 
-        int n = BIO_write( in_, data, length );
-        if( n < 0 ) {
-            ssl_throw( "BIO_write" );
-        }
+        in_.write( data, length );
         return read_all( );
     }
 
@@ -269,10 +494,10 @@ public:
         }
 };
 
-class ssl_wrapper_server: public ssl_wrapper {
+class ssl_wrapper_server: public ssl_bio_wrapper {
 public:
     ssl_wrapper_server(const SSL_METHOD *meth)
-        :ssl_wrapper(meth)
+        :ssl_bio_wrapper(meth)
     { }
 private:
     void init_ssl( )
@@ -281,10 +506,10 @@ private:
     }
 };
 
-class ssl_wrapper_client: public ssl_wrapper {
+class ssl_wrapper_client: public ssl_bio_wrapper {
 public:
     ssl_wrapper_client(const SSL_METHOD *meth)
-        :ssl_wrapper(meth)
+        :ssl_bio_wrapper(meth)
     { }
 private:
     void init_ssl( )
