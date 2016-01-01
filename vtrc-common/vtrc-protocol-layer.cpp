@@ -258,21 +258,6 @@ namespace vtrc { namespace common {
             queue_->set_maximum_length( opts.max_message_length( ) );
         }
 
-#if 0
-        static protocol_layer::lowlevel_unit_type make_fake_mess( )
-        {
-            random_device rd(true);
-            std::string s1( rd.generate_block( 4 ) );
-            //std::string s2( rd.generate_block( 4 ) );
-            protocol_layer::lowlevel_unit_type res;
-
-            res.set_request( s1 );
-            //res.set_response( s2 );
-
-            return res;
-        }
-#endif
-
 #define VTRC_PROTOCOL_PACK_SIZE_DEFAULT 1
 
 #if VTRC_PROTOCOL_PACK_SIZE_DEFAULT /// variant uno
