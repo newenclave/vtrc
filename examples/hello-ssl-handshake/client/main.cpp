@@ -97,12 +97,12 @@ std::string send_data( stub_wrap &stub, my_ssl_wrapper &ssl,
     howto::response_message res;
 
     req.set_block( ssl.encrypt( data ) );
-    std::cout << "packed: " << req.block( ).size( ) << "\n";
+    //std::cout << "packed: " << req.block( ).size( ) << "\n";
 
     stub.call( &stub_type::send_block, &req, &res );
     std::string result = ssl.decrypt( res.block( ) );
-    std::cout << "result: " << result.size( ) << " "
-              << res.block( ).size( ) << "\n";
+//    std::cout << "result: " << result.size( ) << " "
+//              << res.block( ).size( ) << "\n";
     return result;
 }
 

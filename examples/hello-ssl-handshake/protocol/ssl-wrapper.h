@@ -430,7 +430,8 @@ public:
         while( true ) {
             n = SSL_read( ssl_, buf, sizeof(buf) );
             if( n < 0 ) {
-                if( SSL_get_error( ssl_, n ) == SSL_ERROR_WANT_READ ) {
+                int err = SSL_get_error(ssl_, n); //ERR_get_error( );
+                if( err == SSL_ERROR_WANT_READ ) {
                     break;
                 }
                 ssl_throw( "SSL_read" );
@@ -468,29 +469,9 @@ public:
 
     protected:
 
-        std::string read_bio( BIO *b )
-        {
-            char *data;
-            size_t length = BIO_get_mem_data( b, &data );
-            if( length ) {
-                std::string res( length, 0 );
-                BIO_read( b, &res[0], length );
-                return res;
-            } else {
-                return std::string( );
-            }
-        }
-
         void ssl_throw( const char *add )
         {
-            std::string err(add);
-            err += ": ";
-            size_t final = err.size( );
-            err.resize( final + 1024 );
-            int error_code = ERR_get_error( );
-            ERR_error_string_n( error_code, &err[final], err.size( ) - final );
-            err.resize( strlen( err.c_str( ) ) );
-            throw std::runtime_error( err );
+            howto::ssl_exception::raise( add );
         }
 };
 
