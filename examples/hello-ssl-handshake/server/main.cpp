@@ -39,12 +39,12 @@ private:
     {
         if ( SSL_CTX_use_certificate_file( get_context( ), CERTF.c_str( ),
                                            SSL_FILETYPE_PEM) <= 0) {
-            ssl_throw( "SSL_CTX_use_certificate_file" );
+            howto::ssl_exception::raise( "SSL_CTX_use_certificate_file" );
         }
 
         if ( SSL_CTX_use_PrivateKey_file( get_context( ), KEYF.c_str( ),
                                           SSL_FILETYPE_PEM) <= 0) {
-            ssl_throw( "SSL_CTX_use_PrivateKey_file" );
+            howto::ssl_exception::raise( "SSL_CTX_use_PrivateKey_file" );
         }
 
         if ( !SSL_CTX_check_private_key( get_context( ) ) ) {
@@ -66,7 +66,8 @@ class  hello_ssl_service_impl: public howto::hello_ssl_service {
         common::closure_holder ch( done ); /// instead of done->Run( );
 
         if( !ssl_.init_finished( ) ) {
-            std::string hsres = ssl_.do_handshake( request->block( ) );
+            std::string hsres = ssl_.do_handshake( request->block( ).c_str( ),
+                                                   request->block( ).size( ) );
             response->set_block( hsres );
         } else {
             std::string decres = ssl_.decrypt(request->block( ));

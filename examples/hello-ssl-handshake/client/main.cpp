@@ -122,7 +122,8 @@ void connect_handshake( stub_wrap &stub )
             stub.call( &stub_type::send_block, &req, &res );
             data = res.block( );
             if( !data.empty( ) ) { //
-                ssl.in_write( data.c_str( ), data.size( ) );
+                //ssl.in_write( data.c_str( ), data.size( ) );
+                ssl.get_in( ).write( data.c_str( ), data.size( ) );
             }
         }
     }

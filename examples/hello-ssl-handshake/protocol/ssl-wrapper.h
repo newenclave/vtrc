@@ -93,15 +93,15 @@ namespace howto {
             return b;
         }
 
-        static bool not_fatal( int err )
+        static bool error_fatal( int err )
         {
             switch (err) {
             case SSL_ERROR_WANT_READ:
             case SSL_ERROR_WANT_WRITE:
             case SSL_ERROR_NONE:
-                return true;
+                return false;
             }
-            return false;
+            return true;
         }
 
     public:
@@ -198,7 +198,7 @@ namespace howto {
                 n = BIO_write( b_, &ptr[total], max - total );
                 if( n < 0 ) {
                     int err = ERR_get_error( );
-                    if( not_fatal( err ) ) {
+                    if( !error_fatal( err ) ) {
                         break;
                     }
                     ssl_exception::raise( "BIO_write" );
@@ -217,7 +217,7 @@ namespace howto {
                 n = BIO_read( b_, &ptr[total], max - total );
                 if( n < 0 ) {
                     int err = ERR_get_error( );
-                    if( not_fatal( err ) ) {
+                    if( !error_fatal( err ) ) {
                         break;
                     }
                     ssl_exception::raise( "BIO_read" );
@@ -238,7 +238,7 @@ namespace howto {
                 n = BIO_read( b_, buf, std::min( buf_size, max) );
                 if( n < 0 ) {
                     int err = ERR_get_error( );
-                    if( not_fatal( err ) ) {
+                    if( !error_fatal( err ) ) {
                         break;
                     }
                     ssl_exception::raise( "SSL_read" );
@@ -260,7 +260,7 @@ namespace howto {
                 n = BIO_read( b_, buf, buf_size );
                 if( n < 0 ) {
                     int err = ERR_get_error( );
-                    if( not_fatal( err ) ) {
+                    if( !error_fatal( err ) ) {
                         break;
                     }
                     ssl_exception::raise( "SSL_read" );
@@ -308,6 +308,8 @@ namespace howto {
         ssl_bio_wrapper( const SSL_METHOD *meth )
             :ssl_(NULL)
             ,ctx_(SSL_CTX_new(meth))
+            ,in_(BIO_s_mem( ))
+            ,out_(BIO_s_mem( ))
         {
             if ( !ctx_ ) {
                 ssl_exception::raise( "SSL_CTX_new" );
@@ -347,6 +349,26 @@ namespace howto {
         bool init_finished( ) const
         {
             return SSL_is_init_finished(ssl_);
+        }
+
+        SSL *get_ssl( )
+        {
+            return ssl_;
+        }
+
+        const SSL *get_ssl( ) const
+        {
+            return ssl_;
+        }
+
+        SSL_CTX *get_context( )
+        {
+            return ctx_;
+        }
+
+        const SSL_CTX *get_context( ) const
+        {
+            return ctx_;
         }
 
         size_t write( const void *data, size_t max )
@@ -444,236 +466,37 @@ namespace howto {
             return out_.read_all( );
         }
 
+        std::string encrypt( const std::string &data )
+        {
+            return encrypt( data.c_str( ), data.size( ) );
+        }
+
+        std::string encrypt( const char *data, size_t length )
+        {
+            write_all( data, length );
+            return out_.read_all( );
+        }
+
+        std::string decrypt( const std::string &data )
+        {
+            return decrypt( data.c_str( ), data.size( ) );
+        }
+
+        std::string decrypt( const char *data, size_t length )
+        {
+            if( 0 == length ) {
+                return std::string( );
+            }
+
+            in_.write( data, length );
+            return read_all( );
+        }
+
     };
 
 }
 
-class ssl_bio_wrapper {
-
-    SSL         *ssl_;
-    SSL_CTX     *ctx_;
-    howto::bio_wrapper  in_;
-    howto::bio_wrapper  out_;
-
-protected:
-
-    ssl_bio_wrapper( const SSL_METHOD *meth )
-        :ssl_(NULL)
-        ,ctx_(SSL_CTX_new(meth))
-        ,in_(BIO_s_mem( ))
-        ,out_(BIO_s_mem( ))
-    {
-        if ( !ctx_ ) {
-            ssl_throw( "SSL_CTX_new" );
-        }
-    }
-
-public:
-
-    bool error_fatal( int err ) const
-    {
-        switch (err) {
-        case SSL_ERROR_WANT_READ:
-        case SSL_ERROR_WANT_WRITE:
-        case SSL_ERROR_NONE:
-            return false;
-        default:
-            break;
-        }
-        return true;
-    }
-
-    virtual ~ssl_bio_wrapper( )
-    {
-        if( ssl_ ) {
-            SSL_free( ssl_ );
-        }
-        if( ctx_ ) {
-            SSL_CTX_free( ctx_ );
-        }
-    }
-
-    void init( )
-    {
-        init_context( );
-
-        ssl_ = SSL_new( ctx_ );
-        if( !ssl_ ) {
-            ssl_throw( "SSL_new" );
-        }
-
-        SSL_set_bio( ssl_, in_.give( ), out_.give( ) );
-
-        init_ssl( );
-    }
-
-    virtual void init_context( ) = 0;
-    virtual void init_ssl( ) = 0;
-
-    SSL *get_ssl( )
-    {
-        return ssl_;
-    }
-
-    const SSL *get_ssl( ) const
-    {
-        return ssl_;
-    }
-
-    SSL_CTX *get_context( )
-    {
-        return ctx_;
-    }
-
-    const SSL_CTX *get_context( ) const
-    {
-        return ctx_;
-    }
-
-    bool init_finished( ) const
-    {
-        return SSL_is_init_finished(ssl_);
-    }
-
-    std::string do_handshake( const std::string &data )
-    {
-        return do_handshake( data.data( ), data.size( ) );
-    }
-
-    std::string do_handshake(  )
-    {
-        return do_handshake( NULL, 0 );
-    }
-
-    std::string do_handshake( const char *data, size_t length )
-    {
-        if( length ) {
-            in_.write( data, length );
-        }
-
-        int n = SSL_do_handshake( ssl_ );
-
-        if( n <= 0 ) {
-            int err = SSL_get_error( ssl_, n );
-            if( error_fatal(err) ) {
-                ssl_throw( "do_handshake" );
-            }
-        }
-        return out_.read_all( );
-    }
-
-    int in_write( const std::string &data )
-    {
-        return in_write( data.c_str( ), data.size( ) );
-    }
-
-    int in_write( const char *data, size_t length )
-    {
-        return in_.write( data, length );
-    }
-
-    std::string out_read(  )
-    {
-        return out_.read_all( );
-    }
-
-    size_t write( const std::string &data )
-    {
-        int n = SSL_write( ssl_, data.c_str( ), data.size( ) );
-        if( n < 0 ) {
-            ssl_throw( "SSL_write" );
-        }
-        return n;
-    }
-
-    void write_all( const std::string &data )
-    {
-        write_all( data.c_str( ), data.size( ) );
-    }
-
-    void write_all( const char *data, size_t length )
-    {
-        size_t blen = 0;
-        while( blen < length ) {
-            int n = SSL_write( ssl_, &data[blen], length - blen );
-            if( n < 0 ) {
-                ssl_throw( "SSL_write" );
-            }
-            blen += n;
-        }
-    }
-
-    std::string read( size_t max )
-    {
-        std::string res(max, 0);
-        int n = SSL_read( ssl_, &res[0], res.size( ) );
-        if( n < 0 ) {
-            ssl_throw( "SSL_read" );
-        }
-        res.resize( n );
-        return res;
-    }
-
-    std::string read_all( )
-    {
-        std::string res;
-        res.reserve( 4096 );
-        char buf[4096];
-        int n = 0;
-        while( true ) {
-            n = SSL_read( ssl_, buf, sizeof(buf) );
-            if( n < 0 ) {
-                int err = SSL_get_error(ssl_, n); //ERR_get_error( );
-                if( err == SSL_ERROR_WANT_READ ) {
-                    break;
-                }
-                ssl_throw( "SSL_read", n );
-            }
-            res.append( buf, buf + n );
-        }
-        return res;
-    }
-
-    std::string encrypt( const std::string &data )
-    {
-        return encrypt( data.c_str( ), data.size( ) );
-    }
-
-    std::string encrypt( const char *data, size_t length )
-    {
-        write_all( data, length );
-        return out_.read_all( );
-    }
-
-    std::string decrypt( const std::string &data )
-    {
-        return decrypt( data.c_str( ), data.size( ) );
-    }
-
-    std::string decrypt( const char *data, size_t length )
-    {
-        if( 0 == length ) {
-            return std::string( );
-        }
-
-        in_.write( data, length );
-        return read_all( );
-    }
-
-    protected:
-
-    void ssl_throw( const char *add )
-    {
-        howto::ssl_exception::raise( add );
-    }
-
-    void ssl_throw( const char *add, int n )
-    {
-        howto::ssl_exception::raise( add, ssl_, n );
-    }
-};
-
-class ssl_wrapper_server: public ssl_bio_wrapper {
+class ssl_wrapper_server: public howto::ssl_bio_wrapper {
 public:
     ssl_wrapper_server(const SSL_METHOD *meth)
         :ssl_bio_wrapper(meth)
@@ -685,7 +508,7 @@ private:
     }
 };
 
-class ssl_wrapper_client: public ssl_bio_wrapper {
+class ssl_wrapper_client: public howto::ssl_bio_wrapper {
 public:
     ssl_wrapper_client(const SSL_METHOD *meth)
         :ssl_bio_wrapper(meth)
