@@ -122,7 +122,6 @@ void connect_handshake( stub_wrap &stub )
             stub.call( &stub_type::send_block, &req, &res );
             data = res.block( );
             if( !data.empty( ) ) { //
-                //ssl.in_write( data.c_str( ), data.size( ) );
                 ssl.get_in( ).write( data.c_str( ), data.size( ) );
             }
         }
@@ -135,7 +134,7 @@ void connect_handshake( stub_wrap &stub )
     std::cout << i++ << ": " << send_data( stub, ssl, "Hello, World2" ) << "\n";
     std::cout << i++ << ": " << send_data( stub, ssl, "Hello, World3" ) << "\n";
 
-    std::string test(41000, '!');
+    std::string test(41, '!');
     std::cout << i++ << ": " << send_data( stub, ssl, test ) << "\n";
 }
 
