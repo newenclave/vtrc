@@ -91,7 +91,7 @@ private:
 };
 
 std::string send_data( stub_wrap &stub, my_ssl_wrapper &ssl,
-                       const std::string &data )
+                       const std::string &data, bool decode = true )
 {
     howto::request_message  req;
     howto::response_message res;
@@ -100,7 +100,10 @@ std::string send_data( stub_wrap &stub, my_ssl_wrapper &ssl,
     //std::cout << "packed: " << req.block( ).size( ) << "\n";
 
     stub.call( &stub_type::send_block, &req, &res );
-    std::string result = ssl.decrypt( res.block( ) );
+    std::string result;
+    if( decode ) {
+        result = ssl.decrypt( res.block( ) );
+    }
 //    std::cout << "result: " << result.size( ) << " "
 //              << res.block( ).size( ) << "\n";
     return result;
