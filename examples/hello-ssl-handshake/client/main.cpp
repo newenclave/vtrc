@@ -103,6 +103,8 @@ std::string send_data( stub_wrap &stub, my_ssl_wrapper &ssl,
     std::string result;
     if( decode ) {
         result = ssl.decrypt( res.block( ) );
+    } else {
+        ssl.get_in( ).write( res.block( ) );
     }
 //    std::cout << "result: " << result.size( ) << " "
 //              << res.block( ).size( ) << "\n";
@@ -133,8 +135,9 @@ void connect_handshake( stub_wrap &stub )
     std::cout << "Init success!\n";
 
     int i = 0;
+
     std::cout << i++ << ": " << send_data( stub, ssl, "Hello, World1" ) << "\n";
-    std::cout << i++ << ": " << send_data( stub, ssl, "Hello, World2" ) << "\n";
+    std::cout << i++ << ": " << send_data( stub, ssl, "Hello, World2", false ) << "\n";
     std::cout << i++ << ": " << send_data( stub, ssl, "Hello, World3" ) << "\n";
 
     std::string test(41, '!');

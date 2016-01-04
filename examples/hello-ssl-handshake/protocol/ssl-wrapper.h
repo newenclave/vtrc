@@ -189,6 +189,11 @@ namespace howto {
             return ptr;
         }
 
+        size_t write( const std::string &data )
+        {
+            return write( data.c_str( ), data.size( ) );
+        }
+
         size_t write( const void *data, size_t max )
         {
             const char *ptr = static_cast<const char *>(data);
@@ -527,6 +532,7 @@ public:
         :ssl_bio_wrapper(meth)
         ,inbound_(inbound)
     { }
+
 private:
 
     void init_ssl( )
