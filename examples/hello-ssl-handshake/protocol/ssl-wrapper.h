@@ -520,5 +520,24 @@ private:
     }
 };
 
+class ssl_wrapper_common: public howto::ssl_bio_wrapper {
+    bool inbound_;
+public:
+    ssl_wrapper_common(const SSL_METHOD *meth, bool inbound)
+        :ssl_bio_wrapper(meth)
+        ,inbound_(inbound)
+    { }
+private:
+
+    void init_ssl( )
+    {
+        if(inbound_) {
+            SSL_set_accept_state( get_ssl( ) );
+        } else {
+            SSL_set_connect_state(  get_ssl( ) );
+        }
+    }
+};
+
 #endif // SSL_WRAPPER_H
 
