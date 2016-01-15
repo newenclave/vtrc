@@ -9,6 +9,7 @@
 #include "vtrc-common/vtrc-thread-pool.h"
 #include "vtrc-common/vtrc-closure.h"
 #include "vtrc-common/vtrc-delayed-call.h"
+#include "vtrc-common/vtrc-exception.h"
 
 #include "protocol/hello.pb.h"          /// hello protocol
 #include "google/protobuf/descriptor.h" /// for descriptor( )->full_name( )
@@ -131,18 +132,18 @@ public:
 int main( int argc, const char **argv )
 {
 
-    for( int i=0; i<100; ++i ) {
-    howto::bio_wrapper b(BIO_f_base64( ));
-    howto::bio_wrapper bs(BIO_s_mem( ));
+//    for( int i=0; i<100; ++i ) {
+//    howto::bio_wrapper b(BIO_f_base64( ));
+//    howto::bio_wrapper bs(BIO_s_mem( ));
 
-    b.append( bs );
-    b.write( "test12345\n", 10 );
+//    b.append( bs );
+//    b.write( "test12345\n", 10 );
 
-    b.flush( );
+//    b.flush( );
 
-    std::cout << bs.read( 100 ) << "\n";
-    }
-    return 1;
+//    std::cout << bs.read( 100 ) << "\n";
+//    }
+//    return 1;
 
     const char *address = "127.0.0.1";
     unsigned short port = 56560;
@@ -171,6 +172,9 @@ int main( int argc, const char **argv )
 
         tp.attach( );
 
+    } catch( const vtrc::common::exception &ex ) {
+        std::cerr << "Hello, world failed: " << ex.what( )
+                  << " " << ex.additional( ) <<  "\n";
     } catch( const std::exception &ex ) {
         std::cerr << "Hello, world failed: " << ex.what( ) << "\n";
     }
