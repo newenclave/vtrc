@@ -241,7 +241,7 @@ namespace howto {
             int n = 0;
             while( max > 0 ) {
                 n = BIO_read( b_, buf, std::min( buf_size, max) );
-                if( n < 0 ) {
+                if( n <= 0 ) {
                     int err = ERR_get_error( );
                     if( !error_fatal( err ) ) {
                         break;
@@ -263,7 +263,7 @@ namespace howto {
             int n = 0;
             while( true ) {
                 n = BIO_read( b_, buf, buf_size );
-                if( n < 0 ) {
+                if( n <= 0 ) {
                     int err = ERR_get_error( );
                     if( !error_fatal( err ) ) {
                         break;

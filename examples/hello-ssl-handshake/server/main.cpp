@@ -131,6 +131,15 @@ public:
 int main( int argc, const char **argv )
 {
 
+//    howto::bio_wrapper b(BIO_f_base64( ));
+
+//    b.write( "test", 4 );
+
+//    std::cout << b.read( 100 ) << "\n";
+
+//    return 1;
+
+
     const char *address = "127.0.0.1";
     unsigned short port = 56560;
 
