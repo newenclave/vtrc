@@ -80,7 +80,7 @@ namespace howto {
         void free_bio( )
         {
             if( own_ && b_ ) {
-                BIO_free(b_);
+                BIO_free_all(b_);
             }
         }
 
@@ -145,6 +145,22 @@ namespace howto {
             own_ = own;
         }
 
+        void append( BIO * b )
+        {
+            BIO_push( b_, b );
+        }
+
+        void append( bio_wrapper &other )
+        {
+            BIO_push( b_, other.give( ) );
+        }
+
+        void remove( bool owned = true )
+        {
+            BIO_pop( b_ );
+            own_ = owned;
+        }
+
         void hold( BIO * b )
         {
             reset( b, false );
@@ -173,6 +189,11 @@ namespace howto {
         ~bio_wrapper( )
         {
             free_bio( );
+        }
+
+        void flush( )
+        {
+            BIO_flush( b_ );
         }
 
         size_t size( ) const

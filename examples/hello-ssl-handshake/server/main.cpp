@@ -131,14 +131,18 @@ public:
 int main( int argc, const char **argv )
 {
 
-//    howto::bio_wrapper b(BIO_f_base64( ));
+    for( int i=0; i<100; ++i ) {
+    howto::bio_wrapper b(BIO_f_base64( ));
+    howto::bio_wrapper bs(BIO_s_mem( ));
 
-//    b.write( "test", 4 );
+    b.append( bs );
+    b.write( "test12345\n", 10 );
 
-//    std::cout << b.read( 100 ) << "\n";
+    b.flush( );
 
-//    return 1;
-
+    std::cout << bs.read( 100 ) << "\n";
+    }
+    return 1;
 
     const char *address = "127.0.0.1";
     unsigned short port = 56560;
