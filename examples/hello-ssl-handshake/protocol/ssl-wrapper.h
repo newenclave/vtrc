@@ -11,14 +11,14 @@ namespace howto {
 
     class ssl_exception: public std::runtime_error {
 
-        std::string set_what_stack( )
+        std::string set_what_stack( const char *delimeter = "\n" )
         {
             char buf[512];
             std::ostringstream oss;
             unsigned long err = ERR_get_error( );
             while( err ) {
                 ERR_error_string_n( err, buf, 512 );
-                oss << buf << "\n";
+                oss << buf << delimeter;
                 err = ERR_get_error( );
             }
             //std::cout << oss.str( );
@@ -211,7 +211,7 @@ namespace howto {
 
         void flush( )
         {
-            BIO_flush( b_ );
+            (void)BIO_flush( b_ );
         }
 
         size_t size( ) const
