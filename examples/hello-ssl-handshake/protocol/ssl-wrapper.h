@@ -2,6 +2,7 @@
 #define SSL_WRAPPER_H
 
 #include <string>
+#include <sstream>
 #include <stdexcept>
 #include "openssl/ssl.h"
 
@@ -9,6 +10,19 @@
 namespace howto {
 
     class ssl_exception: public std::runtime_error {
+
+        std::string set_what_stack( )
+        {
+            char buf[512];
+            std::ostringstream oss;
+            unsigned long err = ERR_get_error( );
+            while( err ) {
+                ERR_error_string_n( err, buf, 512 );
+                oss << buf << "\n";
+            }
+            return oss.str( );
+        }
+
         std::string set_what( const std::string &arg )
         {
             std::string err;
