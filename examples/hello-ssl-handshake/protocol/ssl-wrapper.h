@@ -13,13 +13,15 @@ namespace howto {
 
         std::string set_what_stack( const char *delimeter = "\n" )
         {
+            const char *file;
+            int line;
             char buf[512];
             std::ostringstream oss;
-            unsigned long err = ERR_get_error( );
+            unsigned long err = ERR_get_error_line( &file, &line );
             while( err ) {
                 ERR_error_string_n( err, buf, 512 );
                 oss << buf << delimeter;
-                err = ERR_get_error( );
+                err = ERR_get_error_line( &file, &line );
             }
             //std::cout << oss.str( );
             return oss.str( );
