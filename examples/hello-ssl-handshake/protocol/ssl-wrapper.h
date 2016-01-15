@@ -19,12 +19,15 @@ namespace howto {
             while( err ) {
                 ERR_error_string_n( err, buf, 512 );
                 oss << buf << "\n";
+                err = ERR_get_error( );
             }
+            //std::cout << oss.str( );
             return oss.str( );
         }
 
         std::string set_what( const std::string &arg )
         {
+            //return set_what_stack( );
             std::string err;
             if( !arg.empty( ) ) {
                 err.append( arg.begin( ), arg.end( ) ).append( ": " );
@@ -38,6 +41,7 @@ namespace howto {
 
         std::string set_what( const std::string &arg, SSL *s, int res )
         {
+            //return set_what_stack( );
             std::string err;
             if( !arg.empty( ) ) {
                 err.append( arg.begin( ), arg.end( ) ).append( ": " );
