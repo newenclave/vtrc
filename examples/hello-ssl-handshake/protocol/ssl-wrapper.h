@@ -169,10 +169,10 @@ namespace howto {
             BIO_push( b_, other.give( ) );
         }
 
-        void remove( bool owned = true )
+        BIO *remove( bool owned = true )
         {
-            BIO_pop( b_ );
             own_ = owned;
+            return BIO_pop( b_ );
         }
 
         void hold( BIO * b )
