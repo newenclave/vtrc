@@ -849,7 +849,8 @@ namespace vtrc { namespace common {
             if( !lck ) return;
 
             if( !std::uncaught_exception( ) ) {
-                wait ? closure_done( holder ) : closure_fake( holder );
+                closure_done( holder );
+                //wait ? closure_done( holder ) : closure_fake( holder );
             } else {
 //                std::cerr << "Uncaught exception at done handler for "
 //                          << holder->llu_->call( ).service_id( )

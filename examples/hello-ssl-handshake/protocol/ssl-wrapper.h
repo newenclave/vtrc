@@ -11,6 +11,9 @@ namespace howto {
 
     class ssl_exception: public std::runtime_error {
 
+        std::string stack_;
+
+        static
         std::string set_what_stack( const char *delimeter = "\n" )
         {
             const char *file;
@@ -27,6 +30,7 @@ namespace howto {
             return oss.str( );
         }
 
+        static
         std::string set_what( const std::string &arg )
         {
             //return set_what_stack( );
@@ -41,6 +45,7 @@ namespace howto {
             return err;
         }
 
+        static
         std::string set_what( const std::string &arg, SSL *s, int res )
         {
             //return set_what_stack( );
