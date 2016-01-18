@@ -994,7 +994,7 @@ namespace vtrc { namespace common {
 
             rpc::errors::container *err_cont = llu->mutable_error( );
 
-            err_cont->set_code(err.value( ));
+            err_cont->set_code( err.value( ) );
             err_cont->set_category( rpc::errors::CATEGORY_SYSTEM );
             err_cont->set_fatal( true );
             err_cont->set_additional( add );
