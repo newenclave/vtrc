@@ -862,7 +862,7 @@ namespace vtrc { namespace common {
         gpb::Closure *make_closure(closure_holder_sptr &closure_hold, bool wait)
         {
             closure_hold->proto_closure_ =
-                    gpb::NewPermanentCallback( this, &this_type::closure_runner,
+                    gpb::internal::NewPermanentCallback( this, &this_type::closure_runner,
                                                closure_hold, wait );
             return closure_hold->proto_closure_;
         }
