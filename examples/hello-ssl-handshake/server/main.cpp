@@ -10,6 +10,7 @@
 #include "vtrc-common/vtrc-closure.h"
 #include "vtrc-common/vtrc-delayed-call.h"
 #include "vtrc-common/vtrc-exception.h"
+#include "vtrc-common/vtrc-random-device.h"
 
 #include "protocol/hello.pb.h"          /// hello protocol
 #include "google/protobuf/descriptor.h" /// for descriptor( )->full_name( )
@@ -17,6 +18,7 @@
 
 #include "openssl/ssl.h"
 #include "openssl/err.h"
+#include "openssl/rand.h"
 
 #include "../protocol/ssl-wrapper.h"
 
@@ -155,8 +157,13 @@ int main( int argc, const char **argv )
         port = boost::lexical_cast<unsigned short>( argv[1] );
     }
 
+    vtrc::common::random_device rd(true);
+    std::string seed = rd.generate_block( 1024 );
+
+    RAND_seed( seed.c_str( ), seed.size( ) );
     SSL_load_error_strings( );
     SSLeay_add_ssl_algorithms( );
+
 
     common::thread_pool tp;
     hello_application app( tp );

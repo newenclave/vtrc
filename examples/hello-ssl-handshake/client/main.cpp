@@ -3,6 +3,7 @@
 #include "vtrc-client/vtrc-client.h"
 #include "vtrc-common/vtrc-thread-pool.h"
 #include "vtrc-common/vtrc-stub-wrapper.h"
+#include "vtrc-common/vtrc-random-device.h"
 
 #include "protocol/hello.pb.h"
 
@@ -10,6 +11,7 @@
 
 #include "openssl/ssl.h"
 #include "openssl/err.h"
+#include "openssl/rand.h"
 
 #include "../protocol/ssl-wrapper.h"
 
@@ -157,6 +159,11 @@ int main( int argc, const char **argv )
     } else if( argc > 1 ) {
         port = boost::lexical_cast<unsigned short>( argv[1] );
     }
+
+    vtrc::common::random_device rd(true);
+    std::string seed = rd.generate_block( 1024 );
+
+    RAND_seed( seed.c_str( ), seed.size( ) );
 
     SSL_load_error_strings( );
     SSLeay_add_ssl_algorithms( );
