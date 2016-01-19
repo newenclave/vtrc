@@ -138,9 +138,12 @@ void connect_handshake( stub_wrap &stub )
 
     int i = 0;
 
-    std::cout << i++ << ": " << send_data( stub, ssl, "Hello, World1" ) << "\n";
-    std::cout << i++ << ": " << send_data( stub, ssl, "Hello, World2", false ) << "\n";
-    std::cout << i++ << ": " << send_data( stub, ssl, "Hello, World3" ) << "\n";
+    std::cout << i++ << ": " << send_data( stub, ssl, "Hello, World1" )
+              << "\n";
+    std::cout << i++ << ": " << send_data( stub, ssl, "Hello, World2", false )
+              << "\n";
+    std::cout << i++ << ": " << send_data( stub, ssl, "Hello, World3" )
+              << "\n";
 
     std::string test(41, '!');
     std::cout << i++ << ": " << send_data( stub, ssl, test ) << "\n";
