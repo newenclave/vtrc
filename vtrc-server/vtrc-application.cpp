@@ -97,7 +97,7 @@ namespace vtrc { namespace server {
     { }
 
     application::application(common::pool_pair &pools)
-     :impl_(new impl(&pools.get_io_service( ), &pools.get_rpc_service( )))
+        :impl_(new impl(&pools.get_io_service( ), &pools.get_rpc_service( )))
     {
 
     }
@@ -107,8 +107,8 @@ namespace vtrc { namespace server {
     { }
 
     application::application( boost::asio::io_service &ios,
-                           boost::asio::io_service &rpc_ios)
-     :impl_(new impl(&ios, &rpc_ios))
+                              boost::asio::io_service &rpc_ios)
+        :impl_(new impl(&ios, &rpc_ios))
     { }
 
     application::~application( )
