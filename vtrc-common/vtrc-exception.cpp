@@ -96,14 +96,20 @@ namespace vtrc { namespace common {
         return category_;
     }
 
+    void raise( const std::exception &ex )
+    {
+        throw ex;
+    }
+
     void throw_system_error( unsigned code )
     {
-        throw exception( code, rpc::errors::CATEGORY_SYSTEM );
+        common::raise( exception( code, rpc::errors::CATEGORY_SYSTEM ) );
     }
 
     void throw_system_error( unsigned code, const std::string &additional )
     {
-        throw exception( code, rpc::errors::CATEGORY_SYSTEM, additional );
+        common::raise(
+              exception( code, rpc::errors::CATEGORY_SYSTEM, additional ) );
     }
 
     std::string error_code_to_string( unsigned code, unsigned category )

@@ -5,6 +5,7 @@
 #include "vtrc-call-keeper.h"
 #include "vtrc-call-context.h"
 #include "vtrc-protocol-layer.h"
+#include "vtrc-common/vtrc-exception.h"
 
 namespace vtrc { namespace common {
 
@@ -21,16 +22,16 @@ namespace vtrc { namespace common {
             ,protocol_(proto)
         {
             if( !protocol_->get_call_context( ) ) {
-                throw std::runtime_error( "Call context is not found." );
+                raise( std::runtime_error( "Call context is not found." ) );
             }
             protocol_->copy_call_stack( stack_ );
             done_ = stack_.front( )->get_done_closure( );
         }
 
-        ~impl( ) try
+        ~impl( ) { try
         {
             if( done_ ) done_->Run( );
-        } catch( ... ) { ;;; }
+        } catch( ... ) { ;;; } }
 
         bool valid( ) const
         {

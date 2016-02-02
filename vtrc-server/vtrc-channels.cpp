@@ -90,8 +90,6 @@ namespace vtrc { namespace server {
                 if( clnt.get( ) == NULL ) {
                     get_channel_error_callback( )( "Connection lost" );
                     return lowlevel_unit_sptr( );
-//                    throw vtrc::common::exception( rpc::errors::ERR_CHANNEL,
-//                                                   "Connection lost");
                 }
 
                 const rpc::options call_opt;
@@ -125,8 +123,6 @@ namespace vtrc { namespace server {
                 if( clnt.get( ) == NULL ) {
                     get_channel_error_callback( )( "Connection lost" );
                     return lowlevel_unit_sptr( );
-//                    throw vtrc::common::exception( rpc::errors::ERR_CHANNEL,
-//                                                   "Connection lost");
                 }
 
                 const rpc::options *call_opt
@@ -161,8 +157,7 @@ namespace vtrc { namespace server {
                         controller->SetFailed( "Connection lost" );
                     }
                     get_channel_error_callback( )( "Connection lost" );
-//                    throw vtrc::common::exception( rpc::errors::ERR_CHANNEL,
-//                                                   "Connection lost");
+                    return;
                 }
 
                 const rpc::options *call_opt
@@ -244,8 +239,7 @@ namespace vtrc { namespace server {
                                                     lck_list(clients_.lock( ));
                 if( !lck_list ) {
                     get_channel_error_callback( )( "Connection lost" );
-//                    throw vtrc::common::exception( rpc::errors::ERR_CHANNEL,
-//                                                   "Clients lost");
+                    return lowlevel_unit_sptr( );
                 }
 
                 llu->mutable_info( )->set_message_type( message_type_ );
@@ -292,8 +286,7 @@ namespace vtrc { namespace server {
                                                     lck_list(clients_.lock( ));
                 if( !lck_list ) {
                     get_channel_error_callback( )( "Connection lost" );
-//                    throw vtrc::common::exception( rpc::errors::ERR_CHANNEL,
-//                                                   "Clients lost");
+                    return;
                 }
 
                 llu.mutable_info( )->set_message_type( message_type_ );

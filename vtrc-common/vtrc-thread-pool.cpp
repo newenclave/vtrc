@@ -39,9 +39,9 @@ namespace vtrc { namespace common {
 
         mutable shared_mutex     threads_lock_;
 
-        struct interrupt {
-            static void raise ( ) { throw interrupt( ); }
-        };
+//        struct interrupt {
+//            static void raise ( ) { throw interrupt( ); }
+//        };
 
         impl( basio::io_service *ios, bool own_ios )
             :ios_(ios)
@@ -96,10 +96,10 @@ namespace vtrc { namespace common {
             return new_inst;
         }
 
-        void interrupt_one( )
-        {
-            ios_->post( interrupt::raise );
-        }
+//        void interrupt_one( )
+//        {
+//            ios_->post( interrupt::raise );
+//        }
 
         size_t size( ) const
         {
@@ -167,8 +167,8 @@ namespace vtrc { namespace common {
                         const size_t count = ios_->run_one( );
                         if( !count ) return true; /// stopped;
                     }
-                } catch( const interrupt & ) {
-                    break;
+//                } catch( const interrupt & ) {
+//                    break;
                 } catch( const std::exception &) {
                     ;;;
                 } catch( ... ) {
@@ -216,10 +216,10 @@ namespace vtrc { namespace common {
         return impl_->size( );
     }
 
-    void thread_pool::interrupt_one( )
-    {
-        impl_->interrupt_one( );
-    }
+//    void thread_pool::interrupt_one( )
+//    {
+//        impl_->interrupt_one( );
+//    }
 
     void thread_pool::stop( )
     {

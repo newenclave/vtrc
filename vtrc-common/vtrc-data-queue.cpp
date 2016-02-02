@@ -4,6 +4,8 @@
 #include "vtrc-data-queue.h"
 #include "vtrc-sizepack-policy.h"
 
+#include "vtrc-common/vtrc-exception.h"
+
 namespace vtrc { namespace common { namespace data_queue {
 
     struct queue_base::impl {
@@ -151,7 +153,8 @@ namespace vtrc { namespace common { namespace data_queue {
                 plain_data_type &data(plain_data( ));
 
                 if( data.size( ) > get_maximum_length( ) ) {
-                    throw std::length_error( "Message is too long" );
+                    common::raise( std::length_error( "Message is too long" ) );
+                    return;
                 }
 
                 std::string new_data( SSP::pack( data.size( ) ) );
@@ -188,8 +191,10 @@ namespace vtrc { namespace common { namespace data_queue {
                 if( next > 0 ) {
 
                     if( next > SPP::max_length ) {
-                        throw std::length_error
-                                ( "The serialized data is invalid" );
+                        common::raise(
+                            std::length_error
+                                ( "The serialized data is invalid" ) );
+                        return result;
                     }
 
                     size_t len = SPP::unpack(data.begin( ), data.end( ));
@@ -199,7 +204,9 @@ namespace vtrc { namespace common { namespace data_queue {
 
                     if( len > get_maximum_length( ) ) {
                         //std::cout << "Message is too long " << len << "\n";
-                        throw std::length_error( "Message is too long" );
+                        common::raise(
+                            std::length_error( "Message is too long" ) );
+                        return result;
                     }
 
                     if( (len + next) <= data.size( ) ) {

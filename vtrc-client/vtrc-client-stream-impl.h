@@ -10,6 +10,7 @@
 
 #include "vtrc-protocol-layer-c.h"
 #include "vtrc-common/vtrc-enviroment.h"
+#include "vtrc-common/vtrc-exception.h"
 
 namespace vtrc { namespace client {
 
@@ -182,7 +183,8 @@ namespace { /// implementation.
                               common::empty_closure_type done )
         {
             if( !protocol_.get( ) ) {
-                throw std::runtime_error( "Not connected." );
+                common::raise( std::runtime_error( "Not connected." ) );
+                return;
             }
             protocol_->make_local_call( ll_mess,
                        vtrc::bind( &this_type::success_closure, this,

@@ -11,6 +11,7 @@
 
 #include "vtrc-result-codes.h"
 #include "vtrc-mutex-typedefs.h"
+#include "vtrc-exception.h"
 
 namespace vtrc { namespace common {
 
@@ -61,7 +62,7 @@ namespace vtrc { namespace common {
         {
             typename map_type::iterator f(store_.find( key ));
             if( f == store_.end( ) ) {
-                throw std::out_of_range( "Bad queue index" );
+                raise( std::out_of_range( "Bad queue index" ) );
             }
             return f;
         }

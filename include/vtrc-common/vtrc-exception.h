@@ -10,6 +10,8 @@
 
 namespace vtrc { namespace common {
 
+    void raise( const std::exception &ex );
+
     class exception: public std::runtime_error {
 
         unsigned    code_;

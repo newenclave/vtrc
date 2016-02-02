@@ -33,8 +33,10 @@ namespace vtrc { namespace client {
                                  NULL);
 
             if(INVALID_HANDLE_VALUE == pipe) {
-                throw vtrc::common::exception( GetLastError( ),
-                        rpc::errors::CATEGORY_SYSTEM );
+                vtrc::common::raise(
+                            vtrc::common::exception( GetLastError( ),
+                                rpc::errors::CATEGORY_SYSTEM ) );
+                return;
             } else {
                 get_socket( ).assign( pipe );
             }
@@ -60,8 +62,10 @@ namespace vtrc { namespace client {
                                  NULL);
 
             if(INVALID_HANDLE_VALUE == pipe) {
-                throw vtrc::common::exception( GetLastError( ),
-                        rpc::errors::CATEGORY_SYSTEM );
+                vtrc::common::raise(
+                    vtrc::common::exception( GetLastError( ),
+                        rpc::errors::CATEGORY_SYSTEM ) );
+                return;
             } else {
                 get_socket( ).assign( pipe );
             }

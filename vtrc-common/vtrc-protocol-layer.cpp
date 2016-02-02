@@ -49,7 +49,7 @@ namespace vtrc { namespace common {
 
         void raise_error( unsigned code )
         {
-            throw vtrc::common::exception( code );
+            vtrc::common::raise( vtrc::common::exception( code ) );
         }
 
         void raise_wait_error( wait_result_codes wr )
@@ -676,16 +676,20 @@ namespace vtrc { namespace common {
 
         void call_rpc_method( uint64_t slot_id, const lowlevel_unit_type &llu )
         {
-            if( !ready_ )
-                throw vtrc::common::exception( rpc::errors::ERR_COMM );
+            if( !ready_ ) {
+                vtrc::common::raise(
+                    vtrc::common::exception( rpc::errors::ERR_COMM ) );
+            }
             rpc_queue_.add_queue( slot_id );
             send_message( llu );
         }
 
         void call_rpc_method( const lowlevel_unit_type &llu )
         {
-            if( !ready_ )
-                throw vtrc::common::exception( rpc::errors::ERR_COMM );
+            if( !ready_ ) {
+                vtrc::common::raise(
+                    vtrc::common::exception( rpc::errors::ERR_COMM ) );
+            }
             send_message( llu );
         }
 
@@ -863,16 +867,20 @@ namespace vtrc { namespace common {
         gpb::Closure *make_closure(closure_holder_sptr &closure_hold, bool wait)
         {
             class  closure_impl: public gpb::Closure {
-                closure_holder_sptr closure_hold_;
-                bool       wait_;
-                this_type *impl_;
+
+                this_type           *impl_;
+                closure_holder_sptr  closure_hold_;
+                bool                 wait_;
+
             public:
+
                 closure_impl( this_type *im,
                               closure_holder_sptr &closure_hold, bool wait )
                     :impl_(im)
                     ,closure_hold_(closure_hold)
                     ,wait_(wait)
                 { }
+
                 void Run( )
                 {
                     impl_->closure_runner(closure_hold_, wait_);
@@ -881,8 +889,8 @@ namespace vtrc { namespace common {
 
             closure_hold->proto_closure_ =
                     new closure_impl( this, closure_hold, wait );
-//                    gpb::NewPermanentCallback( this, &this_type::closure_runner,
-//                                               closure_hold, wait );
+//                  gpb::NewPermanentCallback( this, &this_type::closure_runner,
+//                                             closure_hold, wait );
             return closure_hold->proto_closure_;
         }
 
@@ -892,22 +900,28 @@ namespace vtrc { namespace common {
             protocol_layer::context_holder ch( parent_, llu.get( ) );
 
             if( ch.ctx_->depth( ) > session_opts_.max_stack_size( ) ) {
-                throw vtrc::common::exception( rpc::errors::ERR_OVERFLOW );
+                vtrc::common::raise(
+                    vtrc::common::exception( rpc::errors::ERR_OVERFLOW ) );
+                return;
             }
 
             common::rpc_service_wrapper_sptr
                     service(get_service(llu->call( ).service_id( )));
 
             if( !service || !service->service( ) ) {
-                throw vtrc::common::exception( rpc::errors::ERR_BAD_FILE,
-                                               "Service not found");
+                vtrc::common::raise(
+                    vtrc::common::exception( rpc::errors::ERR_BAD_FILE,
+                                               "Service not found") );
+                return;
             }
 
             gpb::MethodDescriptor const *meth
                 (service->get_method(llu->call( ).method_id( )));
 
             if( !meth ) {
-                throw vtrc::common::exception( rpc::errors::ERR_NO_FUNC );
+                vtrc::common::raise(
+                    vtrc::common::exception( rpc::errors::ERR_NO_FUNC ) );
+                return;
             }
 
             const rpc::options *call_opt( parent_->get_method_options( meth ) );

@@ -6,6 +6,7 @@
 
 #include "vtrc-application.h"
 #include "vtrc-common/vtrc-enviroment.h"
+#include "vtrc-common/vtrc-exception.h"
 #include "vtrc-common/vtrc-transport-win-pipe.h"
 #include "vtrc-common/vtrc-connection-list.h"
 
@@ -187,7 +188,8 @@ namespace {
                                 basio::error::get_system_category( ));
 
                     if( throw_if_fail ) {
-                        throw bsys::system_error( ec );
+                        vtrc::common::raise( bsys::system_error( ec ) );
+                        return;
                     } else {
                         overlapped_.complete( ec, 0 );
                     }
@@ -197,7 +199,8 @@ namespace {
                 bsys::error_code ec( GetLastError( ),
                             basio::error::get_system_category( ));
                 if( throw_if_fail ) {
-                    throw bsys::system_error( ec );
+                    vtrc::common::raise( bsys::system_error( ec ) );
+                    return;
                 } else {
                     overlapped_.complete( ec, 0 );
                 }

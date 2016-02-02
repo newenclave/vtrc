@@ -9,6 +9,7 @@
 #include "vtrc-application.h"
 #include "vtrc-protocol-layer-s.h"
 #include "vtrc-common/vtrc-enviroment.h"
+#include "vtrc-common/vtrc-exception.h"
 
 #include "vtrc-rpc-lowlevel.pb.h"
 
@@ -165,8 +166,10 @@ namespace vtrc { namespace server { namespace listeners {
             void raw_call_local ( vtrc::shared_ptr<rpc::lowlevel_unit> ll_mess,
                                   common::empty_closure_type done )
             {
-                if( !protocol_.get( ) ) {
-                    throw std::runtime_error( "Not connected." );
+                if( !protocol_.get( ) ) {                    
+                    vtrc::common::raise(
+                                std::runtime_error( "Not connected." ) );
+                    return;
                 }
                 protocol_->make_local_call( ll_mess,
                            vtrc::bind( &this_type::success_closure, this,

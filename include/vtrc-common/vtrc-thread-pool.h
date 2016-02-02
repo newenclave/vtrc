@@ -26,7 +26,7 @@ namespace vtrc { namespace common {
         ~thread_pool( );
 
         size_t size( ) const;
-        void interrupt_one( );
+        //void interrupt_one( );
         void stop( );
 
         void add_thread( );

@@ -313,12 +313,16 @@ namespace vtrc { namespace client {
                       vtrc::bind( &impl::on_ready_diconnect, this, &failed ) );
 
             if( !ok ) {
-                throw vtrc::common::exception( rpc::errors::ERR_TIMEOUT );
+                vtrc::common::raise(
+                    vtrc::common::exception( rpc::errors::ERR_TIMEOUT ) );
+                return;
             }
 
             if( failed != 0 ) {
-                throw vtrc::common::exception( rpc::errors::ERR_INTERNAL,
-                                               failed_message);
+                vtrc::common::raise(
+                    vtrc::common::exception( rpc::errors::ERR_INTERNAL,
+                                             failed_message ) );
+                return;
             }
 
         }
