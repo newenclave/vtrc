@@ -4,6 +4,8 @@
 #include "google/protobuf/descriptor.h"
 #include "boost/system/error_code.hpp"
 
+#include "vtrc-general-config.h"
+
 #include "vtrc-exception.h"
 #include "vtrc-errors.pb.h"
 
@@ -96,10 +98,12 @@ namespace vtrc { namespace common {
         return category_;
     }
 
+#ifndef VTRC_EXCEPTIONS_DISABLED
     void raise( const std::exception &ex )
     {
         throw ex;
     }
+#endif
 
     void throw_system_error( unsigned code )
     {
