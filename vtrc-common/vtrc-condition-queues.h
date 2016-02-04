@@ -200,10 +200,12 @@ namespace vtrc { namespace common {
         condition_queues( )
         { }
 
-        ~condition_queues( ) { try
+        ~condition_queues( )
         {
-            cancel_all( );
-        } catch ( ... ) { ;;; /*Cthulhu*/ } }
+            try {
+                cancel_all( );
+            } catch ( ... ) { ;;; /*Cthulhu*/ }
+        }
 
         size_t size( ) const
         {
