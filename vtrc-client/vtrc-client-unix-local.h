@@ -37,7 +37,7 @@ namespace client {
 
         static shared_type create (
                        boost::asio::io_service &ios,
-                        vtrc_client *client, protocol_signals *callbacks );
+                       vtrc_client *client, protocol_signals *callbacks );
 
         ~client_unix_local( );
         void init( );
