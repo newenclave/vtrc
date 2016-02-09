@@ -16,13 +16,23 @@ namespace vtrc { namespace client {
         typedef impl this_type;
 
         bool no_delay_;
+        std::string name_;
 
         impl( boost::asio::io_service &ios,
               vtrc_client *client, protocol_signals *callbacks,
               bool nodelay )
             :super_type(ios, client, callbacks, 4096)
             ,no_delay_(nodelay)
+            ,name_("tcp://<unknown>")
         { }
+
+        void make_name( const std::string &address,
+                               unsigned short     service )
+        {
+            std::ostringstream oss;
+            oss << "tcp://" << address << ":" << service;
+            name_ = oss.str( );
+        }
 
         void connect( const std::string &address,
                       unsigned short     service )
@@ -36,6 +46,10 @@ namespace vtrc { namespace client {
 
         void connection_setup( )
         {
+            make_name(
+                get_socket( ).local_endpoint( ).address( ).to_string( ),
+                get_socket( ).local_endpoint( ).port( ) );
+
             if( no_delay_ ) {
                 get_parent( )->set_no_delay( true );
             }
@@ -143,6 +157,11 @@ namespace vtrc { namespace client {
     const std::string &client_tcp::id( ) const
     {
         return impl_->id( );
+    }
+
+    std::string client_tcp::name( ) const
+    {
+        return impl_->name_;
     }
 
     void client_tcp::raw_call_local (

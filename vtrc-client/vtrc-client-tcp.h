@@ -43,6 +43,7 @@ namespace client {
         void init( );
         bool active( ) const;
         const std::string &id( ) const;
+        std::string name( ) const;
 
         void connect( const std::string &address,
                       unsigned short     service );
