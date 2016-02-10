@@ -37,7 +37,7 @@ namespace vtrc { namespace common {
             if( done_ ) done_->Run( );
         } catch( ... ) {
             ;;;
-        }}
+        } }
 
     };
 }}
