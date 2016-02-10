@@ -45,7 +45,7 @@ if( OPENSSL_FOUND )
     set( VTRC_OPENSSL_FOUND 1 )
     #small hack =)
     set( OPENSSL_INCLUDE_DIRS ${OPENSSL_INCLUDE_DIR} )
-    message("OPenSSL dir: " ${OPENSSL_INCLUDE_DIRS})
+    message("OpenSSL dir: " ${OPENSSL_INCLUDE_DIRS})
 endif( OPENSSL_FOUND )
 #######################################################
 
