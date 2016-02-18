@@ -18,6 +18,7 @@ namespace vtrc { namespace common {
 
         rpc_service_wrapper( );
         rpc_service_wrapper &operator = (const rpc_service_wrapper &);
+        rpc_service_wrapper (const rpc_service_wrapper &);
 
     public:
 

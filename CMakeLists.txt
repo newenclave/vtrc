@@ -46,6 +46,13 @@ if( OPENSSL_FOUND )
     #small hack =)
     set( OPENSSL_INCLUDE_DIRS ${OPENSSL_INCLUDE_DIR} )
     message("OpenSSL dir: " ${OPENSSL_INCLUDE_DIRS})
+
+else(OPENSSL_FOUND)
+    # clean up variables
+    set(LIB_EAY_LIBRARY)
+    set(SSL_EAY_LIBRARY)
+    set(OPENSSL_LIBRARIES)
+    set(OPENSSL_INCLUDE_DIRS)
 endif( OPENSSL_FOUND )
 #######################################################
 

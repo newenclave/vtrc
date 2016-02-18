@@ -33,6 +33,7 @@ namespace client {
         typedef common::rpc_channel::lowlevel_unit_sptr lowlevel_unit_sptr;
 
         rpc_channel_c & operator = ( const rpc_channel_c & );
+        rpc_channel_c ( const rpc_channel_c & );
         rpc_channel_c( );
 
     public:
