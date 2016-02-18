@@ -53,6 +53,7 @@ namespace vtrc { namespace server {
             :app_(app)
             ,env_(app_.get_enviroment( ))
             ,opts_(opts)
+            ,parent_(NULL)
             ,client_count_(0)
             ,precall_(empty_pre( ))
             ,postcall_(empty_post( ))

@@ -20,6 +20,7 @@ namespace vtrc { namespace common {
         size_t                      depth_;
         impl(lowlevel_unit *llu)
             :llu_(llu)
+            ,parent_context_(NULL)
             ,opts_(NULL)
             ,impersonated_(false)
             ,done_(NULL)

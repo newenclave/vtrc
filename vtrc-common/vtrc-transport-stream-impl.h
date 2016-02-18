@@ -37,6 +37,7 @@ namespace vtrc { namespace common {
                 vtrc::shared_ptr<system_closure_type> closure_;
                 bool on_send_;
                 message_holder( )
+                    :on_send_(false)
                 { }
             };
 

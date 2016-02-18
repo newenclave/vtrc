@@ -209,6 +209,7 @@ namespace vtrc { namespace common {
 
         impl( transport_iface *c, bool odd, const rpc::session_options &opts )
             :connection_(c)
+            ,parent_(NULL)
             ,hash_maker_(common::hash::create_default( ))
             ,hash_checker_(common::hash::create_default( ))
             ,transformer_(common::transformers::none::create( ))
