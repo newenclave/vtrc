@@ -98,7 +98,7 @@ namespace vtrc { namespace client {
                 return;
             }
 
-            if( !conn_setup_->do_handshake( data ) && !closed_ ) {
+            if( conn_setup_->do_handshake( data ) && !closed_ ) {
                 stage_call_ = vtrc::bind( &this_type::on_rpc_process, this );
                 conn_setup_.reset( );
                 on_ready( true );

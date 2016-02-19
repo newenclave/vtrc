@@ -13,6 +13,7 @@ namespace vtrc { namespace common {
         virtual void init( protocol_accessor *pa,
                            system_closure_type ready_cb ) = 0;
         virtual bool do_handshake( const std::string &data ) = 0;
+        virtual bool ready( ) const = 0;
     };
 
 }}

@@ -10,7 +10,10 @@ namespace vtrc { namespace common {
 
     struct transformer_iface {
         virtual ~transformer_iface( ) { }
+
+        /// [in, out]
         virtual void transform( std::string &in_out_data ) = 0;
+
         //virtual void transform( char *data, size_t length ) = 0;
     };
 

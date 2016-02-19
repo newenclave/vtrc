@@ -100,7 +100,7 @@ namespace vtrc { namespace server {
                 return;
             }
 
-            if( !conn_setup_->do_handshake( data ) && !closed_ ) {
+            if( conn_setup_->do_handshake( data ) && !closed_ ) {
                 stage_call_ = vtrc::bind( &this_type::on_rcp_call_ready, this );
                 conn_setup_.reset( );
                 parent_->set_ready( true );

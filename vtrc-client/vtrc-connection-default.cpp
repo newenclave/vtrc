@@ -298,8 +298,14 @@ namespace vtrc { namespace client {
             bool do_handshake( const std::string &data )
             {
                 stage_call_( data );
-                return !ready_;
+                return ready_;
             }
+
+            bool ready( ) const
+            {
+                return ready_;
+            }
+
         };
 
     }
