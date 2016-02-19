@@ -47,17 +47,22 @@ namespace server {
         application( common::pool_pair &pools );
         application( boost::asio::io_service &ios );
         application( boost::asio::io_service &ios,
-                     boost::asio::io_service &rpc_ios);
+                     boost::asio::io_service &rpc_ios );
+
         virtual ~application( );
 
         void stop_all_clients( );
 
-        common::enviroment      &get_enviroment( );
-        boost::asio::io_service &get_io_service( );
-        boost::asio::io_service &get_rpc_service( );
+        /// not thread safe!!
+        void assign_io_service ( boost::asio::io_service &ios );
+        void assign_rpc_service( boost::asio::io_service &ios );
 
-        const common::enviroment      &get_enviroment( )  const;
-        const boost::asio::io_service &get_io_service( )  const;
+        common::enviroment            &get_enviroment ( );
+        boost::asio::io_service       &get_io_service ( );
+        boost::asio::io_service       &get_rpc_service( );
+
+        const common::enviroment      &get_enviroment ( ) const;
+        const boost::asio::io_service &get_io_service ( ) const;
         const boost::asio::io_service &get_rpc_service( ) const;
 
         vtrc::shared_ptr<common::connection_list>  get_clients( );
@@ -70,10 +75,10 @@ namespace server {
                                       const std::string &service_name );
 
         virtual std::string get_session_key( common::connection_iface* conn,
-                                             const std::string &id);
+                                             const std::string &id );
 
         virtual bool session_key_required( common::connection_iface* conn,
-                                           const std::string &id);
+                                           const std::string &id );
 
     };
 
