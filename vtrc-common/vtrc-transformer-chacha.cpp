@@ -40,10 +40,6 @@ namespace vtrc { namespace common {
                     key.assign( transform_key, transform_key + 32 );
                 }
 
-//                std::cout << "Key is! "
-//                          << transform_key << ":" << t_length
-//                          << "\n";
-
                 ECRYPT_keysetup( &ctx_,
                               reinterpret_cast<const uint8_t *>(key.c_str( )),
                               key.size( ) * 8, 0);
