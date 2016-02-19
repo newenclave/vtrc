@@ -148,7 +148,8 @@ namespace vtrc { namespace common {
                 p_->push_call_context( ctx_ );
             }
 
-            ~context_holder( ) {
+            ~context_holder( )
+            {
                 try {
                     p_->pop_call_context( );
                 } catch( ... ) { ;;; /*Cthulhu*/ }
