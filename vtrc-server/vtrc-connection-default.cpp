@@ -298,7 +298,7 @@ namespace vtrc { namespace server {
 
             }
 
-            bool next( const std::string &data )
+            bool do_handshake( const std::string &data )
             {
                 stage_function_( data );
                 return !ready_;

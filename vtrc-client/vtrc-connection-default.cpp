@@ -295,7 +295,7 @@ namespace vtrc { namespace client {
                 change_stage( stage_ );
             }
 
-            bool next( const std::string &data )
+            bool do_handshake( const std::string &data )
             {
                 stage_call_( data );
                 return !ready_;

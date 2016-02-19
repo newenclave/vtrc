@@ -83,27 +83,7 @@ namespace vtrc { namespace client {
             ,closed_(false)
         {
             stage_call_ = vtrc::bind( &this_type::call_setup_function, this );
-            //stage_call_ = vtrc::bind( &this_type::on_hello_call, this );
         }
-
-//        void change_stage( protocol_stage stage )
-//        {
-//            stage_ = stage;
-//            switch ( stage_ ) {
-//            case STAGE_HELLO:
-//                stage_call_ = vtrc::bind( &this_type::on_hello_call, this );
-//                break;
-//            case STAGE_SETUP:
-//                stage_call_ = vtrc::bind( &this_type::on_trans_setup, this );
-//                break;
-//            case STAGE_READY:
-//                stage_call_ = vtrc::bind( &this_type::on_server_ready, this );
-//                break;
-//            case STAGE_RPC:
-//                stage_call_ = vtrc::bind( &this_type::on_rpc_process, this );
-//                break;
-//            }
-//        }
 
         //// ================ accessor =================
 
@@ -118,7 +98,7 @@ namespace vtrc { namespace client {
                 return;
             }
 
-            if( !conn_setup_->next( data ) && !closed_ ) {
+            if( !conn_setup_->do_handshake( data ) && !closed_ ) {
                 stage_call_ = vtrc::bind( &this_type::on_rpc_process, this );
                 conn_setup_.reset( );
                 on_ready( true );
@@ -255,7 +235,9 @@ namespace vtrc { namespace client {
                                  lowlevel_unit_sptr llu)
         {
             vtrc_client_sptr c(client.lock( ));
-            if( !c ) return;
+            if( !c ) {
+                return;
+            }
             parent_->make_local_call( llu );
         }
 
@@ -292,8 +274,7 @@ namespace vtrc { namespace client {
 
         void process_invalid( lowlevel_unit_sptr &llu )
         {
-//            llu->Clear( );
-//            parent_->send_message( *llu );
+
         }
 
         void on_ready( bool ready )
@@ -354,100 +335,6 @@ namespace vtrc { namespace client {
             }
         }
 
-//        void on_server_ready( )
-//        {
-
-//            rpc::auth::init_capsule capsule;
-//            bool check = parent_->parse_and_pop( capsule );
-
-//            if( !check ) {
-//                parent_->on_init_error(
-//                            create_error( rpc::errors::ERR_INTERNAL, "" ),
-//                            "Server's 'Ready' has bad hash. Bad session key." );
-//                connection_->close( );
-//                return;
-//            }
-
-//            if( !capsule.ready( ) ) {
-//                if( capsule.error( ).has_additional( ) ) {
-//                    parent_->on_init_error( capsule.error( ),
-//                                      capsule.error( ).additional( ).c_str( ) );
-
-//                } else {
-//                    parent_->on_init_error( capsule.error( ),
-//                                       "Server is not ready; stage: 'Ready'" );
-//                }
-//            }
-
-//            rpc::auth::session_setup ss;
-//            ss.ParseFromString( capsule.body( ) );
-
-//            parent_->configure_session( ss.options( ) );
-
-//            change_stage( STAGE_RPC );
-
-//            on_ready( true );
-
-//        }
-
-//        void on_trans_setup( )
-//        {
-//            using namespace common::transformers;
-
-//            rpc::auth::init_capsule capsule;
-//            bool check = parent_->parse_and_pop( capsule );
-
-//            if( !check ) {
-//                parent_->on_init_error(
-//                            create_error( rpc::errors::ERR_INTERNAL, "" ),
-//                            "Server's 'Setup' has bad hash." );
-//                connection_->close( );
-//                return;
-//            }
-
-//            if( !capsule.ready( ) ) {
-//                parent_->on_init_error( capsule.error( ),
-//                                        "Server is not ready; stage: 'Setup'" );
-//                connection_->close( );
-//                return;
-//            }
-
-//            rpc::auth::transformer_setup tsetup;
-
-//            tsetup.ParseFromString( capsule.body( ) );
-
-//            std::string key(client_->get_session_key( ));
-
-//            std::string s1(tsetup.salt1( ));
-//            std::string s2(tsetup.salt2( ));
-
-//            create_key( key, s1, s2, key );
-
-//            parent_->change_transformer( default_cypher::create( key.c_str( ),
-//                                                                 key.size( ) ));
-//            //std::cout << "Set transformer " << key.c_str( ) << "\n";
-
-//            key.assign( client_->get_session_key( ) );
-
-//            generate_key_infos( key, s1, s2, key );
-
-//            tsetup.set_salt1( s1 );
-//            tsetup.set_salt2( s2 );
-
-//            parent_->change_revertor( default_cypher::create( key.c_str( ),
-//                                                              key.size( ) ) );
-
-//            //std::cout << "Set revertor " << key.c_str( ) << "\n";
-
-//            capsule.set_ready( true );
-//            capsule.set_body( tsetup.SerializeAsString( ) );
-
-//            change_stage( STAGE_READY );
-
-//            send_proto_message( capsule );
-
-//        }
-
         void set_options( const boost::system::error_code &err )
         {
             if( !err ) {
@@ -466,60 +353,6 @@ namespace vtrc { namespace client {
                       init.transform_supported( ).end( ),
                       transformer_type ) != init.transform_supported( ).end( );
         }
-
-//        void on_hello_call( )
-//        {
-
-//            rpc::auth::init_capsule capsule;
-
-//            bool check = parent_->parse_and_pop( capsule );
-
-//            if( !check ) {
-//                parent_->on_init_error(
-//                            create_error( rpc::errors::ERR_INTERNAL, "" ),
-//                            "Server's 'Hello' has bad hash." );
-//                connection_->close( );
-//                return;
-//            }
-
-//            if( !capsule.ready( ) ) {
-//                parent_->on_init_error(capsule.error( ),
-//                                       "Server is not ready; stage: 'Hello'");
-//                connection_->close( );
-//                return;
-//            }
-
-//            rpc::auth::client_selection init;
-
-//            capsule.set_ready( true );
-//            capsule.set_text( "Miten menee?" );
-
-//            bool key_set = client_->is_key_set( );
-
-//            const unsigned basic_transform = rpc::auth::TRANSFORM_ERSEEFOR;
-
-//            if( key_set && server_has_transformer( capsule, basic_transform )) {
-//                init.set_transform( rpc::auth::TRANSFORM_ERSEEFOR );
-//                init.set_id( client_->get_session_id( ) );
-//            } else {
-//                init.set_transform( rpc::auth::TRANSFORM_NONE );
-//            }
-
-//            init.set_hash( rpc::auth::HASH_CRC_32 );
-
-//            capsule.set_body( init.SerializeAsString( ) );
-
-//            parent_->change_hash_checker(
-//                    common::hash::create_by_index( rpc::auth::HASH_CRC_32 ));
-
-//            change_stage( key_set ? STAGE_SETUP : STAGE_READY );
-
-//            send_proto_message( capsule,
-//                                vtrc::bind( &this_type::set_options, this,
-//                                             vtrc::placeholders::_1 ),
-//                                false );
-
-//        }
 
         void data_ready( )
         {
