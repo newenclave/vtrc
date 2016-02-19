@@ -136,6 +136,21 @@ namespace vtrc { namespace server {
         return impl_->get_rpc_service( );
     }
 
+    const common::enviroment &application::get_enviroment( )  const
+    {
+        return impl_->get_enviroment( );
+    }
+
+    const boost::asio::io_service &application::get_io_service( )  const
+    {
+        return impl_->get_io_service( );
+    }
+
+    const boost::asio::io_service &application::get_rpc_service( ) const
+    {
+        return impl_->get_rpc_service( );
+    }
+
     vtrc::shared_ptr<common::connection_list> application::get_clients()
     {
         return impl_->get_clients( );

@@ -56,6 +56,10 @@ namespace server {
         boost::asio::io_service &get_io_service( );
         boost::asio::io_service &get_rpc_service( );
 
+        const common::enviroment      &get_enviroment( )  const;
+        const boost::asio::io_service &get_io_service( )  const;
+        const boost::asio::io_service &get_rpc_service( ) const;
+
         vtrc::shared_ptr<common::connection_list>  get_clients( );
 
         virtual void configure_session( common::connection_iface* connection,
