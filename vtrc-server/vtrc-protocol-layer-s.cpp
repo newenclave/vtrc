@@ -303,29 +303,27 @@ namespace vtrc { namespace server {
                     return;
                 }
 
-                if( llu->has_info( ) ) {
+                switch ( llu->info( ).message_type( ) ) {
 
-                    switch ( llu->info( ).message_type( ) ) {
+                /// CLIENT_CALL = request; do not change id
+                case message_info::MESSAGE_CLIENT_CALL:
+                    process_call( llu );
+                    break;
 
-                    /// CLIENT_CALL = request; do not change id
-                    case message_info::MESSAGE_CLIENT_CALL:
-                        process_call( llu );
-                        break;
+                /// CLIENT_CALLBACK = request; must use target_id
+                case message_info::MESSAGE_CLIENT_CALLBACK:
+                    process_insertion( llu );
+                    break;
 
-                    /// CLIENT_CALLBACK = request; must use target_id
-                    case message_info::MESSAGE_CLIENT_CALLBACK:
-                        process_insertion( llu );
-                        break;
-
-                    /// answers;
-                    case message_info::MESSAGE_SERVER_CALL:
-                    case message_info::MESSAGE_SERVER_CALLBACK:
-                        process_event_cb( llu );
-                        break;
-                    default:
-                        break;
-                    }
+                /// answers;
+                case message_info::MESSAGE_SERVER_CALL:
+                case message_info::MESSAGE_SERVER_CALLBACK:
+                    process_event_cb( llu );
+                    break;
+                default:
+                    break;
                 }
+
             }
         }
 

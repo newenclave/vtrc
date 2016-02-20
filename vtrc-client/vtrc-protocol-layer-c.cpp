@@ -243,7 +243,7 @@ namespace vtrc { namespace client {
 
         void process_event( lowlevel_unit_sptr &llu )
         {
-            if ( llu->has_id( ) ) {
+            if ( llu->id( ) != 0 ) {
                 client_->get_rpc_service( ).post(
                     vtrc::bind( &this_type::process_event_impl, this,
                              client_->weak_from_this( ), llu));
