@@ -98,12 +98,12 @@ namespace vtrc { namespace common {
         return category_;
     }
 
-#ifndef VTRC_EXCEPTIONS_DISABLED
-    void raise( const std::exception &ex )
-    {
-        throw ex;
-    }
-#endif
+//#ifndef VTRC_EXCEPTIONS_DISABLED
+//    void raise( const std::exception &ex )
+//    {
+//        throw ex;
+//    }
+//#endif
 
     void throw_system_error( unsigned code )
     {

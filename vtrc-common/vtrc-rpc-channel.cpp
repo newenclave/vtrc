@@ -22,14 +22,14 @@ namespace vtrc { namespace common  {
 
         void default_error_cb( unsigned code, unsigned cat, const char *mess )
         {
-            vtrc::common::raise(
-                vtrc::common::exception( code, cat, mess ) );
+            vtrc::common::exception e( code, cat, mess );
+            vtrc::common::raise( e );
         }
 
         void default_chan_error_cb( const char *mess )
         {
-            vtrc::common::raise(
-                vtrc::common::exception( rpc::errors::ERR_CHANNEL, mess ) );
+            vtrc::common::exception e( rpc::errors::ERR_CHANNEL, mess );
+            vtrc::common::raise( e );
         }
 
         rpc_channel::proto_error_cb_type get_default_error_cb( )

@@ -10,7 +10,11 @@
 
 namespace vtrc { namespace common {
 
-    void raise( const std::exception &ex );
+    template <typename T>
+    void raise( const T &ex )
+    {
+        throw ex;
+    }
 
     class exception: public std::runtime_error {
 
