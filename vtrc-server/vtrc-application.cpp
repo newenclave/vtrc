@@ -15,10 +15,10 @@ namespace vtrc { namespace server {
 
         common::enviroment         env_;
         boost::asio::io_service   *ios_;
-        bool                       own_ios_;
+        const bool                 own_ios_;
 
         boost::asio::io_service   *rpc_ios_;
-        bool                       own_rpc_ios_;
+        const bool                 own_rpc_ios_;
 
         vtrc::shared_ptr<common::connection_list> clients_;
 
@@ -70,24 +70,6 @@ namespace vtrc { namespace server {
             ;;;
         } }
 
-        void assign_io_service ( boost::asio::io_service &ios )
-        {
-            if( own_ios_ && ios_ ) {
-                delete ios_;
-            }
-            own_ios_ = false;
-            ios_     = &ios;
-        }
-
-        void assign_rpc_service ( boost::asio::io_service &ios )
-        {
-            if( own_rpc_ios_ && rpc_ios_ ) {
-                delete rpc_ios_;
-            }
-            own_rpc_ios_ = false;
-            rpc_ios_     = &ios;
-        }
-
         common::enviroment &get_enviroment( )
         {
             return env_;
@@ -132,16 +114,6 @@ namespace vtrc { namespace server {
     application::~application( )
     {
         delete impl_;
-    }
-
-    void application::assign_io_service ( boost::asio::io_service &ios )
-    {
-        impl_->assign_io_service( ios );
-    }
-
-    void application::assign_rpc_service( boost::asio::io_service &ios )
-    {
-        impl_->assign_rpc_service( ios );
     }
 
     void application::stop_all_clients( )

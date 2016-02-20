@@ -53,10 +53,6 @@ namespace server {
 
         void stop_all_clients( );
 
-        /// not thread safe!!
-        void assign_io_service ( boost::asio::io_service &ios );
-        void assign_rpc_service( boost::asio::io_service &ios );
-
         common::enviroment            &get_enviroment ( );
         boost::asio::io_service       &get_io_service ( );
         boost::asio::io_service       &get_rpc_service( );
