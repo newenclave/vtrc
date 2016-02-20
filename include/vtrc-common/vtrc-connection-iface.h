@@ -44,17 +44,16 @@ namespace vtrc { namespace common {
 
         virtual ~connection_iface( ) { }
 
-        virtual       std::string name( ) const            = 0;
-        virtual const std::string &id( ) const             = 0;
+        virtual       std::string name( ) const         = 0;
+        virtual const std::string &id( )  const         = 0;
 
-        virtual void close( )                              = 0;
-        virtual bool active( ) const                       = 0;
-        virtual common::enviroment      &get_enviroment( ) = 0;
+        virtual void close( )                           = 0;
+        virtual bool active( ) const                    = 0;
+        virtual common::enviroment   &get_enviroment( ) = 0;
+        virtual const call_context   *get_call_context( ) const = 0;
 
-        virtual const call_context      *get_call_context( ) const = 0;
-
-        virtual bool impersonate( )         { return false; }
-        virtual void revert( )              { }
+        virtual bool impersonate( )  { return false; }
+        virtual void revert( )       { }
 
         vtrc::weak_ptr<connection_iface> weak_from_this( )
         {
@@ -74,6 +73,9 @@ namespace vtrc { namespace common {
                                       common::empty_closure_type done ) = 0;
 
         virtual void raw_write ( vtrc::shared_ptr<rpc::lowlevel_unit> llu ) = 0;
+
+        virtual void drop_service( const std::string &name ) = 0;
+        virtual void drop_all_services(  ) = 0;
 
     protected:
 

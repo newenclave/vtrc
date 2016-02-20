@@ -179,6 +179,18 @@ namespace vtrc { namespace server {
             return result;
         }
 
+        void drop_service( const std::string &name )
+        {
+            unique_shared_lock _(services_lock_);
+            services_.erase( name );
+        }
+
+        void drop_all_services(  )
+        {
+            unique_shared_lock _(services_lock_);
+            services_.clear( );
+        }
+
         const std::string &client_id( ) const
         {
             return client_id_;
@@ -374,6 +386,16 @@ namespace vtrc { namespace server {
     void protocol_layer_s::send_and_close(const gpb::MessageLite &mess)
     {
         impl_->send_and_close( mess );
+    }
+
+    void protocol_layer_s::drop_service( const std::string &name )
+    {
+        impl_->drop_service( name );
+    }
+
+    void protocol_layer_s::drop_all_services(  )
+    {
+        impl_->drop_all_services( );
     }
 
     const std::string &protocol_layer_s::client_id( ) const

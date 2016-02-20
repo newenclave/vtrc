@@ -199,6 +199,7 @@ namespace client {
                           vtrc::shared_ptr<google::protobuf::Service> handler);
 
         void erase_rpc_handler( const std::string &name );
+        void erase_all_rpc_handlers( );
 
     };
 

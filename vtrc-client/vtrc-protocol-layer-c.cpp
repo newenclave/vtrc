@@ -359,6 +359,16 @@ namespace vtrc { namespace client {
             stage_call_( );
         }
 
+        void drop_service( const std::string &name )
+        {
+            client_->erase_rpc_handler( name );
+        }
+
+        void drop_all_services(  )
+        {
+            client_->erase_all_rpc_handlers( );
+        }
+
     };
 
     protocol_layer_c::protocol_layer_c(common::transport_iface   *connection,
@@ -408,5 +418,16 @@ namespace vtrc { namespace client {
     {
         return impl_->get_service_by_name( name );
     }
+
+    void protocol_layer_c::drop_service( const std::string &name )
+    {
+        impl_->drop_service( name );
+    }
+
+    void protocol_layer_c::drop_all_services(  )
+    {
+        impl_->drop_all_services( );
+    }
+
 
 }}

@@ -540,6 +540,12 @@ namespace vtrc { namespace client {
             if( wf != weak_services_.end( ) ) weak_services_.erase( wf );
         }
 
+        void erase_all_rpc_handlers( )
+        {
+            vtrc::unique_shared_lock lk(services_lock_);
+            hold_services_.clear( );
+            weak_services_.clear( );
+        }
     };
 
     vtrc_client::vtrc_client( boost::asio::io_service &ios,
@@ -782,6 +788,11 @@ namespace vtrc { namespace client {
     void vtrc_client::erase_rpc_handler(const std::string &name)
     {
         impl_->erase_rpc_handler( name );
+    }
+
+    void vtrc_client::erase_all_rpc_handlers( )
+    {
+        impl_->erase_all_rpc_handlers( );
     }
 
     void  vtrc_client::reset_session_id( )

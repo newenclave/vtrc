@@ -7,6 +7,8 @@
 #include "vtrc-common/vtrc-closure.h"
 #include "vtrc-common/protocol/vtrc-rpc-lowlevel.pb.h"
 
+#include "vtrc-protocol-layer.h"
+
 #include "boost/asio.hpp"
 
 namespace boost {
@@ -42,6 +44,16 @@ namespace vtrc { namespace common {
                                         const system_closure_type &success,
                                         bool success_on_send ) = 0;
         virtual void on_close( ) { }
+
+        virtual void drop_service( const std::string &name )
+        {
+            get_protocol( ).drop_service( name );
+        }
+
+        virtual void drop_all_services(  )
+        {
+            get_protocol( ).drop_all_services( );
+        }
 
     };
 

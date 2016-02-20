@@ -41,6 +41,10 @@ namespace server {
         void close( );
         void send_and_close( const google::protobuf::MessageLite &mess );
 
+        void drop_service( const std::string &name );
+        void drop_all_services(  );
+
+
         common::rpc_service_wrapper_sptr get_service_by_name(
                                                     const std::string &name );
 
