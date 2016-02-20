@@ -202,7 +202,7 @@ namespace vtrc { namespace client {
         return impl_->alive( );
     }
 
-    void rpc_channel_c::set_flags( unsigned flags ) const
+    void rpc_channel_c::set_flags( unsigned flags )
     {
         return impl_->set_flags( flags );
     }
