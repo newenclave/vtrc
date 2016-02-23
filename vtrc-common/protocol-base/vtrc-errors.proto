@@ -26,6 +26,7 @@ enum errors_numbers { // CATEGORY_INTERNAL
     ERR_BUSY          =   16 [(description) = "Device or resource busy"];
     ERR_INVALID_VALUE =   22 [(description) = "Invalid value"];
     ERR_NO_FUNC       =   38 [(description) = "Function not implemented"];
+    ERR_NO_DATA       =   61 [(description) = "No data available"];
     ERR_TIMEOUT       =   62 [(description) = "Timeout"];
     ERR_COMM          =   70 [(description) = "Communication error on send"];
     ERR_PROTOCOL      =   71 [(description) = "Protocol error"];

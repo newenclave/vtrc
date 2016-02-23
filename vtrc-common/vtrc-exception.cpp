@@ -105,6 +105,11 @@ namespace vtrc { namespace common {
 //    }
 //#endif
 
+    void throw_protocol_error( unsigned code )
+    {
+        common::raise( exception( code, rpc::errors::CATEGORY_INTERNAL ) );
+    }
+
     void throw_system_error( unsigned code )
     {
         common::raise( exception( code, rpc::errors::CATEGORY_SYSTEM ) );
