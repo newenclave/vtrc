@@ -31,7 +31,7 @@ namespace vtrc { namespace server { namespace listeners {
 
         typedef common::transport_ssl                  connection_type;
         typedef connection_impl<connection_type>       connection_impl_type;
-        typedef typename connection_type::socket_type  socket_type;
+        typedef connection_type::socket_type  socket_type;
 
         typedef vtrc::function<
             void (const common::connection_iface *)
