@@ -14,6 +14,6 @@
 #   ifdef HAS_NOEXCEPT
 #       define NOEXCEPT noexcept
 #   else
-#       define NOEXCEPT throw( )
+#       define NOEXCEPT
 #   endif
 #endif
