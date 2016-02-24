@@ -3,6 +3,7 @@
 
 #include <stdexcept>
 #include <string>
+#include "vtrc-noexcept.h"
 
 //namespace vtrc { namespace rpc { namespace errors {
 //    class error_container;
