@@ -1,6 +1,8 @@
 #include <iostream>
 
+#if !defined(NOMINMAX)
 #define NOMINMAX // fckng Windows
+#endif
 
 #include "vtrc-client/vtrc-client.h"
 #include "vtrc-common/vtrc-thread-pool.h"
