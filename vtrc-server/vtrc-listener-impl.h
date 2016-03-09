@@ -6,17 +6,17 @@
 #include "vtrc-listener.h"
 #include "vtrc-application.h"
 
-#include "vtrc-common/vtrc-connection-iface.h"
-#include "vtrc-common/vtrc-connection-list.h"
-
 #include "vtrc-ref.h"
 #include "vtrc-bind.h"
-#include "vtrc-common/vtrc-closure.h"
-
-#include "vtrc-common/vtrc-enviroment.h"
-
 #include "vtrc-thread.h"
+
+#include "vtrc-common/vtrc-connection-iface.h"
+#include "vtrc-common/vtrc-connection-list.h"
+#include "vtrc-common/vtrc-closure.h"
+#include "vtrc-common/vtrc-enviroment.h"
 #include "vtrc-common/vtrc-monotonic-timer.h"
+
+#include "vtrc-connection-closure.h"
 
 namespace vtrc { namespace server { namespace listeners {
 
@@ -25,9 +25,7 @@ namespace {
     namespace basio = boost::asio;
     namespace bsys  = boost::system;
 
-    typedef vtrc::function<
-        void (const common::connection_iface *)
-    > close_closure;
+    typedef vtrc::server::connection_close_closure close_closure;
 
     template <typename AcceptorType,
               typename EndpointType,
@@ -63,7 +61,7 @@ namespace {
         virtual ~listener_impl( ) { }
 
         void on_client_destroy( vtrc::weak_ptr<listener> inst,
-                                const common::connection_iface *conn )
+                                common::connection_iface *conn )
         {
             vtrc::shared_ptr<listener> lock( inst.lock( ) );
             if( lock ) {

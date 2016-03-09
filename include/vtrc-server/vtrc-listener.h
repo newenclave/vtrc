@@ -46,10 +46,10 @@ namespace server {
                              void ( const boost::system::error_code &err ) );
 
         VTRC_DECLARE_SIGNAL( on_new_connection,
-                             void ( const common::connection_iface * ) );
+                             void ( common::connection_iface * ) );
 
         VTRC_DECLARE_SIGNAL( on_stop_connection,
-                             void ( const common::connection_iface * ) );
+                             void ( common::connection_iface * ) );
 
 
     protected:
@@ -90,8 +90,8 @@ namespace server {
         void mk_postcall( common::connection_iface &connection,
                           rpc::lowlevel_unit &llu );
 
-        void new_connection(  const common::connection_iface *conn );
-        void stop_connection( const common::connection_iface *conn );
+        void new_connection(  common::connection_iface *conn );
+        void stop_connection( common::connection_iface *conn );
 
         void call_on_accept_failed( const boost::system::error_code &err );
         void call_on_stop( );

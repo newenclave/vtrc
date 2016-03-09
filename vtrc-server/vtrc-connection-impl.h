@@ -8,12 +8,15 @@
 #include "vtrc-listener.h"
 #include "vtrc-application.h"
 #include "vtrc-protocol-layer-s.h"
+
 #include "vtrc-common/vtrc-enviroment.h"
 #include "vtrc-common/vtrc-exception.h"
 
 #include "vtrc-rpc-lowlevel.pb.h"
 
 #include <memory>
+
+#include "vtrc-connection-closure.h"
 
 namespace vtrc { namespace server { namespace listeners {
 
@@ -22,9 +25,7 @@ namespace vtrc { namespace server { namespace listeners {
         namespace basio = boost::asio;
         namespace bsys  = boost::system;
 
-        typedef vtrc::function<
-            void (const common::connection_iface *)
-        > close_closure;
+        typedef vtrc::server::connection_close_closure close_closure;
 
         template <typename SuperType>
         struct connection_impl: public SuperType {

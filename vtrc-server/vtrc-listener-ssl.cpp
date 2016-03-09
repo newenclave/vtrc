@@ -33,10 +33,6 @@ namespace vtrc { namespace server { namespace listeners {
         typedef connection_impl<connection_type>       connection_impl_type;
         typedef connection_type::socket_type  socket_type;
 
-        typedef vtrc::function<
-            void (const common::connection_iface *)
-        > close_closure;
-
         struct commection_impl: public connection_impl_type {
 
             typedef commection_impl this_type;
@@ -171,7 +167,7 @@ namespace vtrc { namespace server { namespace listeners {
             { }
 
             void on_client_destroy( vtrc::weak_ptr<listener> inst,
-                                    const common::connection_iface *conn )
+                                    common::connection_iface *conn )
             {
                 vtrc::shared_ptr<listener> lock( inst.lock( ) );
                 if( lock ) {

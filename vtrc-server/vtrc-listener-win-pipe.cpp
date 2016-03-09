@@ -27,9 +27,7 @@ namespace {
     typedef common::transport_win_pipe       connection_type;
     typedef connection_impl<connection_type> connection_impl_type;
 
-    typedef vtrc::function<
-        void (const common::connection_iface *)
-    > close_closure;
+    typedef vtrc::server::connection_close_closure close_closure;
 
     struct commection_pipe_impl: public connection_impl_type {
 

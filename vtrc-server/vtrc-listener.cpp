@@ -114,13 +114,13 @@ namespace vtrc { namespace server {
         impl_->postcall_( connection, llu );
     }
 
-    void listener::new_connection( const common::connection_iface *conn )
+    void listener::new_connection( common::connection_iface *conn )
     {
         ++impl_->client_count_;
         on_new_connection_( conn );
     }
 
-    void listener::stop_connection( const common::connection_iface *conn )
+    void listener::stop_connection( common::connection_iface *conn )
     {
         --impl_->client_count_;
         on_stop_connection_( conn );
