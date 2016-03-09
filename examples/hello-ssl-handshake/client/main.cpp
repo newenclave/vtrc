@@ -1,5 +1,7 @@
 #include <iostream>
 
+#define NOMINMAX // fckng Windows
+
 #include "vtrc-client/vtrc-client.h"
 #include "vtrc-common/vtrc-thread-pool.h"
 #include "vtrc-common/vtrc-stub-wrapper.h"
@@ -9,9 +11,14 @@
 
 #include "boost/lexical_cast.hpp"
 
-#include "openssl/ssl.h"
 #include "openssl/err.h"
 #include "openssl/rand.h"
+
+#if defined(X509_NAME)
+#undef X509_NAME
+#endif
+
+#include "openssl/ssl.h"
 
 #include "../protocol/ssl-wrapper.h"
 
