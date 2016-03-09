@@ -107,7 +107,7 @@ namespace {
         virtual ~pipe_listener( ) { }
 
         void on_client_destroy( vtrc::weak_ptr<listener> inst,
-                                const common::connection_iface *conn )
+                                common::connection_iface *conn )
         {
             vtrc::shared_ptr<listener> lock( inst.lock( ) );
             if( lock ) {
