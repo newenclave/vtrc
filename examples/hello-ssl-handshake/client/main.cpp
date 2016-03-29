@@ -17,7 +17,7 @@
 #include "openssl/rand.h"
 
 #if defined(X509_NAME)
-#undef X509_NAME
+#undef X509_NAME // fckng MS
 #endif
 
 #include "openssl/ssl.h"
