@@ -65,7 +65,7 @@ int verify_callback( X509_STORE_CTX *x509, void */*p*/ )
         int err = X509_STORE_CTX_get_error(x509);
         char errorbuf[1024];
         ERR_error_string_n(err, errorbuf, 1024);
-        std::cout << "Cert is not valid " << errorbuf << "\n";
+        std::cout << "Cert is not valid. " << errorbuf << "\n";
     }
     X509 *cc = X509_STORE_CTX_get_current_cert( x509 );
     if( !cc ) {
