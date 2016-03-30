@@ -69,7 +69,7 @@ int verify_callback( X509_STORE_CTX *x509, void */*p*/ )
     }
     X509 *cc = X509_STORE_CTX_get_current_cert( x509 );
     if( !cc ) {
-        ssl_throw("ds");
+        ssl_throw("X509_STORE_CTX_get_current_cert = nullptr");
     }
     X509_NAME *sn = X509_get_subject_name( cc );
     X509_NAME_oneline(sn, subject, 256);
