@@ -77,6 +77,7 @@ class  hello_service_impl: public howto::hello_service {
             << "'.\nUser name " << un << "\n"
             << "Have a nice day.";
 
+
         response->set_hello( oss.str( ) );
         /// done->Run( ); /// ch will call it
     }
