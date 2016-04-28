@@ -23,11 +23,13 @@ namespace boost {
     namespace asio {
         class io_service;
     }
+
 #if VTRC_OPENSSL_ENABLED
     namespace asio { namespace ssl {
         class verify_context;
     }}
 #endif
+
 }
 
 namespace google { namespace protobuf {
@@ -56,6 +58,7 @@ namespace client {
     typedef vtrc::function<
                vtrc::shared_ptr<google::protobuf::Service> (const std::string &)
             > service_factory_type;
+
 #if VTRC_OPENSSL_ENABLED
     typedef vtrc::function<
         bool ( bool, boost::asio::ssl::verify_context& )
@@ -161,6 +164,7 @@ namespace client {
                                 const std::string &verify_file,
                                 bool tcp_nodelay = false );
 #endif
+
         void connect( const std::string &local_name );
 
         void connect( const std::string &address,
