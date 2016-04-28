@@ -136,6 +136,7 @@ if(MSVC)
     else( )
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
     endif( )
+    add_definitions(-DNOMINMAX)
 elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX )
     # Update if necessary
 
