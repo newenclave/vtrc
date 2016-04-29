@@ -111,9 +111,7 @@ namespace vtrc { namespace server { namespace listeners {
                 unsigned len = sizeof(cred);
 
                 int opt_res = ::getsockopt( con->get_socket( ).native_handle( ),
-                                            SOL_SOCKET,
-                                            SO_PEERCRED,
-                                            &cred,
+                                            SOL_SOCKET, SO_PEERCRED, &cred,
                                             reinterpret_cast<socklen_t*>(&len));
 
                 if ( opt_res != -1 ) {
