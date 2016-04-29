@@ -52,9 +52,6 @@ namespace vtrc { namespace common {
         virtual common::enviroment   &get_enviroment( ) = 0;
         virtual const call_context   *get_call_context( ) const = 0;
 
-//        virtual bool impersonate( )  { return false; }
-//        virtual void revert( )       { }
-
         vtrc::weak_ptr<connection_iface> weak_from_this( )
         {
             return vtrc::weak_ptr<connection_iface>( shared_from_this( ) );
