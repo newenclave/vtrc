@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <iostream>
 #include <stdlib.h>
 
 #include "vtrc-call-context.h"
@@ -25,6 +26,9 @@ namespace vtrc { namespace common {
             ,impersonated_(false)
             ,done_(NULL)
             ,depth_(1)
+        { }
+
+        ~impl( )
         { }
     };
 

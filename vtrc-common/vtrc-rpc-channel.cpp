@@ -176,9 +176,9 @@ namespace vtrc { namespace common  {
 
         const unsigned mess_type( llu.info( ).message_type( ) );
 
+        //lowlevel_unit_sptr top (vtrc::make_shared<lowlevel_unit_type>( ));
+        lowlevel_unit_sptr top;
         bool wait = true;
-
-        lowlevel_unit_sptr top (vtrc::make_shared<lowlevel_unit_type>( ));
 
         if( !events ) {
             llu.mutable_opt( )->set_accept_callbacks( false );
@@ -186,7 +186,9 @@ namespace vtrc { namespace common  {
 
         while( wait ) {
 
+            //lowlevel_unit_sptr top (vtrc::make_shared<lowlevel_unit_type>( ));
             top->Clear( );
+            top = vtrc::make_shared<lowlevel_unit_type>( );
 
             cl->get_protocol( ).read_slot_for( call_id, top,
                                                call_opt->timeout( ) );
@@ -250,11 +252,12 @@ namespace vtrc { namespace common  {
 
         bool wait = true;
 
-        lowlevel_unit_sptr top (vtrc::make_shared<lowlevel_unit_type>( ));
+        //lowlevel_unit_sptr top (vtrc::make_shared<lowlevel_unit_type>( ));
 
         while( wait ) {
 
-            top->Clear( );
+            lowlevel_unit_sptr top (vtrc::make_shared<lowlevel_unit_type>( ));
+            //top->Clear( );
 
             cl->get_protocol( ).read_slot_for( call_id, top,
                                                call_opt->timeout( ) );

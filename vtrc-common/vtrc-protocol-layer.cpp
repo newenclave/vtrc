@@ -970,6 +970,7 @@ namespace vtrc { namespace common {
                 hold->internal_closure_.reset(new protcol_closure_type(done));
 
                 make_local_call_impl( llu, hold );
+
                 failed = false;
 
             } catch ( const vtrc::common::exception &ex ) {
@@ -1012,7 +1013,6 @@ namespace vtrc { namespace common {
                     }
                 }
             }
-
         }
 
         void on_system_error(const boost::system::error_code &err,

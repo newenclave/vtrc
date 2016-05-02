@@ -323,7 +323,6 @@ namespace vtrc { namespace server {
                 default:
                     break;
                 }
-
             }
         }
 

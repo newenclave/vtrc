@@ -168,15 +168,17 @@ namespace  {
 //            vtrc::shared_ptr<common::closure_holder>
 //                    holder(new common::closure_holder(done));
 
-//            std::cout << "holder " << std::hex
-//                      << done
-//                      << "\n";
-            if( request->balance( ) == 0 ) {
+//            if( request->balance( ) == 2 ) {
 //                vtrc::server::application *app = &app_.get_application( );
 //                app->get_rpc_service( ).post( [done]( ) {
+//                    sleep( 1 );
 //                    done->Run( );
 //                    std::cout << "reset holder " << std::hex << done;
 //                } );
+//                return;
+//            }
+
+            if( request->balance( ) == 0 ) {
                 done->Run( );
                 return;
             };
