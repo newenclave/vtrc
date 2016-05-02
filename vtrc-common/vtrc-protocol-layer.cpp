@@ -831,12 +831,13 @@ namespace vtrc { namespace common {
 
             } else {
                 if( llu.opt( ).accept_response( ) ) {
-                    // std::cout << "llu has response\n";
+                    //std::cout << "llu has response\n";
                     llu.set_response( holder->res_->SerializeAsString( ) );
                 } else {
-                    // std::cout << "llu has not response\n";
+                    //std::cout << "llu has not response\n";
                 }
             }
+            //std::cout << "answer: " << llu.DebugString( ) << "\n";
             send_message( llu );
         }
 
@@ -901,8 +902,7 @@ namespace vtrc { namespace common {
             protocol_layer::context_holder ch( parent_, llu.get( ) );
 
             if( ch.ctx_->depth( ) > session_opts_.max_stack_size( ) ) {
-                vtrc::common::raise(
-                    vtrc::common::exception( rpc::errors::ERR_OVERFLOW ) );
+                common::raise( common::exception( rpc::errors::ERR_OVERFLOW ) );
                 return;
             }
 
@@ -910,9 +910,8 @@ namespace vtrc { namespace common {
                     service(get_service(llu->call( ).service_id( )));
 
             if( !service || !service->service( ) ) {
-                vtrc::common::raise(
-                    vtrc::common::exception( rpc::errors::ERR_BAD_FILE,
-                                               "Service not found") );
+                common::raise(common::exception( rpc::errors::ERR_BAD_FILE,
+                                                 "Service not found") );
                 return;
             }
 
@@ -920,8 +919,7 @@ namespace vtrc { namespace common {
                 (service->get_method(llu->call( ).method_id( )));
 
             if( !meth ) {
-                vtrc::common::raise(
-                    vtrc::common::exception( rpc::errors::ERR_NO_FUNC ) );
+                common::raise( common::exception( rpc::errors::ERR_NO_FUNC ) );
                 return;
             }
 

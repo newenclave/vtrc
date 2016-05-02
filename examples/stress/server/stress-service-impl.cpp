@@ -10,10 +10,13 @@
 #include "vtrc-common/vtrc-stub-wrapper.h"
 
 #include "vtrc-bind.h"
+#include "vtrc-memory.h"
 
 #include "google/protobuf/descriptor.h"
 
 #include "stress-application.h"
+
+#include "boost/asio/io_service.hpp"
 
 namespace gpb = google::protobuf;
 using namespace vtrc;
@@ -162,8 +165,21 @@ namespace  {
                  ::vtrc_example::recursive_call_res* response,
                  ::google::protobuf::Closure* done)
         {
-            common::closure_holder holder(done);
-            if( request->balance( ) == 0 ) return;
+//            vtrc::shared_ptr<common::closure_holder>
+//                    holder(new common::closure_holder(done));
+
+//            std::cout << "holder " << std::hex
+//                      << done
+//                      << "\n";
+            if( request->balance( ) == 0 ) {
+//                vtrc::server::application *app = &app_.get_application( );
+//                app->get_rpc_service( ).post( [done]( ) {
+//                    done->Run( );
+//                    std::cout << "reset holder " << std::hex << done;
+//                } );
+                done->Run( );
+                return;
+            };
 
             vtrc::unique_ptr<common::rpc_channel> channel
                 (unicast::create_callback_channel( c_->shared_from_this( ),
@@ -171,6 +187,7 @@ namespace  {
 
             stub_wrapper_type stub( channel.get( ) );
             stub.call_request( &stub_type::recursive_callback, request );
+            done->Run( );
         }
 
         void shutdown(::google::protobuf::RpcController* controller,
