@@ -25,7 +25,6 @@ namespace vtrc { namespace common {
         vtrc::shared_ptr<call_keeper> create( connection_iface *connection );
         const call_context *get_call_context( ) const;
 
-
     public:
 
         bool valid( ) const;
