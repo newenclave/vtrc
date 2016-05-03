@@ -392,7 +392,7 @@ namespace vtrc { namespace common {
         template <typename Rep, typename Period>
         static bool cond_wait_for( unique_lock &lck,
                         hold_value_type_sptr &value,
-                        const vtrc::chrono::duration<Rep, Period>& duration)
+                        const vtrc::chrono::duration<Rep, Period> &duration )
         {
             return value->cond_.wait_for( lck, duration,
                         vtrc::bind( &this_type::queue_empty_predicate, value ));
@@ -401,7 +401,7 @@ namespace vtrc { namespace common {
     public:
         template <typename Rep, typename Period>
         wait_result_codes wait_queue( const key_type &key,
-                         const vtrc::chrono::duration<Rep, Period>& duration )
+                         const vtrc::chrono::duration<Rep, Period> &duration )
         {
             return wait_queue_impl( key,
                         vtrc::bind( &this_type::cond_wait_for<Rep, Period>,
@@ -412,7 +412,7 @@ namespace vtrc { namespace common {
 
         template <typename Rep, typename Period>
         wait_result_codes read( const key_type &key, queue_value_type &result,
-                         const vtrc::chrono::duration<Rep, Period>& duration )
+                         const vtrc::chrono::duration<Rep, Period> &duration )
         {
             return read_impl( key, result,
                         vtrc::bind( &this_type::cond_wait_for<Rep, Period>,
@@ -423,7 +423,7 @@ namespace vtrc { namespace common {
 
         template <typename Rep, typename Period>
         wait_result_codes read_queue( const key_type &key, queue_type &result,
-                         const vtrc::chrono::duration<Rep, Period>& duration )
+                         const vtrc::chrono::duration<Rep, Period> &duration )
         {
             return read_queue_impl( key, result,
                         vtrc::bind( &this_type::cond_wait_for<Rep, Period>,
