@@ -52,6 +52,8 @@ namespace stress {
         std::cout << "Start pinging...\n";
         size_t   res = 0;
         const unsigned counter = count;
+        time_point start = chrono::high_resolution_clock::now( );
+
         while( count-- ) {
 
             res += ping_impl( iface, payload );
@@ -61,8 +63,12 @@ namespace stress {
             }
         }
 
+        time_point stop = chrono::high_resolution_clock::now( );
+        size_t to = cast( stop - start );
+
         std::cout << "Avarage: "
                   << ( res / counter )
+                  << " (" << (to / counter) << ") "
                   << " microseconds\n";
     }
 
