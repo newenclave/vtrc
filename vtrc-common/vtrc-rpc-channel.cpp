@@ -133,8 +133,8 @@ namespace vtrc { namespace common  {
                               : opts->accept_callbacks( );
 
         bool wait = llu->opt( ).has_wait( )
-                    ? llu->opt( ).wait( )
-                    : opts->wait( );
+                  ? llu->opt( ).wait( )
+                  : opts->wait( );
 
         return  wait && accept_callbacks;
 #endif
