@@ -134,19 +134,6 @@ public:
 int main( int argc, const char **argv )
 {
 
-//    for( int i=0; i<100; ++i ) {
-//    howto::bio_wrapper b(BIO_f_base64( ));
-//    howto::bio_wrapper bs(BIO_s_mem( ));
-
-//    b.append( bs );
-//    b.write( "test12345\n", 10 );
-
-//    b.flush( );
-
-//    std::cout << bs.read( 100 ) << "\n";
-//    }
-//    return 1;
-
     const char *address = "127.0.0.1";
     unsigned short port = 56560;
 
@@ -163,7 +150,6 @@ int main( int argc, const char **argv )
     RAND_seed( seed.c_str( ), seed.size( ) );
     SSL_load_error_strings( );
     SSLeay_add_ssl_algorithms( );
-
 
     common::thread_pool tp;
     hello_application app( tp );
