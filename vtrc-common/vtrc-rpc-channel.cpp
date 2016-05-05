@@ -129,8 +129,8 @@ namespace vtrc { namespace common  {
         rpc::lowlevel_unit const *llu  = cc->get_lowlevel_message( );
 
         bool accept_callbacks = llu->opt( ).has_accept_callbacks( )
-                                ? llu->opt( ).accept_callbacks( )
-                                : opts->accept_callbacks( );
+                              ? llu->opt( ).accept_callbacks( )
+                              : opts->accept_callbacks( );
 
         bool wait = llu->opt( ).has_wait( )
                     ? llu->opt( ).wait( )
