@@ -36,8 +36,8 @@ namespace vtrc { namespace common { namespace policies {
 
         typedef SizeType size_type;
 
-        static const ssize_t max_length = sizeof(SizeType);
-        static const ssize_t min_length = sizeof(SizeType);
+        static const size_t max_length = sizeof(SizeType);
+        static const size_t min_length = sizeof(SizeType);
 
         template <typename IterT>
         static size_t size_length( IterT begin, const IterT &end )
