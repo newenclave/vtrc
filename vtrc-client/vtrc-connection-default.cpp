@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include "boost/asio.hpp"
 
-#include "vtrc-common/vtrc-connection-setup-iface.h"
+#include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
 #include "vtrc-common/vtrc-protocol-accessor-iface.h"
 #include "vtrc-common/vtrc-delayed-call.h"
 #include "vtrc-common/vtrc-hash-iface.h"
@@ -44,7 +44,7 @@ namespace vtrc { namespace client {
                                      const char *)> init_error_cb;
         typedef vtrc::function<void (const std::string &)> stage_function_type;
 
-        struct iface: common::connection_setup_iface {
+        struct iface: common::lowlevel_protocol_layer_iface {
 
             common::protocol_accessor  *pa_;
             bool                        ready_;
@@ -310,10 +310,10 @@ namespace vtrc { namespace client {
 
     }
 
-    common::connection_setup_iface *create_default_setup(vtrc_client *client,
+    common::lowlevel_protocol_layer_iface *create_default_setup(vtrc_client *c,
                                     init_error_cb init_error )
     {
-        return new iface( client, init_error );
+        return new iface( c, init_error );
     }
 
 }}

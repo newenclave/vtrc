@@ -17,7 +17,7 @@
 #include "vtrc-common/vtrc-random-device.h"
 #include "vtrc-common/vtrc-transport-iface.h"
 
-#include "vtrc-common/vtrc-connection-setup-iface.h"
+#include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
 #include "vtrc-common/vtrc-protocol-accessor-iface.h"
 
 #include "vtrc-protocol-layer-c.h"
@@ -34,12 +34,12 @@ namespace vtrc { namespace client {
     typedef vtrc::function<void (const rpc::errors::container &,
                                  const char *)> init_error_cb;
 
-    common::connection_setup_iface *create_default_setup( vtrc_client *client,
+    common::lowlevel_protocol_layer_iface *create_default_setup( vtrc_client *c,
                                     init_error_cb init_error );
     namespace {
 
 
-        typedef common::connection_setup_iface connection_setup_iface;
+        typedef common::lowlevel_protocol_layer_iface connection_setup_iface;
         typedef vtrc::unique_ptr<connection_setup_iface> connection_setup_uptr;
 
         typedef vtrc::shared_ptr<rpc::lowlevel_unit> lowlevel_unit_sptr;

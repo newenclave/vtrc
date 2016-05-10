@@ -1,5 +1,5 @@
 
-#include "vtrc-common/vtrc-connection-setup-iface.h"
+#include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
 #include "vtrc-common/vtrc-protocol-accessor-iface.h"
 #include "vtrc-common/vtrc-delayed-call.h"
 #include "vtrc-common/vtrc-hash-iface.h"
@@ -56,7 +56,7 @@ namespace vtrc { namespace server {
             return cap.SerializeAsString( );
         }
 
-        struct iface: common::connection_setup_iface {
+        struct iface: common::lowlevel_protocol_layer_iface {
 
             common::protocol_accessor *pa_;
             application               &app_;
@@ -312,8 +312,8 @@ namespace vtrc { namespace server {
         };
     }
 
-    common::connection_setup_iface *create_default_setup( application &a,
-                                        const rpc::session_options &opts )
+    common::lowlevel_protocol_layer_iface *create_default_setup( application &a,
+                                             const rpc::session_options &opts )
     {
         return new iface( a, opts );
     }

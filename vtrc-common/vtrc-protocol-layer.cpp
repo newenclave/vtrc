@@ -174,7 +174,7 @@ namespace vtrc { namespace common {
 
     }
 
-    struct lowlevel_processor {
+    struct lowlevel_protocol_layer {
 
         vtrc::unique_ptr<hash_iface>             hash_maker_;
         vtrc::unique_ptr<hash_iface>             hash_checker_;
@@ -182,7 +182,7 @@ namespace vtrc { namespace common {
         vtrc::unique_ptr<transformer_iface>      revertor_;
         vtrc::unique_ptr<data_queue::queue_base> queue_;
 
-        lowlevel_processor( const rpc::session_options &opts )
+        lowlevel_protocol_layer( const rpc::session_options &opts )
             :hash_maker_(common::hash::create_default( ))
             ,hash_checker_(common::hash::create_default( ))
             ,transformer_(common::transformers::none::create( ))
@@ -195,7 +195,7 @@ namespace vtrc { namespace common {
             queue_->set_maximum_length( opts.max_message_length( ) );
         }
 
-        std::string pack_message( const char *data, size_t length )
+        std::string process_message( const char *data, size_t length )
         {
             /**
              * message_header = <packed_size(data_length + hash_length)>
@@ -337,7 +337,7 @@ namespace vtrc { namespace common {
         unsigned                     level_;
 
         rpc::session_options         session_opts_;
-        lowlevel_processor           ll_processor_;
+        lowlevel_protocol_layer     *ll_processor_;
 
         precall_closure_type         precall_;
         postcall_closure_type        postcall_;
@@ -349,7 +349,7 @@ namespace vtrc { namespace common {
             ,ready_(false)
             ,level_(0)
             ,session_opts_(opts)
-            ,ll_processor_(session_opts_)
+            ,ll_processor_(new lowlevel_protocol_layer(session_opts_))
             ,precall_(empty_pre( ))
             ,postcall_(empty_post( ))
         { }
@@ -382,12 +382,14 @@ namespace vtrc { namespace common {
         //////////////////////////
 
         ~impl( )
-        { }
+        {
+            delete ll_processor_; /// temporary
+        }
 
         void configure_session( const rpc::session_options &opts )
         {
             session_opts_.CopyFrom( opts );
-            ll_processor_.configure( opts );
+            ll_processor_->configure( opts );
         }
 
 #define VTRC_PROTOCOL_PACK_SIZE_DEFAULT 1
@@ -395,28 +397,28 @@ namespace vtrc { namespace common {
 #if VTRC_PROTOCOL_PACK_SIZE_DEFAULT /// variant uno
         std::string prepare_data( const char *data, size_t length )
         {
-            return ll_processor_.pack_message( data, length );
+            return ll_processor_->process_message( data, length );
         }
 
         void process_data( const char *data, size_t length )
         {
-            const size_t old_size = ll_processor_.queue_size( );
+            const size_t old_size = ll_processor_->queue_size( );
 
-            ll_processor_.process_data( data, length );
+            ll_processor_->process_data( data, length );
 
-            if( ll_processor_.queue_size( ) > old_size ) {
+            if( ll_processor_->queue_size( ) > old_size ) {
                 parent_->on_data_ready( );
             }
         }
 
         bool parse_and_pop( gpb::MessageLite &result )
         {
-            return ll_processor_.pop_proto_message( result );
+            return ll_processor_->pop_proto_message( result );
         }
 
         bool raw_pop( std::string &result )
         {
-            return ll_processor_.pop_raw_message( result );
+            return ll_processor_->pop_raw_message( result );
         }
 
 #else
@@ -527,17 +529,17 @@ namespace vtrc { namespace common {
 #endif
         size_t ready_messages_count( ) const
         {
-            return ll_processor_.queue_size( );
+            return ll_processor_->queue_size( );
         }
 
         bool message_queue_empty( ) const
         {
-            return ll_processor_.queue_->messages( ).empty( );
+            return ll_processor_->queue_size( ) == 0;
         }
 
         bool parse_message( const std::string &mess, gpb::MessageLite &result )
         {
-            return ll_processor_.parse_raw_message( mess, result );
+            return ll_processor_->parse_raw_message( mess, result );
         }
 
         void set_ready( bool ready )
@@ -590,15 +592,6 @@ namespace vtrc { namespace common {
         }
 
         // --------------- sett ----------------- //
-        message_queue_type &message_queue( )
-        {
-            return ll_processor_.queue_->messages( );
-        }
-
-        const message_queue_type &message_queue( ) const
-        {
-            return ll_processor_.queue_->messages( );
-        }
 
         void check_create_stack( )
         {
@@ -691,22 +684,22 @@ namespace vtrc { namespace common {
 
         void change_sign_checker( hash_iface *new_signer )
         {
-            ll_processor_.hash_checker_.reset(new_signer);
+            ll_processor_->hash_checker_.reset(new_signer);
         }
 
         void change_sign_maker( hash_iface *new_signer )
         {
-            ll_processor_.hash_maker_.reset(new_signer);
+            ll_processor_->hash_maker_.reset(new_signer);
         }
 
         void change_transformer( transformer_iface *new_transformer )
         {
-            ll_processor_.transformer_.reset(new_transformer);
+            ll_processor_->transformer_.reset(new_transformer);
         }
 
         void change_revertor( transformer_iface *new_reverter)
         {
-            ll_processor_.revertor_.reset(new_reverter);
+            ll_processor_->revertor_.reset(new_reverter);
         }
 
         void push_rpc_message(uint64_t slot_id, lowlevel_unit_sptr mess)
