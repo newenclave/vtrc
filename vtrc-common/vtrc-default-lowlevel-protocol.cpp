@@ -56,6 +56,12 @@ namespace vtrc { namespace common {
         queue_->set_maximum_length( opts.max_message_length( ) );
     }
 
+    std::string default_lowlevel_protocol::serialize_message(
+                                 const gpb::Message &mess )
+    {
+        return mess.SerializeAsString( );
+    }
+
     std::string default_lowlevel_protocol::process_message( const char *data,
                                                             size_t length )
     {

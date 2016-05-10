@@ -34,6 +34,10 @@ namespace vtrc { namespace common {
         //// configure current session
         virtual void configure( const rpc::session_options &opts ) = 0;
 
+        /// serialize lowlevel message
+        virtual std::string serialize_message(
+                            const google::protobuf::Message &mess ) = 0;
+
         /// pack lowlevel message to protocol view
         virtual std::string process_message( const char *data,
                                              size_t length ) = 0;

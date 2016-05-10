@@ -482,9 +482,9 @@ namespace vtrc { namespace common {
             connection_->write( data, length );
         }
 
-        void send_message( const gpb::MessageLite &message )
+        void send_message( const gpb::Message &message )
         {
-            std::string ser(message.SerializeAsString( ));
+            std::string ser(ll_processor_->serialize_message( message ));
             send_data( ser.c_str( ), ser.size( ) );
         }
 

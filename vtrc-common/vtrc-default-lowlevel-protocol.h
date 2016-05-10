@@ -29,6 +29,7 @@ namespace vtrc {  namespace common {
         ~default_lowlevel_protocol( );
 
         void        configure( const rpc::session_options &opts );
+        std::string serialize_message( const google::protobuf::Message &mess );
         std::string process_message( const char *data, size_t length );
         void        process_data( const char *data, size_t length );
         size_t      queue_size( ) const;
