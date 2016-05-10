@@ -15,7 +15,6 @@ namespace vtrc { namespace common {
     namespace gpb  = google::protobuf;
     namespace spns = data_queue::varint;
 
-
     default_lowlevel_protocol::default_lowlevel_protocol( )
         :hash_maker_(common::hash::create_default( ))
         ,hash_checker_(common::hash::create_default( ))
