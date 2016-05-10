@@ -139,7 +139,6 @@ namespace vtrc { namespace client {
 
         void init( )
         {
-
             conn_setup_ = create_default_setup( client_,
                         vtrc::bind( &parent_type::on_init_error, parent_,
                                     vtrc::placeholders::_1,
