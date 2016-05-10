@@ -11,6 +11,7 @@
 #include "vtrc-common/vtrc-call-context.h"
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"
 #include "vtrc-common/vtrc-closure.h"
+#include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
 
 namespace google { namespace protobuf {
     class Message;
@@ -80,7 +81,10 @@ namespace vtrc { namespace common {
         bool wait_for_ready_for_microsec( bool ready, uint64_t microsec ) const;
 
     protected:
+
         void set_ready( bool ready );
+        void set_lowlevel( common::lowlevel_protocol_layer_iface *ll );
+        common::lowlevel_protocol_layer_iface *get_lowlevel( );
 
     public:
 
@@ -214,14 +218,6 @@ namespace vtrc { namespace common {
         bool   parse_and_pop( google::protobuf::MessageLite &result );
 
         bool   raw_pop( std::string &result );
-
-        void change_hash_maker  ( hash_iface *new_hasher );
-        void change_hash_checker( hash_iface *new_hasher );
-
-        // transform "out" data;
-        void change_transformer( transformer_iface *new_transformer );
-        // revert "in" data
-        void change_revertor   ( transformer_iface *new_reverter );
 
     };
 }}

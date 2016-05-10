@@ -37,7 +37,7 @@ namespace vtrc { namespace server {
     connection_setup_iface *create_default_setup( application &a,
                                             const rpc::session_options &opts );
 
-    typedef vtrc::unique_ptr<connection_setup_iface> connection_setup_uptr;
+    typedef connection_setup_iface *connection_setup_ptr;
 
     namespace {
 
@@ -79,7 +79,7 @@ namespace vtrc { namespace server {
 
         stage_function_type              stage_call_;
 
-        connection_setup_uptr            conn_setup_;
+        connection_setup_ptr             conn_setup_;
 
         impl( application &a, common::transport_iface *c )
             :app_(a)
@@ -102,32 +102,12 @@ namespace vtrc { namespace server {
 
             if( conn_setup_->do_handshake( data ) && !closed_ ) {
                 stage_call_ = vtrc::bind( &this_type::on_rcp_call_ready, this );
-                conn_setup_.reset( );
+                //conn_setup_.reset( );
                 parent_->set_ready( true );
             }
         }
 
         // accessor ===================================
-        void set_transformer( common::transformer_iface *ti )
-        {
-            parent_->change_transformer( ti );
-        }
-
-        void set_revertor( common::transformer_iface *ti )
-        {
-            parent_->change_revertor( ti );
-        }
-
-        void set_hash_maker( common::hash_iface *hi )
-        {
-            parent_->change_hash_maker( hi );
-        }
-
-        void set_hash_checker( common::hash_iface *hi )
-        {
-            parent_->change_hash_checker( hi );
-        }
-
         void write( const std::string &data,
                     common::system_closure_type cb,
                     bool on_send_success )
@@ -328,15 +308,17 @@ namespace vtrc { namespace server {
 
         void init( )
         {
-            conn_setup_.reset( create_default_setup( app_,
-                                              parent_->session_options( ) ) );
+            conn_setup_ =
+                    create_default_setup( app_, parent_->session_options( ) );
+            parent_->set_lowlevel( conn_setup_ );
             conn_setup_->init( this, def_cb );
         }
 
         void init_success( common::system_closure_type clos )
         {
-            conn_setup_.reset( create_default_setup( app_,
-                                              parent_->session_options( ) ) );
+            conn_setup_ =
+                    create_default_setup( app_, parent_->session_options( ) );
+            parent_->set_lowlevel( conn_setup_ );
             conn_setup_->init( this, clos );
         }
 

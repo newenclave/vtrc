@@ -174,7 +174,7 @@ namespace vtrc { namespace common {
 
     }
 
-    struct lowlevel_protocol_layer {
+    struct lowlevel_protocol_layer_ {
 
         vtrc::unique_ptr<hash_iface>             hash_maker_;
         vtrc::unique_ptr<hash_iface>             hash_checker_;
@@ -182,7 +182,7 @@ namespace vtrc { namespace common {
         vtrc::unique_ptr<transformer_iface>      revertor_;
         vtrc::unique_ptr<data_queue::queue_base> queue_;
 
-        lowlevel_protocol_layer( const rpc::session_options &opts )
+        lowlevel_protocol_layer_( const rpc::session_options &opts )
             :hash_maker_(common::hash::create_default( ))
             ,hash_checker_(common::hash::create_default( ))
             ,transformer_(common::transformers::none::create( ))
@@ -314,7 +314,9 @@ namespace vtrc { namespace common {
 
     };
 
+
     struct protocol_layer::impl {
+        typedef lowlevel_protocol_layer_uptr lowlevel_protocol_layer;
 
         typedef impl this_type;
         typedef protocol_layer parent_type;
@@ -337,7 +339,7 @@ namespace vtrc { namespace common {
         unsigned                     level_;
 
         rpc::session_options         session_opts_;
-        lowlevel_protocol_layer     *ll_processor_;
+        lowlevel_protocol_layer      ll_processor_;
 
         precall_closure_type         precall_;
         postcall_closure_type        postcall_;
@@ -349,10 +351,14 @@ namespace vtrc { namespace common {
             ,ready_(false)
             ,level_(0)
             ,session_opts_(opts)
-            ,ll_processor_(new lowlevel_protocol_layer(session_opts_))
             ,precall_(empty_pre( ))
             ,postcall_(empty_post( ))
         { }
+
+        ~impl( )
+        {
+            //delete ll_processor_; /// temporary
+        }
 
         /// call_stack pointer BOOST ///
 #if VTRC_DISABLE_CXX11
@@ -381,20 +387,12 @@ namespace vtrc { namespace common {
 #endif
         //////////////////////////
 
-        ~impl( )
-        {
-            delete ll_processor_; /// temporary
-        }
-
         void configure_session( const rpc::session_options &opts )
         {
             session_opts_.CopyFrom( opts );
             ll_processor_->configure( opts );
         }
 
-#define VTRC_PROTOCOL_PACK_SIZE_DEFAULT 1
-
-#if VTRC_PROTOCOL_PACK_SIZE_DEFAULT /// variant uno
         std::string prepare_data( const char *data, size_t length )
         {
             return ll_processor_->process_message( data, length );
@@ -421,112 +419,6 @@ namespace vtrc { namespace common {
             return ll_processor_->pop_raw_message( result );
         }
 
-#else
-        std::string prepare_data( const char *data, size_t length )
-        {
-            /**
-             * message_header = <packed_size(data_length + hash_length)>
-            **/
-            const size_t body_len = length + hash_maker_->hash_size( );
-
-            std::string body( body_len + 32, '?' );
-
-            /**
-             *  Pack length of the data and the hash to vector
-             *  Get size of packed size value;
-            **/
-            size_t siz_len = size_policy_ns::pack_size_to( body_len, &body[0] );
-
-            /**
-             *  here is:
-             *  message_body = <hash(data)> + <data>
-            **/
-            hash_maker_->get_data_hash( data, length, &body[siz_len] );
-
-            if( length > 0 ) {
-                memcpy( &body[hash_maker_->hash_size( ) + siz_len],
-                         data, length );
-            }
-
-            /**
-             *  transform( <size><hash><message> )
-            **/
-            body.resize( body_len + siz_len );
-
-            transformer_->transform( body );
-
-            return body;
-        }
-
-        void process_data( const char *data, size_t length )
-        {
-            if( length > 0 ) {
-
-                std::string next_data(data, data + length);
-
-                const size_t old_size = queue_->messages( ).size( );
-
-                /// revert data block
-                revertor_->transform( next_data );
-
-                /**
-                 * message = transformed(<size>data)
-                 * we must revert data here
-                **/
-
-                //queue_->append( &next_data[0], next_data.size( ));
-
-                queue_->append( next_data.empty( ) ? NULL : &next_data[0],
-                                next_data.size( ) );
-                queue_->process( );
-
-                if( queue_->messages( ).size( ) > old_size ) {
-                    parent_->on_data_ready( );
-                }
-            }
-        }
-
-        bool raw_pop( std::string &result )
-        {
-            /// doesntwork
-            std::string &data( queue_->messages( ).front( ) );
-
-            /// revert message
-            revertor_->transform( data );
-//            revertor_->transform( data.empty( ) ? NULL : &data[0],
-//                                  data.size( ) );
-
-            /// check hash
-            bool checked = check_message( data );
-            if( checked ) {
-                const size_t hash_length = hash_checker_->hash_size( );
-                result.assign( data.c_str( ) + hash_length,
-                               data.size( )  - hash_length );
-            }
-
-            /// in all cases we pop message
-            queue_->messages( ).pop_front( );
-
-            return checked;
-        }
-
-        bool parse_and_pop( gpb::MessageLite &result )
-        {
-            std::string &data(queue_->messages( ).front( ));
-
-            /// check hash
-            bool checked = check_message( data );
-            if( checked ) {
-                /// parse
-                checked = parse_message( data, result );
-            }
-
-            /// in all cases we pop message
-            queue_->messages( ).pop_front( );
-            return checked;
-        }
-
-#endif
         size_t ready_messages_count( ) const
         {
             return ll_processor_->queue_size( );
@@ -547,6 +439,16 @@ namespace vtrc { namespace common {
             vtrc::unique_lock<vtrc::mutex> lck( ready_lock_ );
             ready_ = ready;
             ready_var_.notify_all( );
+        }
+
+        void set_lowlevel( lowlevel_protocol_layer_iface *ll )
+        {
+            ll_processor_.reset( ll );
+        }
+
+        lowlevel_protocol_layer_iface *get_lowlevel( )
+        {
+            return ll_processor_.get( );
         }
 
         bool state_predic( bool state ) const
@@ -680,26 +582,6 @@ namespace vtrc { namespace common {
             return (context_get( ) && !context_get( )->empty( ))
                     ? context_get( )->front( ).get( )
                     : NULL;
-        }
-
-        void change_sign_checker( hash_iface *new_signer )
-        {
-            ll_processor_->hash_checker_.reset(new_signer);
-        }
-
-        void change_sign_maker( hash_iface *new_signer )
-        {
-            ll_processor_->hash_maker_.reset(new_signer);
-        }
-
-        void change_transformer( transformer_iface *new_transformer )
-        {
-            ll_processor_->transformer_.reset(new_transformer);
-        }
-
-        void change_revertor( transformer_iface *new_reverter)
-        {
-            ll_processor_->revertor_.reset(new_reverter);
         }
 
         void push_rpc_message(uint64_t slot_id, lowlevel_unit_sptr mess)
@@ -1130,6 +1012,16 @@ namespace vtrc { namespace common {
         impl_->set_ready( ready );
     }
 
+    void protocol_layer::set_lowlevel(lowlevel_protocol_layer_iface *ll )
+    {
+        impl_->set_lowlevel( ll );
+    }
+
+    common::lowlevel_protocol_layer_iface *protocol_layer::get_lowlevel( )
+    {
+        return impl_->get_lowlevel( );
+    }
+
     void protocol_layer::process_data( const char *data, size_t length )
     {
         impl_->process_data( data, length );
@@ -1224,26 +1116,6 @@ namespace vtrc { namespace common {
                                          const protcol_closure_type &done)
     {
         impl_->make_local_call( llu, done );
-    }
-
-    void protocol_layer::change_hash_maker( hash_iface *new_hasher )
-    {
-        impl_->change_sign_maker( new_hasher );
-    }
-
-    void protocol_layer::change_hash_checker( hash_iface *new_hasher )
-    {
-        impl_->change_sign_checker( new_hasher );
-    }
-
-    void protocol_layer::change_transformer( transformer_iface *new_transformer)
-    {
-        impl_->change_transformer( new_transformer );
-    }
-
-    void protocol_layer::change_revertor( transformer_iface *new_reverter)
-    {
-        impl_->change_revertor( new_reverter );
     }
 
     size_t protocol_layer::ready_messages_count( ) const

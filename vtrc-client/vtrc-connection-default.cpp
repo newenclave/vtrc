@@ -1,12 +1,13 @@
 #include <stdlib.h>
 #include "boost/asio.hpp"
 
-#include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
 #include "vtrc-common/vtrc-protocol-accessor-iface.h"
 #include "vtrc-common/vtrc-delayed-call.h"
 #include "vtrc-common/vtrc-hash-iface.h"
 #include "vtrc-common/vtrc-transformer-iface.h"
 #include "vtrc-common/vtrc-connection-iface.h"
+
+#include "vtrc-default-lowlevel-protocol.h"
 
 #include "vtrc-errors.pb.h"
 #include "vtrc-auth.pb.h"
@@ -44,7 +45,7 @@ namespace vtrc { namespace client {
                                      const char *)> init_error_cb;
         typedef vtrc::function<void (const std::string &)> stage_function_type;
 
-        struct iface: common::lowlevel_protocol_layer_iface {
+        struct iface: common::default_lowlevel_protocol {
 
             common::protocol_accessor  *pa_;
             bool                        ready_;
@@ -143,7 +144,7 @@ namespace vtrc { namespace client {
             void set_options( const boost::system::error_code &err )
             {
                 if( !err ) {
-                    pa_->set_hash_maker(
+                    set_hash_maker(
                        common::hash::create_by_index( default_hash_value ));
                 }
             }
@@ -180,7 +181,7 @@ namespace vtrc { namespace client {
 
                 create_key( key, s1, s2, key );
 
-                pa_->set_transformer( default_cypher::create( key.c_str( ),
+                set_transformer( default_cypher::create( key.c_str( ),
                                                               key.size( ) ) );
 
                 key.assign( client_->get_session_key( ) );
@@ -190,7 +191,7 @@ namespace vtrc { namespace client {
                 tsetup.set_salt1( s1 );
                 tsetup.set_salt2( s2 );
 
-                pa_->set_revertor( default_cypher::create( key.c_str( ),
+                set_revertor( default_cypher::create( key.c_str( ),
                                                            key.size( ) ) );
 
                 //std::cout << "Set revertor " << key.c_str( ) << "\n";
@@ -276,7 +277,7 @@ namespace vtrc { namespace client {
 
                 capsule.set_body( init.SerializeAsString( ) );
 
-                pa_->set_hash_checker(
+                set_hash_checker(
                      common::hash::create_by_index( default_hash_value ) );
 
                 change_stage( key_set ? STAGE_SETUP : STAGE_READY );

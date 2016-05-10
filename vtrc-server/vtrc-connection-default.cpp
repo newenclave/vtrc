@@ -1,10 +1,11 @@
 
-#include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
 #include "vtrc-common/vtrc-protocol-accessor-iface.h"
 #include "vtrc-common/vtrc-delayed-call.h"
 #include "vtrc-common/vtrc-hash-iface.h"
 #include "vtrc-common/vtrc-transformer-iface.h"
 #include "vtrc-common/vtrc-connection-iface.h"
+
+#include "vtrc-default-lowlevel-protocol.h"
 
 #include "vtrc-errors.pb.h"
 #include "vtrc-auth.pb.h"
@@ -56,7 +57,7 @@ namespace vtrc { namespace server {
             return cap.SerializeAsString( );
         }
 
-        struct iface: common::lowlevel_protocol_layer_iface {
+        struct iface: common::default_lowlevel_protocol {
 
             common::protocol_accessor *pa_;
             application               &app_;
@@ -179,8 +180,8 @@ namespace vtrc { namespace server {
                             key );           // output
 
                 // client revertor is my transformer
-                pa_->set_transformer( default_cypher::create(
-                                            key.c_str( ), key.size( ) ) );
+                set_transformer( default_cypher::create(
+                                 key.c_str( ), key.size( ) ) );
 
                 capsule.Clear( );
 
@@ -219,8 +220,8 @@ namespace vtrc { namespace server {
                                         key );               // output
 
                     // client transformer is my revertor
-                    pa_->set_revertor( default_cypher::create( key.c_str( ),
-                                                               key.size( ) ) );
+                    set_revertor( default_cypher::create( key.c_str( ),
+                                                          key.size( ) ) );
                     //std::cout << "Set revertor " << key.c_str( ) << "\n";
 
                     capsule.set_ready( true );
@@ -273,8 +274,9 @@ namespace vtrc { namespace server {
 
                 client_id_.assign( cs.id( ) );
                 pa_->set_client_id( cs.id( ) );
-                pa_->set_hash_checker( new_checker.release( ) );
-                pa_->set_hash_maker( new_maker.release( ) );
+
+                set_hash_checker( new_checker.release( ) );
+                set_hash_maker( new_maker.release( ) );
 
                 setup_transformer( cs.transform( ) );
 

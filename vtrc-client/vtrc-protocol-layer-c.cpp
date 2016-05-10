@@ -40,7 +40,8 @@ namespace vtrc { namespace client {
 
 
         typedef common::lowlevel_protocol_layer_iface connection_setup_iface;
-        typedef vtrc::unique_ptr<connection_setup_iface> connection_setup_uptr;
+
+        typedef connection_setup_iface *connection_setup_ptr;
 
         typedef vtrc::shared_ptr<rpc::lowlevel_unit> lowlevel_unit_sptr;
 
@@ -72,7 +73,7 @@ namespace vtrc { namespace client {
         protocol_stage               stage_;
 
         bool                         closed_;
-        connection_setup_uptr        conn_setup_;
+        connection_setup_ptr         conn_setup_;
 
         impl( common::transport_iface *c, vtrc_client *client,
               protocol_signals *cb )
@@ -100,29 +101,9 @@ namespace vtrc { namespace client {
 
             if( conn_setup_->do_handshake( data ) && !closed_ ) {
                 stage_call_ = vtrc::bind( &this_type::on_rpc_process, this );
-                conn_setup_.reset( );
+                //conn_setup_.reset( );
                 on_ready( true );
             }
-        }
-
-        void set_transformer( common::transformer_iface *ti )
-        {
-            parent_->change_transformer( ti );
-        }
-
-        void set_revertor( common::transformer_iface *ti )
-        {
-            parent_->change_revertor( ti );
-        }
-
-        void set_hash_maker( common::hash_iface *hi )
-        {
-            parent_->change_hash_maker( hi );
-        }
-
-        void set_hash_checker( common::hash_iface *hi )
-        {
-            parent_->change_hash_checker( hi );
         }
 
         void set_client_id( const std::string &id )
@@ -158,10 +139,12 @@ namespace vtrc { namespace client {
 
         void init( )
         {
-            conn_setup_.reset( create_default_setup( client_,
+
+            conn_setup_ = create_default_setup( client_,
                         vtrc::bind( &parent_type::on_init_error, parent_,
                                     vtrc::placeholders::_1,
-                                    vtrc::placeholders::_2 ) ) );
+                                    vtrc::placeholders::_2 ) );
+            parent_->set_lowlevel( conn_setup_ );
             conn_setup_->init( this, common::system_closure_type( ) );
         }
 
@@ -335,14 +318,14 @@ namespace vtrc { namespace client {
             }
         }
 
-        void set_options( const boost::system::error_code &err )
-        {
-            if( !err ) {
-                parent_->change_hash_maker(
-                   common::hash::create_by_index( rpc::auth::HASH_CRC_32 ));
-            }
+//        void set_options( const boost::system::error_code &err )
+//        {
+//            if( !err ) {
+//                set_ha(
+//                   common::hash::create_by_index( rpc::auth::HASH_CRC_32 ));
+//            }
 
-        }
+//        }
 
         static bool server_has_transformer( rpc::auth::init_capsule const &cap,
                                             unsigned transformer_type )

@@ -20,11 +20,6 @@ namespace vtrc { namespace common {
 
         virtual ~protocol_accessor( ) { }
 
-        virtual void set_transformer( transformer_iface *ti ) = 0;
-        virtual void set_revertor( transformer_iface *ti ) = 0;
-        virtual void set_hash_maker( hash_iface *hi ) = 0;
-        virtual void set_hash_checker( hash_iface *hi ) = 0;
-
         virtual void set_client_id( const std::string &id ) = 0;
 
         virtual void write( const std::string &data,
