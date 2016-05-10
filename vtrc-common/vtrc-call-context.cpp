@@ -6,7 +6,7 @@
 #include "vtrc-connection-iface.h"
 #include "vtrc-protocol-layer.h"
 
-#include "vtrc-rpc-lowlevel.pb.h"
+#include "protocol/vtrc-rpc-lowlevel.pb.h"
 
 namespace vtrc { namespace common {
 

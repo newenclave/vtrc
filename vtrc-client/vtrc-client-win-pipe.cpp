@@ -157,10 +157,9 @@ namespace vtrc { namespace client {
         return impl_->get_enviroment( );
     }
 
-    std::string client_win_pipe::prepare_for_write(
-                                                  const char *data, size_t len)
+    std::string client_win_pipe::prepare_for_write( const char *dat, size_t le )
     {
-        return impl_->prepare_for_write( data, len );
+        return impl_->prepare_for_write( dat, le );
     }
 
     bool client_win_pipe::active( ) const
