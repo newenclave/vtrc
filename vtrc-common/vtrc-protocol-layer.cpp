@@ -174,6 +174,146 @@ namespace vtrc { namespace common {
 
     }
 
+    struct lowlevel_processor {
+
+        vtrc::unique_ptr<hash_iface>             hash_maker_;
+        vtrc::unique_ptr<hash_iface>             hash_checker_;
+        vtrc::unique_ptr<transformer_iface>      transformer_;
+        vtrc::unique_ptr<transformer_iface>      revertor_;
+        vtrc::unique_ptr<data_queue::queue_base> queue_;
+
+        lowlevel_processor( const rpc::session_options &opts )
+            :hash_maker_(common::hash::create_default( ))
+            ,hash_checker_(common::hash::create_default( ))
+            ,transformer_(common::transformers::none::create( ))
+            ,revertor_(common::transformers::none::create( ))
+            ,queue_(size_policy_ns::create_parser(opts.max_message_length( )))
+        { }
+
+        void configure( const rpc::session_options &opts )
+        {
+            queue_->set_maximum_length( opts.max_message_length( ) );
+        }
+
+        std::string pack_message( const char *data, size_t length )
+        {
+            /**
+             * message_header = <packed_size(data_length + hash_length)>
+            **/
+            const size_t body_len = length + hash_maker_->hash_size( );
+            std::string result( size_policy_ns::pack_size( body_len ));
+
+            /** here is:
+             *  message_body = <hash(data)> + <data>
+            **/
+            std::string body( hash_maker_->get_data_hash( data, length ) );
+            body.append( data, data + length );
+
+            /**
+             * message =  message_header + <transform( message )>
+            **/
+            transformer_->transform( body );
+//            transformer_->transform( body.empty( ) ? NULL : &body[0],
+//                                     body.size( ) );
+
+            result.append( body.begin( ), body.end( ) );
+
+            return result;
+        }
+
+        void process_data( const char *data, size_t length )
+        {
+            if( length > 0 ) {
+
+                //std::string next_data(data, data + length);
+
+                /**
+                 * message = <size>transformed(data)
+                 * we must revert data in 'parse_and_pop'
+                **/
+
+                //queue_->append( &next_data[0], next_data.size( ));
+
+                queue_->append( data, length );
+                queue_->process( );
+
+            }
+
+        }
+
+        size_t queue_size( ) const
+        {
+            return queue_->messages( ).size( );
+        }
+
+        bool check_message( const std::string &mess )
+        {
+            const size_t hash_length = hash_checker_->hash_size( );
+            const size_t diff_len    = mess.size( ) - hash_length;
+
+            bool result = false;
+
+            if( mess.size( ) >= hash_length ) {
+                result = hash_checker_->
+                         check_data_hash( mess.c_str( ) + hash_length,
+                                          diff_len,
+                                          mess.c_str( ) );
+            }
+            return result;
+        }
+
+        bool pop_proto_message( gpb::MessageLite &result )
+        {
+            std::string &data(queue_->messages( ).front( ));
+
+            /// revert message
+            revertor_->transform( data );
+//            revertor_->transform( data.empty( ) ? NULL : &data[0],
+//                                  data.size( ) );
+            /// check hash
+            bool checked = check_message( data );
+            if( checked ) {
+                /// parse
+                checked = parse_raw_message( data, result );
+            }
+
+            /// in all cases we pop message
+            queue_->messages( ).pop_front( );
+            return checked;
+        }
+
+        bool pop_raw_message( std::string &result )
+        {
+            std::string &data( queue_->messages( ).front( ) );
+
+            /// revert message
+            revertor_->transform( data );
+//            revertor_->transform( data.empty( ) ? NULL : &data[0],
+//                                  data.size( ) );
+
+            /// check hash
+            bool checked = check_message( data );
+            if( checked ) {
+                const size_t hash_length = hash_checker_->hash_size( );
+                result.assign( data.c_str( ) + hash_length,
+                               data.size( )  - hash_length );
+            }
+
+            /// in all cases we pop message
+            queue_->messages( ).pop_front( );
+
+            return checked;
+        }
+
+        bool parse_raw_message( const std::string &mess, gpb::MessageLite &out )
+        {
+            const size_t hash_length = hash_checker_->hash_size( );
+            return out.ParseFromArray( mess.c_str( ) + hash_length,
+                                       mess.size( )  - hash_length );
+        }
+
+    };
+
     struct protocol_layer::impl {
 
         typedef impl this_type;
@@ -183,12 +323,6 @@ namespace vtrc { namespace common {
 
         transport_iface             *connection_;
         protocol_layer              *parent_;
-
-        vtrc::unique_ptr<hash_iface>             hash_maker_;
-        vtrc::unique_ptr<hash_iface>             hash_checker_;
-        vtrc::unique_ptr<transformer_iface>      transformer_;
-        vtrc::unique_ptr<transformer_iface>      revertor_;
-        vtrc::unique_ptr<data_queue::queue_base> queue_;
 
         rpc_queue_type               rpc_queue_;
         vtrc::atomic<uint64_t>       rpc_index_;
@@ -203,6 +337,7 @@ namespace vtrc { namespace common {
         unsigned                     level_;
 
         rpc::session_options         session_opts_;
+        lowlevel_processor           ll_processor_;
 
         precall_closure_type         precall_;
         postcall_closure_type        postcall_;
@@ -210,15 +345,11 @@ namespace vtrc { namespace common {
         impl( transport_iface *c, bool odd, const rpc::session_options &opts )
             :connection_(c)
             ,parent_(NULL)
-            ,hash_maker_(common::hash::create_default( ))
-            ,hash_checker_(common::hash::create_default( ))
-            ,transformer_(common::transformers::none::create( ))
-            ,revertor_(common::transformers::none::create( ))
-            ,queue_(size_policy_ns::create_parser(opts.max_message_length( )))
             ,rpc_index_(odd ? 101 : 100)
             ,ready_(false)
             ,level_(0)
             ,session_opts_(opts)
+            ,ll_processor_(session_opts_)
             ,precall_(empty_pre( ))
             ,postcall_(empty_post( ))
         { }
@@ -256,7 +387,7 @@ namespace vtrc { namespace common {
         void configure_session( const rpc::session_options &opts )
         {
             session_opts_.CopyFrom( opts );
-            queue_->set_maximum_length( opts.max_message_length( ) );
+            ll_processor_.configure( opts );
         }
 
 #define VTRC_PROTOCOL_PACK_SIZE_DEFAULT 1
@@ -264,97 +395,28 @@ namespace vtrc { namespace common {
 #if VTRC_PROTOCOL_PACK_SIZE_DEFAULT /// variant uno
         std::string prepare_data( const char *data, size_t length )
         {
-            /**
-             * message_header = <packed_size(data_length + hash_length)>
-            **/
-            const size_t body_len = length + hash_maker_->hash_size( );
-            std::string result( size_policy_ns::pack_size( body_len ));
-
-            /** here is:
-             *  message_body = <hash(data)> + <data>
-            **/
-            std::string body( hash_maker_->get_data_hash( data, length ) );
-            body.append( data, data + length );
-
-            /**
-             * message =  message_header + <transform( message )>
-            **/
-            transformer_->transform( body );
-//            transformer_->transform( body.empty( ) ? NULL : &body[0],
-//                                     body.size( ) );
-
-            result.append( body.begin( ), body.end( ) );
-
-            return result;
+            return ll_processor_.pack_message( data, length );
         }
-
 
         void process_data( const char *data, size_t length )
         {
-            if( length > 0 ) {
+            const size_t old_size = ll_processor_.queue_size( );
 
-                //std::string next_data(data, data + length);
+            ll_processor_.process_data( data, length );
 
-                const size_t old_size = queue_->messages( ).size( );
-
-                /**
-                 * message = <size>transformed(data)
-                 * we must revert data in 'parse_and_pop'
-                **/
-
-                //queue_->append( &next_data[0], next_data.size( ));
-
-                queue_->append( data, length );
-                queue_->process( );
-
-                if( queue_->messages( ).size( ) > old_size ) {
-                    parent_->on_data_ready( );
-                }
+            if( ll_processor_.queue_size( ) > old_size ) {
+                parent_->on_data_ready( );
             }
-
         }
 
         bool parse_and_pop( gpb::MessageLite &result )
         {
-            std::string &data(queue_->messages( ).front( ));
-
-            /// revert message
-            revertor_->transform( data );
-//            revertor_->transform( data.empty( ) ? NULL : &data[0],
-//                                  data.size( ) );
-            /// check hash
-            bool checked = check_message( data );
-            if( checked ) {
-                /// parse
-                checked = parse_message( data, result );
-            }
-
-            /// in all cases we pop message
-            queue_->messages( ).pop_front( );
-            return checked;
+            return ll_processor_.pop_proto_message( result );
         }
 
         bool raw_pop( std::string &result )
         {
-            std::string &data( queue_->messages( ).front( ) );
-
-            /// revert message
-            revertor_->transform( data );
-//            revertor_->transform( data.empty( ) ? NULL : &data[0],
-//                                  data.size( ) );
-
-            /// check hash
-            bool checked = check_message( data );
-            if( checked ) {
-                const size_t hash_length = hash_checker_->hash_size( );
-                result.assign( data.c_str( ) + hash_length,
-                               data.size( )  - hash_length );
-            }
-
-            /// in all cases we pop message
-            queue_->messages( ).pop_front( );
-
-            return checked;
+            return ll_processor_.pop_raw_message( result );
         }
 
 #else
@@ -465,19 +527,17 @@ namespace vtrc { namespace common {
 #endif
         size_t ready_messages_count( ) const
         {
-            return queue_->messages( ).size( );
+            return ll_processor_.queue_size( );
         }
 
         bool message_queue_empty( ) const
         {
-            return queue_->messages( ).empty( );
+            return ll_processor_.queue_->messages( ).empty( );
         }
 
         bool parse_message( const std::string &mess, gpb::MessageLite &result )
         {
-            const size_t hash_length = hash_checker_->hash_size( );
-            return result.ParseFromArray( mess.c_str( ) + hash_length,
-                                          mess.size( )  - hash_length );
+            return ll_processor_.parse_raw_message( mess, result );
         }
 
         void set_ready( bool ready )
@@ -532,28 +592,12 @@ namespace vtrc { namespace common {
         // --------------- sett ----------------- //
         message_queue_type &message_queue( )
         {
-            return queue_->messages( );
+            return ll_processor_.queue_->messages( );
         }
 
         const message_queue_type &message_queue( ) const
         {
-            return queue_->messages( );
-        }
-
-        bool check_message( const std::string &mess )
-        {
-            const size_t hash_length = hash_checker_->hash_size( );
-            const size_t diff_len    = mess.size( ) - hash_length;
-
-            bool result = false;
-
-            if( mess.size( ) >= hash_length ) {
-                result = hash_checker_->
-                         check_data_hash( mess.c_str( ) + hash_length,
-                                          diff_len,
-                                          mess.c_str( ) );
-            }
-            return result;
+            return ll_processor_.queue_->messages( );
         }
 
         void check_create_stack( )
@@ -647,22 +691,22 @@ namespace vtrc { namespace common {
 
         void change_sign_checker( hash_iface *new_signer )
         {
-            hash_checker_.reset(new_signer);
+            ll_processor_.hash_checker_.reset(new_signer);
         }
 
         void change_sign_maker( hash_iface *new_signer )
         {
-            hash_maker_.reset(new_signer);
+            ll_processor_.hash_maker_.reset(new_signer);
         }
 
         void change_transformer( transformer_iface *new_transformer )
         {
-            transformer_.reset(new_transformer);
+            ll_processor_.transformer_.reset(new_transformer);
         }
 
         void change_revertor( transformer_iface *new_reverter)
         {
-            revertor_.reset(new_reverter);
+            ll_processor_.revertor_.reset(new_reverter);
         }
 
         void push_rpc_message(uint64_t slot_id, lowlevel_unit_sptr mess)
