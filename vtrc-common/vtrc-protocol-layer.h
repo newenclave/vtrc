@@ -215,7 +215,7 @@ namespace vtrc { namespace common {
 
         /// false == bad message;
         /// protocol violation; we have to close connection in this case
-        bool   parse_and_pop( google::protobuf::MessageLite &result );
+        bool   parse_and_pop(google::protobuf::Message &result );
 
         bool   raw_pop( std::string &result );
 

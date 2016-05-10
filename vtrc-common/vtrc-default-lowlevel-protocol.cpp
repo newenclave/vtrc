@@ -124,7 +124,7 @@ namespace vtrc { namespace common {
         return result;
     }
 
-    bool default_lowlevel_protocol::pop_proto_message( gpb::MessageLite &res )
+    bool default_lowlevel_protocol::pop_proto_message( gpb::Message &res )
     {
         std::string &data(queue_->messages( ).front( ));
 
@@ -167,8 +167,8 @@ namespace vtrc { namespace common {
         return checked;
     }
 
-    bool default_lowlevel_protocol::parse_raw_message( const std::string &mess,
-                                                       gpb::MessageLite &out )
+    bool default_lowlevel_protocol::parse_raw_message(const std::string &mess,
+                                            google::protobuf::Message &out )
     {
         const size_t hash_length = hash_checker_->hash_size( );
         return out.ParseFromArray( mess.c_str( ) + hash_length,

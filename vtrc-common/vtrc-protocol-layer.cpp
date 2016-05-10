@@ -409,7 +409,7 @@ namespace vtrc { namespace common {
             }
         }
 
-        bool parse_and_pop( gpb::MessageLite &result )
+        bool parse_and_pop( gpb::Message &result )
         {
             return ll_processor_->pop_proto_message( result );
         }
@@ -429,7 +429,7 @@ namespace vtrc { namespace common {
             return ll_processor_->queue_size( ) == 0;
         }
 
-        bool parse_message( const std::string &mess, gpb::MessageLite &result )
+        bool parse_message( const std::string &mess, gpb::Message &result )
         {
             return ll_processor_->parse_raw_message( mess, result );
         }
@@ -1128,7 +1128,7 @@ namespace vtrc { namespace common {
         return impl_->message_queue_empty( );
     }
 
-    bool protocol_layer::parse_and_pop( gpb::MessageLite &result )
+    bool protocol_layer::parse_and_pop( gpb::Message &result )
     {
         return impl_->parse_and_pop( result );
     }

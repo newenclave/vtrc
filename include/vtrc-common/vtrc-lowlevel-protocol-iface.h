@@ -49,14 +49,14 @@ namespace vtrc { namespace common {
 
         /// get ant pop next message
         virtual bool pop_proto_message(
-                             google::protobuf::MessageLite &result ) = 0;
+                             google::protobuf::Message &result ) = 0;
 
         /// get and pop raw message data
         virtual bool pop_raw_message( std::string &result ) = 0;
 
         /// parse raw data
         virtual bool parse_raw_message( const std::string &mess,
-                                google::protobuf::MessageLite &out ) = 0;
+                                google::protobuf::Message &out ) = 0;
 
     };
 

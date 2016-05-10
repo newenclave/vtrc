@@ -33,10 +33,10 @@ namespace vtrc {  namespace common {
         void        process_data( const char *data, size_t length );
         size_t      queue_size( ) const;
         bool        check_message( const std::string &mess );
-        bool        pop_proto_message( google::protobuf::MessageLite &result );
+        bool        pop_proto_message( google::protobuf::Message &result );
         bool        pop_raw_message( std::string &result );
         bool        parse_raw_message( const std::string &mess,
-                                       google::protobuf::MessageLite &out );
+                                       google::protobuf::Message &out );
 
     };
 }}
