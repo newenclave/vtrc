@@ -3,10 +3,10 @@ package vtrc.rpc.errors;
 
 import "google/protobuf/descriptor.proto";
 
-// index 52000
+// index 60000
 
 extend google.protobuf.EnumValueOptions {
-    optional string description = 52001;
+    optional string description = 60001;
 }
 
 enum error_category {
