@@ -156,11 +156,13 @@ namespace vtrc { namespace common {
 
         /// revert message
         revertor_->transform( data );
+//        std::cout << "Pop: " << data << "\n";
 //            revertor_->transform( data.empty( ) ? NULL : &data[0],
 //                                  data.size( ) );
 
         /// check hash
         bool checked = check_message( data );
+        //std::cout << "Checked: " << checked << "\n";
         if( checked ) {
             const size_t hash_length = hash_checker_->hash_size( );
             result.assign( data.c_str( ) + hash_length,

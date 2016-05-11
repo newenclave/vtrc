@@ -9,6 +9,9 @@ namespace vtrc { namespace common {
 
 namespace vtrc { namespace rpc {
     class session_options;
+    namespace errors {
+        class container;
+    }
 }}
 
 namespace vtrc { namespace common {
@@ -28,6 +31,8 @@ namespace vtrc { namespace common {
 
         /// for client-side only
         virtual void configure_session( const vtrc::rpc::session_options & )
+        { }
+        virtual void error( const rpc::errors::container &, const char * )
         { }
 
         virtual void close( ) = 0;

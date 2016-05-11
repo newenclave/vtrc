@@ -84,6 +84,11 @@ namespace vtrc { namespace server {
                 return pa_->connection( );
             }
 
+            void close( )
+            {
+
+            }
+
             void on_init_timeout( const bs::error_code &error )
             {
                 if( !error ) {

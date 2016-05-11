@@ -34,8 +34,9 @@ namespace vtrc { namespace client {
     typedef vtrc::function<void (const rpc::errors::container &,
                                  const char *)> init_error_cb;
 
-    common::lowlevel_protocol_layer_iface *create_default_setup( vtrc_client *c,
-                                    init_error_cb init_error );
+    typedef common::lowlevel_protocol_layer_iface lowlevel_protocol_layer_iface;
+    lowlevel_protocol_layer_iface *create_default_setup( vtrc_client *c );
+
     namespace {
 
 
@@ -111,6 +112,11 @@ namespace vtrc { namespace client {
             ;;;
         }
 
+        void error( const rpc::errors::container &err, const char *mes )
+        {
+            callbacks_->on_init_error( err, mes );
+        }
+
         void write( const std::string &data,
                     common::system_closure_type cb,
                     bool on_send_success )
@@ -126,6 +132,7 @@ namespace vtrc { namespace client {
 
         void close( )
         {
+            std::cout << "client closed!\n";
             closed_ = true;
             connection_->close( );
         }
@@ -139,37 +146,31 @@ namespace vtrc { namespace client {
 
         void init( )
         {
-            conn_setup_ = create_default_setup( client_,
-                        vtrc::bind( &parent_type::on_init_error, parent_,
-                                    vtrc::placeholders::_1,
-                                    vtrc::placeholders::_2 ) );
+            conn_setup_ = create_default_setup( client_ );
             parent_->set_lowlevel( conn_setup_ );
             conn_setup_->init( this, common::system_closure_type( ) );
         }
 
-        void check_disconnect_stage( )
-        {
-            switch ( stage_ ) {
-            case STAGE_HELLO:
-                parent_->on_init_error(
-                            create_error( rpc::errors::ERR_BUSY, "" ),
-                            "Server in not ready");
-                break;
-            case STAGE_SETUP:
-                parent_->on_init_error(
-                            create_error( rpc::errors::ERR_INVALID_VALUE, "" ),
-                            "Bad setup info.");
-                break;
-            case STAGE_READY:
-                parent_->on_init_error(
-                            create_error( rpc::errors::ERR_INTERNAL, "" ),
-                            "Bad session key.");
-                break;
-            case STAGE_RPC:
-            default:
-                break;
-            }
-        }
+//        void check_disconnect_stage( )
+//        {
+//            switch ( stage_ ) {
+//            case STAGE_HELLO:
+//                error( create_error( rpc::errors::ERR_BUSY, "" ),
+//                       "Server in not ready");
+//                break;
+//            case STAGE_SETUP:
+//                error( create_error( rpc::errors::ERR_INVALID_VALUE, "" ),
+//                       "Bad setup info.");
+//                break;
+//            case STAGE_READY:
+//                error( create_error( rpc::errors::ERR_INTERNAL, "" ),
+//                       "Bad session key.");
+//                break;
+//            case STAGE_RPC:
+//            default:
+//                break;
+//            }
+//        }
 
         rpc::errors::container create_error( unsigned code,
                                              const std::string &add )
@@ -374,7 +375,8 @@ namespace vtrc { namespace client {
 
     void protocol_layer_c::close( )
     {
-        impl_->check_disconnect_stage( );
+        impl_->conn_setup_->close( );
+//        impl_->check_disconnect_stage( );
         cancel_all_slots( );
         impl_->callbacks_->on_disconnect( );
     }
