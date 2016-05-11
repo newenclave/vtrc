@@ -298,9 +298,10 @@ namespace vtrc { namespace client {
             }
 
             void init( common::protocol_accessor *pa,
-                       common::system_closure_type /*cb*/ )
+                       common::system_closure_type cb )
             {                
                 pa_ = pa;
+                cb( boost::system::error_code( ) );
 //                ready_ = true;
 //                pa_->ready( true );
 //                return;

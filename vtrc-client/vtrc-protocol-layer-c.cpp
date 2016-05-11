@@ -134,12 +134,15 @@ namespace vtrc { namespace client {
 
         //// ================ accessor =================
 
+        static void closure_none( const boost::system::error_code & )
+        { }
+
         void init( )
         {
             conn_setup_ = create_default_setup( client_ );
             parent_->set_lowlevel( conn_setup_ );
             stage_call_ = vtrc::bind( &this_type::call_setup_function, this );
-            conn_setup_->init( this, common::system_closure_type( ) );
+            conn_setup_->init( this, &this_type::closure_none );
         }
 
 //        void check_disconnect_stage( )
