@@ -88,9 +88,7 @@ namespace vtrc { namespace server {
             ,ready_(false)
             ,closed_(false)
             ,current_calls_(0)
-        {
-            stage_call_ = vtrc::bind( &this_type::call_setup_function, this );
-        }
+        { }
 
         void call_setup_function( )
         {
@@ -315,6 +313,7 @@ namespace vtrc { namespace server {
         {
             conn_setup_ =
                     create_default_setup( app_, parent_->session_options( ) );
+            stage_call_ = vtrc::bind( &this_type::call_setup_function, this );
             parent_->set_lowlevel( conn_setup_ );
             conn_setup_->init( this, clos );
         }
