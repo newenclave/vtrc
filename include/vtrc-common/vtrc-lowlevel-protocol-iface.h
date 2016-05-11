@@ -28,7 +28,7 @@ namespace vtrc { namespace common {
         virtual void close( ) = 0;
 
         /// do handshake with other side
-        virtual bool do_handshake( const std::string &data ) = 0;
+        virtual bool do_handshake( ) = 0;
 
         /// check for readiness
         virtual bool ready( ) const = 0;

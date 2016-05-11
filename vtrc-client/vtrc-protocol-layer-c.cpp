@@ -83,28 +83,13 @@ namespace vtrc { namespace client {
             ,callbacks_(cb)
             ,stage_(STAGE_HELLO)
             ,closed_(false)
-        {
-            stage_call_ = vtrc::bind( &this_type::call_setup_function, this );
-        }
+        { }
 
         //// ================ accessor =================
 
         void call_setup_function( )
         {
-            std::string data;
-            if( !parent_->raw_pop( data ) ) {
-                parent_->on_init_error(
-                            create_error( rpc::errors::ERR_INTERNAL, "" ),
-                            "Bad hash." );
-                connection_->close( );
-                return;
-            }
-
-            if( conn_setup_->do_handshake( data ) && !closed_ ) {
-                stage_call_ = vtrc::bind( &this_type::on_rpc_process, this );
-                //conn_setup_.reset( );
-                on_ready( true );
-            }
+            conn_setup_->do_handshake( );
         }
 
         void set_client_id( const std::string &id )
@@ -130,6 +115,12 @@ namespace vtrc { namespace client {
             return connection_;
         }
 
+        void ready( bool /*value*/ )
+        {
+            stage_call_ = vtrc::bind( &this_type::on_rpc_process, this );
+            on_ready( true );
+        }
+
         void close( )
         {
             std::cout << "client closed!\n";
@@ -148,6 +139,7 @@ namespace vtrc { namespace client {
         {
             conn_setup_ = create_default_setup( client_ );
             parent_->set_lowlevel( conn_setup_ );
+            stage_call_ = vtrc::bind( &this_type::call_setup_function, this );
             conn_setup_->init( this, common::system_closure_type( ) );
         }
 

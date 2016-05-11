@@ -287,6 +287,16 @@ namespace vtrc { namespace server {
 
             }
 
+            rpc::errors::container create_error( unsigned code,
+                                                 const std::string &add )
+            {
+                rpc::errors::container cont;
+                cont.set_code( code );
+                cont.set_category( rpc::errors::CATEGORY_INTERNAL );
+                cont.set_additional( add );
+                return cont;
+            }
+
             void write( const std::string &data )
             {
                 pa_->write( data, default_cb, true );
@@ -305,9 +315,19 @@ namespace vtrc { namespace server {
 
             }
 
-            bool do_handshake( const std::string &data )
+            bool do_handshake(  )
             {
+                std::string data;
+                if( !pop_raw_message( data ) ) {
+                    pa_->error( create_error( rpc::errors::ERR_INTERNAL, "" ),
+                                "Bad hash." );
+                    pa_->close( );
+                    return false;
+                }
                 stage_function_( data );
+                if( ready_ ) {
+                    pa_->ready( ready_ );
+                }
                 return ready_;
             }
 
