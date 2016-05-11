@@ -202,7 +202,7 @@ namespace vtrc { namespace client {
             if ( llu->id( ) != 0 ) {
                 client_->get_rpc_service( ).post(
                     vtrc::bind( &this_type::process_event_impl, this,
-                             client_->weak_from_this( ), llu));
+                                 client_->weak_from_this( ), llu));
             } else {
                 parent_->push_rpc_message_all( llu );
             }
