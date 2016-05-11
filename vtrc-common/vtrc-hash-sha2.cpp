@@ -23,7 +23,9 @@ namespace vtrc { namespace common {  namespace hash {
                 HashTraits::update( &context,
                     reinterpret_cast<const vtrc::uint8_t *>(data), length );
 
-                return HashTraits::fin( &context );
+                typename HashTraits::digest_block_type res;
+                HashTraits::fin( &context, res );
+                return std::string( &res[0], &res[HashTraits::digest_length] );
             }
 
             void get_data_hash(const void *data, size_t length,
