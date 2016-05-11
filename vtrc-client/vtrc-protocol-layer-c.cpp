@@ -145,27 +145,6 @@ namespace vtrc { namespace client {
             conn_setup_->init( this, &this_type::closure_none );
         }
 
-//        void check_disconnect_stage( )
-//        {
-//            switch ( stage_ ) {
-//            case STAGE_HELLO:
-//                error( create_error( rpc::errors::ERR_BUSY, "" ),
-//                       "Server in not ready");
-//                break;
-//            case STAGE_SETUP:
-//                error( create_error( rpc::errors::ERR_INVALID_VALUE, "" ),
-//                       "Bad setup info.");
-//                break;
-//            case STAGE_READY:
-//                error( create_error( rpc::errors::ERR_INTERNAL, "" ),
-//                       "Bad session key.");
-//                break;
-//            case STAGE_RPC:
-//            default:
-//                break;
-//            }
-//        }
-
         rpc::errors::container create_error( unsigned code,
                                              const std::string &add )
         {
@@ -312,15 +291,6 @@ namespace vtrc { namespace client {
             }
         }
 
-//        void set_options( const boost::system::error_code &err )
-//        {
-//            if( !err ) {
-//                set_ha(
-//                   common::hash::create_by_index( rpc::auth::HASH_CRC_32 ));
-//            }
-
-//        }
-
         static bool server_has_transformer( rpc::auth::init_capsule const &cap,
                                             unsigned transformer_type )
         {
@@ -370,7 +340,6 @@ namespace vtrc { namespace client {
     void protocol_layer_c::close( )
     {
         impl_->conn_setup_->close( );
-//        impl_->check_disconnect_stage( );
         cancel_all_slots( );
         impl_->callbacks_->on_disconnect( );
     }
