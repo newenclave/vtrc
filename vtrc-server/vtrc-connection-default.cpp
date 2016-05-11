@@ -307,6 +307,12 @@ namespace vtrc { namespace server {
             {
                 static const std::string data(first_message( ));
                 pa_ = pa;
+
+//                ready_ = true;
+//                pa_->ready( true );
+//                cb( boost::system::error_code( ) );
+//                return;
+
                 pa_->write( data, cb, true );
                 keepalive_calls_.call_from_now(
                             vtrc::bind( &iface::on_init_timeout, this,

@@ -89,10 +89,9 @@ namespace vtrc { namespace common {
         return result;
     }
 
-    void   default_lowlevel_protocol::process_data( const char *data,
-                                                    size_t length )
+    void default_lowlevel_protocol::process_data( const char *data, size_t len )
     {
-        if( length > 0 ) {
+        if( len > 0 ) {
 
             //std::string next_data(data, data + length);
 
@@ -103,7 +102,7 @@ namespace vtrc { namespace common {
 
             //queue_->append( &next_data[0], next_data.size( ));
 
-            queue_->append( data, length );
+            queue_->append( data, len );
             queue_->process( );
 
         }

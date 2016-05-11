@@ -299,8 +299,11 @@ namespace vtrc { namespace client {
 
             void init( common::protocol_accessor *pa,
                        common::system_closure_type /*cb*/ )
-            {
+            {                
                 pa_ = pa;
+//                ready_ = true;
+//                pa_->ready( true );
+//                return;
                 change_stage( stage_ );
             }
 

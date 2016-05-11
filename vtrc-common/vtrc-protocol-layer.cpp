@@ -464,9 +464,10 @@ namespace vtrc { namespace common {
         void wait_for_ready( bool state )
         {
             vtrc::unique_lock<vtrc::mutex> lck( ready_lock_ );
-            if( state != ready_ )
+            if( state != ready_ ) {
                 ready_var_.wait( lck,
                          vtrc::bind( &this_type::state_predic, this, state ));
+            }
         }
 
         template <typename DurationType>

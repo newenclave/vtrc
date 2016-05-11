@@ -123,7 +123,6 @@ namespace vtrc { namespace client {
 
         void close( )
         {
-            std::cout << "client closed!\n";
             closed_ = true;
             connection_->close( );
         }
