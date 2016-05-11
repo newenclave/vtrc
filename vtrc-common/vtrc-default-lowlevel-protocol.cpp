@@ -62,7 +62,7 @@ namespace vtrc { namespace common {
         return mess.SerializeAsString( );
     }
 
-    std::string default_lowlevel_protocol::process_message( const char *data,
+    std::string default_lowlevel_protocol::pack_message( const char *data,
                                                             size_t length )
     {
         /**

@@ -41,8 +41,7 @@ namespace vtrc { namespace common {
                             const google::protobuf::Message &mess ) = 0;
 
         /// pack lowlevel message to protocol view
-        virtual std::string process_message( const char *data,
-                                             size_t length ) = 0;
+        virtual std::string pack_message( const char *data, size_t length ) = 0;
 
         /// accept portion os the data and unpuck message is exists
         virtual void process_data( const char *data, size_t length ) = 0;

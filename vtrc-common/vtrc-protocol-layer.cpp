@@ -395,7 +395,7 @@ namespace vtrc { namespace common {
 
         std::string prepare_data( const char *data, size_t length )
         {
-            return ll_processor_->process_message( data, length );
+            return ll_processor_->pack_message( data, length );
         }
 
         void process_data( const char *data, size_t length )
