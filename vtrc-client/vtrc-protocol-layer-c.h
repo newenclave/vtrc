@@ -4,6 +4,9 @@
 #include <stdlib.h>
 
 #include "vtrc-common/vtrc-protocol-layer.h"
+#include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
+
+#include "vtrc-function.h"
 
 namespace vtrc {
 
@@ -58,6 +61,8 @@ namespace client {
 
     public:
 
+        typedef common::lowlevel_protocol_factory_type lowlevel_factory_type;
+
         void init( );
         void close( );
         const std::string &client_id( ) const;
@@ -66,6 +71,8 @@ namespace client {
                                 get_service_by_name( const std::string &name );
         void drop_service( const std::string &name );
         void drop_all_services(  );
+
+        void assign_lowlevel_factory( lowlevel_factory_type factory );
 
     private:
 

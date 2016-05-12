@@ -56,10 +56,12 @@ namespace vtrc { namespace client {
     vtrc::shared_ptr<client_unix_local>
         client_unix_local::create(basio::io_service &ios,
                                   vtrc_client *client,
-                                  protocol_signals *callbacks)
+                                  protocol_signals *callbacks,
+                                  lowlevel_factory_type factory )
     {
         vtrc::shared_ptr<client_unix_local> new_inst
                          (new client_unix_local( ios, client, callbacks ));
+        new_inst->assign_protocol_factory( factory );
         new_inst->init( );
         return new_inst;
     }
@@ -132,6 +134,12 @@ namespace vtrc { namespace client {
     {
         impl_->raw_call_local( ll_mess, done );
     }
+
+    void client_unix_local::assign_protocol_factory( lowlevel_factory_type fac )
+    {
+        impl_->get_protocol( ).assign_lowlevel_factory( fac );
+    }
+
 
 }}
 

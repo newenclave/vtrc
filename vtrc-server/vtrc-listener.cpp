@@ -152,7 +152,7 @@ namespace vtrc { namespace server {
         impl_->postcall_ = func;
     }
 
-    void listener::set_lowlevel_protocol_factory(
+    void listener::assign_lowlevel_protocol_factory(
             listener::lowlevel_factory_type factory )
     {
         impl_->lowlevel_factory_ = factory;

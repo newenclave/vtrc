@@ -65,7 +65,9 @@ namespace vtrc { namespace client {
         bool                            key_set_;
         //vtrc::mutex                     session_info_lock_;
 
-        service_factory_type                 factory_;
+        service_factory_type            factory_;
+        lowlevel_factory_type           ll_proto_factory_;
+
         vtrc::shared_mutex              factory_lock_;
 
         impl( basio::io_service &ios, basio::io_service &rpc_ios )
@@ -158,7 +160,8 @@ namespace vtrc { namespace client {
         vtrc::shared_ptr<ClientType> create_client(  )
         {
             vtrc::shared_ptr<ClientType> c(
-                        ClientType::create( ios_, parent_, this ));
+                        ClientType::create( ios_, parent_, this,
+                                            ll_proto_factory_ ));
 
             connection_ =  c;
             protocol_   = &c->get_protocol( );
@@ -168,7 +171,8 @@ namespace vtrc { namespace client {
         vtrc::shared_ptr<client_tcp> create_client_tcp( bool tcp_nodelay )
         {
             vtrc::shared_ptr<client_tcp> new_client_inst
-                    (client_tcp::create( ios_, parent_, this, tcp_nodelay ));
+                    (client_tcp::create( ios_, parent_, this,
+                                         ll_proto_factory_, tcp_nodelay ));
 
             connection_ =   new_client_inst;
             protocol_   =  &new_client_inst->get_protocol( );
@@ -183,6 +187,7 @@ namespace vtrc { namespace client {
         {
             vtrc::shared_ptr<client_ssl> new_client_inst
                     (client_ssl::create( ios_, parent_, this,
+                                         ll_proto_factory_,
                                          verify_file, tcp_nodelay ));
 
             connection_ =   new_client_inst;
@@ -507,6 +512,11 @@ namespace vtrc { namespace client {
             factory_ = factory;
         }
 
+        void assign_protocol_factory( lowlevel_factory_type factory )
+        {
+            ll_proto_factory_ = factory;
+        }
+
         service_sptr get_handler( const std::string &name )
         {
             vtrc::upgradable_lock lk(services_lock_);
@@ -773,6 +783,12 @@ namespace vtrc { namespace client {
     void vtrc_client::assign_service_factory( service_factory_type factory )
     {
         impl_->assign_service_factory( factory );
+    }
+
+    void vtrc_client::assign_lowlevel_protocol_factory(
+                                         lowlevel_factory_type factory )
+    {
+        impl_->assign_protocol_factory( factory );
     }
 
     service_sptr vtrc_client::get_rpc_handler( const std::string &name )

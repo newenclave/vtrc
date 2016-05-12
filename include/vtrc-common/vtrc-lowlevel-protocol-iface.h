@@ -4,6 +4,7 @@
 #include <string>
 #include "vtrc-closure.h"
 #include "vtrc-memory.h"
+#include "vtrc-function.h"
 
 namespace google { namespace protobuf {
     class MessageLite;
@@ -72,6 +73,10 @@ namespace vtrc { namespace common {
     typedef vtrc::unique_ptr<
         lowlevel_protocol_layer_iface
     > lowlevel_protocol_layer_uptr;
+
+    typedef vtrc::function<
+        common::lowlevel_protocol_layer_iface *( )
+    > lowlevel_protocol_factory_type;
 
 }}
 

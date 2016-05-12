@@ -73,14 +73,12 @@ namespace server {
 
     public:
 
-        typedef vtrc::function<
-            common::lowlevel_protocol_layer_iface *( )
-        > lowlevel_factory_type;
+        typedef common::lowlevel_protocol_factory_type lowlevel_factory_type;
 
         void set_precall( const common::precall_closure_type &func );
         void set_postcall( const common::postcall_closure_type &func );
 
-        void set_lowlevel_protocol_factory( lowlevel_factory_type factory );
+        void assign_lowlevel_protocol_factory( lowlevel_factory_type factory );
         lowlevel_factory_type lowlevel_protocol_factory( );
 
         virtual std::string name( ) const = 0;

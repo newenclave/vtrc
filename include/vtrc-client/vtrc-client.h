@@ -6,6 +6,7 @@
 #include "vtrc-common/vtrc-signal-declaration.h"
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-closure-holder.h"
+#include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
 
 #include "vtrc-common/vtrc-closure.h"
 #include "vtrc-common/vtrc-rpc-channel.h"
@@ -58,6 +59,10 @@ namespace client {
     typedef vtrc::function<
                vtrc::shared_ptr<google::protobuf::Service> (const std::string &)
             > service_factory_type;
+
+    typedef vtrc::function<
+               common::lowlevel_protocol_layer_iface *( )
+            > lowlevel_factory_type;
 
 #if VTRC_OPENSSL_ENABLED
     typedef vtrc::function<
@@ -196,6 +201,7 @@ namespace client {
                           vtrc::weak_ptr<google::protobuf::Service> handler);
 
         void assign_service_factory( service_factory_type factory );
+        void assign_lowlevel_protocol_factory( lowlevel_factory_type factory );
 
         vtrc::shared_ptr<google::protobuf::Service> get_rpc_handler(
                                                     const std::string &name );

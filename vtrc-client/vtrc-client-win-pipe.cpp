@@ -100,11 +100,12 @@ namespace vtrc { namespace client {
     vtrc::shared_ptr<client_win_pipe> client_win_pipe::create(
                                  basio::io_service &ios, 
                                  vtrc_client *client, 
-                                 protocol_signals *callbacks)
+                                 protocol_signals *callbacks,
+                                 lowlevel_factory_type factory )
     {
         vtrc::shared_ptr<client_win_pipe> new_inst
                     (new client_win_pipe( ios, client, callbacks ));
-
+        new_inst->assign_protocol_factory( factory );
         new_inst->init( );
         return new_inst;
     }
@@ -187,6 +188,11 @@ namespace vtrc { namespace client {
                           common::empty_closure_type done )
     {
         impl_->raw_call_local( ll_mess, done );
+    }
+
+    void client_tcp::assign_protocol_factory( lowlevel_factory_type fac )
+    {
+        impl_->get_protocol( ).assign_lowlevel_factory( fac );
     }
 
 }}

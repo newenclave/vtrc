@@ -163,7 +163,7 @@ namespace { /// implementation.
             return protocol_->prepare_data( data, len );
         }
 
-        common::protocol_layer &get_protocol( )
+        client::protocol_layer_c &get_protocol( )
         {
             return *protocol_;
         }

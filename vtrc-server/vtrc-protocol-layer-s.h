@@ -4,6 +4,7 @@
 #include <string>
 #include "vtrc-common/vtrc-protocol-layer.h"
 #include "vtrc-common/vtrc-closure.h"
+#include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
 
 namespace vtrc {
 
@@ -34,9 +35,7 @@ namespace server {
 
     public:
 
-        typedef vtrc::function<
-            common::lowlevel_protocol_layer_iface *( )
-        > lowlevel_factory_type;
+        typedef common::lowlevel_protocol_factory_type lowlevel_factory_type;
 
         void init( );
         void init_success( common::system_closure_type clos );
@@ -48,7 +47,7 @@ namespace server {
         void drop_service( const std::string &name );
         void drop_all_services(  );
 
-        void set_lowlevel_factory( lowlevel_factory_type factory );
+        void assign_lowlevel_factory( lowlevel_factory_type factory );
 
 
         common::rpc_service_wrapper_sptr get_service_by_name(

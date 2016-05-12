@@ -75,6 +75,7 @@ namespace vtrc { namespace client {
 
         bool                         closed_;
         connection_setup_ptr         conn_setup_;
+        lowlevel_factory_type        ll_factory_;
 
         impl( common::transport_iface *c, vtrc_client *client,
               protocol_signals *cb )
@@ -84,6 +85,11 @@ namespace vtrc { namespace client {
             ,stage_(STAGE_HELLO)
             ,closed_(false)
         { }
+
+        protocol_layer_c::lowlevel_factory_type create_default_factory( )
+        {
+            return vtrc::bind( create_default_setup, client_ );
+        }
 
         //// ================ accessor =================
 
@@ -141,7 +147,7 @@ namespace vtrc { namespace client {
 
         void init( )
         {
-            conn_setup_ = create_default_setup( client_ );
+            conn_setup_ = ll_factory_( ); // create_default_setup( client_ );
             parent_->set_lowlevel( conn_setup_ );
             stage_call_ = vtrc::bind( &this_type::call_setup_function, this );
             conn_setup_->init( this, &this_type::closure_none );
@@ -378,5 +384,9 @@ namespace vtrc { namespace client {
         impl_->drop_all_services( );
     }
 
+    void protocol_layer_c::assign_lowlevel_factory( lowlevel_factory_type fac )
+    {
+        impl_->ll_factory_ = fac ? fac : impl_->create_default_factory( );
+    }
 
 }}

@@ -386,11 +386,9 @@ namespace vtrc { namespace server {
         impl_->drop_all_services( );
     }
 
-    void protocol_layer_s::set_lowlevel_factory( lowlevel_factory_type factory )
+    void protocol_layer_s::assign_lowlevel_factory( lowlevel_factory_type fac )
     {
-        impl_->ll_factory_ = factory
-                           ? factory
-                           : impl_->create_default_factory( );
+        impl_->ll_factory_ = fac ? fac : impl_->create_default_factory( );
     }
 
     const std::string &protocol_layer_s::client_id( ) const

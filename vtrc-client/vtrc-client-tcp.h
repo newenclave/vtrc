@@ -4,6 +4,7 @@
 #include "vtrc-memory.h"
 #include "vtrc-common/vtrc-transport-tcp.h"
 #include "vtrc-common/vtrc-closure.h"
+#include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
 
 namespace boost { namespace asio {
     class io_service;
@@ -34,9 +35,12 @@ namespace client {
 
         typedef vtrc::shared_ptr<client_tcp> shared_type;
 
+        typedef common::lowlevel_protocol_factory_type lowlevel_factory_type;
+
         static shared_type create ( boost::asio::io_service &ios,
                                     vtrc_client *client,
                                     protocol_signals *callbacks,
+                                    lowlevel_factory_type factory,
                                     bool tcp_nodelay );
 
         ~client_tcp( );
@@ -57,6 +61,8 @@ namespace client {
         const common::call_context *get_call_context( ) const;
         common::protocol_layer     &get_protocol( );
         common::enviroment         &get_enviroment( );
+
+        void assign_protocol_factory( lowlevel_factory_type factory );
 
     private:
         void on_close( );
