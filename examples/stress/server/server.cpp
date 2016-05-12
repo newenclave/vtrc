@@ -47,8 +47,10 @@ void get_options( po::options_description& desc )
             "maximum recursion depth for both side")
 
         ("key,k", po::value<std::string>( ),
-            "key for access to server; password")
+             "key for access to server; password")
 
+        ("dumb,D", "use dump protocol as lowlevel "
+                   "(there are no handshakes or keys here)")
         ;
 }
 

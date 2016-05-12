@@ -122,6 +122,9 @@ void get_options( po::options_description& desc )
         ("key,k", po::value<std::string>( ),
                 "key for access to server; password")
 
+        ("dumb,D", "use dump protocol as lowlevel "
+                   "(there are no handshakes or keys here)")
+
         ;
 }
 
@@ -243,7 +246,11 @@ int start( const po::variables_map &params )
         client->set_session_key( key );
     }
 
-    //client->assign_lowlevel_protocol_factory( &common::lowlevel::dumb::create );
+    if( params.count( "dumb" ) ) {
+        client->assign_lowlevel_protocol_factory(
+                    &common::lowlevel::dumb::create );
+    }
+
     client->on_connect_connect   ( on_connect );
     client->on_ready_connect     ( on_ready );
     client->on_disconnect_connect( on_disconnect );

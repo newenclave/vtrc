@@ -191,6 +191,8 @@ namespace {
         delayed_map                         map_;
         vtrc::shared_mutex                  map_lock_;
 
+        bool                                dumb_proto_;
+
         impl( unsigned io_threads )
             :pp_(io_threads)
             ,app_(pp_)
@@ -200,6 +202,7 @@ namespace {
             ,max_clients_(1000)
             ,next_id_(0)
             ,timer_pool_(1)
+            ,dumb_proto_(false)
         { }
 
         impl( unsigned io_threads, unsigned rpc_threads )
@@ -210,6 +213,7 @@ namespace {
             ,max_clients_(1000)
             ,next_id_(0)
             ,timer_pool_(1)
+            ,dumb_proto_(false)
         { }
 
         unsigned next_id( )
@@ -333,6 +337,8 @@ namespace {
                 app_.key_ = params["key"].as<std::string>( );
             }
 
+            dumb_proto_ = !!params.count( "dumb" );
+
             bool use_only_pool = !!params.count( "only-pool" );
             bool tcp_nodelay   = !!params.count( "tcp-nodelay" );
 
@@ -366,8 +372,10 @@ namespace {
         void attach_start_listener( unsigned retry_to,
                                     vtrc::server::listener_sptr listen )
         {
-//            listen->assign_lowlevel_protocol_factory(
-//                        &common::lowlevel::dumb::create );
+            if( dumb_proto_ ) {
+                listen->assign_lowlevel_protocol_factory(
+                        &common::lowlevel::dumb::create );
+            }
 
             listen->on_new_connection_connect(
                    vtrc::bind( &impl::on_new_connection, this,
