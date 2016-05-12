@@ -16,6 +16,7 @@ namespace vtrc { namespace common { namespace defaults {
         res.set_max_message_length( 65536 );
         res.set_max_stack_size    ( 16 );
         res.set_read_buffer_size  ( 4096 );
+        res.set_init_timeout      ( 10000 ); // milliseconds
         return res;
     }
 

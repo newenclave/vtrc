@@ -54,7 +54,12 @@ namespace vtrc { namespace common {
     void default_lowlevel_protocol::configure(const rpc::session_options &opts )
     {
         queue_->set_maximum_length( opts.max_message_length( ) );
+        configure_impl( opts );
     }
+
+    void default_lowlevel_protocol::configure_impl( const
+                                                    rpc::session_options & )
+    { }
 
     std::string default_lowlevel_protocol::serialize_message(
                                  const gpb::Message &mess )

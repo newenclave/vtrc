@@ -313,11 +313,12 @@ namespace vtrc { namespace server {
 //                cb( boost::system::error_code( ) );
 //                return;
 
+                const unsigned to = session_opts_.init_timeout( );
                 pa_->write( data, cb, true );
                 keepalive_calls_.call_from_now(
                             vtrc::bind( &iface::on_init_timeout, this,
                                          vtrc::placeholders::_1 ),
-                            boost::posix_time::seconds( 10 ));
+                            boost::posix_time::milliseconds( to ));
 
             }
 

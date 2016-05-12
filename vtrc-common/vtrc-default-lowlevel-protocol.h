@@ -39,6 +39,9 @@ namespace vtrc {  namespace common {
         bool        parse_raw_message( const std::string &mess,
                                        google::protobuf::Message &out );
 
+    protected:
+        virtual void configure_impl( const rpc::session_options &opts );
+
     };
 }}
 
