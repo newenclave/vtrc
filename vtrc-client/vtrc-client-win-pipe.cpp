@@ -190,7 +190,7 @@ namespace vtrc { namespace client {
         impl_->raw_call_local( ll_mess, done );
     }
 
-    void client_tcp::assign_protocol_factory( lowlevel_factory_type fac )
+    void client_win_pipe::assign_protocol_factory( lowlevel_factory_type fac )
     {
         impl_->get_protocol( ).assign_lowlevel_factory( fac );
     }
