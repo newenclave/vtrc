@@ -72,8 +72,6 @@ namespace client {
         void drop_service( const std::string &name );
         void drop_all_services(  );
 
-        void assign_lowlevel_factory( lowlevel_factory_type factory );
-
     private:
 
         void on_data_ready( );

@@ -202,6 +202,7 @@ namespace client {
 
         void assign_service_factory( service_factory_type factory );
         void assign_lowlevel_protocol_factory( lowlevel_factory_type factory );
+        lowlevel_factory_type lowlevel_protocol_factory( );
 
         vtrc::shared_ptr<google::protobuf::Service> get_rpc_handler(
                                                     const std::string &name );

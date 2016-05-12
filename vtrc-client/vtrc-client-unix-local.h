@@ -36,12 +36,10 @@ namespace client {
     public:
 
         typedef vtrc::shared_ptr<client_unix_local> shared_type;
-        typedef common::lowlevel_protocol_factory_type lowlevel_factory_type;
 
         static shared_type create ( boost::asio::io_service &ios,
                                     vtrc_client *client,
-                                    protocol_signals *callbacks,
-                                    lowlevel_factory_type factory );
+                                    protocol_signals *callbacks );
 
         ~client_unix_local( );
         void init( );
@@ -59,8 +57,6 @@ namespace client {
 
         common::protocol_layer     &get_protocol( );
         common::enviroment         &get_enviroment( );
-
-        void assign_protocol_factory( lowlevel_factory_type factory );
 
     private:
         void on_close( );

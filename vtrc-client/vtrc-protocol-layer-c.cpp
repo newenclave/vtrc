@@ -332,7 +332,10 @@ namespace vtrc { namespace client {
         :common::protocol_layer(connection, true)
         ,impl_(new impl(connection, client, callbacks))
     {
-        impl_->parent_ = this;
+        lowlevel_factory_type fac = client->lowlevel_protocol_factory( );
+
+        impl_->parent_     = this;
+        impl_->ll_factory_ = fac ? fac : impl_->create_default_factory( );
     }
 
     protocol_layer_c::~protocol_layer_c( )
@@ -382,11 +385,6 @@ namespace vtrc { namespace client {
     void protocol_layer_c::drop_all_services(  )
     {
         impl_->drop_all_services( );
-    }
-
-    void protocol_layer_c::assign_lowlevel_factory( lowlevel_factory_type fac )
-    {
-        impl_->ll_factory_ = fac ? fac : impl_->create_default_factory( );
     }
 
 }}

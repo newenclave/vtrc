@@ -45,12 +45,10 @@ namespace client {
         > verify_callback_type;
 
         typedef vtrc::shared_ptr<client_ssl> shared_type;
-        typedef common::lowlevel_protocol_factory_type lowlevel_factory_type;
 
         static shared_type create ( boost::asio::io_service &ios,
                                     vtrc_client *client,
                                     protocol_signals *callbacks,
-                                    lowlevel_factory_type factory,
                                     const std::string &verify_file,
                                     bool tcp_nodelay );
 
@@ -73,8 +71,6 @@ namespace client {
         const common::call_context *get_call_context( ) const;
         common::protocol_layer     &get_protocol( );
         common::enviroment         &get_enviroment( );
-
-        void assign_protocol_factory( lowlevel_factory_type factory );
 
     private:
 

@@ -160,8 +160,7 @@ namespace vtrc { namespace client {
         vtrc::shared_ptr<ClientType> create_client(  )
         {
             vtrc::shared_ptr<ClientType> c(
-                        ClientType::create( ios_, parent_, this,
-                                            ll_proto_factory_ ));
+                        ClientType::create( ios_, parent_, this ));
 
             connection_ =  c;
             protocol_   = &c->get_protocol( );
@@ -187,7 +186,6 @@ namespace vtrc { namespace client {
         {
             vtrc::shared_ptr<client_ssl> new_client_inst
                     (client_ssl::create( ios_, parent_, this,
-                                         ll_proto_factory_,
                                          verify_file, tcp_nodelay ));
 
             connection_ =   new_client_inst;
@@ -789,6 +787,11 @@ namespace vtrc { namespace client {
                                          lowlevel_factory_type factory )
     {
         impl_->assign_protocol_factory( factory );
+    }
+
+    lowlevel_factory_type vtrc_client::lowlevel_protocol_factory( )
+    {
+        return impl_->ll_proto_factory_;
     }
 
     service_sptr vtrc_client::get_rpc_handler( const std::string &name )

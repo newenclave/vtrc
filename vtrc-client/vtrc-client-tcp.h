@@ -62,8 +62,6 @@ namespace client {
         common::protocol_layer     &get_protocol( );
         common::enviroment         &get_enviroment( );
 
-        void assign_protocol_factory( lowlevel_factory_type factory );
-
     private:
         void on_close( );
         std::string prepare_for_write( const char *data, size_t len );

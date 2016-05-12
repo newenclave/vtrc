@@ -92,7 +92,6 @@ namespace vtrc { namespace client {
     {
         vtrc::shared_ptr<client_tcp> new_inst
                     (new client_tcp( ios, client, callbacks, tcp_nodelay ));
-        new_inst->assign_protocol_factory( factory );
         new_inst->init( );
         return new_inst;
     }
@@ -171,11 +170,6 @@ namespace vtrc { namespace client {
                           common::empty_closure_type done )
     {
         impl_->raw_call_local( ll_mess, done );
-    }
-
-    void client_tcp::assign_protocol_factory( lowlevel_factory_type fac )
-    {
-        impl_->get_protocol( ).assign_lowlevel_factory( fac );
     }
 
 }}
