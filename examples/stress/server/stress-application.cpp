@@ -8,6 +8,7 @@
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-delayed-call.h"
+#include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
 
 #include "vtrc-common/vtrc-connection-list.h"
 
@@ -365,6 +366,9 @@ namespace {
         void attach_start_listener( unsigned retry_to,
                                     vtrc::server::listener_sptr listen )
         {
+//            listen->assign_lowlevel_protocol_factory(
+//                        &common::lowlevel::dumb::create );
+
             listen->on_new_connection_connect(
                    vtrc::bind( &impl::on_new_connection, this,
                                listen.get( ), vtrc::placeholders::_1 ));

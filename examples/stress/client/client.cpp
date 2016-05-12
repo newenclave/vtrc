@@ -8,6 +8,7 @@
 #include "vtrc-client/vtrc-client.h"
 #include "vtrc-common/vtrc-pool-pair.h"
 #include "vtrc-common/vtrc-exception.h"
+#include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
 
 #include "vtrc-condition-variable.h"
 #include "vtrc-mutex.h"
@@ -242,6 +243,7 @@ int start( const po::variables_map &params )
         client->set_session_key( key );
     }
 
+    //client->assign_lowlevel_protocol_factory( &common::lowlevel::dumb::create );
     client->on_connect_connect   ( on_connect );
     client->on_ready_connect     ( on_ready );
     client->on_disconnect_connect( on_disconnect );
