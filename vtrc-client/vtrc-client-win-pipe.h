@@ -39,8 +39,7 @@ namespace client {
         typedef vtrc::shared_ptr<client_win_pipe> shared_type;
         static shared_type create ( boost::asio::io_service &ios, 
                                     vtrc_client *client, 
-                                    protocol_signals *callbacks,
-                                    lowlevel_factory_type factory );
+                                    protocol_signals *callbacks );
 
         ~client_win_pipe( );
         void init( );

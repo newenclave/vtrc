@@ -100,8 +100,7 @@ namespace vtrc { namespace client {
     vtrc::shared_ptr<client_win_pipe> client_win_pipe::create(
                                  basio::io_service &ios, 
                                  vtrc_client *client, 
-                                 protocol_signals *callbacks,
-                                 lowlevel_factory_type factory )
+                                 protocol_signals *callbacks )
     {
         vtrc::shared_ptr<client_win_pipe> new_inst
                     (new client_win_pipe( ios, client, callbacks ));
