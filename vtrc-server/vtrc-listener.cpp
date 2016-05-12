@@ -46,8 +46,9 @@ namespace vtrc { namespace server {
         listener                 *parent_;
         vtrc::atomic<size_t>      client_count_;
 
-        common::precall_closure_type  precall_;
-        common::postcall_closure_type postcall_;
+        common::precall_closure_type    precall_;
+        common::postcall_closure_type   postcall_;
+        listener::lowlevel_factory_type lowlevel_factory_;
 
         impl( application &app, const rpc::session_options &opts )
             :app_(app)
@@ -131,7 +132,7 @@ namespace vtrc { namespace server {
         on_accept_failed_( err );
     }
 
-    void listener::call_on_stop()
+    void listener::call_on_stop( )
     {
         on_stop_( );
     }
@@ -149,6 +150,17 @@ namespace vtrc { namespace server {
     void listener::set_postcall( const common::postcall_closure_type &func )
     {
         impl_->postcall_ = func;
+    }
+
+    void listener::set_lowlevel_protocol_factory(
+            listener::lowlevel_factory_type factory )
+    {
+        impl_->lowlevel_factory_ = factory;
+    }
+
+    listener::lowlevel_factory_type listener::lowlevel_protocol_factory( )
+    {
+        return impl_->lowlevel_factory_;
     }
 
 }}

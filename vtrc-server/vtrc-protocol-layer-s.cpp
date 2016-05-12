@@ -4,6 +4,7 @@
 #include "vtrc-common/vtrc-mutex-typedefs.h"
 #include "vtrc-bind.h"
 #include "vtrc-function.h"
+#include "vtrc-ref.h"
 
 #include "vtrc-protocol-layer-s.h"
 
@@ -57,6 +58,8 @@ namespace vtrc { namespace server {
 
     namespace data_queue = common::data_queue;
     typedef common::protocol_accessor paccessor;
+    typedef protocol_layer_s::lowlevel_factory_type lowlevel_factory_type;
+
 
     struct protocol_layer_s::impl: common::protocol_accessor {
 
@@ -80,6 +83,7 @@ namespace vtrc { namespace server {
         stage_function_type              stage_call_;
 
         connection_setup_ptr             conn_setup_;
+        lowlevel_factory_type            ll_factory_;
 
         impl( application &a, common::transport_iface *c )
             :app_(a)
@@ -88,11 +92,18 @@ namespace vtrc { namespace server {
             ,ready_(false)
             ,closed_(false)
             ,current_calls_(0)
+            //,ll_factory_(create_default_factory( ))
         { }
 
         void call_setup_function( )
         {
             conn_setup_->do_handshake( );
+        }
+
+        protocol_layer_s::lowlevel_factory_type create_default_factory( )
+        {
+            return vtrc::bind( create_default_setup, vtrc::ref(app_),
+                               vtrc::ref(parent_->session_options( )) );
         }
 
         // accessor ===================================
@@ -304,8 +315,8 @@ namespace vtrc { namespace server {
 
         void init( )
         {
-            conn_setup_ =
-                    create_default_setup( app_, parent_->session_options( ) );
+            conn_setup_ = ll_factory_( );
+                    //create_default_setup( app_, parent_->session_options( ) );
             stage_call_ = vtrc::bind( &this_type::call_setup_function, this );
             parent_->set_lowlevel( conn_setup_ );
             conn_setup_->init( this, def_cb );
@@ -313,8 +324,8 @@ namespace vtrc { namespace server {
 
         void init_success( common::system_closure_type clos )
         {
-            conn_setup_ =
-                    create_default_setup( app_, parent_->session_options( ) );
+            conn_setup_ = ll_factory_( );
+                    //create_default_setup( app_, parent_->session_options( ) );
             stage_call_ = vtrc::bind( &this_type::call_setup_function, this );
             parent_->set_lowlevel( conn_setup_ );
             conn_setup_->init( this, clos );
@@ -373,6 +384,13 @@ namespace vtrc { namespace server {
     void protocol_layer_s::drop_all_services(  )
     {
         impl_->drop_all_services( );
+    }
+
+    void protocol_layer_s::set_lowlevel_factory( lowlevel_factory_type factory )
+    {
+        impl_->ll_factory_ = factory
+                           ? factory
+                           : impl_->create_default_factory( );
     }
 
     const std::string &protocol_layer_s::client_id( ) const

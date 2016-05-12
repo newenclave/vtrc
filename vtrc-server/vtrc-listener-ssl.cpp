@@ -260,6 +260,10 @@ namespace vtrc { namespace server { namespace listeners {
                                                   &this_type::mk_postcall, this,
                                                    ph::_1, ph::_2 ) );
 
+                        new_conn->get_protocol( )
+                                 .set_lowlevel_factory(
+                                    lowlevel_protocol_factory( ) );
+
                         get_application( ).get_clients( )->store( new_conn );
                         new_connection( new_conn.get( ) );
 
