@@ -321,20 +321,19 @@ namespace vtrc { namespace server {
 
             }
 
-            bool do_handshake(  )
+            void do_handshake(  )
             {
                 std::string data;
                 if( !pop_raw_message( data ) ) {
                     pa_->error( create_error( rpc::errors::ERR_INTERNAL, "" ),
                                 "Bad hash." );
                     pa_->close( );
-                    return false;
+                } else {
+                    stage_function_( data );
+                    if( ready_ ) {
+                        pa_->ready( ready_ );
+                    }
                 }
-                stage_function_( data );
-                if( ready_ ) {
-                    pa_->ready( ready_ );
-                }
-                return ready_;
             }
 
             bool ready( ) const

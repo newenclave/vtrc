@@ -109,11 +109,12 @@ namespace vtrc { namespace server {
             client_id_.assign( id );
         }
 
-        void ready( bool /*value*/ )
+        void ready( bool value )
         {
-            stage_call_ = vtrc::bind( &this_type::on_rcp_call_ready, this );
-            //conn_setup_.reset( );
-            parent_->set_ready( true );
+            stage_call_ = value
+                        ? vtrc::bind( &this_type::on_rcp_call_ready, this )
+                        : vtrc::bind( &this_type::call_setup_function, this );
+            parent_->set_ready( value );
         }
 
         void close( )

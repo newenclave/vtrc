@@ -160,8 +160,8 @@ namespace vtrc { namespace client {
             vtrc::shared_ptr<ClientType> c(
                         ClientType::create( ios_, parent_, this ));
 
-            connection_ =   c;
-            protocol_   =  &c->get_protocol( );
+            connection_ =  c;
+            protocol_   = &c->get_protocol( );
             return c;
         }
 

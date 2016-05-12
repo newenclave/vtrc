@@ -115,10 +115,12 @@ namespace vtrc { namespace client {
             return connection_;
         }
 
-        void ready( bool /*value*/ )
+        void ready( bool value )
         {
-            stage_call_ = vtrc::bind( &this_type::on_rpc_process, this );
-            on_ready( true );
+            stage_call_ = value
+                        ? vtrc::bind( &this_type::on_rpc_process, this )
+                        : vtrc::bind( &this_type::call_setup_function, this );
+            on_ready( value );
         }
 
         void close( )
