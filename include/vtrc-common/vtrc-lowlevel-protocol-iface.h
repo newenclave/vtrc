@@ -19,8 +19,10 @@ namespace vtrc { namespace common {
 
     struct protocol_accessor;
 
-    struct lowlevel_protocol_layer_iface {
-        virtual ~lowlevel_protocol_layer_iface( ) { }
+    namespace lowlevel {
+
+    struct protocol_layer_iface {
+        virtual ~protocol_layer_iface( ) { }
 
         /// init current protocol
         virtual void init( protocol_accessor *pa,
@@ -66,18 +68,15 @@ namespace vtrc { namespace common {
 
     };
 
-    typedef vtrc::shared_ptr<
-        lowlevel_protocol_layer_iface
-    > lowlevel_protocol_layer_sptr;
+    typedef vtrc::shared_ptr<protocol_layer_iface> protocol_layer_sptr;
+    typedef vtrc::unique_ptr<protocol_layer_iface> protocol_layer_uptr;
+    typedef vtrc::function<protocol_layer_iface *( )> protocol_factory_type;
 
-    typedef vtrc::unique_ptr<
-        lowlevel_protocol_layer_iface
-    > lowlevel_protocol_layer_uptr;
+    namespace dumb {
+        protocol_layer_iface *create( ); /// do nothing
+    }
 
-    typedef vtrc::function<
-        common::lowlevel_protocol_layer_iface *( )
-    > lowlevel_protocol_factory_type;
-
+    }
 }}
 
 #endif // VTRC_CONNECTION_SETUP_IFACE_H

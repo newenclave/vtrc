@@ -8,9 +8,9 @@
 
 #include "vtrc-memory.h"
 
-namespace vtrc {  namespace common {
+namespace vtrc {  namespace common { namespace lowlevel {
 
-    class default_lowlevel_protocol: public lowlevel_protocol_layer_iface {
+    class default_protocol: public protocol_layer_iface {
 
         vtrc::unique_ptr<hash_iface>             hash_maker_;
         vtrc::unique_ptr<hash_iface>             hash_checker_;
@@ -20,13 +20,19 @@ namespace vtrc {  namespace common {
 
     public:
 
+        virtual void init( protocol_accessor *pa,
+                           system_closure_type ready_cb );
+        virtual void close( );
+        virtual void do_handshake( );
+        virtual bool ready( ) const;
+
         void set_transformer( transformer_iface *ti );
         void set_revertor( transformer_iface *ti );
         void set_hash_maker( hash_iface *hi );
         void set_hash_checker( hash_iface *hi );
 
-        default_lowlevel_protocol( );
-        ~default_lowlevel_protocol( );
+        default_protocol( );
+        ~default_protocol( );
 
         void        configure( const rpc::session_options &opts );
         std::string serialize_message( const google::protobuf::Message &mess );
@@ -43,7 +49,7 @@ namespace vtrc {  namespace common {
         virtual void configure_impl( const rpc::session_options &opts );
 
     };
-}}
+}}}
 
 #endif // VTRCDEFAULTLOWLEVELPROTOCOL_H
 

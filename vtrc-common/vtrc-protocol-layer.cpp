@@ -316,7 +316,8 @@ namespace vtrc { namespace common {
 
 
     struct protocol_layer::impl {
-        typedef lowlevel_protocol_layer_uptr lowlevel_protocol_layer;
+
+        typedef lowlevel::protocol_layer_uptr lowlevel_protocol_layer;
 
         typedef impl this_type;
         typedef protocol_layer parent_type;
@@ -441,12 +442,12 @@ namespace vtrc { namespace common {
             ready_var_.notify_all( );
         }
 
-        void set_lowlevel( lowlevel_protocol_layer_iface *ll )
+        void set_lowlevel( lowlevel::protocol_layer_iface *ll )
         {
             ll_processor_.reset( ll );
         }
 
-        lowlevel_protocol_layer_iface *get_lowlevel( )
+        lowlevel::protocol_layer_iface *get_lowlevel( )
         {
             return ll_processor_.get( );
         }
@@ -1013,12 +1014,12 @@ namespace vtrc { namespace common {
         impl_->set_ready( ready );
     }
 
-    void protocol_layer::set_lowlevel(lowlevel_protocol_layer_iface *ll )
+    void protocol_layer::set_lowlevel( lowlevel::protocol_layer_iface *ll )
     {
         impl_->set_lowlevel( ll );
     }
 
-    common::lowlevel_protocol_layer_iface *protocol_layer::get_lowlevel( )
+    lowlevel::protocol_layer_iface *protocol_layer::get_lowlevel( )
     {
         return impl_->get_lowlevel( );
     }

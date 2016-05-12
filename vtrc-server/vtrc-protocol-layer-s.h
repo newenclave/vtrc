@@ -35,7 +35,7 @@ namespace server {
 
     public:
 
-        typedef common::lowlevel_protocol_factory_type lowlevel_factory_type;
+        typedef common::lowlevel::protocol_factory_type lowlevel_factory_type;
 
         void init( );
         void init_success( common::system_closure_type clos );

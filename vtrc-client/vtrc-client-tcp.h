@@ -35,7 +35,7 @@ namespace client {
 
         typedef vtrc::shared_ptr<client_tcp> shared_type;
 
-        typedef common::lowlevel_protocol_factory_type lowlevel_factory_type;
+        typedef common::lowlevel::protocol_factory_type lowlevel_factory_type;
 
         static shared_type create ( boost::asio::io_service &ios,
                                     vtrc_client *client,

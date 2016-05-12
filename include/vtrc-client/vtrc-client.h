@@ -60,9 +60,7 @@ namespace client {
                vtrc::shared_ptr<google::protobuf::Service> (const std::string &)
             > service_factory_type;
 
-    typedef vtrc::function<
-               common::lowlevel_protocol_layer_iface *( )
-            > lowlevel_factory_type;
+    typedef  common::lowlevel::protocol_factory_type lowlevel_factory_type;
 
 #if VTRC_OPENSSL_ENABLED
     typedef vtrc::function<

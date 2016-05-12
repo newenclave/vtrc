@@ -2,6 +2,7 @@
 #include <algorithm>
 
 #include "vtrc-default-lowlevel-protocol.h"
+#include "vtrc-common/vtrc-protocol-accessor-iface.h"
 
 #include "google/protobuf/descriptor.h"
 #include "google/protobuf/message.h"
@@ -10,12 +11,14 @@
 #include "protocol/vtrc-rpc-options.pb.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
 
-namespace vtrc { namespace common {
+#include "boost/system/error_code.hpp"
+
+namespace vtrc { namespace common { namespace lowlevel {
 
     namespace gpb  = google::protobuf;
     namespace spns = data_queue::varint;
 
-    default_lowlevel_protocol::default_lowlevel_protocol( )
+    default_protocol::default_protocol( )
         :hash_maker_(common::hash::create_default( ))
         ,hash_checker_(common::hash::create_default( ))
         ,transformer_(common::transformers::none::create( ))
@@ -26,48 +29,48 @@ namespace vtrc { namespace common {
         queue_.reset( spns::create_parser(opts.max_message_length( ) ) );
     }
 
-    default_lowlevel_protocol::~default_lowlevel_protocol( )
+    default_protocol::~default_protocol( )
     {
         //std::cout << "Destroyed!\n";
     }
 
-    void default_lowlevel_protocol::set_transformer( transformer_iface *ti )
+    void default_protocol::set_transformer( transformer_iface *ti )
     {
         transformer_.reset( ti );
     }
 
-    void default_lowlevel_protocol::set_revertor( transformer_iface *ti )
+    void default_protocol::set_revertor( transformer_iface *ti )
     {
         revertor_.reset( ti );
     }
 
-    void default_lowlevel_protocol::set_hash_maker( hash_iface *hi )
+    void default_protocol::set_hash_maker( hash_iface *hi )
     {
         hash_maker_.reset( hi );
     }
 
-    void default_lowlevel_protocol::set_hash_checker( hash_iface *hi )
+    void default_protocol::set_hash_checker( hash_iface *hi )
     {
         hash_checker_.reset( hi );
     }
 
-    void default_lowlevel_protocol::configure(const rpc::session_options &opts )
+    void default_protocol::configure(const rpc::session_options &opts )
     {
         queue_->set_maximum_length( opts.max_message_length( ) );
         configure_impl( opts );
     }
 
-    void default_lowlevel_protocol::configure_impl( const
+    void default_protocol::configure_impl( const
                                                     rpc::session_options & )
     { }
 
-    std::string default_lowlevel_protocol::serialize_message(
+    std::string default_protocol::serialize_message(
                                  const gpb::Message &mess )
     {
         return mess.SerializeAsString( );
     }
 
-    std::string default_lowlevel_protocol::pack_message( const char *data,
+    std::string default_protocol::pack_message( const char *data,
                                                             size_t length )
     {
         /**
@@ -94,7 +97,7 @@ namespace vtrc { namespace common {
         return result;
     }
 
-    void default_lowlevel_protocol::process_data( const char *data, size_t len )
+    void default_protocol::process_data( const char *data, size_t len )
     {
         if( len > 0 ) {
 
@@ -113,12 +116,12 @@ namespace vtrc { namespace common {
         }
     }
 
-    size_t default_lowlevel_protocol::queue_size( ) const
+    size_t default_protocol::queue_size( ) const
     {
         return queue_->messages( ).size( );
     }
 
-    bool default_lowlevel_protocol::check_message( const std::string &mess )
+    bool default_protocol::check_message( const std::string &mess )
     {
         const size_t hash_length = hash_checker_->hash_size( );
         const size_t diff_len    = mess.size( ) - hash_length;
@@ -134,7 +137,7 @@ namespace vtrc { namespace common {
         return result;
     }
 
-    bool default_lowlevel_protocol::pop_proto_message( gpb::Message &res )
+    bool default_protocol::pop_proto_message( gpb::Message &res )
     {
         std::string &data(queue_->messages( ).front( ));
 
@@ -154,7 +157,7 @@ namespace vtrc { namespace common {
         return checked;
     }
 
-    bool default_lowlevel_protocol::pop_raw_message( std::string &result )
+    bool default_protocol::pop_raw_message( std::string &result )
     {
         std::string &data( queue_->messages( ).front( ) );
 
@@ -179,7 +182,7 @@ namespace vtrc { namespace common {
         return checked;
     }
 
-    bool default_lowlevel_protocol::parse_raw_message(const std::string &mess,
+    bool default_protocol::parse_raw_message(const std::string &mess,
                                             google::protobuf::Message &out )
     {
         const size_t hash_length = hash_checker_->hash_size( );
@@ -187,7 +190,37 @@ namespace vtrc { namespace common {
                                    mess.size( )  - hash_length );
     }
 
-}}
+    void default_protocol::init( protocol_accessor *pa,
+                                 system_closure_type ready_cb )
+    {
+        pa->ready( true );
+        ready_cb( boost::system::error_code( ) );
+    }
+
+    void default_protocol::close( )
+    {
+        ;;;
+    }
+
+    void default_protocol::do_handshake( )
+    {
+        ;;;
+    }
+
+    bool default_protocol::ready( ) const
+    {
+        return true;
+    }
+
+
+    namespace dumb {
+        protocol_layer_iface *create( )
+        {
+            return new default_protocol( );
+        }
+    }
+
+}}}
 
 #if 0
 std::string prepare_data( const char *data, size_t length )

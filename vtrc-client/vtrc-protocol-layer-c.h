@@ -61,7 +61,7 @@ namespace client {
 
     public:
 
-        typedef common::lowlevel_protocol_factory_type lowlevel_factory_type;
+        typedef common::lowlevel::protocol_factory_type lowlevel_factory_type;
 
         void init( );
         void close( );

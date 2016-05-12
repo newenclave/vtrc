@@ -34,15 +34,12 @@ namespace vtrc { namespace client {
     typedef vtrc::function<void (const rpc::errors::container &,
                                  const char *)> init_error_cb;
 
-    typedef common::lowlevel_protocol_layer_iface lowlevel_protocol_layer_iface;
+    typedef common::lowlevel::protocol_layer_iface
+                              lowlevel_protocol_layer_iface;
+
     lowlevel_protocol_layer_iface *create_default_setup( vtrc_client *c );
 
     namespace {
-
-
-        typedef common::lowlevel_protocol_layer_iface connection_setup_iface;
-
-        typedef connection_setup_iface *connection_setup_ptr;
 
         typedef vtrc::shared_ptr<rpc::lowlevel_unit> lowlevel_unit_sptr;
 
@@ -66,16 +63,16 @@ namespace vtrc { namespace client {
 
         typedef vtrc::function<void (void)> stage_funcion_type;
 
-        common::transport_iface     *connection_;
-        protocol_layer_c            *parent_;
-        stage_funcion_type           stage_call_;
-        vtrc_client                 *client_;
-        protocol_signals            *callbacks_;
-        protocol_stage               stage_;
+        common::transport_iface         *connection_;
+        protocol_layer_c                *parent_;
+        stage_funcion_type               stage_call_;
+        vtrc_client                     *client_;
+        protocol_signals                *callbacks_;
+        protocol_stage                   stage_;
 
-        bool                         closed_;
-        connection_setup_ptr         conn_setup_;
-        lowlevel_factory_type        ll_factory_;
+        bool                             closed_;
+        lowlevel_protocol_layer_iface   *conn_setup_;
+        lowlevel_factory_type            ll_factory_;
 
         impl( common::transport_iface *c, vtrc_client *client,
               protocol_signals *cb )

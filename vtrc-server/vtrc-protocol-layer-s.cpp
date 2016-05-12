@@ -34,7 +34,7 @@ namespace vtrc { namespace server {
     namespace bsys  = boost::system;
     namespace basio = boost::asio;
 
-    typedef common::lowlevel_protocol_layer_iface connection_setup_iface;
+    typedef common::lowlevel::protocol_layer_iface connection_setup_iface;
     connection_setup_iface *create_default_setup( application &a,
                                             const rpc::session_options &opts );
 

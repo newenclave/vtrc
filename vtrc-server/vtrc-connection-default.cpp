@@ -57,7 +57,7 @@ namespace vtrc { namespace server {
             return cap.SerializeAsString( );
         }
 
-        struct iface: common::default_lowlevel_protocol {
+        struct iface: common::lowlevel::default_protocol {
 
             common::protocol_accessor *pa_;
             application               &app_;
@@ -345,8 +345,8 @@ namespace vtrc { namespace server {
         };
     }
 
-    common::lowlevel_protocol_layer_iface *create_default_setup( application &a,
-                                             const rpc::session_options &opts )
+    common::lowlevel::protocol_layer_iface *create_default_setup(
+                      application &a, const rpc::session_options &opts )
     {
         return new iface( a, opts );
     }

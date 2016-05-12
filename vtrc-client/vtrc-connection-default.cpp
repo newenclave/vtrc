@@ -47,7 +47,7 @@ namespace vtrc { namespace client {
                                      const char *)> init_error_cb;
         typedef vtrc::function<void (const std::string &)> stage_function_type;
 
-        struct iface: common::default_lowlevel_protocol {
+        struct iface: common::lowlevel::default_protocol {
 
             common::protocol_accessor  *pa_;
             bool                        ready_;
@@ -332,7 +332,7 @@ namespace vtrc { namespace client {
 
     }
 
-    common::lowlevel_protocol_layer_iface *create_default_setup(vtrc_client *c )
+    common::lowlevel::protocol_layer_iface *create_default_setup(vtrc_client *c)
     {
         return new iface( c );
     }

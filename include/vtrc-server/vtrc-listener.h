@@ -73,7 +73,7 @@ namespace server {
 
     public:
 
-        typedef common::lowlevel_protocol_factory_type lowlevel_factory_type;
+        typedef common::lowlevel::protocol_factory_type lowlevel_factory_type;
 
         void set_precall( const common::precall_closure_type &func );
         void set_postcall( const common::postcall_closure_type &func );
