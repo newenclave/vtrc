@@ -131,7 +131,6 @@ namespace vtrc { namespace common {
         void erase_all_slots( );
         void cancel_all_slots( );
 
-
         const rpc::options *get_method_options(
                             const google::protobuf::MethodDescriptor* method );
 
@@ -190,17 +189,25 @@ namespace vtrc { namespace common {
         /**
          * call context
         **/
+        static
         call_context  *push_call_context ( call_context *cc );
+        static
         call_context  *push_call_context ( vtrc::shared_ptr<call_context> cc );
+        static
         void           pop_call_context  ( );
+        static
         call_context  *top_call_context  ( );
+        static
         void           reset_call_stack  ( );
+        static
         void           swap_call_stack   ( call_stack_type& other );
-        void           copy_call_stack   ( call_stack_type& other ) const;
+        static
+        void           copy_call_stack   ( call_stack_type& other );
 
     public:
 
-        const call_context *get_call_context( ) const;
+        static const call_context *get_call_context( );
+
         virtual void drop_service( const std::string &name ) = 0;
         virtual void drop_all_services(  ) = 0;
 

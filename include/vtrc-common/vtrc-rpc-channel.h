@@ -6,6 +6,8 @@
 #include "vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-closure.h"
 
+#include "vtrc-stdint.h"
+
 namespace vtrc { namespace rpc {
     class lowlevel_unit;
     class options;
@@ -27,7 +29,7 @@ namespace vtrc { namespace common  {
              DEFAULT            = 0
             ,DISABLE_WAIT       = 1
             ,USE_CONTEXT_CALL   = 1 << 1
-            //,CONTEXT_REQUIRED   = 1 << 2
+            ,STATIC_CONTEXT     = 1 << 2
         };
 
         typedef rpc::lowlevel_unit                   lowlevel_unit_type;
@@ -93,6 +95,10 @@ namespace vtrc { namespace common  {
 
         void configure_message( common::connection_iface_sptr c,
                                 unsigned specified_call_type,
+                                lowlevel_unit_type &llu ) const;
+
+        void configure_message( vtrc::uint64_t target_id,
+                                unsigned mess_type,
                                 lowlevel_unit_type &llu ) const;
 
         void CallMethod(const google::protobuf::MethodDescriptor* method,

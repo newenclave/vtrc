@@ -24,8 +24,7 @@ namespace vtrc { namespace common {
         call_context( rpc::lowlevel_unit *lowlevel );
         virtual ~call_context( );
 
-        static const call_context *get( connection_iface *iface );
-        static const call_context *get( connection_iface_sptr iface );
+        static const call_context *get(  );
 
         call_context( const call_context &other );
         call_context &operator = ( const call_context &other );

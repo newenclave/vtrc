@@ -39,6 +39,17 @@ namespace vtrc { namespace client {
             return (flags & common::rpc_channel::DISABLE_WAIT);
         }
 
+        bool select_static_context( unsigned flags )
+        {
+            return (flags & common::rpc_channel::STATIC_CONTEXT);
+        }
+
+        bool can_accept_callbacks( const common::call_context *cc )
+        {
+            rpc::lowlevel_unit const *llu  = cc->get_lowlevel_message( );
+            return llu->opt( ).wait( ) && llu->opt( ).accept_callbacks( );
+        }
+
         typedef common::protocol_layer::context_holder context_holder;
     }
 
@@ -49,13 +60,25 @@ namespace vtrc { namespace client {
         rpc_channel_c *parent_;
         unsigned       message_type_;
         bool           disable_wait_;
+        bool           static_context_;
+        bool           accept_callbacks_;
+        vtrc::uint64_t target_id_;
 
         impl(vtrc::shared_ptr<common::connection_iface> c,
                               unsigned flags)
             :connection_(c)
             ,message_type_(select_message_type(flags))
             ,disable_wait_(select_message_wait(flags))
-        { }
+            ,static_context_(select_static_context(flags))
+            ,accept_callbacks_(false)
+            ,target_id_(0)
+        {
+            const common::call_context *cc(common::call_context::get( ));
+            if( cc && can_accept_callbacks( cc ) ) {
+                accept_callbacks_ = true;
+                target_id_ = cc->get_lowlevel_message( )->id( );
+            }
+        }
 
         bool alive( ) const
         {
@@ -64,16 +87,24 @@ namespace vtrc { namespace client {
 
         void set_flags( unsigned flags )
         {
-            message_type_ = select_message_type(flags);
-            disable_wait_ = select_message_wait(flags);
+            message_type_   = select_message_type  ( flags );
+            disable_wait_   = select_message_wait  ( flags );
+            static_context_ = select_static_context( flags );
+        }
+
+        static bool call_context( unsigned mess_type )
+        {
+            return mess_type == message_info::MESSAGE_CLIENT_CALLBACK;
         }
 
         unsigned get_flags( ) const
         {
             return ( disable_wait_ ? common::rpc_channel::DISABLE_WAIT : 0 )
                  | ( message_type_ == message_info::MESSAGE_CLIENT_CALLBACK
-                                    ? common::rpc_channel::USE_CONTEXT_CALL
-                                    : 0 );
+                                   ? common::rpc_channel::USE_CONTEXT_CALL
+                                   : 0 )
+                 | (static_context_ ? common::rpc_channel::STATIC_CONTEXT : 0 )
+                 ;
         }
 
         common::protocol_layer &get_protocol(common::connection_iface_sptr &clk)
@@ -219,9 +250,10 @@ namespace vtrc { namespace client {
         return impl_->send_raw( llu, callbacks );
     }
 
-    void rpc_channel_c::configure_message_for(common::connection_iface_sptr c,
+    void rpc_channel_c::configure_message_for( common::connection_iface_sptr c,
                                    rpc_channel::lowlevel_unit_type &llu) const
     {
+        //if( impl_-> )
         configure_message( c, impl_->message_type_, llu );
     }
 

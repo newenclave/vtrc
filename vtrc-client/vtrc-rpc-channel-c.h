@@ -3,6 +3,7 @@
 
 #include "vtrc-common/vtrc-rpc-channel.h"
 #include "vtrc-memory.h"
+#include "vtrc-stdint.h"
 
 namespace google { namespace protobuf {
     class Message;

@@ -140,11 +140,11 @@ namespace vtrc { namespace common  {
 #endif
     }
 
-    void rpc_channel::configure_message( common::connection_iface_sptr c,
+    void rpc_channel::configure_message(common::connection_iface_sptr c,
                                          unsigned mess_type,
                                          lowlevel_unit_type &llu ) const
     {
-        const common::call_context *cc(common::call_context::get(c));
+        const common::call_context *cc(common::call_context::get( ));
 
         llu.set_id(c->get_protocol( ).next_index( ));
 
@@ -163,6 +163,14 @@ namespace vtrc { namespace common  {
         } else {
             llu.mutable_info( )->set_message_type( mess_type );
         }
+    }
+
+    void rpc_channel::configure_message( vtrc::uint64_t target_id,
+                                         unsigned mess_type,
+                                         lowlevel_unit_type &llu ) const
+    {
+        llu.mutable_info( )->set_message_type( mess_type );
+        llu.set_target_id( target_id );
     }
 
     rpc_channel::lowlevel_unit_sptr rpc_channel::call_and_wait_raw (

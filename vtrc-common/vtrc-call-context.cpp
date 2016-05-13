@@ -41,14 +41,9 @@ namespace vtrc { namespace common {
         delete impl_;
     }
 
-    const call_context *call_context::get( connection_iface *iface )
+    const call_context *call_context::get( )
     {
-        return iface->get_call_context( );
-    }
-
-    const call_context *call_context::get(connection_iface_sptr iface)
-    {
-        return get( iface.get( ) );
+        return protocol_layer::get_call_context( );
     }
 
     call_context::call_context( const call_context &other )

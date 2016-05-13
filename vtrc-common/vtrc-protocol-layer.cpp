@@ -215,6 +215,7 @@ namespace vtrc { namespace common {
             ,postcall_(empty_post( ))
         { }
 
+
         ~impl( )
         {
             //delete ll_processor_; /// temporary
@@ -356,6 +357,7 @@ namespace vtrc { namespace common {
 
         // --------------- sett ----------------- //
 
+        static
         void check_create_stack( )
         {
             if( NULL == context_get( ) ) {
@@ -364,6 +366,7 @@ namespace vtrc { namespace common {
             }
         }
 
+        static
         call_context *push_call_context(vtrc::shared_ptr<call_context> cc)
         {
             check_create_stack( );
@@ -373,11 +376,13 @@ namespace vtrc { namespace common {
             return context_get( )->front( ).get( );
         }
 
+        static
         call_context *push_call_context( call_context *cc)
         {
             return push_call_context( vtrc::shared_ptr<call_context>(cc) );
         }
 
+        static
         void pop_call_context( )
         {
             if( !context_get( )->empty( ) ) {
@@ -389,11 +394,13 @@ namespace vtrc { namespace common {
             }
         }
 
+        static
         void reset_call_context( )
         {
             context_reset(  );
         }
 
+        static
         void swap_call_stack( call_stack_type &other )
         {
             check_create_stack( );
@@ -422,7 +429,8 @@ namespace vtrc { namespace common {
             res.swap( tmp );
         }
 
-        void copy_call_stack( call_stack_type &other ) const
+        static
+        void copy_call_stack( call_stack_type &other )
         {
             if( NULL == context_get( ) ) {
                 other.clear( );
@@ -431,13 +439,15 @@ namespace vtrc { namespace common {
             }
         }
 
-        const call_context *get_call_context( ) const
+        static
+        const call_context *get_call_context( )
         {
             return context_get( ) && !context_get( )->empty( )
                     ? context_get( )->front( ).get( )
                     : NULL;
         }
 
+        static
         call_context *top_call_context( )
         {
             return (context_get( ) && !context_get( )->empty( ))
@@ -906,33 +916,37 @@ namespace vtrc { namespace common {
     call_context *protocol_layer::push_call_context(
                                             vtrc::shared_ptr<call_context> cc)
     {
-        return impl_->push_call_context( cc );
+        return impl::push_call_context( cc );
     }
 
     call_context *protocol_layer::push_call_context( call_context *cc )
     {
-        return impl_->push_call_context( cc );
+        return impl::push_call_context( cc );
     }
 
     void protocol_layer::pop_call_context( )
     {
-        return impl_->pop_call_context( );
+        return impl::pop_call_context( );
     }
 
     void protocol_layer::reset_call_stack( )
     {
-        impl_->reset_call_context(  );
+        impl::reset_call_context(  );
     }
 
     void protocol_layer::swap_call_stack(protocol_layer::call_stack_type &other)
     {
-        impl_->swap_call_stack( other );
+        impl::swap_call_stack( other );
     }
 
-    void protocol_layer::copy_call_stack(
-                                protocol_layer::call_stack_type &other) const
+    void protocol_layer::copy_call_stack(protocol_layer::call_stack_type &other)
     {
-        impl_->copy_call_stack( other );
+        impl::copy_call_stack( other );
+    }
+
+    const call_context *protocol_layer::get_call_context( )
+    {
+        return impl::get_call_context( );
     }
 
     const rpc::options *protocol_layer::get_method_options(
@@ -946,10 +960,6 @@ namespace vtrc { namespace common {
         return impl_->session_opts_;
     }
 
-    const call_context *protocol_layer::get_call_context( ) const
-    {
-        return impl_->get_call_context( );
-    }
 
     void protocol_layer::configure_session( const rpc::session_options &o )
     {
@@ -958,7 +968,7 @@ namespace vtrc { namespace common {
 
     call_context *protocol_layer::top_call_context( )
     {
-        return impl_->top_call_context( );
+        return impl::top_call_context( );
     }
 
     // ===============
