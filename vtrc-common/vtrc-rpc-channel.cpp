@@ -160,6 +160,16 @@ namespace vtrc { namespace common  {
         return impl_->flags_;
     }
 
+    void rpc_channel::set_flag( unsigned value )
+    {
+        impl_->flags_ |= value;
+    }
+
+    void rpc_channel::reset_flag( unsigned value )
+    {
+        impl_->flags_ &= (~value);
+    }
+
     const std::string &rpc_channel::channel_data( )
     {
         return impl_->data_;

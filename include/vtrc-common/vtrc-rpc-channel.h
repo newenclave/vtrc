@@ -48,6 +48,10 @@ namespace vtrc { namespace common  {
         virtual void set_flags( unsigned /*flags*/ );
         virtual unsigned get_flags( ) const;
 
+        void set_flag( unsigned );
+        void reset_flag( unsigned );
+
+
         virtual bool alive( ) const = 0;
 
         static

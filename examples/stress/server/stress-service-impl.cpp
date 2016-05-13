@@ -58,7 +58,9 @@ namespace  {
             ,c_(c)
             ,event_channel_(create_event(c_))
             ,channel_(create_callback(c_))
-        { }
+        {
+            channel_->set_flag( vtrc::common::rpc_channel::STATIC_CONTEXT );
+        }
 
     private:
 
@@ -189,9 +191,6 @@ namespace  {
                 return;
             };
 
-            channel_->set_flags(
-                        vtrc::common::rpc_channel::USE_CONTEXT_CALL |
-                        vtrc::common::rpc_channel::STATIC_CONTEXT );
             channel_->set_static_context( vtrc::common::call_context::get( ) );
 
 //            vtrc::unique_ptr<common::rpc_channel> channel
