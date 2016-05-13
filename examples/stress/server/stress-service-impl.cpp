@@ -191,6 +191,7 @@ namespace  {
                 return;
             };
 
+//            channel_->set_static_context( NULL ); /// thows channel error!
             channel_->set_static_context( vtrc::common::call_context::get( ) );
 
 //            vtrc::unique_ptr<common::rpc_channel> channel
