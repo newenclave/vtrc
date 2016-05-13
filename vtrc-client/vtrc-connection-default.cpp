@@ -49,15 +49,15 @@ namespace vtrc { namespace client {
 
         struct iface: common::lowlevel::default_protocol {
 
-            common::protocol_accessor  *pa_;
+            typedef common::lowlevel::default_protocol parent_type;
+
             bool                        ready_;
             stage_function_type         stage_call_;
             vtrc_client                *client_;
             protocol_stage              stage_;
 
             iface( vtrc_client *client )
-                :pa_(NULL)
-                ,ready_(false)
+                :ready_(false)
                 ,client_(client)
                 ,stage_(STAGE_HELLO)
             {
@@ -75,7 +75,7 @@ namespace vtrc { namespace client {
             void send_proto_message( const gpb::MessageLite &mess )
             {
                 std::string s(mess.SerializeAsString( ));
-                pa_->write( s, default_cb, true );
+                accessor( )->write( s, default_cb, true );
             }
 
             void send_proto_message( const gpb::MessageLite &mess,
@@ -83,7 +83,7 @@ namespace vtrc { namespace client {
                                      bool on_send )
             {
                 std::string s(mess.SerializeAsString( ));
-                pa_->write( s, closure, on_send );
+                accessor()->write( s, closure, on_send );
             }
 
             rpc::errors::container create_error( unsigned code,
@@ -132,16 +132,18 @@ namespace vtrc { namespace client {
             {
                 switch ( stage_ ) {
                 case STAGE_HELLO:
-                    pa_->error( create_error( rpc::errors::ERR_BUSY, "" ),
+                    accessor( )->error( create_error(
+                                rpc::errors::ERR_BUSY, "" ),
                                 "Server in not ready");
                     break;
                 case STAGE_SETUP:
-                    pa_->error( create_error( rpc::errors::ERR_INVALID_VALUE,
-                                               "" ),
-                                "Bad setup info.");
+                    accessor( )->error(
+                                create_error( rpc::errors::ERR_INVALID_VALUE,
+                                "" ), "Bad setup info.");
                     break;
                 case STAGE_READY:
-                    pa_->error( create_error( rpc::errors::ERR_INTERNAL, "" ),
+                    accessor( )->error( create_error(
+                                rpc::errors::ERR_INTERNAL, "" ),
                                 "Bad session key.");
                     break;
                 default:
@@ -165,16 +167,17 @@ namespace vtrc { namespace client {
                 bool check = capsule.ParseFromString( data );
 
                 if( !check ) {
-                    pa_->error( create_error( rpc::errors::ERR_INTERNAL, "" ),
+                    accessor( )->error( create_error(
+                           rpc::errors::ERR_INTERNAL, "" ),
                            "Server's 'Ready' has bad hash. Bad session key." );
-                    pa_->close( );
+                    accessor( )->close( );
                     return;
                 }
 
                 if( !capsule.ready( ) ) {
-                    pa_->error( capsule.error( ),
+                    accessor( )->error( capsule.error( ),
                                  "Server is not ready; stage: 'Setup'" );
-                    pa_->close( );
+                    accessor( )->close( );
                     return;
                 }
 
@@ -219,26 +222,27 @@ namespace vtrc { namespace client {
                 bool check = capsule.ParseFromString( data );
 
                 if( !check ) {
-                    pa_->error( create_error( rpc::errors::ERR_INTERNAL, "" ),
+                    accessor( )->error( create_error(
+                            rpc::errors::ERR_INTERNAL, "" ),
                            "Server's 'Ready' has bad hash. Bad session key." );
-                    pa_->close( );
+                    accessor( )->close( );
                     return;
                 }
 
                 if( !capsule.ready( ) ) {
                     if( capsule.error( ).has_additional( ) ) {
-                        pa_->error( capsule.error( ),
+                        accessor( )->error( capsule.error( ),
                                     capsule.error( ).additional( ).c_str( ) );
 
                     } else {
-                        pa_->error( capsule.error( ),
+                        accessor( )->error( capsule.error( ),
                                     "Server is not ready; stage: 'Ready'" );
                     }
                 }
 
                 rpc::auth::session_setup opts;
                 opts.ParseFromString( capsule.body( ) );
-                pa_->configure_session( opts.options( ) );
+                accessor( )->configure_session( opts.options( ) );
 
                 ready_ = true;
             }
@@ -251,16 +255,17 @@ namespace vtrc { namespace client {
                 bool check = capsule.ParseFromString( data );
 
                 if( !check ) {
-                    pa_->error( create_error( rpc::errors::ERR_INTERNAL, "" ),
+                    accessor( )->error( create_error(
+                                 rpc::errors::ERR_INTERNAL, "" ),
                                  "Server's 'Hello' has bad hash." );
-                    pa_->close( );
+                    accessor( )->close( );
                     return;
                 }
 
                 if( !capsule.ready( ) ) {
-                    pa_->error( capsule.error( ),
+                    accessor( )->error( capsule.error( ),
                                  "Server is not ready; stage: 'Hello'");
-                    pa_->close( );
+                    accessor( )->close( );
                     return;
                 }
 
@@ -299,8 +304,8 @@ namespace vtrc { namespace client {
 
             void init( common::protocol_accessor *pa,
                        common::system_closure_type cb )
-            {                
-                pa_ = pa;
+            {
+                set_accessor( pa );
                 cb( boost::system::error_code( ) );
 //                ready_ = true;
 //                pa_->ready( true );
@@ -312,13 +317,14 @@ namespace vtrc { namespace client {
             {
                 std::string data;
                 if( !pop_raw_message( data ) ) {
-                    pa_->error( create_error( rpc::errors::ERR_INTERNAL, "" ),
+                    accessor( )->error(
+                                create_error( rpc::errors::ERR_INTERNAL, "" ),
                                 "Bad hash." );
-                    pa_->close( );
+                    accessor( )->close( );
                 } else {
                     stage_call_( data );
                     if( ready_ ) {
-                        pa_->ready( ready_ );
+                        accessor( )->ready( ready_ );
                     }
                 }
             }

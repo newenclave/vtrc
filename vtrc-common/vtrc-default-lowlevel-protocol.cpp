@@ -23,6 +23,7 @@ namespace vtrc { namespace common { namespace lowlevel {
         ,hash_checker_(common::hash::create_default( ))
         ,transformer_(common::transformers::none::create( ))
         ,revertor_(common::transformers::none::create( ))
+        ,pa_(NULL)
 
     {
         rpc::session_options opts = defaults::session_options( );
@@ -60,8 +61,17 @@ namespace vtrc { namespace common { namespace lowlevel {
         configure_impl( opts );
     }
 
-    void default_protocol::configure_impl( const
-                                                    rpc::session_options & )
+    protocol_accessor *default_protocol::accessor( )
+    {
+        return pa_;
+    }
+
+    void default_protocol::set_accessor( protocol_accessor *pa )
+    {
+        pa_ = pa;
+    }
+
+    void default_protocol::configure_impl( const rpc::session_options & )
     { }
 
     std::string default_protocol::serialize_message(
@@ -110,9 +120,12 @@ namespace vtrc { namespace common { namespace lowlevel {
 
             //queue_->append( &next_data[0], next_data.size( ));
 
+            size_t old = queue_->messages( ).size( );
             queue_->append( data, len );
             queue_->process( );
-
+            if( old < queue_->messages( ).size( ) ) {
+                accessor( )->message_ready( );
+            }
         }
     }
 
@@ -190,11 +203,11 @@ namespace vtrc { namespace common { namespace lowlevel {
                                    mess.size( )  - hash_length );
     }
 
-    void default_protocol::init( protocol_accessor *pa,
-                                 system_closure_type ready_cb )
+    void default_protocol::init( protocol_accessor *pa, system_closure_type cb )
     {
+        set_accessor( pa );
         pa->ready( true );
-        ready_cb( boost::system::error_code( ) );
+        cb( boost::system::error_code( ) );
     }
 
     void default_protocol::close( )
@@ -211,7 +224,6 @@ namespace vtrc { namespace common { namespace lowlevel {
     {
         return true;
     }
-
 
     namespace dumb {
         protocol_layer_iface *create( )

@@ -327,7 +327,12 @@ namespace vtrc { namespace server {
             conn_setup_->init( this, clos );
         }
 
-        void data_ready( )
+        void message_ready( )
+        {
+            data_ready_( );
+        }
+
+        void data_ready_( )
         {
             common::connection_iface_sptr lckd( keeper_.lock( ) );
             if( !lckd ) {
@@ -335,6 +340,9 @@ namespace vtrc { namespace server {
             }
             stage_call_( );
         }
+
+        void data_ready( )
+        { }
 
     };
 
@@ -390,11 +398,6 @@ namespace vtrc { namespace server {
     const std::string &protocol_layer_s::client_id( ) const
     {
         return impl_->client_id( );
-    }
-
-    void protocol_layer_s::on_data_ready( )
-    {
-        impl_->data_ready( );
     }
 
     common::rpc_service_wrapper_sptr protocol_layer_s::get_service_by_name(

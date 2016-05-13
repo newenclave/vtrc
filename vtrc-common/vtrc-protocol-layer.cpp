@@ -261,13 +261,7 @@ namespace vtrc { namespace common {
 
         void process_data( const char *data, size_t length )
         {
-            const size_t old_size = ll_processor_->queue_size( );
-
             ll_processor_->process_data( data, length );
-
-            if( ll_processor_->queue_size( ) > old_size ) {
-                parent_->on_data_ready( );
-            }
         }
 
         bool parse_and_pop( gpb::Message &result )

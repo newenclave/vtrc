@@ -32,6 +32,8 @@ namespace vtrc { namespace common {
         virtual void close( ) = 0;
         virtual void ready( bool value ) = 0;
 
+        virtual void message_ready( ) = 0;
+
         /// for client-side only
         virtual void configure_session( const vtrc::rpc::session_options & )
         { }

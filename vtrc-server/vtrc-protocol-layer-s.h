@@ -53,10 +53,6 @@ namespace server {
         common::rpc_service_wrapper_sptr get_service_by_name(
                                                     const std::string &name );
 
-    private:
-
-        void on_data_ready( );
-
     };
 
 }}

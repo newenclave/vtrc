@@ -18,6 +18,8 @@ namespace vtrc {  namespace common { namespace lowlevel {
         vtrc::unique_ptr<transformer_iface>      revertor_;
         vtrc::unique_ptr<data_queue::queue_base> queue_;
 
+        protocol_accessor *pa_;
+
     public:
 
         virtual void init( protocol_accessor *pa,
@@ -46,7 +48,10 @@ namespace vtrc {  namespace common { namespace lowlevel {
                                        google::protobuf::Message &out );
 
     protected:
+
         virtual void configure_impl( const rpc::session_options &opts );
+        void set_accessor( protocol_accessor *pa );
+        protocol_accessor *accessor( );
 
     };
 }}}

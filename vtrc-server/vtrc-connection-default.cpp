@@ -59,7 +59,8 @@ namespace vtrc { namespace server {
 
         struct iface: common::lowlevel::default_protocol {
 
-            common::protocol_accessor *pa_;
+            typedef common::lowlevel::default_protocol parent_type;
+
             application               &app_;
             bool                       ready_;
             common::delayed_call       keepalive_calls_;
@@ -68,8 +69,7 @@ namespace vtrc { namespace server {
             rpc::session_options       session_opts_;
 
             iface( application &a, const rpc::session_options &opts )
-                :pa_(NULL)
-                ,app_(a)
+                :app_(a)
                 ,ready_(false)
                 ,keepalive_calls_(a.get_io_service( ))
                 ,session_opts_(opts)
@@ -81,7 +81,7 @@ namespace vtrc { namespace server {
 
             common::connection_iface *conn( )
             {
-                return pa_->connection( );
+                return accessor( )->connection( );
             }
 
             void close( )
@@ -111,7 +111,7 @@ namespace vtrc { namespace server {
                                      bool on_send)
             {
                 std::string s( mess.SerializeAsString( ) );
-                pa_->write( s, closure, on_send );
+                accessor( )->write( s, closure, on_send );
             }
 
             void close_client( const bs::error_code &      /*err */,
@@ -164,7 +164,7 @@ namespace vtrc { namespace server {
                 rpc::auth::init_capsule capsule;
 
                 if(!capsule.ParseFromString( data )) {
-                    pa_->close( );
+                    accessor( )->close( );
                     return;
                 }
 
@@ -255,7 +255,7 @@ namespace vtrc { namespace server {
                 rpc::auth::init_capsule capsule;
 
                 if(!capsule.ParseFromString( data )) {
-                    pa_->close( );
+                    accessor( )->close( );
                     return;
                 }
 
@@ -273,12 +273,12 @@ namespace vtrc { namespace server {
                             common::hash::create_by_index( cs.hash( ) ) );
 
                 if( !new_maker.get( ) || !new_checker.get( ) ) {
-                    pa_->close( );
+                    accessor( )->close( );
                     return;
                 }
 
                 client_id_.assign( cs.id( ) );
-                pa_->set_client_id( cs.id( ) );
+                accessor( )->set_client_id( cs.id( ) );
 
                 set_hash_checker( new_checker.release( ) );
                 set_hash_maker( new_maker.release( ) );
@@ -299,22 +299,21 @@ namespace vtrc { namespace server {
 
             void write( const std::string &data )
             {
-                pa_->write( data, default_cb, true );
+                accessor( )->write( data, default_cb, true );
             }
 
             void init( common::protocol_accessor *pa,
                        common::system_closure_type cb )
             {
+                set_accessor( pa );
                 static const std::string data(first_message( ));
-                pa_ = pa;
-
 //                ready_ = true;
 //                pa_->ready( true );
 //                cb( boost::system::error_code( ) );
 //                return;
 
                 const unsigned to = session_opts_.init_timeout( );
-                pa_->write( data, cb, true );
+                accessor( )->write( data, cb, true );
                 keepalive_calls_.call_from_now(
                             vtrc::bind( &iface::on_init_timeout, this,
                                          vtrc::placeholders::_1 ),
@@ -326,13 +325,14 @@ namespace vtrc { namespace server {
             {
                 std::string data;
                 if( !pop_raw_message( data ) ) {
-                    pa_->error( create_error( rpc::errors::ERR_INTERNAL, "" ),
-                                "Bad hash." );
-                    pa_->close( );
+                    accessor( )->error( create_error(
+                                        rpc::errors::ERR_INTERNAL, "" ),
+                                        "Bad hash." );
+                    accessor( )->close( );
                 } else {
                     stage_function_( data );
                     if( ready_ ) {
-                        pa_->ready( ready_ );
+                        accessor( )->ready( ready_ );
                     }
                 }
             }

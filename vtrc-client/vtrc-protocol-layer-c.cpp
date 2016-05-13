@@ -279,7 +279,7 @@ namespace vtrc { namespace client {
             }
         }
 
-        void data_ready( )
+        void message_ready( )
         {
             stage_call_( );
         }
@@ -328,11 +328,6 @@ namespace vtrc { namespace client {
     const std::string &protocol_layer_c::client_id( ) const
     {
         return impl_->client_id( );
-    }
-
-    void protocol_layer_c::on_data_ready( )
-    {
-        impl_->data_ready( );
     }
 
     void protocol_layer_c::on_init_error( const rpc::errors::container &error,

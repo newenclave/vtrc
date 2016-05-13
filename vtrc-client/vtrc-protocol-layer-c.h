@@ -74,7 +74,6 @@ namespace client {
 
     private:
 
-        void on_data_ready( );
         void on_init_error( const rpc::errors::container &error,
                             const char *message );
 
