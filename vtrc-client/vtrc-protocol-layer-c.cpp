@@ -123,7 +123,8 @@ namespace vtrc { namespace client {
             stage_call_ = value
                         ? vtrc::bind( &this_type::on_rpc_process, this )
                         : vtrc::bind( &this_type::call_setup_function, this );
-            on_ready( value );
+            parent_->set_ready( value );
+            callbacks_->on_ready( value );
         }
 
         void close( )
@@ -178,20 +179,6 @@ namespace vtrc { namespace client {
             }
         }
 
-        void send_proto_message( const gpb::MessageLite &mess ) const
-        {
-            std::string s(mess.SerializeAsString( ));
-            connection_->write(s.c_str( ), s.size( ) );
-        }
-
-        void send_proto_message( const gpb::MessageLite &mess,
-                                 common::system_closure_type closure,
-                                 bool on_send ) const
-        {
-            std::string s(mess.SerializeAsString( ));
-            connection_->write(s.c_str( ), s.size( ), closure, on_send );
-        }
-
         void process_event_impl( vtrc_client_wptr client,
                                  lowlevel_unit_sptr llu)
         {
@@ -202,7 +189,7 @@ namespace vtrc { namespace client {
             parent_->make_local_call( llu );
         }
 
-        void process_event( lowlevel_unit_sptr &llu )
+        void process_call( lowlevel_unit_sptr &llu )
         {
             if ( llu->id( ) != 0 ) {
                 client_->get_rpc_service( ).post(
@@ -223,25 +210,21 @@ namespace vtrc { namespace client {
 
         }
 
-        void process_call( lowlevel_unit_sptr &llu )
+        void process_answer( lowlevel_unit_sptr &llu )
         {
             parent_->push_rpc_message( llu->id( ), llu );
         }
 
-        void process_callback( lowlevel_unit_sptr &llu )
+        void process_insertion( lowlevel_unit_sptr &llu )
         {
-            parent_->push_rpc_message( llu->target_id( ), llu );
+            if( 0 == parent_->push_rpc_message( llu->target_id( ), llu ) ) {
+                process_call( llu );
+            }
         }
 
         void process_invalid( lowlevel_unit_sptr &llu )
         {
 
-        }
-
-        void on_ready( bool ready )
-        {
-            parent_->set_ready( ready );
-            callbacks_->on_ready( );
         }
 
         void on_rpc_process( )
@@ -270,12 +253,12 @@ namespace vtrc { namespace client {
 
                 /// SERVER_CALL = request; do not use id
                 case rpc::message_info::MESSAGE_SERVER_CALL:
-                    process_event( llu );
+                    process_call( llu );
                     break;
 
                 /// SERVER_CALLBACK = request; use target_id
                 case rpc::message_info::MESSAGE_SERVER_CALLBACK:
-                    process_callback( llu );
+                    process_insertion( llu );
                     break;
 
                 /// internals; not implemented yet
@@ -288,22 +271,12 @@ namespace vtrc { namespace client {
                 /// answers; use id
                 case rpc::message_info::MESSAGE_CLIENT_CALL:
                 case rpc::message_info::MESSAGE_CLIENT_CALLBACK:
-                    process_call( llu );
+                    process_answer( llu );
                     break;
                 default:
                     process_invalid( llu );
                 }
             }
-        }
-
-        static bool server_has_transformer( rpc::auth::init_capsule const &cap,
-                                            unsigned transformer_type )
-        {
-            rpc::auth::init_protocol init;
-            init.ParseFromString( cap.body( ) );
-            return std::find( init.transform_supported( ).begin( ),
-                      init.transform_supported( ).end( ),
-                      transformer_type ) != init.transform_supported( ).end( );
         }
 
         void data_ready( )

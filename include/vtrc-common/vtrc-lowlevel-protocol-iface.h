@@ -49,6 +49,10 @@ namespace vtrc { namespace common {
         /// accept portion os the data and unpuck message is exists
         virtual void process_data( const char *data, size_t length ) = 0;
 
+        /// parse raw data
+        virtual bool parse_raw_message( const std::string &mess,
+                                google::protobuf::Message &out ) = 0;
+
         /// ready messages count
         virtual size_t queue_size( ) const = 0;
 
@@ -61,10 +65,6 @@ namespace vtrc { namespace common {
 
         /// get and pop raw message data
         virtual bool pop_raw_message( std::string &result ) = 0;
-
-        /// parse raw data
-        virtual bool parse_raw_message( const std::string &mess,
-                                google::protobuf::Message &out ) = 0;
 
     };
 

@@ -263,20 +263,16 @@ namespace vtrc { namespace server {
             }
         }
 
-        void push_event_answer( lowlevel_unit_sptr llu,
-                                common::connection_iface_sptr /*conn*/ )
-        {
-            parent_->push_rpc_message( llu->id( ), llu );
-        }
-
-        void process_event_cb( lowlevel_unit_sptr &llu )
+        void process_answer( lowlevel_unit_sptr &llu )
         {
             parent_->push_rpc_message( llu->id( ), llu );
         }
 
         void process_insertion( lowlevel_unit_sptr &llu )
         {
-            parent_->push_rpc_message( llu->target_id( ), llu );
+            if( 0 == parent_->push_rpc_message( llu->target_id( ), llu ) ) {
+                process_call( llu );
+            }
         }
 
         void on_rcp_call_ready( )
@@ -305,7 +301,7 @@ namespace vtrc { namespace server {
                 /// answers;
                 case message_info::MESSAGE_SERVER_CALL:
                 case message_info::MESSAGE_SERVER_CALLBACK:
-                    process_event_cb( llu );
+                    process_answer( llu );
                     break;
                 default:
                     break;

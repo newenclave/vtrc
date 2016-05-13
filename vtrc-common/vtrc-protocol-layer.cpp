@@ -174,147 +174,6 @@ namespace vtrc { namespace common {
 
     }
 
-    struct lowlevel_protocol_layer_ {
-
-        vtrc::unique_ptr<hash_iface>             hash_maker_;
-        vtrc::unique_ptr<hash_iface>             hash_checker_;
-        vtrc::unique_ptr<transformer_iface>      transformer_;
-        vtrc::unique_ptr<transformer_iface>      revertor_;
-        vtrc::unique_ptr<data_queue::queue_base> queue_;
-
-        lowlevel_protocol_layer_( const rpc::session_options &opts )
-            :hash_maker_(common::hash::create_default( ))
-            ,hash_checker_(common::hash::create_default( ))
-            ,transformer_(common::transformers::none::create( ))
-            ,revertor_(common::transformers::none::create( ))
-            ,queue_(size_policy_ns::create_parser(opts.max_message_length( )))
-        { }
-
-        void configure( const rpc::session_options &opts )
-        {
-            queue_->set_maximum_length( opts.max_message_length( ) );
-        }
-
-        std::string process_message( const char *data, size_t length )
-        {
-            /**
-             * message_header = <packed_size(data_length + hash_length)>
-            **/
-            const size_t body_len = length + hash_maker_->hash_size( );
-            std::string result( size_policy_ns::pack_size( body_len ));
-
-            /** here is:
-             *  message_body = <hash(data)> + <data>
-            **/
-            std::string body( hash_maker_->get_data_hash( data, length ) );
-            body.append( data, data + length );
-
-            /**
-             * message =  message_header + <transform( message )>
-            **/
-            transformer_->transform( body );
-//            transformer_->transform( body.empty( ) ? NULL : &body[0],
-//                                     body.size( ) );
-
-            result.append( body.begin( ), body.end( ) );
-
-            return result;
-        }
-
-        void process_data( const char *data, size_t length )
-        {
-            if( length > 0 ) {
-
-                //std::string next_data(data, data + length);
-
-                /**
-                 * message = <size>transformed(data)
-                 * we must revert data in 'parse_and_pop'
-                **/
-
-                //queue_->append( &next_data[0], next_data.size( ));
-
-                queue_->append( data, length );
-                queue_->process( );
-
-            }
-
-        }
-
-        size_t queue_size( ) const
-        {
-            return queue_->messages( ).size( );
-        }
-
-        bool check_message( const std::string &mess )
-        {
-            const size_t hash_length = hash_checker_->hash_size( );
-            const size_t diff_len    = mess.size( ) - hash_length;
-
-            bool result = false;
-
-            if( mess.size( ) >= hash_length ) {
-                result = hash_checker_->
-                         check_data_hash( mess.c_str( ) + hash_length,
-                                          diff_len,
-                                          mess.c_str( ) );
-            }
-            return result;
-        }
-
-        bool pop_proto_message( gpb::MessageLite &result )
-        {
-            std::string &data(queue_->messages( ).front( ));
-
-            /// revert message
-            revertor_->transform( data );
-//            revertor_->transform( data.empty( ) ? NULL : &data[0],
-//                                  data.size( ) );
-            /// check hash
-            bool checked = check_message( data );
-            if( checked ) {
-                /// parse
-                checked = parse_raw_message( data, result );
-            }
-
-            /// in all cases we pop message
-            queue_->messages( ).pop_front( );
-            return checked;
-        }
-
-        bool pop_raw_message( std::string &result )
-        {
-            std::string &data( queue_->messages( ).front( ) );
-
-            /// revert message
-            revertor_->transform( data );
-//            revertor_->transform( data.empty( ) ? NULL : &data[0],
-//                                  data.size( ) );
-
-            /// check hash
-            bool checked = check_message( data );
-            if( checked ) {
-                const size_t hash_length = hash_checker_->hash_size( );
-                result.assign( data.c_str( ) + hash_length,
-                               data.size( )  - hash_length );
-            }
-
-            /// in all cases we pop message
-            queue_->messages( ).pop_front( );
-
-            return checked;
-        }
-
-        bool parse_raw_message( const std::string &mess, gpb::MessageLite &out )
-        {
-            const size_t hash_length = hash_checker_->hash_size( );
-            return out.ParseFromArray( mess.c_str( ) + hash_length,
-                                       mess.size( )  - hash_length );
-        }
-
-    };
-
-
     struct protocol_layer::impl {
 
         typedef lowlevel::protocol_layer_uptr lowlevel_protocol_layer;
@@ -586,14 +445,14 @@ namespace vtrc { namespace common {
                     : NULL;
         }
 
-        void push_rpc_message(uint64_t slot_id, lowlevel_unit_sptr mess)
+        size_t push_rpc_message(uint64_t slot_id, lowlevel_unit_sptr mess)
         {
-            rpc_queue_.write_queue_if_exists( slot_id, mess );
+            return rpc_queue_.write_queue_if_exists( slot_id, mess );
         }
 
-        void push_rpc_message_all( lowlevel_unit_sptr mess)
+        size_t push_rpc_message_all( lowlevel_unit_sptr mess)
         {
-            rpc_queue_.write_all( mess );
+            return rpc_queue_.write_all( mess );
         }
 
         void call_rpc_method( uint64_t slot_id, const lowlevel_unit_type &llu )
@@ -648,6 +507,11 @@ namespace vtrc { namespace common {
         void cancel_slot( uint64_t slot_id )
         {
             rpc_queue_.cancel( slot_id );
+        }
+
+        bool slot_exists( uint64_t slot_id ) const
+        {
+            return rpc_queue_.queue_exists( slot_id );
         }
 
         void set_level( unsigned level )
@@ -1185,6 +1049,11 @@ namespace vtrc { namespace common {
         impl_->cancel_slot( slot_id );
     }
 
+    bool protocol_layer::slot_exists( uint64_t slot_id ) const
+    {
+        return impl_->slot_exists( slot_id );
+    }
+
     void protocol_layer::cancel_all_slots( )
     {
         impl_->cancel_all_slots( );
@@ -1200,15 +1069,15 @@ namespace vtrc { namespace common {
         impl_->erase_all_slots( );
     }
 
-    void protocol_layer::push_rpc_message(uint64_t slot_id,
-                                          lowlevel_unit_sptr mess)
+    size_t protocol_layer::push_rpc_message( uint64_t slot_id,
+                                             lowlevel_unit_sptr mess)
     {
-        impl_->push_rpc_message(slot_id, mess);
+        return impl_->push_rpc_message(slot_id, mess);
     }
 
-    void protocol_layer::push_rpc_message_all( lowlevel_unit_sptr mess)
+    size_t protocol_layer::push_rpc_message_all( lowlevel_unit_sptr mess)
     {
-        impl_->push_rpc_message_all( mess );
+        return impl_->push_rpc_message_all( mess );
     }
 
     void protocol_layer::on_write_error(const boost::system::error_code &err)

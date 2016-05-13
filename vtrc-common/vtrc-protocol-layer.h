@@ -126,9 +126,11 @@ namespace vtrc { namespace common {
 
         void erase_slot ( uint64_t slot_id );
         void cancel_slot( uint64_t slot_id );
+        bool slot_exists( uint64_t slot_id ) const;
 
         void erase_all_slots( );
         void cancel_all_slots( );
+
 
         const rpc::options *get_method_options(
                             const google::protobuf::MethodDescriptor* method );
@@ -206,9 +208,9 @@ namespace vtrc { namespace common {
 
         void configure_session( const rpc::session_options &opts );
 
-        void push_rpc_message( uint64_t slot_id, lowlevel_unit_sptr mess);
+        size_t push_rpc_message( uint64_t slot_id, lowlevel_unit_sptr mess);
 
-        void push_rpc_message_all( lowlevel_unit_sptr mess );
+        size_t push_rpc_message_all( lowlevel_unit_sptr mess );
 
         size_t ready_messages_count( ) const;
         bool   message_queue_empty( ) const;

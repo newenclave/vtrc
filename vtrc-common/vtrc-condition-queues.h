@@ -274,21 +274,26 @@ namespace vtrc { namespace common {
         }
 
         static void write_all_impl( typename map_type::value_type &f,
-                                    const queue_value_type &data )
+                                    const queue_value_type &data,
+                                    size_t &cnt )
         {
             push_value_data( *(f.second), data );
+            ++cnt;
         }
 
-        void write_all( const queue_value_type &data )
+        size_t write_all( const queue_value_type &data )
         {
             vtrc::shared_lock lck(lock_);
+            size_t count = 0;
             std::for_each( store_.begin( ), store_.end( ),
                            vtrc::bind( this_type::write_all_impl,
                                        vtrc::placeholders::_1,
-                                       vtrc::cref(data)));
+                                       vtrc::cref(data),
+                                       vtrc::ref(count) ) );
+            return count;
         }
 
-        void write_queue_if_exists( const key_type &key,
+        bool write_queue_if_exists( const key_type &key,
                                     const queue_value_type &data)
         {
 
@@ -300,7 +305,9 @@ namespace vtrc { namespace common {
 
             if( value )  {
                 push_value_data( *value, data );
+                return true;
             }
+            return false;
         }
 
         void write_queue( const key_type &key, const queue_type &data )
@@ -340,7 +347,7 @@ namespace vtrc { namespace common {
 
         bool queue_exists( const key_type &key ) const
         {
-            unique_lock lck(lock_);
+            vtrc::shared_lock lck(lock_);
             return store_.find( key ) != store_.end( );
         }
 

@@ -94,7 +94,7 @@ namespace vtrc { namespace client {
             parent_->on_disconnect_( );
         }
 
-        void on_ready( )
+        void on_ready( bool /*value*/ )
         {
             parent_->on_ready_( );
         }

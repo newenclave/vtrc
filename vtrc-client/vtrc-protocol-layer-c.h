@@ -38,7 +38,7 @@ namespace client {
         virtual void on_disconnect( )
         { }
 
-        virtual void on_ready( )
+        virtual void on_ready( bool )
         { }
 
     };
