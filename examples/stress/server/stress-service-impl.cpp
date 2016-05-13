@@ -59,7 +59,7 @@ namespace  {
             ,event_channel_(create_event(c_))
             ,channel_(create_callback(c_))
         {
-            channel_->set_flag( vtrc::common::rpc_channel::STATIC_CONTEXT );
+            channel_->set_flag( vtrc::common::rpc_channel::USE_STATIC_CONTEXT );
         }
 
     private:

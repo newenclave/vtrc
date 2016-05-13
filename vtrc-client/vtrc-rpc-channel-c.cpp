@@ -69,7 +69,7 @@ namespace vtrc { namespace client {
 
         bool static_context( ) const
         {
-            return (flags( ) & common::rpc_channel::STATIC_CONTEXT);
+            return (flags( ) & common::rpc_channel::USE_STATIC_CONTEXT);
         }
 
         unsigned message_type( ) const

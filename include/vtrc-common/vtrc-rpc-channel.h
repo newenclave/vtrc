@@ -30,7 +30,7 @@ namespace vtrc { namespace common  {
              DEFAULT            = 0
             ,DISABLE_WAIT       = 1
             ,USE_CONTEXT_CALL   = 1 << 1
-            ,STATIC_CONTEXT     = 1 << 2
+            ,USE_STATIC_CONTEXT = 1 << 2 /// only with USE_CONTEXT_CALL
         };
 
         typedef rpc::lowlevel_unit                   lowlevel_unit_type;

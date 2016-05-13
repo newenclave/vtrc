@@ -185,7 +185,7 @@ namespace vtrc { namespace common  {
 
         if( mess_type == impl_->callback_type_ ) {
 
-            if( get_flags( ) & rpc_channel::STATIC_CONTEXT ) {
+            if( get_flags( ) & rpc_channel::USE_STATIC_CONTEXT ) {
 
                 if( !impl_->accept_callbacks_ ) {
                     impl_->chan_error_cb_( "Invalid context." );
