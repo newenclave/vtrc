@@ -28,18 +28,6 @@ namespace vtrc { namespace server {
         const unsigned direct_call_type = message_info::MESSAGE_SERVER_CALL;
         const unsigned callback_type    = message_info::MESSAGE_SERVER_CALLBACK;
 
-        unsigned select_message_type ( unsigned flags )
-        {
-            return ( flags & common::rpc_channel::USE_CONTEXT_CALL )
-                   ? message_info::MESSAGE_SERVER_CALLBACK
-                   : message_info::MESSAGE_SERVER_CALL;
-        }
-
-        bool select_message_wait ( unsigned flags )
-        {
-            return (flags & common::rpc_channel::DISABLE_WAIT);
-        }
-
         namespace gpb = google::protobuf;
 
         typedef rpc::lowlevel_unit                   lowlevel_unit_type;
@@ -50,36 +38,32 @@ namespace vtrc { namespace server {
         class unicast_channel: public common::rpc_channel {
 
             common::connection_iface_wptr client_;
-            unsigned                      message_type_;
-            bool                          disable_wait_;
 
         public:
 
             unicast_channel( common::connection_iface_sptr c,
-                             unsigned mess_type, bool disable_wait)
+                             unsigned flags )
                 :common::rpc_channel(direct_call_type, callback_type)
                 ,client_(c)
-                ,message_type_(mess_type)
-                ,disable_wait_(disable_wait)
-            { }
+            {
+                set_flags( flags );
+            }
 
             bool alive( ) const
             {
                 return client_.lock( ) != NULL;
             }
 
-            void set_flags( unsigned flags )
+            bool disable_wait( ) const
             {
-                message_type_ = select_message_type(flags);
-                disable_wait_ = select_message_wait(flags);
+                return (get_flags( ) & common::rpc_channel::DISABLE_WAIT);
             }
 
-            unsigned get_flags( ) const
+            unsigned message_type( ) const
             {
-                return ( disable_wait_ ? common::rpc_channel::DISABLE_WAIT : 0 )
-                     | ( message_type_ == message_info::MESSAGE_SERVER_CALLBACK
-                                        ? common::rpc_channel::USE_CONTEXT_CALL
-                                        : 0 );
+                return ( get_flags( ) & common::rpc_channel::USE_CONTEXT_CALL )
+                       ? message_info::MESSAGE_SERVER_CALLBACK
+                       : message_info::MESSAGE_SERVER_CALL;
             }
 
             lowlevel_unit_sptr raw_call( lowlevel_unit_sptr llu,
@@ -94,7 +78,7 @@ namespace vtrc { namespace server {
 
                 const rpc::options call_opt;
 
-                configure_message( clnt, message_type_, *llu );
+                configure_message( clnt, message_type( ), *llu );
                 const gpb::uint64 call_id = llu->id( );
 
                 lowlevel_unit_sptr res;
@@ -129,7 +113,7 @@ namespace vtrc { namespace server {
                          ( get_protocol( *clnt ).get_method_options( met ) );
 
 
-                if( disable_wait_ ) {
+                if( disable_wait( ) ) {
                     llu->mutable_opt( )->set_wait(false);
                 } else {
                     llu->mutable_opt( )->set_wait( call_opt->wait( ) );
@@ -137,7 +121,7 @@ namespace vtrc { namespace server {
                        ->set_accept_callbacks( call_opt->accept_callbacks( ) );
                 }
 
-                configure_message( clnt, message_type_, *llu );
+                configure_message( clnt, message_type( ), *llu );
 
                 return llu;
             }
@@ -164,7 +148,7 @@ namespace vtrc { namespace server {
                          ( get_protocol( *clnt ).get_method_options(method) );
 
 
-                if( disable_wait_ ) {
+                if( disable_wait( ) ) {
                     llu.mutable_opt( )->set_wait(false);
                 } else {
                     llu.mutable_opt( )->set_wait(call_opt->wait( ));
@@ -172,7 +156,7 @@ namespace vtrc { namespace server {
                         ->set_accept_callbacks(call_opt->accept_callbacks( ));
                 }
 
-                configure_message( clnt, message_type_, llu );
+                configure_message( clnt, message_type( ), llu );
                 const gpb::uint64 call_id = llu.id( );
 
                 if( llu.opt( ).wait( ) ) { /// Send and wait
@@ -318,28 +302,28 @@ namespace vtrc { namespace server {
         common::rpc_channel *create_event_channel(
                              common::connection_iface_sptr c, bool disable_wait)
         {
-            static const unsigned message_type
-                ( rpc::message_info::MESSAGE_SERVER_CALL );
-            return new unicast_channel(c, message_type, disable_wait);
+            const unsigned flags = disable_wait
+                                 ? common::rpc_channel::DISABLE_WAIT
+                                 : common::rpc_channel::DEFAULT;
+
+            return new unicast_channel(c, flags);
         }
 
         common::rpc_channel *create_callback_channel(
                              common::connection_iface_sptr c, bool disable_wait)
         {
-            static const unsigned message_type
-                ( rpc::message_info::MESSAGE_SERVER_CALLBACK );
-            return new unicast_channel(c, message_type, disable_wait);
+            const unsigned flags = common::rpc_channel::USE_CONTEXT_CALL
+                    | (disable_wait
+                                 ? common::rpc_channel::DISABLE_WAIT
+                                 : common::rpc_channel::DEFAULT);
+
+            return new unicast_channel(c, flags);
         }
 
         common::rpc_channel *create(common::connection_iface_sptr c,
                                     unsigned flags )
         {
-            bool disable_wait = (flags & common::rpc_channel::DISABLE_WAIT);
-            if( flags & common::rpc_channel::USE_CONTEXT_CALL ) {
-                return create_callback_channel( c, disable_wait );
-            } else {
-                return create_event_channel( c, disable_wait );
-            }
+            return new unicast_channel(c, flags);
         }
     }
 

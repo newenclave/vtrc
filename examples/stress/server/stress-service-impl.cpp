@@ -30,6 +30,7 @@ namespace  {
 
     using namespace server::channels;
     using server::channels::unicast::create_event_channel;
+    using server::channels::unicast::create_callback_channel;
 
     stub_wrapper_type *create_event( common::connection_iface *c )
     {
@@ -38,12 +39,17 @@ namespace  {
                     true );
     }
 
+    common::rpc_channel *create_callback( common::connection_iface *c )
+    {
+        return create_callback_channel( c->shared_from_this( ) );
+    }
+
     class stress_service_impl: public vtrc_example::stress_service {
 
         stress::application      &app_;
         common::connection_iface *c_;
         stub_wrapper_sptr         event_channel_;
-
+        vtrc::unique_ptr<common::rpc_channel> channel_;
     public:
 
         stress_service_impl( stress::application &app,
@@ -51,6 +57,7 @@ namespace  {
             :app_(app)
             ,c_(c)
             ,event_channel_(create_event(c_))
+            ,channel_(create_callback(c_))
         { }
 
     private:
@@ -134,20 +141,19 @@ namespace  {
 
             std::string payload(request->payload_size( ), '?');
 
-            vtrc::unique_ptr<common::rpc_channel> channel;
             common::connection_iface_sptr c_sptr = c_->shared_from_this( );
 
             bool dis_wait = !request->wait( );
 
             if( request->callback( ) ) {
-                channel.reset(unicast::create_callback_channel(
+                channel_.reset(unicast::create_callback_channel(
                                                         c_sptr, dis_wait ));
             } else {
-                channel.reset(unicast::create_event_channel(
+                channel_.reset(unicast::create_event_channel(
                                                         c_sptr, dis_wait ));
             }
 
-            stub_wrapper_type stub(channel.get( ));
+            stub_wrapper_type stub(channel_.get( ));
             vtrc_example::event_req req;
             req.set_payload( payload );
 
@@ -183,11 +189,16 @@ namespace  {
                 return;
             };
 
-            vtrc::unique_ptr<common::rpc_channel> channel
-                (unicast::create_callback_channel( c_->shared_from_this( ),
-                                                   false ));
+            channel_->set_flags(
+                        vtrc::common::rpc_channel::USE_CONTEXT_CALL |
+                        vtrc::common::rpc_channel::STATIC_CONTEXT );
+            channel_->set_static_context( vtrc::common::call_context::get( ) );
 
-            stub_wrapper_type stub( channel.get( ) );
+//            vtrc::unique_ptr<common::rpc_channel> channel
+//                (unicast::create_callback_channel( c_->shared_from_this( ),
+//                                                   false ));
+
+            stub_wrapper_type stub( channel_.get( ) );
             stub.call_request( &stub_type::recursive_callback, request );
             done->Run( );
         }

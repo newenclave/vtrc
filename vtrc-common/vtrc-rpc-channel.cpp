@@ -41,6 +41,28 @@ namespace vtrc { namespace common  {
         {
             return vtrc::bind( default_chan_error_cb, ph::_1 );
         }
+
+        bool can_accept_callbacks( const common::call_context *cc )
+        {
+#if 1   /// yeap. we always set it up
+            rpc::lowlevel_unit const *llu  = cc->get_lowlevel_message( );
+            return llu->opt( ).wait( ) && llu->opt( ).accept_callbacks( );
+#else
+            rpc::options       const *opts = cc->get_call_options( );
+            rpc::lowlevel_unit const *llu  = cc->get_lowlevel_message( );
+
+            bool accept_callbacks = llu->opt( ).has_accept_callbacks( )
+                                  ? llu->opt( ).accept_callbacks( )
+                                  : opts->accept_callbacks( );
+
+            bool wait = llu->opt( ).has_wait( )
+                      ? llu->opt( ).wait( )
+                      : opts->wait( );
+
+            return  wait && accept_callbacks;
+#endif
+        }
+
     }
 
     struct rpc_channel::impl {
@@ -48,6 +70,10 @@ namespace vtrc { namespace common  {
         unsigned direct_type_;
         unsigned callback_type_;
         unsigned flags_;
+
+        vtrc::uint64_t static_target_;
+        bool           accept_callbacks_;
+
         std::string data_;
 
         rpc_channel::proto_error_cb_type    error_cb_;
@@ -57,9 +83,17 @@ namespace vtrc { namespace common  {
             :direct_type_(direct_call_type)
             ,callback_type_(callback_type)
             ,flags_(rpc_channel::DEFAULT)
+            ,static_target_(0)
+            ,accept_callbacks_(false)
             ,error_cb_(get_default_error_cb( ))
             ,chan_error_cb_(get_default_chan_error_cb( ))
-        { }
+        {
+            const common::call_context *ctx = common::call_context::get( );
+            if( ctx ) {
+                accept_callbacks_ = can_accept_callbacks( ctx );
+                static_target_    = ctx->get_lowlevel_message( )->id( );
+            }
+        }
     };
 
     rpc_channel::rpc_channel(unsigned direct_call_type, unsigned callback_type)
@@ -131,27 +165,6 @@ namespace vtrc { namespace common  {
         return impl_->data_;
     }
 
-    bool can_accept_callbacks( const common::call_context *cc )
-    {
-#if 1   /// yeap. we always set it up
-        rpc::lowlevel_unit const *llu  = cc->get_lowlevel_message( );
-        return llu->opt( ).wait( ) && llu->opt( ).accept_callbacks( );
-#else
-        rpc::options       const *opts = cc->get_call_options( );
-        rpc::lowlevel_unit const *llu  = cc->get_lowlevel_message( );
-
-        bool accept_callbacks = llu->opt( ).has_accept_callbacks( )
-                              ? llu->opt( ).accept_callbacks( )
-                              : opts->accept_callbacks( );
-
-        bool wait = llu->opt( ).has_wait( )
-                  ? llu->opt( ).wait( )
-                  : opts->wait( );
-
-        return  wait && accept_callbacks;
-#endif
-    }
-
     void rpc_channel::configure_message(common::connection_iface_sptr c,
                                          unsigned mess_type,
                                          lowlevel_unit_type &llu ) const
@@ -162,7 +175,17 @@ namespace vtrc { namespace common  {
 
         if( mess_type == impl_->callback_type_ ) {
 
-            if( cc && can_accept_callbacks( cc ) ) {
+            if( get_flags( ) & rpc_channel::STATIC_CONTEXT ) {
+
+                if( !impl_->accept_callbacks_ ) {
+                    impl_->chan_error_cb_( "Invalid context." );
+                    return;
+                }
+
+                llu.mutable_info( )->set_message_type( mess_type );
+                llu.set_target_id( impl_->static_target_ );
+
+            } else if( cc && can_accept_callbacks( cc ) ) {
 
                 llu.mutable_info( )->set_message_type( mess_type );
                 llu.set_target_id( cc->get_lowlevel_message( )->id( ) );
@@ -259,12 +282,22 @@ namespace vtrc { namespace common  {
         }
     }
 
-    bool rpc_channel::call_and_wait(
-                            google::protobuf::uint64 call_id,
-                            const lowlevel_unit_type &llu,
-                            google::protobuf::Message *response,
-                            connection_iface_sptr &cl,
-                            const rpc::options *call_opt ) const
+    void rpc_channel::set_static_context( const common::call_context *ctx )
+    {
+        if( ctx ) {
+            impl_->accept_callbacks_ = can_accept_callbacks( ctx );
+            impl_->static_target_ = ctx->get_lowlevel_message( )->id( );
+        } else {
+            impl_->accept_callbacks_ = false;
+            impl_->static_target_    = 0;
+        }
+    }
+
+    bool rpc_channel::call_and_wait( google::protobuf::uint64 call_id,
+                                     const lowlevel_unit_type &llu,
+                                     google::protobuf::Message *response,
+                                     connection_iface_sptr &cl,
+                                     const rpc::options *call_opt ) const
     {
         cl->get_protocol( ).call_rpc_method( call_id, llu );
 

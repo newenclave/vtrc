@@ -5,6 +5,7 @@
 
 #include "vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-closure.h"
+#include "vtrc-common/vtrc-call-context.h"
 
 #include "vtrc-stdint.h"
 
@@ -73,6 +74,8 @@ namespace vtrc { namespace common  {
 
         const channel_error_cb_type &get_channel_error_callback( ) const;
         void set_channel_error_callback( const channel_error_cb_type &value );
+
+        void set_static_context( const common::call_context *ctx );
 
     protected:
 
