@@ -47,8 +47,6 @@ namespace client {
         ~rpc_channel_c( );
 
         bool alive( ) const;
-        void set_flags( unsigned flags );
-        unsigned get_flags( ) const;
 
     private:
 

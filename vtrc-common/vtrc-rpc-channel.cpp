@@ -47,6 +47,7 @@ namespace vtrc { namespace common  {
 
         unsigned direct_type_;
         unsigned callback_type_;
+        unsigned flags_;
         std::string data_;
 
         rpc_channel::proto_error_cb_type    error_cb_;
@@ -55,6 +56,7 @@ namespace vtrc { namespace common  {
         impl( unsigned direct_call_type, unsigned callback_type )
             :direct_type_(direct_call_type)
             ,callback_type_(callback_type)
+            ,flags_(rpc_channel::DEFAULT)
             ,error_cb_(get_default_error_cb( ))
             ,chan_error_cb_(get_default_chan_error_cb( ))
         { }
@@ -112,6 +114,16 @@ namespace vtrc { namespace common  {
     void rpc_channel::set_channel_data( const std::string &data )
     {
         impl_->data_ = data;
+    }
+
+    void rpc_channel::set_flags( unsigned flags )
+    {
+        impl_->flags_ = flags;
+    }
+
+    unsigned rpc_channel::get_flags( ) const
+    {
+        return impl_->flags_;
     }
 
     const std::string &rpc_channel::channel_data( )

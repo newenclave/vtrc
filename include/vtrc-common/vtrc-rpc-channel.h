@@ -44,8 +44,8 @@ namespace vtrc { namespace common  {
         rpc_channel( unsigned direct_call_type, unsigned callback_type );
         virtual ~rpc_channel( );
 
-        virtual void set_flags( unsigned /*flags*/ ) { }
-        virtual unsigned get_flags( ) const { return 0; }
+        virtual void set_flags( unsigned /*flags*/ );
+        virtual unsigned get_flags( ) const;
 
         virtual bool alive( ) const = 0;
 
