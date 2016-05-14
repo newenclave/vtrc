@@ -313,7 +313,7 @@ namespace vtrc { namespace server {
                              common::connection_iface_sptr c, bool disable_wait)
         {
             const unsigned flags = common::rpc_channel::USE_CONTEXT_CALL
-                    | (disable_wait
+                                 | (disable_wait
                                  ? common::rpc_channel::DISABLE_WAIT
                                  : common::rpc_channel::DEFAULT);
 
