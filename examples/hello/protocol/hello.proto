@@ -2,7 +2,7 @@ package howto;
 option cc_generic_services = true;
 
 message request_message {
-    optional string name = 1;
+    optional string name = 1 [default = "ываы"];
 }
 
 message response_message {

@@ -44,10 +44,14 @@ namespace vtrc { namespace common  {
 
         bool can_accept_callbacks( const common::call_context *cc )
         {
+
 #if 1   /// yeap. we always set it up
+
             rpc::lowlevel_unit const *llu  = cc->get_lowlevel_message( );
             return llu->opt( ).wait( ) && llu->opt( ).accept_callbacks( );
-#else
+
+#else   /// is not compatible with protobuf3
+
             rpc::options       const *opts = cc->get_call_options( );
             rpc::lowlevel_unit const *llu  = cc->get_lowlevel_message( );
 

@@ -230,7 +230,7 @@ namespace vtrc { namespace client {
                 }
 
                 if( !capsule.ready( ) ) {
-                    if( capsule.error( ).has_additional( ) ) {
+                    if( !capsule.error( ).additional( ).empty( ) ) {
                         accessor( )->error( capsule.error( ),
                                     capsule.error( ).additional( ).c_str( ) );
 
