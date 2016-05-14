@@ -10,34 +10,38 @@ namespace vtrc { namespace common {  namespace hash {
         template <typename HashTraits>
         struct hasher_sha: public hash_iface {
 
+            typedef vtrc::uint8_t ubyte;
+
             size_t hash_size( ) const
             {
                 return HashTraits::digest_length;
             }
 
-            std::string get_data_hash(const void *data,
-                                      size_t      length ) const
+            std::string get_data_hash( const void *data,
+                                       size_t      length ) const
             {
                 typename HashTraits::context_type context;
                 HashTraits::init( &context );
                 HashTraits::update( &context,
-                    reinterpret_cast<const vtrc::uint8_t *>(data), length );
+                    reinterpret_cast<const ubyte *>(data), length );
+
+                //return HashTraits::fin( &context );
 
                 typename HashTraits::digest_block_type res;
                 HashTraits::fin( &context, res );
                 return std::string( &res[0], &res[HashTraits::digest_length] );
             }
 
-            void get_data_hash(const void *data, size_t length,
-                                     void *result_hash ) const
+            void get_data_hash( const void *data, size_t length,
+                                      void *result_hash ) const
             {
                 typename HashTraits::context_type context;
                 HashTraits::init( &context );
                 HashTraits::update( &context,
-                    reinterpret_cast<const vtrc::uint8_t *>(data), length );
+                    reinterpret_cast<const ubyte *>(data), length );
 
                 HashTraits::fin( &context,
-                                reinterpret_cast<vtrc::uint8_t *>(result_hash));
+                                 reinterpret_cast<ubyte *>( result_hash ) );
             }
 
             bool check_data_hash( const void *  data  ,
