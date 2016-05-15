@@ -1,6 +1,7 @@
 #ifndef VTRCP_ROTOCOL_ACCESSOR_IFACE_H
 #define VTRCP_ROTOCOL_ACCESSOR_IFACE_H
 
+#include <string>
 #include "vtrc-closure.h"
 
 namespace vtrc { namespace common {
