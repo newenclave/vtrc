@@ -5,6 +5,5 @@
 
 #define VTRC_SYSTEM ::boost::system
 
-
 #endif // VTRC_SYSTEM_FORWARD_H
 
