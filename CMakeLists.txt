@@ -26,6 +26,8 @@ if( NOT DEFINED VTRC_LINK_TYPE )
     set( VTRC_LINK_TYPE STATIC )
 endif( )
 
+# find_package( Asio )
+
 ###################### OPEN SSL ######################
 #
 # OPENSSL_ROOT_DIR - Set this variable to the root installation of OpenSSL
