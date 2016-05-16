@@ -23,8 +23,8 @@
 
 namespace vtrc { namespace server {
 
-    namespace bs = boost::system;
-    namespace ba = VTRCASIO;
+    namespace bs = VTRC_SYSTEM;
+    namespace ba = VTRC_ASIO;
     namespace gpb = google::protobuf;
 
     namespace {
@@ -309,7 +309,7 @@ namespace vtrc { namespace server {
                 static const std::string data(first_message( ));
 //                ready_ = true;
 //                pa_->ready( true );
-//                cb( boost::system::error_code( ) );
+//                cb( VTRC_SYSTEM::error_code( ) );
 //                return;
 
                 const unsigned to = session_opts_.init_timeout( );

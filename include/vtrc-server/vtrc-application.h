@@ -45,21 +45,21 @@ namespace server {
 
         application( );
         application( common::pool_pair &pools );
-        application( VTRCASIO::io_service &ios );
-        application( VTRCASIO::io_service &ios,
-                     VTRCASIO::io_service &rpc_ios );
+        application( VTRC_ASIO::io_service &ios );
+        application( VTRC_ASIO::io_service &ios,
+                     VTRC_ASIO::io_service &rpc_ios );
 
         virtual ~application( );
 
         void stop_all_clients( );
 
         common::enviroment            &get_enviroment ( );
-        VTRCASIO::io_service       &get_io_service ( );
-        VTRCASIO::io_service       &get_rpc_service( );
+        VTRC_ASIO::io_service       &get_io_service ( );
+        VTRC_ASIO::io_service       &get_rpc_service( );
 
         const common::enviroment      &get_enviroment ( ) const;
-        const VTRCASIO::io_service &get_io_service ( ) const;
-        const VTRCASIO::io_service &get_rpc_service( ) const;
+        const VTRC_ASIO::io_service &get_io_service ( ) const;
+        const VTRC_ASIO::io_service &get_rpc_service( ) const;
 
         vtrc::shared_ptr<common::connection_list>  get_clients( );
 

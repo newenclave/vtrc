@@ -9,17 +9,13 @@
 #include "vtrc-transport-iface.h"
 
 #include "vtrc-asio.h"
+#include "vtrc-system-forward.h"
+
 #include "vtrc-memory.h"
 
 #include "vtrc-common/vtrc-closure.h"
 
-namespace boost {
-
-    namespace system {
-        class error_code;
-    }
-
-}
+VTRC_SYSTEM_FORWARD( class error_code; )
 
 namespace vtrc { namespace common {
 
@@ -34,8 +30,8 @@ namespace vtrc { namespace common {
 
     public:
 
-        typedef VTRCASIO::ip::tcp::socket lowlevel_socket_type;
-        typedef VTRCASIO::ssl::stream<lowlevel_socket_type> socket_type;
+        typedef VTRC_ASIO::ip::tcp::socket lowlevel_socket_type;
+        typedef VTRC_ASIO::ssl::stream<lowlevel_socket_type> socket_type;
 
         transport_ssl( vtrc::shared_ptr<socket_type> sock );
         virtual ~transport_ssl(  );
@@ -52,7 +48,7 @@ namespace vtrc { namespace common {
 
         native_handle_type native_handle( ) const;
 
-        virtual void on_write_error( const boost::system::error_code &err ) = 0;
+        virtual void on_write_error( const VTRC_SYSTEM::error_code &err ) = 0;
 
         void set_no_delay( bool value );
 

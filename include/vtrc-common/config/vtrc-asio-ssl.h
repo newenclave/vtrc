@@ -4,5 +4,5 @@
 #include "vtrc-asio-forward.h"
 #include "boost/asio/ssl.hpp"
 
-#endif // VTRCASIOSSL_H
+#endif // VTRC_ASIOSSL_H
 

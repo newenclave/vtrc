@@ -7,15 +7,7 @@
 #include "vtrc-memory.h"
 #include "vtrc-common/vtrc-closure.h"
 
-VTRC_ASIO_FORWARD(
-    class io_service;
-)
-
-namespace boost {
-    namespace system {
-        class error_code;
-    }
-}
+VTRC_ASIO_FORWARD( class io_service;)
 
 namespace vtrc { namespace common {
 
@@ -30,7 +22,7 @@ namespace vtrc { namespace common {
 
     public:
 
-        typedef VTRCASIO::ip::tcp::socket socket_type;
+        typedef VTRC_ASIO::ip::tcp::socket socket_type;
 
         transport_tcp( vtrc::shared_ptr<socket_type> sock );
         virtual ~transport_tcp(  );
@@ -47,7 +39,7 @@ namespace vtrc { namespace common {
 
         native_handle_type native_handle( ) const;
 
-        virtual void on_write_error( const boost::system::error_code &err ) = 0;
+        virtual void on_write_error( const VTRC_SYSTEM::error_code &err ) = 0;
 
         void set_no_delay( bool value );
 

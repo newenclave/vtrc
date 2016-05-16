@@ -31,8 +31,8 @@
 namespace vtrc { namespace server {
 
     namespace gpb   = google::protobuf;
-    namespace bsys  = boost::system;
-    namespace basio = VTRCASIO;
+    namespace bsys  = VTRC_SYSTEM;
+    namespace basio = VTRC_ASIO;
 
     typedef common::lowlevel::protocol_layer_iface connection_setup_iface;
     connection_setup_iface *create_default_setup( application &a,
@@ -52,7 +52,7 @@ namespace vtrc { namespace server {
         typedef rpc::lowlevel_unit                   lowlevel_unit_type;
         typedef vtrc::shared_ptr<lowlevel_unit_type> lowlevel_unit_sptr;
 
-        void def_cb( const boost::system::error_code & )
+        void def_cb( const VTRC_SYSTEM::error_code & )
         { }
     }
 

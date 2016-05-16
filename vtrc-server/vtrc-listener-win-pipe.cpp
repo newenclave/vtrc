@@ -21,7 +21,7 @@ namespace vtrc { namespace server { namespace listeners {
 
 namespace {
 
-    namespace basio = VTRCASIO;
+    namespace basio = VTRC_ASIO;
     typedef basio::windows::stream_handle    socket_type;
     typedef common::transport_win_pipe       connection_type;
     typedef connection_impl<connection_type> connection_impl_type;

@@ -127,7 +127,7 @@ namespace vtrc { namespace server {
         on_stop_connection_( conn );
     }
 
-    void listener::call_on_accept_failed( const boost::system::error_code &err )
+    void listener::call_on_accept_failed( const VTRC_SYSTEM::error_code &err )
     {
         on_accept_failed_( err );
     }

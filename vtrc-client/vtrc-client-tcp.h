@@ -26,7 +26,7 @@ namespace client {
         struct impl;
         impl  *impl_;
 
-        client_tcp( VTRCASIO::io_service &ios,
+        client_tcp( VTRC_ASIO::io_service &ios,
                     vtrc_client *client,
                     protocol_signals *callbacks,
                     bool tcp_nodelay );
@@ -37,7 +37,7 @@ namespace client {
 
         typedef common::lowlevel::protocol_factory_type lowlevel_factory_type;
 
-        static shared_type create ( VTRCASIO::io_service &ios,
+        static shared_type create ( VTRC_ASIO::io_service &ios,
                                     vtrc_client *client,
                                     protocol_signals *callbacks,
                                     lowlevel_factory_type factory,
@@ -56,7 +56,7 @@ namespace client {
                            unsigned short service,
                            common::system_closure_type closure );
 
-        void on_write_error( const boost::system::error_code &err );
+        void on_write_error( const VTRC_SYSTEM::error_code &err );
 
         const common::call_context *get_call_context( ) const;
         common::protocol_layer     &get_protocol( );

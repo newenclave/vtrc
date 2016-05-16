@@ -6,6 +6,8 @@
 
 #include "vtrc-general-config.h"
 
+#include "vtrc-system.h"
+
 #include "vtrc-exception.h"
 #include "vtrc-errors.pb.h"
 
@@ -35,8 +37,8 @@ namespace vtrc { namespace common {
                 return get_internal_error( code );
             } else if( category == rpc::errors::CATEGORY_SYSTEM ) {
                 try {
-                    boost::system::error_code ec(code,
-                                             boost::system::system_category( ));
+                    VTRC_SYSTEM::error_code ec(code,
+                                             VTRC_SYSTEM::system_category( ));
                     return ec.message( );
                 } catch( const std::exception &ex ) {
                     return ex.what( );

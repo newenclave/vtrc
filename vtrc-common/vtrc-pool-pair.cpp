@@ -5,7 +5,7 @@
 
 namespace vtrc { namespace common {
 
-    namespace basio = VTRCASIO;
+    namespace basio = VTRC_ASIO;
 
     struct pool_pair::impl {
 
@@ -58,22 +58,22 @@ namespace vtrc { namespace common {
         delete impl_;
     }
 
-    VTRCASIO::io_service &pool_pair::get_io_service( )
+    VTRC_ASIO::io_service &pool_pair::get_io_service( )
     {
         return impl_->io_->get_io_service( );
     }
 
-    const VTRCASIO::io_service &pool_pair::get_io_service( ) const
+    const VTRC_ASIO::io_service &pool_pair::get_io_service( ) const
     {
         return impl_->io_->get_io_service( );
     }
 
-    VTRCASIO::io_service &pool_pair::get_rpc_service( )
+    VTRC_ASIO::io_service &pool_pair::get_rpc_service( )
     {
         return impl_->rpc_->get_io_service( );
     }
 
-    const VTRCASIO::io_service &pool_pair::get_rpc_service( ) const
+    const VTRC_ASIO::io_service &pool_pair::get_rpc_service( ) const
     {
         return impl_->rpc_->get_io_service( );
     }

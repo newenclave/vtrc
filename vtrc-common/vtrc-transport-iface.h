@@ -9,15 +9,6 @@
 
 #include "vtrc-protocol-layer.h"
 
-#include "vtrc-asio.h"
-
-namespace boost {
-
-    namespace system {
-        class error_code;
-    }
-}
-
 namespace vtrc { namespace common {
 
 
@@ -30,7 +21,7 @@ namespace vtrc { namespace common {
         virtual bool active( ) const        = 0;
         virtual void init( )                = 0;
 
-//        virtual VTRCASIO::io_service::strand &get_dispatcher( ) = 0;
+//        virtual VTRC_ASIO::io_service::strand &get_dispatcher( ) = 0;
 
         void raw_write ( vtrc::shared_ptr<rpc::lowlevel_unit> ll_mess )
         {

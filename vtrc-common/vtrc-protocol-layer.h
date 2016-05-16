@@ -7,11 +7,14 @@
 
 #include "vtrc-memory.h"
 #include "vtrc-stdint.h"
+#include "vtrc-system-forward.h"
 
 #include "vtrc-common/vtrc-call-context.h"
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"
 #include "vtrc-common/vtrc-closure.h"
 #include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
+
+VTRC_SYSTEM_FORWARD( class error_code; )
 
 namespace google { namespace protobuf {
     class Message;
@@ -34,9 +37,6 @@ namespace vtrc { namespace rpc {
 
 }}
 
-namespace boost { namespace system {
-    class error_code;
-}}
 
 namespace vtrc { namespace common {
 
@@ -93,8 +93,8 @@ namespace vtrc { namespace common {
         void process_data( const char *data, size_t length );
         std::string prepare_data( const char *data, size_t length );
 
-        virtual void on_write_error( const boost::system::error_code &err );
-        virtual void on_read_error ( const boost::system::error_code &err );
+        virtual void on_write_error( const VTRC_SYSTEM::error_code &err );
+        virtual void on_read_error ( const VTRC_SYSTEM::error_code &err );
 
     public:
 

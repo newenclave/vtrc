@@ -14,7 +14,7 @@ namespace vtrc { namespace server { namespace listeners {
 
     namespace {
 
-        namespace basio = VTRCASIO;
+        namespace basio = VTRC_ASIO;
         typedef basio::local::stream_protocol bstream;
 
         typedef common::transport_unix_local    transport_type;

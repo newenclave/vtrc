@@ -44,8 +44,8 @@
 namespace vtrc { namespace common {
 
     namespace gpb   = google::protobuf;
-    namespace bsys  = boost::system;
-    namespace basio = VTRCASIO;
+    namespace bsys  = VTRC_SYSTEM;
+    namespace basio = VTRC_ASIO;
 
     namespace {
 
@@ -808,7 +808,7 @@ namespace vtrc { namespace common {
             }
         }
 
-        void on_system_error(const boost::system::error_code &err,
+        void on_system_error(const VTRC_SYSTEM::error_code &err,
                              const std::string &add )
         {
             set_ready( false );
@@ -1088,12 +1088,12 @@ namespace vtrc { namespace common {
         return impl_->push_rpc_message_all( mess );
     }
 
-    void protocol_layer::on_write_error(const boost::system::error_code &err)
+    void protocol_layer::on_write_error(const VTRC_SYSTEM::error_code &err)
     {
         impl_->on_system_error( err, "Transport write error." );
     }
 
-    void protocol_layer::on_read_error(const boost::system::error_code &err)
+    void protocol_layer::on_read_error(const VTRC_SYSTEM::error_code &err)
     {
         impl_->on_system_error( err, "Transport read error." );
     }

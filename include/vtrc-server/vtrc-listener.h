@@ -9,6 +9,7 @@
 #include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
 
 #include "vtrc-memory.h"
+#include "vtrc-system-forward.h"
 
 namespace google { namespace protobuf {
     class MethodDescriptor;
@@ -19,9 +20,7 @@ namespace vtrc { namespace rpc {
     class lowlevel_unit;
 }}
 
-namespace boost { namespace system {
-    class error_code;
-}}
+VTRC_SYSTEM_FORWARD( class error_code; )
 
 namespace vtrc {
 
@@ -44,7 +43,7 @@ namespace server {
         VTRC_DECLARE_SIGNAL( on_stop,  void ( ) );
 
         VTRC_DECLARE_SIGNAL( on_accept_failed,
-                             void ( const boost::system::error_code &err ) );
+                             void ( const VTRC_SYSTEM::error_code &err ) );
 
         VTRC_DECLARE_SIGNAL( on_new_connection,
                              void ( common::connection_iface * ) );
@@ -99,7 +98,7 @@ namespace server {
         void new_connection(  common::connection_iface *conn );
         void stop_connection( common::connection_iface *conn );
 
-        void call_on_accept_failed( const boost::system::error_code &err );
+        void call_on_accept_failed( const VTRC_SYSTEM::error_code &err );
         void call_on_stop( );
         void call_on_start( );
 

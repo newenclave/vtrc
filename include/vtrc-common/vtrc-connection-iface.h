@@ -6,17 +6,10 @@
 #include "vtrc-closure.h"
 
 #include "vtrc-asio-forward.h"
+#include "vtrc-system-forward.h"
 
-VTRC_ASIO_FORWARD(
-    class io_service;
-)
-
-namespace boost {
-
-    namespace system {
-        class error_code;
-    }
-}
+VTRC_ASIO_FORWARD( class io_service; )
+VTRC_SYSTEM_FORWARD( class error_code; )
 
 namespace vtrc { namespace rpc {
     class lowlevel_unit;

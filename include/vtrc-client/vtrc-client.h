@@ -15,6 +15,7 @@
 #include "vtrc-memory.h"
 #include "vtrc-function.h"
 #include "vtrc-asio-forward.h"
+#include "vtrc-system-forward.h"
 
 VTRC_ASIO_FORWARD( class io_service; )
 
@@ -26,12 +27,7 @@ VTRC_ASIO_FORWARD(
 )
 #endif
 
-
-namespace boost {
-    namespace system {
-        class error_code;
-    }
-}
+VTRC_SYSTEM_FORWARD( class error_code; )
 
 namespace google { namespace protobuf {
     class RpcChannel;
@@ -64,7 +60,7 @@ namespace client {
 
 #if VTRC_OPENSSL_ENABLED
     typedef vtrc::function<
-        bool ( bool, VTRCASIO::ssl::verify_context& )
+        bool ( bool, VTRC_ASIO::ssl::verify_context& )
     > verify_callback_type;
 #endif
 
@@ -88,10 +84,10 @@ namespace client {
 
     protected:
 
-        vtrc_client( VTRCASIO::io_service &ios );
+        vtrc_client( VTRC_ASIO::io_service &ios );
 
-        vtrc_client( VTRCASIO::io_service &ios,
-                     VTRCASIO::io_service &rpc_ios );
+        vtrc_client( VTRC_ASIO::io_service &ios,
+                     VTRC_ASIO::io_service &rpc_ios );
 
         vtrc_client( common::pool_pair &pools );
 
@@ -102,11 +98,11 @@ namespace client {
         common::connection_iface_sptr connection( );
 
         static
-        vtrc::shared_ptr<vtrc_client> create( VTRCASIO::io_service &ios );
+        vtrc::shared_ptr<vtrc_client> create( VTRC_ASIO::io_service &ios );
 
         static
-        vtrc::shared_ptr<vtrc_client> create(VTRCASIO::io_service &ios,
-                                             VTRCASIO::io_service &rpc_ios );
+        vtrc::shared_ptr<vtrc_client> create(VTRC_ASIO::io_service &ios,
+                                             VTRC_ASIO::io_service &rpc_ios );
         static
         vtrc::shared_ptr<vtrc_client> create( common::pool_pair &pool );
 
@@ -115,11 +111,11 @@ namespace client {
         vtrc::weak_ptr<vtrc_client>       weak_from_this( );
         vtrc::weak_ptr<vtrc_client const> weak_from_this( ) const;
 
-        VTRCASIO::io_service       &get_io_service( );
-        const VTRCASIO::io_service &get_io_service( ) const;
+        VTRC_ASIO::io_service       &get_io_service( );
+        const VTRC_ASIO::io_service &get_io_service( ) const;
 
-        VTRCASIO::io_service       &get_rpc_service( );
-        const VTRCASIO::io_service &get_rpc_service( ) const;
+        VTRC_ASIO::io_service       &get_rpc_service( );
+        const VTRC_ASIO::io_service &get_rpc_service( ) const;
 
         common::rpc_channel *create_channel( );
         common::rpc_channel *create_channel( unsigned flags );

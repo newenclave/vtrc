@@ -6,9 +6,9 @@
 
 namespace vtrc { namespace common {
 
-    namespace basio = VTRCASIO;
-    namespace bip   = VTRCASIO::ip;
-    namespace bsys  = boost::system;
+    namespace basio = VTRC_ASIO;
+    namespace bip   = VTRC_ASIO::ip;
+    namespace bsys  = VTRC_SYSTEM;
 
     namespace {
         typedef transport_tcp::socket_type socket_type;

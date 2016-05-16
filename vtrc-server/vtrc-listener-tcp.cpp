@@ -9,7 +9,7 @@ namespace vtrc { namespace server { namespace listeners {
 
     namespace {
 
-        namespace basio = VTRCASIO;
+        namespace basio = VTRC_ASIO;
         namespace bip   = basio::ip;
 
         typedef common::transport_tcp           transport_type;

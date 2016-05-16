@@ -20,7 +20,7 @@ namespace vtrc { namespace common {
 
     public:
 
-        typedef VTRCASIO::windows::stream_handle socket_type;
+        typedef VTRC_ASIO::windows::stream_handle socket_type;
 
         transport_win_pipe( vtrc::shared_ptr<socket_type> sock );
         virtual ~transport_win_pipe(  );
@@ -36,7 +36,7 @@ namespace vtrc { namespace common {
             const system_closure_type &success, bool on_send_success ) ;
 
         native_handle_type native_handle( ) const;
-        virtual void on_write_error( const boost::system::error_code &err ) = 0;
+        virtual void on_write_error( const VTRC_SYSTEM::error_code &err ) = 0;
 
     private:
 

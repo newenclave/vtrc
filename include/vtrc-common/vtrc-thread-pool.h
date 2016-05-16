@@ -22,8 +22,8 @@ namespace vtrc { namespace common {
 
         thread_pool( );
         thread_pool( size_t init_count );
-        thread_pool( VTRCASIO::io_service &ios, size_t init_count );
-        thread_pool( VTRCASIO::io_service &ios );
+        thread_pool( VTRC_ASIO::io_service &ios, size_t init_count );
+        thread_pool( VTRC_ASIO::io_service &ios );
         ~thread_pool( );
 
         size_t size( ) const;
@@ -41,8 +41,8 @@ namespace vtrc { namespace common {
         ///     true  if stopped by stop( )
         bool attach(  );
 
-        VTRCASIO::io_service       &get_io_service( );
-        const VTRCASIO::io_service &get_io_service( ) const;
+        VTRC_ASIO::io_service       &get_io_service( );
+        const VTRC_ASIO::io_service &get_io_service( ) const;
     };
 
 }}

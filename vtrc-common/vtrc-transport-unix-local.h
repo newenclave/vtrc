@@ -7,14 +7,12 @@
 #include "vtrc-common/vtrc-closure.h"
 
 #include "vtrc-asio-forward.h"
+#include "vtrc-system-forward.h"
+
+#include "vtrc-asio.h"
 
 VTRC_ASIO_FORWARD( class io_service; )
-
-namespace boost {
-    namespace system {
-        class error_code;
-    }
-}
+VTRC_SYSTEM_FORWARD( class error_code; )
 
 namespace vtrc { namespace common {
 
@@ -29,7 +27,7 @@ namespace vtrc { namespace common {
 
     public:
 
-        typedef VTRCASIO::local::stream_protocol::socket socket_type;
+        typedef VTRC_ASIO::local::stream_protocol::socket socket_type;
 
         transport_unix_local( vtrc::shared_ptr<socket_type> sock );
 
@@ -48,7 +46,7 @@ namespace vtrc { namespace common {
 
         native_handle_type native_handle( ) const;
 
-        virtual void on_write_error( const boost::system::error_code &err ) = 0;
+        virtual void on_write_error( const VTRC_SYSTEM::error_code &err ) = 0;
 
     private:
 

@@ -12,9 +12,9 @@
 namespace vtrc { namespace client {
 
     namespace {
-        namespace basio = VTRCASIO;
-        namespace bssl  = VTRCASIO::ssl;
-        namespace bsys  = boost::system;
+        namespace basio = VTRC_ASIO;
+        namespace bssl  = VTRC_ASIO::ssl;
+        namespace bsys  = VTRC_SYSTEM;
         namespace ph    = vtrc::placeholders;
 
         typedef basio::ip::tcp::socket           lowest_socket_type;
@@ -35,7 +35,7 @@ namespace vtrc { namespace client {
         vtrc::shared_ptr<bssl::context> context_;
         verify_callback_type            vcb_;
 
-        impl( VTRCASIO::io_service &ios,
+        impl( VTRC_ASIO::io_service &ios,
               vtrc_client *client, protocol_signals *callbacks,
               bool nodelay )
             :super_type(ios, client, callbacks, 4096)
@@ -143,7 +143,7 @@ namespace vtrc { namespace client {
         //return vtrc::make_shared<socket_type>(vtrc::ref(ios), vtrc::ref(ctx));
     }
 
-    client_ssl::client_ssl(VTRCASIO::io_service &ios,
+    client_ssl::client_ssl(VTRC_ASIO::io_service &ios,
                             vtrc_client *client,
                             vtrc::shared_ptr<bssl::context> ctx,
                             protocol_signals *callbacks,
@@ -195,7 +195,7 @@ namespace vtrc { namespace client {
         impl_->async_connect( address, service, closure );
     }
 
-    void client_ssl::on_write_error( const boost::system::error_code &err )
+    void client_ssl::on_write_error( const VTRC_SYSTEM::error_code &err )
     {
         impl_->on_write_error( err );
         close( );

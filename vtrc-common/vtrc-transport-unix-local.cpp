@@ -7,8 +7,8 @@
 
 namespace vtrc { namespace common {
 
-    namespace basio = VTRCASIO;
-    namespace bsys  = boost::system;
+    namespace basio = VTRC_ASIO;
+    namespace bsys  = VTRC_SYSTEM;
 
     namespace {
         typedef transport_unix_local::socket_type socket_type;

@@ -25,8 +25,8 @@
 
 namespace vtrc { namespace client {
 
-    namespace bs = boost::system;
-    namespace ba = VTRCASIO;
+    namespace bs = VTRC_SYSTEM;
+    namespace ba = VTRC_ASIO;
     namespace gpb = google::protobuf;
 
     namespace {
@@ -151,7 +151,7 @@ namespace vtrc { namespace client {
                 }
             }
 
-            void set_options( const boost::system::error_code &err )
+            void set_options( const VTRC_SYSTEM::error_code &err )
             {
                 if( !err ) {
                     set_hash_maker(
@@ -306,7 +306,7 @@ namespace vtrc { namespace client {
                        common::system_closure_type cb )
             {
                 set_accessor( pa );
-                cb( boost::system::error_code( ) );
+                cb( VTRC_SYSTEM::error_code( ) );
 //                ready_ = true;
 //                pa_->ready( true );
 //                return;

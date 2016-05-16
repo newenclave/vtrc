@@ -50,7 +50,7 @@ namespace vtrc { namespace common { namespace timer {
         }
     };
 
-    typedef  VTRCASIO::basic_deadline_timer< vtrc::chrono::steady_clock,
+    typedef  VTRC_ASIO::basic_deadline_timer< vtrc::chrono::steady_clock,
                                              monotonic_traits > monotonic;
 
 }}}

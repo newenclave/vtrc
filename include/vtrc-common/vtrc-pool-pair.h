@@ -25,11 +25,11 @@ namespace vtrc { namespace common {
 
     public:
 
-        VTRCASIO::io_service       &get_io_service( );
-        const VTRCASIO::io_service &get_io_service( ) const;
+        VTRC_ASIO::io_service       &get_io_service( );
+        const VTRC_ASIO::io_service &get_io_service( ) const;
 
-        VTRCASIO::io_service       &get_rpc_service( );
-        const VTRCASIO::io_service &get_rpc_service( ) const;
+        VTRC_ASIO::io_service       &get_rpc_service( );
+        const VTRC_ASIO::io_service &get_rpc_service( ) const;
 
         thread_pool       &get_io_pool( );
         const thread_pool &get_io_pool( ) const;

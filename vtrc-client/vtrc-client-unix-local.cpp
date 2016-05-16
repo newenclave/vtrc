@@ -15,7 +15,7 @@ namespace vtrc { namespace client {
 
     struct client_unix_local::impl: public super_type  {
 
-        impl( VTRCASIO::io_service &ios,
+        impl( VTRC_ASIO::io_service &ios,
               vtrc_client *client, protocol_signals *callbacks )
             :super_type(ios, client, callbacks, 4096)
         { }
@@ -44,7 +44,7 @@ namespace vtrc { namespace client {
         return vtrc::make_shared<socket_type>(vtrc::ref(ios));
     }
 
-    client_unix_local::client_unix_local( VTRCASIO::io_service &ios,
+    client_unix_local::client_unix_local( VTRC_ASIO::io_service &ios,
                                           vtrc_client *client,
                                           protocol_signals *callbacks )
         :common::transport_unix_local(create_socket(ios))

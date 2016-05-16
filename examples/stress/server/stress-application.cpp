@@ -60,8 +60,8 @@ namespace {
     using namespace vtrc;
     namespace po = boost::program_options;
     namespace gpb = google::protobuf;
-    namespace basio = VTRCASIO;
-    namespace bsys  = boost::system;
+    namespace basio = VTRC_ASIO;
+    namespace bsys  = VTRC_SYSTEM;
 
     typedef vtrc::common::delayed_call            delayed_call;
     typedef vtrc::shared_ptr<delayed_call>        delayed_call_sptr;
@@ -270,7 +270,7 @@ namespace {
         }
 
         void retry_timer_handler( server::listener_sptr l, unsigned retry_to,
-                                  const boost::system::error_code &code)
+                                  const VTRC_SYSTEM::error_code &code)
         {
             if( !code ) {
                 std::cout << "Restarting " << l->name( ) << "...";
@@ -287,7 +287,7 @@ namespace {
 
         void on_accept_failed( server::listener *l,
                                unsigned retry_to,
-                               const boost::system::error_code &code )
+                               const VTRC_SYSTEM::error_code &code )
         {
             std::cout << "Accept failed at " << l->name( )
                       << " due to '" << code.message( ) << "'\n";

@@ -30,14 +30,14 @@ namespace client {
         struct impl;
         impl  *impl_;
 
-        client_win_pipe( VTRCASIO::io_service &ios, 
+        client_win_pipe( VTRC_ASIO::io_service &ios,
                          vtrc_client *client,
                          protocol_signals *callbacks );
 
     public:
 
         typedef vtrc::shared_ptr<client_win_pipe> shared_type;
-        static shared_type create ( VTRCASIO::io_service &ios, 
+        static shared_type create ( VTRC_ASIO::io_service &ios,
                                     vtrc_client *client, 
                                     protocol_signals *callbacks );
 
@@ -54,7 +54,7 @@ namespace client {
         void async_connect( const std::wstring &address,
                             common::system_closure_type closure );
 
-        void on_write_error( const boost::system::error_code &err );
+        void on_write_error( const VTRC_SYSTEM::error_code &err );
         const common::call_context *get_call_context( ) const;
 
         common::protocol_layer &get_protocol( );

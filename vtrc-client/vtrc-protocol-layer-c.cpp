@@ -140,7 +140,7 @@ namespace vtrc { namespace client {
 
         //// ================ accessor =================
 
-        static void closure_none( const boost::system::error_code & )
+        static void closure_none( const VTRC_SYSTEM::error_code & )
         { }
 
         void init( )

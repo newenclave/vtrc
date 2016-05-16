@@ -17,8 +17,8 @@
 
 namespace vtrc { namespace common {
 
-    namespace basio = VTRCASIO;
-    namespace bsys  = boost::system;
+    namespace basio = VTRC_ASIO;
+    namespace bsys  = VTRC_SYSTEM;
 
 #define TRANSPORT_USE_SYNC_WRITE 0
 
@@ -109,7 +109,7 @@ namespace vtrc { namespace common {
                 return closed_;
             }
 
-            VTRCASIO::io_service &get_io_service( )
+            VTRC_ASIO::io_service &get_io_service( )
             {
                 return ios_;
             }
@@ -293,7 +293,7 @@ namespace vtrc { namespace common {
                 return *stream_;
             }
 
-            VTRCASIO::io_service::strand &get_dispatcher( )
+            VTRC_ASIO::io_service::strand &get_dispatcher( )
             {
                 return write_dispatcher_;
             }

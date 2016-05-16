@@ -207,7 +207,7 @@ namespace vtrc { namespace common { namespace lowlevel {
     {
         set_accessor( pa );
         pa->ready( true );
-        cb( boost::system::error_code( ) );
+        cb( VTRC_SYSTEM::error_code( ) );
     }
 
     void default_protocol::close( )

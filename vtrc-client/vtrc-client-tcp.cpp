@@ -7,7 +7,7 @@
 namespace vtrc { namespace client {
 
     namespace {
-        typedef VTRCASIO::ip::tcp::socket socket_type;
+        typedef VTRC_ASIO::ip::tcp::socket socket_type;
         typedef client_stream_impl<client_tcp, socket_type> super_type;
     }
 
@@ -18,7 +18,7 @@ namespace vtrc { namespace client {
         bool no_delay_;
         std::string name_;
 
-        impl( VTRCASIO::io_service &ios,
+        impl( VTRC_ASIO::io_service &ios,
               vtrc_client *client, protocol_signals *callbacks,
               bool nodelay )
             :super_type(ios, client, callbacks, 4096)
@@ -74,7 +74,7 @@ namespace vtrc { namespace client {
         return vtrc::make_shared<socket_type>(vtrc::ref(ios));
     }
 
-    client_tcp::client_tcp(VTRCASIO::io_service &ios,
+    client_tcp::client_tcp(VTRC_ASIO::io_service &ios,
                             vtrc_client *client,
                            protocol_signals *callbacks,
                            bool tcp_nodelay)
@@ -114,7 +114,7 @@ namespace vtrc { namespace client {
         impl_->async_connect( address, service, closure );
     }
 
-    void client_tcp::on_write_error( const boost::system::error_code &err )
+    void client_tcp::on_write_error( const VTRC_SYSTEM::error_code &err )
     {
         impl_->on_write_error( err );
         close( );

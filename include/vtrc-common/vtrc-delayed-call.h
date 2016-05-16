@@ -21,7 +21,7 @@ namespace vtrc { namespace common {
         typedef timer::monotonic_traits::minutes        minutes;
         typedef timer::monotonic_traits::hours          hours;
 
-        delayed_call( VTRCASIO::io_service &ios )
+        delayed_call( VTRC_ASIO::io_service &ios )
             :timer_(ios)
         { }
 

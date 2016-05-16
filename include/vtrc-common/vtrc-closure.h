@@ -2,10 +2,9 @@
 #define VTRC_CLOSURE_H
 
 #include "vtrc-function.h"
+#include "vtrc-system-forward.h"
 
-namespace boost { namespace system {
-    class error_code;
-}}
+VTRC_SYSTEM_FORWARD( class error_code; )
 
 namespace google { namespace protobuf {
     class MethodDescriptor;
@@ -22,7 +21,7 @@ namespace vtrc { namespace common {
 
     struct connection_iface;
 
-    typedef void (system_closure_sign)(const boost::system::error_code &);
+    typedef void (system_closure_sign)(const VTRC_SYSTEM::error_code &);
     typedef void (protcol_closure_sign)(const rpc::errors::container &);
     typedef void (success_closure_sign)(bool);
     typedef void (lowlevel_closure_sign)(const rpc::lowlevel_unit &);

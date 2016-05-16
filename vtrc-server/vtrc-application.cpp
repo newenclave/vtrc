@@ -14,23 +14,23 @@ namespace vtrc { namespace server {
     struct application::impl {
 
         common::enviroment         env_;
-        VTRCASIO::io_service   *ios_;
+        VTRC_ASIO::io_service   *ios_;
         const bool                 own_ios_;
 
-        VTRCASIO::io_service   *rpc_ios_;
+        VTRC_ASIO::io_service   *rpc_ios_;
         const bool                 own_rpc_ios_;
 
         vtrc::shared_ptr<common::connection_list> clients_;
 
         impl( )
-            :ios_(new VTRCASIO::io_service)
+            :ios_(new VTRC_ASIO::io_service)
             ,own_ios_(true)
             ,rpc_ios_(ios_)
             ,own_rpc_ios_(false)
             ,clients_(common::connection_list::create( ))
         { }
 
-        impl( VTRCASIO::io_service *ios )
+        impl( VTRC_ASIO::io_service *ios )
             :ios_(ios)
             ,own_ios_(false)
             ,rpc_ios_(ios)
@@ -38,7 +38,7 @@ namespace vtrc { namespace server {
             ,clients_(common::connection_list::create( ))
         { }
 
-        impl( VTRCASIO::io_service *ios, VTRCASIO::io_service *rpc_ios )
+        impl( VTRC_ASIO::io_service *ios, VTRC_ASIO::io_service *rpc_ios )
             :ios_(ios)
             ,own_ios_(false)
             ,rpc_ios_(rpc_ios)
@@ -75,12 +75,12 @@ namespace vtrc { namespace server {
             return env_;
         }
 
-        VTRCASIO::io_service &get_io_service( )
+        VTRC_ASIO::io_service &get_io_service( )
         {
             return *ios_;
         }
 
-        VTRCASIO::io_service &get_rpc_service( )
+        VTRC_ASIO::io_service &get_rpc_service( )
         {
             return *rpc_ios_;
         }
@@ -102,12 +102,12 @@ namespace vtrc { namespace server {
 
     }
 
-    application::application( VTRCASIO::io_service &ios )
+    application::application( VTRC_ASIO::io_service &ios )
         :impl_(new impl(&ios))
     { }
 
-    application::application( VTRCASIO::io_service &ios,
-                              VTRCASIO::io_service &rpc_ios)
+    application::application( VTRC_ASIO::io_service &ios,
+                              VTRC_ASIO::io_service &rpc_ios)
         :impl_(new impl(&ios, &rpc_ios))
     { }
 
@@ -126,12 +126,12 @@ namespace vtrc { namespace server {
         return impl_->get_enviroment( );
     }
 
-    VTRCASIO::io_service &application::get_io_service( )
+    VTRC_ASIO::io_service &application::get_io_service( )
     {
         return impl_->get_io_service( );
     }
 
-    VTRCASIO::io_service &application::get_rpc_service( )
+    VTRC_ASIO::io_service &application::get_rpc_service( )
     {
         return impl_->get_rpc_service( );
     }
@@ -141,12 +141,12 @@ namespace vtrc { namespace server {
         return impl_->get_enviroment( );
     }
 
-    const VTRCASIO::io_service &application::get_io_service( )  const
+    const VTRC_ASIO::io_service &application::get_io_service( )  const
     {
         return impl_->get_io_service( );
     }
 
-    const VTRCASIO::io_service &application::get_rpc_service( ) const
+    const VTRC_ASIO::io_service &application::get_rpc_service( ) const
     {
         return impl_->get_rpc_service( );
     }

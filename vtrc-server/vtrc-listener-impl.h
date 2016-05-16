@@ -22,8 +22,8 @@ namespace vtrc { namespace server { namespace listeners {
 
 namespace {
 
-    namespace basio = VTRCASIO;
-    namespace bsys  = boost::system;
+    namespace basio = VTRC_ASIO;
+    namespace bsys  = VTRC_SYSTEM;
 
     typedef vtrc::server::connection_close_closure close_closure;
 
