@@ -41,6 +41,7 @@ namespace stress {
 
 namespace {
 
+#if 0
     void precall_closure( vtrc::common::connection_iface &c,
                           const google::protobuf::MethodDescriptor *m,
                           vtrc::rpc::lowlevel_unit & )
@@ -54,6 +55,7 @@ namespace {
     {
         std::cout << "Postcall " << "\n";
     }
+#endif
 
 }
 
