@@ -1,7 +1,7 @@
 #include <list>
 #include <set>
 
-#include "boost/asio.hpp"
+#include "vtrc-asio.h"
 
 #include "vtrc-thread-pool.h"
 #include "vtrc-mutex-typedefs.h"
@@ -12,7 +12,7 @@
 ///// TODO: need some fix here
 namespace vtrc { namespace common {
 
-    namespace basio = boost::asio;
+    namespace basio = VTRCASIO;
 
     typedef vtrc::unique_ptr<vtrc::thread> thread_ptr;
 
@@ -196,13 +196,13 @@ namespace vtrc { namespace common {
         impl_->add( init_count );
     }
 
-    thread_pool::thread_pool( boost::asio::io_service &ios, size_t init_count )
+    thread_pool::thread_pool( VTRCASIO::io_service &ios, size_t init_count )
         :impl_(new impl(&ios, false))
     {
         impl_->add( init_count );
     }
 
-    thread_pool::thread_pool( boost::asio::io_service &ios )
+    thread_pool::thread_pool( VTRCASIO::io_service &ios )
         :impl_(new impl(&ios, false))
     { }
 
@@ -246,12 +246,12 @@ namespace vtrc { namespace common {
         impl_->add(count);
     }
 
-    boost::asio::io_service &thread_pool::get_io_service( )
+    VTRCASIO::io_service &thread_pool::get_io_service( )
     {
         return *impl_->ios_;
     }
 
-    const boost::asio::io_service &thread_pool::get_io_service( ) const
+    const VTRCASIO::io_service &thread_pool::get_io_service( ) const
     {
         return *impl_->ios_;
     }

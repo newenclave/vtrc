@@ -3,7 +3,7 @@
 #ifdef _WIN32
 
 #include <windows.h>
-#include "boost/asio/windows/stream_handle.hpp"
+#include "vtrc-asio.h"
 #include "vtrc-client-stream-impl.h"
 #include "vtrc-common/vtrc-exception.h"
 
@@ -18,7 +18,7 @@ namespace vtrc { namespace client {
 
     struct client_win_pipe::impl: public super_type  {
 
-        impl( boost::asio::io_service &ios,
+        impl( VTRCASIO::io_service &ios,
               vtrc_client *client, protocol_signals *callbacks )
             :super_type(ios, client, callbacks, 4096)
         { }
@@ -88,7 +88,7 @@ namespace vtrc { namespace client {
         return vtrc::make_shared<socket_type>(vtrc::ref(ios));
     }
 
-    client_win_pipe::client_win_pipe( boost::asio::io_service &ios,
+    client_win_pipe::client_win_pipe( VTRCASIO::io_service &ios,
                                       vtrc_client *client, 
                                       protocol_signals *callbacks )
         :common::transport_win_pipe(create_socket(ios))

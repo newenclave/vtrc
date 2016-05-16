@@ -1,12 +1,12 @@
 
 #include "boost/thread/tss.hpp"
-#include "boost/asio.hpp"
 
 #include "google/protobuf/message.h"
 #include "google/protobuf/descriptor.h"
 
 #include <exception>
 
+#include "vtrc-asio.h"
 #include "vtrc-thread.h"
 
 #include "vtrc-atomic.h"
@@ -41,7 +41,7 @@ namespace vtrc { namespace common {
 
     namespace gpb   = google::protobuf;
     namespace bsys  = boost::system;
-    namespace basio = boost::asio;
+    namespace basio = VTRCASIO;
 
     namespace {
 

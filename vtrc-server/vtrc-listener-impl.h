@@ -1,7 +1,7 @@
 #ifndef VTRC_ENDPOINT_IMPL_H
 #define VTRC_ENDPOINT_IMPL_H
 
-#include "boost/asio.hpp"
+#include "vtrc-asio.h"
 
 #include "vtrc-listener.h"
 #include "vtrc-application.h"
@@ -22,7 +22,7 @@ namespace vtrc { namespace server { namespace listeners {
 
 namespace {
 
-    namespace basio = boost::asio;
+    namespace basio = VTRCASIO;
     namespace bsys  = boost::system;
 
     typedef vtrc::server::connection_close_closure close_closure;

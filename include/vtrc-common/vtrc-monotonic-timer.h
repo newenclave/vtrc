@@ -1,8 +1,7 @@
 #ifndef VTRC_MONOTONIC_TIMER_H
 #define VTRC_MONOTONIC_TIMER_H
 
-#include "boost/asio/steady_timer.hpp"
-#include "boost/asio/deadline_timer.hpp"
+#include "vtrc-asio.h"
 #include "vtrc-chrono.h"
 
 namespace vtrc { namespace common { namespace timer {
@@ -51,8 +50,8 @@ namespace vtrc { namespace common { namespace timer {
         }
     };
 
-    typedef  boost::asio::basic_deadline_timer< vtrc::chrono::steady_clock,
-                                                monotonic_traits > monotonic;
+    typedef  VTRCASIO::basic_deadline_timer< vtrc::chrono::steady_clock,
+                                             monotonic_traits > monotonic;
 
 }}}
 

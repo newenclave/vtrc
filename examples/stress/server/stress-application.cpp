@@ -27,9 +27,7 @@
 #include "vtrc-mutex.h"
 #include "vtrc-atomic.h"
 #include "vtrc-thread.h"
-
-#include "boost/asio.hpp"
-#include "boost/asio/error.hpp"
+#include "vtrc-asio.h"
 
 #include "google/protobuf/service.h"
 #include "google/protobuf/descriptor.h"
@@ -62,7 +60,7 @@ namespace {
     using namespace vtrc;
     namespace po = boost::program_options;
     namespace gpb = google::protobuf;
-    namespace basio = boost::asio;
+    namespace basio = VTRCASIO;
     namespace bsys  = boost::system;
 
     typedef vtrc::common::delayed_call            delayed_call;

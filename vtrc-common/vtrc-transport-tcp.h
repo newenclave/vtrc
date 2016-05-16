@@ -3,22 +3,18 @@
 
 #include "vtrc-transport-iface.h"
 
-#include "boost/asio/ip/tcp.hpp"
-
+#include "vtrc-asio.h"
 #include "vtrc-memory.h"
-
 #include "vtrc-common/vtrc-closure.h"
 
+VTRC_ASIO_FORWARD(
+    class io_service;
+)
+
 namespace boost {
-
-    namespace asio {
-        class io_service;
-    }
-
     namespace system {
         class error_code;
     }
-
 }
 
 namespace vtrc { namespace common {
@@ -34,7 +30,7 @@ namespace vtrc { namespace common {
 
     public:
 
-        typedef boost::asio::ip::tcp::socket socket_type;
+        typedef VTRCASIO::ip::tcp::socket socket_type;
 
         transport_tcp( vtrc::shared_ptr<socket_type> sock );
         virtual ~transport_tcp(  );

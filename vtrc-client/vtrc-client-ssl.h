@@ -9,12 +9,12 @@
 #include "vtrc-common/vtrc-transport-ssl.h"
 #include "vtrc-common/vtrc-closure.h"
 
-namespace boost { namespace asio {
+VTRC_ASIO_FORWARD(
     class io_service;
     namespace ssl {
         class context;
     }
-}}
+)
 
 namespace vtrc {
 
@@ -32,21 +32,21 @@ namespace client {
         struct impl;
         impl  *impl_;
 
-        client_ssl( boost::asio::io_service &ios,
+        client_ssl( VTRCASIO::io_service &ios,
                     vtrc_client *client,
-                    vtrc::shared_ptr<boost::asio::ssl::context> ctx,
+                    vtrc::shared_ptr<VTRCASIO::ssl::context> ctx,
                     protocol_signals *callbacks,
                     bool tcp_nodelay );
 
     public:
 
         typedef vtrc::function<
-            bool ( bool, boost::asio::ssl::verify_context& )
+            bool ( bool, VTRCASIO::ssl::verify_context& )
         > verify_callback_type;
 
         typedef vtrc::shared_ptr<client_ssl> shared_type;
 
-        static shared_type create ( boost::asio::io_service &ios,
+        static shared_type create ( VTRCASIO::io_service &ios,
                                     vtrc_client *client,
                                     protocol_signals *callbacks,
                                     const std::string &verify_file,

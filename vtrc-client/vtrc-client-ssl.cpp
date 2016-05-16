@@ -4,15 +4,16 @@
 
 #include <iostream>
 #include "boost/lexical_cast.hpp"
-#include "boost/asio/ssl.hpp"
+
+#include "vtrc-asio.h"
 
 #include "vtrc-client-stream-impl.h"
 
 namespace vtrc { namespace client {
 
     namespace {
-        namespace basio = boost::asio;
-        namespace bssl  = boost::asio::ssl;
+        namespace basio = VTRCASIO;
+        namespace bssl  = VTRCASIO::ssl;
         namespace bsys  = boost::system;
         namespace ph    = vtrc::placeholders;
 
@@ -34,7 +35,7 @@ namespace vtrc { namespace client {
         vtrc::shared_ptr<bssl::context> context_;
         verify_callback_type            vcb_;
 
-        impl( boost::asio::io_service &ios,
+        impl( VTRCASIO::io_service &ios,
               vtrc_client *client, protocol_signals *callbacks,
               bool nodelay )
             :super_type(ios, client, callbacks, 4096)
@@ -142,7 +143,7 @@ namespace vtrc { namespace client {
         //return vtrc::make_shared<socket_type>(vtrc::ref(ios), vtrc::ref(ctx));
     }
 
-    client_ssl::client_ssl(boost::asio::io_service &ios,
+    client_ssl::client_ssl(VTRCASIO::io_service &ios,
                             vtrc_client *client,
                             vtrc::shared_ptr<bssl::context> ctx,
                             protocol_signals *callbacks,

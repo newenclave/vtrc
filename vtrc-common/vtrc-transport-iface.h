@@ -9,7 +9,7 @@
 
 #include "vtrc-protocol-layer.h"
 
-#include "boost/asio.hpp"
+#include "vtrc-asio.h"
 
 namespace boost {
 
@@ -30,7 +30,7 @@ namespace vtrc { namespace common {
         virtual bool active( ) const        = 0;
         virtual void init( )                = 0;
 
-//        virtual boost::asio::io_service::strand &get_dispatcher( ) = 0;
+//        virtual VTRCASIO::io_service::strand &get_dispatcher( ) = 0;
 
         void raw_write ( vtrc::shared_ptr<rpc::lowlevel_unit> ll_mess )
         {

@@ -20,7 +20,7 @@
 #include "vtrc-bind.h"
 #include "vtrc-ref.h"
 
-#include "boost/asio.hpp"
+#include "vtrc-asio.h"
 
 namespace lukki_db {
 
@@ -197,7 +197,7 @@ namespace lukki_db {
         common::thread_pool             db_thread_;
         db_type                         db_;
         vtrc_example::db_stat           db_stat_;
-        boost::asio::io_service::strand event_queue_;
+        VTRCASIO::io_service::strand event_queue_;
 
         std::vector<server::listener_sptr>  listeners_;
 
@@ -210,7 +210,7 @@ namespace lukki_db {
 
         subscriber_list_type subscribers_;
 
-        impl( boost::asio::io_service &rpc_service )
+        impl( VTRCASIO::io_service &rpc_service )
             :db_thread_(1)
             ,event_queue_(rpc_service)
         { }

@@ -5,7 +5,7 @@
 #include <deque>
 #include <string>
 
-#include "boost/asio.hpp"
+#include "vtrc-asio.h"
 
 #include "vtrc-enviroment.h"
 #include "vtrc-memory.h"
@@ -17,7 +17,7 @@
 
 namespace vtrc { namespace common {
 
-    namespace basio = boost::asio;
+    namespace basio = VTRCASIO;
     namespace bsys  = boost::system;
 
 #define TRANSPORT_USE_SYNC_WRITE 0
@@ -109,7 +109,7 @@ namespace vtrc { namespace common {
                 return closed_;
             }
 
-            boost::asio::io_service &get_io_service( )
+            VTRCASIO::io_service &get_io_service( )
             {
                 return ios_;
             }
@@ -293,7 +293,7 @@ namespace vtrc { namespace common {
                 return *stream_;
             }
 
-            boost::asio::io_service::strand &get_dispatcher( )
+            VTRCASIO::io_service::strand &get_dispatcher( )
             {
                 return write_dispatcher_;
             }

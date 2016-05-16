@@ -5,21 +5,15 @@
 
 #if VTRC_OPENSSL_ENABLED
 
-
+#include "vtrc-asio-ssl.h"
 #include "vtrc-transport-iface.h"
 
-#include "boost/asio/ip/tcp.hpp"
-#include "boost/asio/ssl.hpp"
-
+#include "vtrc-asio.h"
 #include "vtrc-memory.h"
 
 #include "vtrc-common/vtrc-closure.h"
 
 namespace boost {
-
-    namespace asio {
-        class io_service;
-    }
 
     namespace system {
         class error_code;
@@ -40,8 +34,8 @@ namespace vtrc { namespace common {
 
     public:
 
-        typedef boost::asio::ip::tcp::socket lowlevel_socket_type;
-        typedef boost::asio::ssl::stream<lowlevel_socket_type> socket_type;
+        typedef VTRCASIO::ip::tcp::socket lowlevel_socket_type;
+        typedef VTRCASIO::ssl::stream<lowlevel_socket_type> socket_type;
 
         transport_ssl( vtrc::shared_ptr<socket_type> sock );
         virtual ~transport_ssl(  );

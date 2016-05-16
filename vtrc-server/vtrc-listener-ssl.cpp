@@ -23,7 +23,7 @@ namespace vtrc { namespace server { namespace listeners {
 
     namespace {
 
-        namespace bssl  = boost::asio::ssl;
+        namespace bssl  = VTRCASIO::ssl;
         namespace bip   = basio::ip;
 
         typedef bip::tcp::acceptor  acceptor_type;

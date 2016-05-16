@@ -4,19 +4,17 @@
 #ifndef  _WIN32
 
 #include "vtrc-transport-iface.h"
-#include "boost/asio/local/stream_protocol.hpp"
+#include "vtrc-asio.h"
 #include "vtrc-common/vtrc-closure.h"
 
+#include "vtrc-asio-forward.h"
+
+VTRC_ASIO_FORWARD( class io_service; )
+
 namespace boost {
-
-    namespace asio {
-        class    io_service;
-    }
-
     namespace system {
         class error_code;
     }
-
 }
 
 namespace vtrc { namespace common {
@@ -32,7 +30,7 @@ namespace vtrc { namespace common {
 
     public:
 
-        typedef boost::asio::local::stream_protocol::socket socket_type;
+        typedef VTRCASIO::local::stream_protocol::socket socket_type;
 
         transport_unix_local( vtrc::shared_ptr<socket_type> sock );
 

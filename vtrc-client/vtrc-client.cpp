@@ -1,4 +1,3 @@
-#include "boost/asio.hpp"
 #include <map>
 #include <vector>
 #include <string>
@@ -13,6 +12,7 @@
 #include "vtrc-rpc-channel-c.h"
 #include "vtrc-protocol-layer-c.h"
 
+#include "vtrc-asio.h"
 #include "vtrc-bind.h"
 #include "vtrc-ref.h"
 #include "vtrc-condition-variable.h"
@@ -28,7 +28,7 @@
 
 namespace vtrc { namespace client {
 
-    namespace basio = boost::asio;
+    namespace basio = VTRCASIO;
     namespace bsys  = boost::system;
     namespace gpb   = google::protobuf;
     namespace bs2   = boost::signals2;
@@ -556,14 +556,14 @@ namespace vtrc { namespace client {
         }
     };
 
-    vtrc_client::vtrc_client( boost::asio::io_service &ios,
-                              boost::asio::io_service &rpc_ios )
+    vtrc_client::vtrc_client( VTRCASIO::io_service &ios,
+                              VTRCASIO::io_service &rpc_ios )
         :impl_(new impl(ios, rpc_ios))
     {
         impl_->parent_ = this;
     }
 
-    vtrc_client::vtrc_client( boost::asio::io_service &ios )
+    vtrc_client::vtrc_client( VTRCASIO::io_service &ios )
         :impl_(new impl(ios, ios))
     {
         impl_->parent_ = this;
@@ -611,22 +611,22 @@ namespace vtrc { namespace client {
         return impl_->connection( );
     }
 
-    boost::asio::io_service &vtrc_client::get_io_service( )
+    VTRCASIO::io_service &vtrc_client::get_io_service( )
     {
         return impl_->ios_;
     }
 
-    const boost::asio::io_service &vtrc_client::get_io_service( ) const
+    const VTRCASIO::io_service &vtrc_client::get_io_service( ) const
     {
         return impl_->ios_;
     }
 
-    boost::asio::io_service &vtrc_client::get_rpc_service( )
+    VTRCASIO::io_service &vtrc_client::get_rpc_service( )
     {
         return impl_->rpc_ios_;
     }
 
-    const boost::asio::io_service &vtrc_client::get_rpc_service( ) const
+    const VTRCASIO::io_service &vtrc_client::get_rpc_service( ) const
     {
         return impl_->rpc_ios_;
     }

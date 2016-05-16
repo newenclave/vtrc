@@ -3,9 +3,9 @@
 
 #include "vtrc-monotonic-timer.h"
 
-namespace boost { namespace asio {
+VTRC_ASIO_FORWARD(
     class io_service;
-}}
+)
 
 namespace vtrc { namespace common {
 
@@ -21,7 +21,7 @@ namespace vtrc { namespace common {
         typedef timer::monotonic_traits::minutes        minutes;
         typedef timer::monotonic_traits::hours          hours;
 
-        delayed_call( boost::asio::io_service &ios )
+        delayed_call( VTRCASIO::io_service &ios )
             :timer_(ios)
         { }
 

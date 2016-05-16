@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <iostream>
 
-#include "boost/asio.hpp"
+#include "vtrc-asio.h"
 
 #include "vtrc-common/vtrc-protocol-accessor-iface.h"
 #include "vtrc-common/vtrc-delayed-call.h"
@@ -26,7 +26,7 @@
 namespace vtrc { namespace client {
 
     namespace bs = boost::system;
-    namespace ba = boost::asio;
+    namespace ba = VTRCASIO;
     namespace gpb = google::protobuf;
 
     namespace {

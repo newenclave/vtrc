@@ -6,8 +6,8 @@
 
 namespace vtrc { namespace common {
 
-    namespace basio = boost::asio;
-    namespace bip   = boost::asio::ip;
+    namespace basio = VTRCASIO;
+    namespace bip   = VTRCASIO::ip;
     namespace bsys  = boost::system;
 
     namespace {

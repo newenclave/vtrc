@@ -14,23 +14,23 @@
 
 #include "vtrc-memory.h"
 #include "vtrc-function.h"
+#include "vtrc-asio-forward.h"
+
+VTRC_ASIO_FORWARD( class io_service; )
+
+#if VTRC_OPENSSL_ENABLED
+VTRC_ASIO_FORWARD(
+    namespace ssl {
+        class verify_context;
+    }
+)
+#endif
+
 
 namespace boost {
-
     namespace system {
         class error_code;
     }
-
-    namespace asio {
-        class io_service;
-    }
-
-#if VTRC_OPENSSL_ENABLED
-    namespace asio { namespace ssl {
-        class verify_context;
-    }}
-#endif
-
 }
 
 namespace google { namespace protobuf {
@@ -64,7 +64,7 @@ namespace client {
 
 #if VTRC_OPENSSL_ENABLED
     typedef vtrc::function<
-        bool ( bool, boost::asio::ssl::verify_context& )
+        bool ( bool, VTRCASIO::ssl::verify_context& )
     > verify_callback_type;
 #endif
 
@@ -88,10 +88,10 @@ namespace client {
 
     protected:
 
-        vtrc_client( boost::asio::io_service &ios );
+        vtrc_client( VTRCASIO::io_service &ios );
 
-        vtrc_client( boost::asio::io_service &ios,
-                     boost::asio::io_service &rpc_ios );
+        vtrc_client( VTRCASIO::io_service &ios,
+                     VTRCASIO::io_service &rpc_ios );
 
         vtrc_client( common::pool_pair &pools );
 
@@ -102,11 +102,11 @@ namespace client {
         common::connection_iface_sptr connection( );
 
         static
-        vtrc::shared_ptr<vtrc_client> create( boost::asio::io_service &ios );
+        vtrc::shared_ptr<vtrc_client> create( VTRCASIO::io_service &ios );
 
         static
-        vtrc::shared_ptr<vtrc_client> create(boost::asio::io_service &ios,
-                                             boost::asio::io_service &rpc_ios );
+        vtrc::shared_ptr<vtrc_client> create(VTRCASIO::io_service &ios,
+                                             VTRCASIO::io_service &rpc_ios );
         static
         vtrc::shared_ptr<vtrc_client> create( common::pool_pair &pool );
 
@@ -115,11 +115,11 @@ namespace client {
         vtrc::weak_ptr<vtrc_client>       weak_from_this( );
         vtrc::weak_ptr<vtrc_client const> weak_from_this( ) const;
 
-        boost::asio::io_service       &get_io_service( );
-        const boost::asio::io_service &get_io_service( ) const;
+        VTRCASIO::io_service       &get_io_service( );
+        const VTRCASIO::io_service &get_io_service( ) const;
 
-        boost::asio::io_service       &get_rpc_service( );
-        const boost::asio::io_service &get_rpc_service( ) const;
+        VTRCASIO::io_service       &get_rpc_service( );
+        const VTRCASIO::io_service &get_rpc_service( ) const;
 
         common::rpc_channel *create_channel( );
         common::rpc_channel *create_channel( unsigned flags );

@@ -9,7 +9,18 @@
 #include "common/async-transport-point.hpp"
 #include "vtrc-signal-declaration.h"
 
-namespace ba = boost::asio;
+
+namespace asio {
+    using namespace boost::asio;
+}
+
+//namespace boost {
+//namespace asio  {
+//    class io_service;
+//}
+//}
+
+namespace ba = asio;
 
 typedef ba::ip::tcp::socket stream_type;
 

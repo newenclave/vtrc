@@ -9,9 +9,9 @@
 
 #include "vtrc-memory.h"
 
-namespace boost { namespace asio {
+VTRC_ASIO_FORWARD(
     class io_service;
-}}
+)
 
 namespace vtrc {
 
@@ -30,14 +30,14 @@ namespace client {
         struct impl;
         impl  *impl_;
 
-        client_win_pipe( boost::asio::io_service &ios, 
+        client_win_pipe( VTRCASIO::io_service &ios, 
                          vtrc_client *client,
                          protocol_signals *callbacks );
 
     public:
 
         typedef vtrc::shared_ptr<client_win_pipe> shared_type;
-        static shared_type create ( boost::asio::io_service &ios, 
+        static shared_type create ( VTRCASIO::io_service &ios, 
                                     vtrc_client *client, 
                                     protocol_signals *callbacks );
 

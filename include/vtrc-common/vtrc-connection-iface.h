@@ -5,14 +5,16 @@
 #include "vtrc-function.h"
 #include "vtrc-closure.h"
 
+#include "vtrc-asio-forward.h"
+
+VTRC_ASIO_FORWARD(
+    class io_service;
+)
+
 namespace boost {
 
     namespace system {
         class error_code;
-    }
-
-    namespace asio {
-        class io_service;
     }
 }
 

@@ -1,8 +1,7 @@
 
 #ifdef _WIN32
 
-#include "boost/asio.hpp"
-#include "boost/asio/windows/stream_handle.hpp"
+#include "vtrc-asio.h"
 
 #include "vtrc-application.h"
 #include "vtrc-common/vtrc-enviroment.h"
@@ -22,7 +21,7 @@ namespace vtrc { namespace server { namespace listeners {
 
 namespace {
 
-    namespace basio = boost::asio;
+    namespace basio = VTRCASIO;
     typedef basio::windows::stream_handle    socket_type;
     typedef common::transport_win_pipe       connection_type;
     typedef connection_impl<connection_type> connection_impl_type;

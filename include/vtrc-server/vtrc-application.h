@@ -4,9 +4,9 @@
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"
 #include "vtrc-common/vtrc-protocol-defaults.h"
 
-namespace boost { namespace asio {
-    class io_service;
-}}
+#include "vtrc-asio-forward.h"
+
+VTRC_ASIO_FORWARD( class io_service; )
 
 namespace google { namespace protobuf {
     class Service;
@@ -45,21 +45,21 @@ namespace server {
 
         application( );
         application( common::pool_pair &pools );
-        application( boost::asio::io_service &ios );
-        application( boost::asio::io_service &ios,
-                     boost::asio::io_service &rpc_ios );
+        application( VTRCASIO::io_service &ios );
+        application( VTRCASIO::io_service &ios,
+                     VTRCASIO::io_service &rpc_ios );
 
         virtual ~application( );
 
         void stop_all_clients( );
 
         common::enviroment            &get_enviroment ( );
-        boost::asio::io_service       &get_io_service ( );
-        boost::asio::io_service       &get_rpc_service( );
+        VTRCASIO::io_service       &get_io_service ( );
+        VTRCASIO::io_service       &get_rpc_service( );
 
         const common::enviroment      &get_enviroment ( ) const;
-        const boost::asio::io_service &get_io_service ( ) const;
-        const boost::asio::io_service &get_rpc_service( ) const;
+        const VTRCASIO::io_service &get_io_service ( ) const;
+        const VTRCASIO::io_service &get_rpc_service( ) const;
 
         vtrc::shared_ptr<common::connection_list>  get_clients( );
 

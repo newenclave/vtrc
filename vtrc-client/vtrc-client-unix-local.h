@@ -7,10 +7,9 @@
 #include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
 #include "vtrc-memory.h"
 
-
-namespace boost { namespace asio {
+VTRC_ASIO_FORWARD(
     class io_service;
-}}
+)
 
 namespace vtrc {
 
@@ -29,7 +28,7 @@ namespace client {
         friend struct impl;
         impl  *impl_;
 
-        client_unix_local(boost::asio::io_service &ios,
+        client_unix_local(VTRCASIO::io_service &ios,
                           vtrc_client *client ,
                           protocol_signals *callbacks);
 
@@ -37,7 +36,7 @@ namespace client {
 
         typedef vtrc::shared_ptr<client_unix_local> shared_type;
 
-        static shared_type create ( boost::asio::io_service &ios,
+        static shared_type create ( VTRCASIO::io_service &ios,
                                     vtrc_client *client,
                                     protocol_signals *callbacks );
 

@@ -17,14 +17,14 @@
 #include "vtrc-memory.h"
 #include "vtrc-bind.h"
 
-#include "boost/asio.hpp"
+#include "vtrc-asio.h"
 
 #include <stdlib.h>
 
 namespace vtrc { namespace server {
 
     namespace bs = boost::system;
-    namespace ba = boost::asio;
+    namespace ba = VTRCASIO;
     namespace gpb = google::protobuf;
 
     namespace {

@@ -1,7 +1,7 @@
 #ifndef VTRC_CLIENT_STREAM_IMPL_H
 #define VTRC_CLIENT_STREAM_IMPL_H
 
-#include "boost/asio.hpp"
+#include "vtrc-asio.h"
 
 #include "vtrc-client.h"
 #include "vtrc-bind.h"
@@ -16,7 +16,7 @@ namespace vtrc { namespace client {
 
 namespace { /// implementation.
 
-    namespace basio = boost::asio;
+    namespace basio = VTRCASIO;
     namespace bsys  = boost::system;
 
     template <typename ParentType, typename StreamType>
@@ -26,7 +26,7 @@ namespace { /// implementation.
         typedef StreamType                                    stream_type;
         typedef client_stream_impl<parent_type, stream_type>  this_type;
 
-        boost::asio::io_service &ios_;
+        VTRCASIO::io_service &ios_;
 
         parent_type             *parent_;
         vtrc_client             *client_;
@@ -37,7 +37,7 @@ namespace { /// implementation.
 
         vtrc::unique_ptr<protocol_layer_c> protocol_;
 
-        client_stream_impl( boost::asio::io_service &ios,
+        client_stream_impl( VTRCASIO::io_service &ios,
                             vtrc_client *client, protocol_signals *callbacks,
                             size_t read_buffer_size )
             :ios_(ios)

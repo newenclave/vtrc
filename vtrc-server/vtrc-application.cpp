@@ -1,5 +1,5 @@
 
-#include "boost/asio.hpp"
+#include "vtrc-asio.h"
 
 #include "vtrc-application.h"
 
@@ -14,23 +14,23 @@ namespace vtrc { namespace server {
     struct application::impl {
 
         common::enviroment         env_;
-        boost::asio::io_service   *ios_;
+        VTRCASIO::io_service   *ios_;
         const bool                 own_ios_;
 
-        boost::asio::io_service   *rpc_ios_;
+        VTRCASIO::io_service   *rpc_ios_;
         const bool                 own_rpc_ios_;
 
         vtrc::shared_ptr<common::connection_list> clients_;
 
         impl( )
-            :ios_(new boost::asio::io_service)
+            :ios_(new VTRCASIO::io_service)
             ,own_ios_(true)
             ,rpc_ios_(ios_)
             ,own_rpc_ios_(false)
             ,clients_(common::connection_list::create( ))
         { }
 
-        impl( boost::asio::io_service *ios )
+        impl( VTRCASIO::io_service *ios )
             :ios_(ios)
             ,own_ios_(false)
             ,rpc_ios_(ios)
@@ -38,7 +38,7 @@ namespace vtrc { namespace server {
             ,clients_(common::connection_list::create( ))
         { }
 
-        impl( boost::asio::io_service *ios, boost::asio::io_service *rpc_ios )
+        impl( VTRCASIO::io_service *ios, VTRCASIO::io_service *rpc_ios )
             :ios_(ios)
             ,own_ios_(false)
             ,rpc_ios_(rpc_ios)
@@ -75,12 +75,12 @@ namespace vtrc { namespace server {
             return env_;
         }
 
-        boost::asio::io_service &get_io_service( )
+        VTRCASIO::io_service &get_io_service( )
         {
             return *ios_;
         }
 
-        boost::asio::io_service &get_rpc_service( )
+        VTRCASIO::io_service &get_rpc_service( )
         {
             return *rpc_ios_;
         }
@@ -102,12 +102,12 @@ namespace vtrc { namespace server {
 
     }
 
-    application::application( boost::asio::io_service &ios )
+    application::application( VTRCASIO::io_service &ios )
         :impl_(new impl(&ios))
     { }
 
-    application::application( boost::asio::io_service &ios,
-                              boost::asio::io_service &rpc_ios)
+    application::application( VTRCASIO::io_service &ios,
+                              VTRCASIO::io_service &rpc_ios)
         :impl_(new impl(&ios, &rpc_ios))
     { }
 
@@ -126,12 +126,12 @@ namespace vtrc { namespace server {
         return impl_->get_enviroment( );
     }
 
-    boost::asio::io_service &application::get_io_service( )
+    VTRCASIO::io_service &application::get_io_service( )
     {
         return impl_->get_io_service( );
     }
 
-    boost::asio::io_service &application::get_rpc_service( )
+    VTRCASIO::io_service &application::get_rpc_service( )
     {
         return impl_->get_rpc_service( );
     }
@@ -141,12 +141,12 @@ namespace vtrc { namespace server {
         return impl_->get_enviroment( );
     }
 
-    const boost::asio::io_service &application::get_io_service( )  const
+    const VTRCASIO::io_service &application::get_io_service( )  const
     {
         return impl_->get_io_service( );
     }
 
-    const boost::asio::io_service &application::get_rpc_service( ) const
+    const VTRCASIO::io_service &application::get_rpc_service( ) const
     {
         return impl_->get_rpc_service( );
     }

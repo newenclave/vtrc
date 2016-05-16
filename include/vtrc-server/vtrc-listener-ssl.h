@@ -18,7 +18,7 @@ namespace vtrc { namespace server {
     class application;
 
     namespace ssl {
-        typedef boost::asio::ssl::context context;
+        typedef VTRCASIO::ssl::context context;
         typedef vtrc::function<void (context &)> setup_function_type;
     }
 

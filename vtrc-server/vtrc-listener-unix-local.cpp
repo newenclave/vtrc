@@ -1,8 +1,7 @@
 
 #ifndef  _WIN32
 
-#include "boost/asio/local/stream_protocol.hpp"
-
+#include "vtrc-asio.h"
 #include "vtrc-common/vtrc-transport-unix-local.h"
 #include "vtrc-common/vtrc-protocol-accessor-iface.h"
 
@@ -15,7 +14,7 @@ namespace vtrc { namespace server { namespace listeners {
 
     namespace {
 
-        namespace basio = boost::asio;
+        namespace basio = VTRCASIO;
         typedef basio::local::stream_protocol bstream;
 
         typedef common::transport_unix_local    transport_type;

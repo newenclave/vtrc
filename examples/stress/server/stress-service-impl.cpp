@@ -16,8 +16,6 @@
 
 #include "stress-application.h"
 
-#include "boost/asio/io_service.hpp"
-
 namespace gpb = google::protobuf;
 using namespace vtrc;
 

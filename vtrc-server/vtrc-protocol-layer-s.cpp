@@ -1,5 +1,5 @@
 #include <algorithm>
-#include "boost/asio.hpp"
+#include "vtrc-asio.h"
 
 #include "vtrc-common/vtrc-mutex-typedefs.h"
 #include "vtrc-bind.h"
@@ -32,7 +32,7 @@ namespace vtrc { namespace server {
 
     namespace gpb   = google::protobuf;
     namespace bsys  = boost::system;
-    namespace basio = boost::asio;
+    namespace basio = VTRCASIO;
 
     typedef common::lowlevel::protocol_layer_iface connection_setup_iface;
     connection_setup_iface *create_default_setup( application &a,

@@ -7,7 +7,7 @@
 
 namespace vtrc { namespace common {
 
-    namespace basio = boost::asio;
+    namespace basio = VTRCASIO;
     namespace bsys  = boost::system;
 
     namespace {

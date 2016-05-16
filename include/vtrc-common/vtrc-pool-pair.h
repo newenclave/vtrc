@@ -3,9 +3,7 @@
 
 #include "vtrc-thread-pool.h"
 
-namespace boost { namespace asio {
-    class io_service;
-}}
+VTRC_ASIO_FORWARD( class io_service; )
 
 namespace vtrc { namespace common {
 
@@ -27,11 +25,11 @@ namespace vtrc { namespace common {
 
     public:
 
-        boost::asio::io_service       &get_io_service( );
-        const boost::asio::io_service &get_io_service( ) const;
+        VTRCASIO::io_service       &get_io_service( );
+        const VTRCASIO::io_service &get_io_service( ) const;
 
-        boost::asio::io_service       &get_rpc_service( );
-        const boost::asio::io_service &get_rpc_service( ) const;
+        VTRCASIO::io_service       &get_rpc_service( );
+        const VTRCASIO::io_service &get_rpc_service( ) const;
 
         thread_pool       &get_io_pool( );
         const thread_pool &get_io_pool( ) const;
