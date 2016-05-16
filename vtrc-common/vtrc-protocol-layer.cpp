@@ -7,6 +7,10 @@
 #include <exception>
 
 #include "vtrc-asio.h"
+#ifdef _WIN32
+#undef GetMessage // fix GetMessageW/GetMessageA
+#endif
+
 #include "vtrc-thread.h"
 
 #include "vtrc-atomic.h"
