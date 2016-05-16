@@ -1,6 +1,6 @@
 find_path( ASIO_INCLUDE_DIR asio.hpp /usr/include /usr/local/include )
 
-#FIND_LIBRARY(ASIO_LIBRARY NAMES asio PATH /usr/lib /usr/local/lib)
+#find_library(ASIO_LIBRARY NAMES asio PATH /usr/lib /usr/local/lib)
 
 if( ASIO_INCLUDE_DIR )
    set(ASIO_FOUND TRUE)
