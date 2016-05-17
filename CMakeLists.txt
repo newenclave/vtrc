@@ -172,6 +172,7 @@ if(WITH_EXAMPLES)
     add_subdirectory( examples/stress       )
     add_subdirectory( examples/hello        )
     add_subdirectory( examples/hello-events )
+    add_subdirectory( examples/hello-events-http )
 
 if(OPENSSL_FOUND)
     add_subdirectory( examples/hello-ssl-handshake )
