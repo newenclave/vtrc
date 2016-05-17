@@ -260,6 +260,7 @@ namespace vtrc { namespace common {
 
         std::string prepare_data( const char *data, size_t length )
         {
+            //return std::string( data, length );
             return ll_processor_->pack_message( data, length );
         }
 
@@ -273,11 +274,6 @@ namespace vtrc { namespace common {
             return ll_processor_->pop_proto_message( result );
         }
 
-        bool raw_pop( std::string &result )
-        {
-            return ll_processor_->pop_raw_message( result );
-        }
-
         size_t ready_messages_count( ) const
         {
             return ll_processor_->queue_size( );
@@ -286,11 +282,6 @@ namespace vtrc { namespace common {
         bool message_queue_empty( ) const
         {
             return ll_processor_->queue_size( ) == 0;
-        }
-
-        bool parse_message( const std::string &mess, gpb::Message &result )
-        {
-            return ll_processor_->parse_raw_message( mess, result );
         }
 
         void set_ready( bool ready )
@@ -342,7 +333,7 @@ namespace vtrc { namespace common {
             connection_->write( data, length );
         }
 
-        void send_message( const gpb::Message &message )
+        void send_message( const lowlevel_unit_type &message )
         {
             std::string ser(ll_processor_->serialize_message( message ));
             send_data( ser.c_str( ), ser.size( ) );
@@ -906,7 +897,6 @@ namespace vtrc { namespace common {
         return impl_->prepare_data( data, length );
     }
 
-
     /*
      * call context
     */
@@ -1005,11 +995,6 @@ namespace vtrc { namespace common {
     bool protocol_layer::parse_and_pop( gpb::Message &result )
     {
         return impl_->parse_and_pop( result );
-    }
-
-    bool protocol_layer::raw_pop( std::string &result )
-    {
-        return impl_->raw_pop( result );
     }
 
     uint64_t protocol_layer::next_index( )

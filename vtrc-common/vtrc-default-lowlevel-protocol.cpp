@@ -8,6 +8,7 @@
 #include "google/protobuf/message.h"
 
 #include "vtrc-common/vtrc-protocol-defaults.h"
+
 #include "protocol/vtrc-rpc-options.pb.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
 
@@ -74,26 +75,27 @@ namespace vtrc { namespace common { namespace lowlevel {
     void default_protocol::configure_impl( const rpc::session_options & )
     { }
 
-    std::string default_protocol::serialize_message(
-                                 const gpb::Message &mess )
+    std::string
+    default_protocol::serialize_message( const rpc::lowlevel_unit &mess )
     {
         return mess.SerializeAsString( );
+//        std::string ser(mess.SerializeAsString( ));
+//        return pack_message( ser.c_str( ), ser.size( ) );
     }
 
-    std::string default_protocol::pack_message( const char *data,
-                                                            size_t length )
+    std::string default_protocol::pack_message( const char *data, size_t len )
     {
         /**
          * message_header = <packed_size(data_length + hash_length)>
         **/
-        const size_t body_len = length + hash_maker_->hash_size( );
+        const size_t body_len = len + hash_maker_->hash_size( );
         std::string result( spns::pack_size( body_len ));
 
         /** here is:
          *  message_body = <hash(data)> + <data>
         **/
-        std::string body( hash_maker_->get_data_hash( data, length ) );
-        body.append( data, data + length );
+        std::string body( hash_maker_->get_data_hash( data, len ) );
+        body.append( data, data + len );
 
         /**
          * message =  message_header + <transform( message )>

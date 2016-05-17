@@ -13,6 +13,7 @@ namespace google { namespace protobuf {
 
 namespace vtrc { namespace rpc {
     class session_options;
+    class lowlevel_unit;
 }}
 
 namespace vtrc { namespace common {
@@ -41,30 +42,19 @@ namespace vtrc { namespace common {
 
         /// serialize lowlevel message
         virtual std::string serialize_message(
-                            const google::protobuf::Message &mess ) = 0;
+                            const vtrc::rpc::lowlevel_unit &mess ) = 0;
 
-        /// pack lowlevel message to protocol view
+//        /// pack lowlevel message to protocol view
         virtual std::string pack_message( const char *data, size_t length ) = 0;
 
         /// accept portion os the data and unpuck message is exists
         virtual void process_data( const char *data, size_t length ) = 0;
 
-        /// parse raw data
-        virtual bool parse_raw_message( const std::string &mess,
-                                google::protobuf::Message &out ) = 0;
-
         /// ready messages count
         virtual size_t queue_size( ) const = 0;
 
-        /// validate lowlevel message
-        virtual bool check_message( const std::string &mess ) = 0;
-
         /// get ant pop next message
-        virtual bool pop_proto_message(
-                             google::protobuf::Message &result ) = 0;
-
-        /// get and pop raw message data
-        virtual bool pop_raw_message( std::string &result ) = 0;
+        virtual bool pop_proto_message( google::protobuf::Message &result ) = 0;
 
     };
 

@@ -225,8 +225,6 @@ namespace vtrc { namespace common {
         /// protocol violation; we have to close connection in this case
         bool   parse_and_pop(google::protobuf::Message &result );
 
-        bool   raw_pop( std::string &result );
-
     };
 }}
 
