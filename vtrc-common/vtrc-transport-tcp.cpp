@@ -22,11 +22,6 @@ namespace vtrc { namespace common {
             :impl_type(s, n)
         { }
 
-        std::string prepare_for_write(const char *data, size_t len)
-        {
-            return get_parent( )->prepare_for_write( data, len );
-        }
-
         void set_no_delay( bool value )
         {
             get_socket( ).set_option( bip::tcp::no_delay( value ) );
@@ -87,11 +82,6 @@ namespace vtrc { namespace common {
     void transport_tcp::set_no_delay( bool value )
     {
         impl_->set_no_delay( value );
-    }
-
-    std::string transport_tcp::prepare_for_write(const char *data, size_t len)
-    {
-        return impl_->prepare_for_write( data, len );
     }
 
     socket_type &transport_tcp::get_socket( )

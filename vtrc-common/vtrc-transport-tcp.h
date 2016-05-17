@@ -43,8 +43,6 @@ namespace vtrc { namespace common {
 
         void set_no_delay( bool value );
 
-    private:
-        virtual std::string prepare_for_write( const char *data, size_t len );
     };
 
 }}
