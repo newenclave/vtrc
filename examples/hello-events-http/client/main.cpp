@@ -21,6 +21,10 @@ using namespace vtrc;
 namespace gpb = google::protobuf;
 
 namespace {
+
+    std::set<std::string> run_params;
+
+
     void on_connect( )
     {
         std::cout << "connect...";
@@ -70,6 +74,9 @@ namespace {
         std::string pack_message( const rpc::lowlevel_unit &mess )
         {
             std::string d = http::lowlevel2http( mess );
+            if( run_params.find( "-d" ) != run_params.end( ) ) {
+                std::cout << "========\n" << d << "\n";
+            }
             return d;
         }
 
@@ -165,6 +172,10 @@ int main( int argc, const char **argv )
 
     const char *address = "0.0.0.0";
     unsigned short port = 56560;
+
+    for( int i=0; i<argc; ++i ) {
+        run_params.insert( argv[i] );
+    }
 
     if( argc > 2 ) {
         address = argv[1];
