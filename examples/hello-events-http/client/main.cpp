@@ -205,6 +205,10 @@ int main( int argc, const char **argv )
 
         std::cout << "Make call 'generate_events'...\n";
         hello.call( &stub_type::generate_events );
+        hello.call( &stub_type::generate_events );
+        hello.call( &stub_type::generate_events );
+        hello.call( &stub_type::generate_events );
+        hello.call( &stub_type::generate_events );
         std::cout << "'generate_events' OK\n";
 
     } catch( const std::exception &ex ) {

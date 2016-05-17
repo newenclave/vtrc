@@ -64,8 +64,6 @@ public:
     {
         bool ok = false;
 
-//        /std::cout << "<<<<" << std::string( data, length ) << std::endl;
-
         while( length ) {
             size_t r = current_header_->push( data, data + length );
             length -= r;
@@ -201,8 +199,12 @@ int main( int argc, const char **argv )
 
     try {
 
+        rpc::session_options opts = vtrc::common::defaults::session_options( );
+        //opts.set_read_buffer_size( 1 ); // test
+
         vtrc::shared_ptr<server::listener>
-                tcp( server::listeners::tcp::create( app, address, port ) );
+                tcp( server::listeners::tcp::create( app, opts,
+                                                     address, port ) );
 
         tcp->assign_lowlevel_protocol_factory( &http_lowlevel_server::create );
 
