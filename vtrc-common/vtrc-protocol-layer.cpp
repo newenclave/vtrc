@@ -255,7 +255,7 @@ namespace vtrc { namespace common {
         void configure_session( const rpc::session_options &opts )
         {
             session_opts_.CopyFrom( opts );
-            ll_processor_->configure( opts );
+            //ll_processor_->configure( opts );
         }
 
         void process_data( const char *data, size_t length )

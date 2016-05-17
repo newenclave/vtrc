@@ -245,6 +245,7 @@ namespace vtrc { namespace client {
                 rpc::auth::session_setup opts;
                 opts.ParseFromString( capsule.body( ) );
                 accessor( )->configure_session( opts.options( ) );
+                configure( opts.options( ) );
 
                 ready_ = true;
             }

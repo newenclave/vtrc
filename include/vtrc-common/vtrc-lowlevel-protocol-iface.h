@@ -33,12 +33,6 @@ namespace vtrc { namespace common {
         /// do handshake with other side
         virtual void do_handshake( ) = 0;
 
-        /// check for readiness
-        virtual bool ready( ) const = 0;
-
-        //// configure current session
-        virtual void configure( const rpc::session_options &opts ) = 0;
-
         /// serialize lowlevel message
         virtual std::string pack_message( const rpc::lowlevel_unit &mess ) = 0;
 

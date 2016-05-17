@@ -100,8 +100,6 @@ public:
 
     void close( ) { }
     void do_handshake( ) { }
-    bool ready( ) const { return true; }
-    void configure( const rpc::session_options & ) { }
 
 };
 
