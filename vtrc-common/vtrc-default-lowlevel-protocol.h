@@ -42,7 +42,8 @@ namespace vtrc {  namespace common { namespace lowlevel {
 
         size_t      queue_size( ) const;
         bool        check_message( const std::string &mess );
-        bool        pop_proto_message( google::protobuf::Message &result );
+        bool        pop_proto_message(rpc::lowlevel_unit &result );
+
         bool        pop_raw_message( std::string &result );
         bool        parse_raw_message( const std::string &mess,
                                        google::protobuf::Message &out );

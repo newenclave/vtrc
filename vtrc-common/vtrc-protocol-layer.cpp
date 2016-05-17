@@ -263,7 +263,7 @@ namespace vtrc { namespace common {
             ll_processor_->process_data( data, length );
         }
 
-        bool parse_and_pop( gpb::Message &result )
+        bool parse_and_pop( rpc::lowlevel_unit &result )
         {
             return ll_processor_->pop_proto_message( result );
         }
@@ -981,7 +981,7 @@ namespace vtrc { namespace common {
         return impl_->message_queue_empty( );
     }
 
-    bool protocol_layer::parse_and_pop( gpb::Message &result )
+    bool protocol_layer::parse_and_pop( rpc::lowlevel_unit &result )
     {
         return impl_->parse_and_pop( result );
     }

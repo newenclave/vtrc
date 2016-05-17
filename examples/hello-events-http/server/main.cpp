@@ -13,9 +13,93 @@
 #include "google/protobuf/descriptor.h" /// for descriptor( )->full_name( )
 #include "boost/lexical_cast.hpp"
 
+#include "vtrc-system.h"
+#include "../protocol/http-header.hpp"
+
 using namespace vtrc;
 
 namespace {
+
+namespace vc = vtrc::common;
+
+class http_lowlevel_server: vc::lowlevel::protocol_layer_iface {
+
+    typedef http::header_parser             parser_type;
+    typedef vtrc::shared_ptr<parser_type>   parser_sptr;
+    typedef std::deque<parser_sptr>         requests_container;
+
+    vc::protocol_accessor   *pa_;
+    requests_container       container_;
+    parser_sptr              current_header_;
+
+public:
+
+    static
+    vc::lowlevel::protocol_layer_iface *create( )
+    {
+        return new http_lowlevel_server;
+    }
+
+    void reset_current( )
+    {
+        current_header_ = vtrc::make_shared<parser_type>( );
+    }
+
+    void init( vc::protocol_accessor *pa,
+               vc::system_closure_type ready_cb )
+    {
+        pa_ = pa;
+        reset_current( );
+        ready_cb( VTRC_SYSTEM::error_code( ) );
+        pa->ready( true );
+    }
+
+    std::string pack_message( const rpc::lowlevel_unit &mess )
+    {
+        std::string d = http::lowlevel2http( mess );
+        return d;
+    }
+
+    void process_data( const char *data, size_t length )
+    {
+        bool ok = false;
+
+//        /std::cout << "<<<<" << std::string( data, length ) << std::endl;
+
+        while( length ) {
+            size_t r = current_header_->push( data, data + length );
+            length -= r;
+            data   += r;
+            if( current_header_->ready( ) ) {
+                container_.push_back( current_header_ );
+                ok = true;
+                reset_current( );
+            }
+        }
+        if( ok ) {
+            pa_->message_ready( );
+        }
+    }
+
+    size_t queue_size( ) const
+    {
+        return container_.size( );
+    }
+
+    bool pop_proto_message( vtrc::rpc::lowlevel_unit &result )
+    {
+        bool res = http::http2lowlevel( *container_.front( ), result );
+        container_.pop_front( );
+        return res;
+    }
+
+    void close( ) { }
+    void do_handshake( ) { }
+    bool ready( ) const { return true; }
+    void configure( const rpc::session_options & ) { }
+
+};
+
 
 class  hello_service_impl: public howto::hello_events_service {
 
@@ -119,6 +203,8 @@ int main( int argc, const char **argv )
 
         vtrc::shared_ptr<server::listener>
                 tcp( server::listeners::tcp::create( app, address, port ) );
+
+        tcp->assign_lowlevel_protocol_factory( &http_lowlevel_server::create );
 
         tcp->start( );
 

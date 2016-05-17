@@ -5,6 +5,7 @@
 #include "vtrc-closure.h"
 #include "vtrc-memory.h"
 #include "vtrc-function.h"
+#include "vtrc-protocol-accessor-iface.h"
 
 namespace google { namespace protobuf {
     class MessageLite;
@@ -17,8 +18,6 @@ namespace vtrc { namespace rpc {
 }}
 
 namespace vtrc { namespace common {
-
-    struct protocol_accessor;
 
     namespace lowlevel {
 
@@ -50,7 +49,7 @@ namespace vtrc { namespace common {
         virtual size_t queue_size( ) const = 0;
 
         /// get and pop next message
-        virtual bool pop_proto_message( google::protobuf::Message &result ) = 0;
+        virtual bool pop_proto_message( rpc::lowlevel_unit &result ) = 0;
 
     };
 

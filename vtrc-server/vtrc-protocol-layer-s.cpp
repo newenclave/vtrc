@@ -211,7 +211,7 @@ namespace vtrc { namespace server {
             }
         }
 
-        bool get_pop_message( gpb::Message &capsule )
+        bool get_pop_message( rpc::lowlevel_unit &capsule )
         {
             bool check = parent_->parse_and_pop( capsule );
             if( !check ) {

@@ -157,7 +157,7 @@ namespace vtrc { namespace common { namespace lowlevel {
         return result;
     }
 
-    bool default_protocol::pop_proto_message( gpb::Message &res )
+    bool default_protocol::pop_proto_message( rpc::lowlevel_unit &res )
     {
         std::string &data(queue_->messages( ).front( ));
 
