@@ -5,7 +5,7 @@ list(APPEND src_dirs . )
 
 foreach( src_dir ${src_dirs} )
     aux_source_directory(   ${src_dir} lib_src)
-    file(GLOB   headers     ${src_dir}/*.h)
+    file(GLOB   headers     ${src_dir}/*.h ${src_dir}/*.hpp)
     list(APPEND lib_src     ${headers})
 endforeach( )
 
