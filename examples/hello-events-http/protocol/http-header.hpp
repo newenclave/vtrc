@@ -376,8 +376,8 @@ namespace http {
             oss << "\r\n" << content;
         }
 
-        std::cout << (is_request ? "REQ << \n" : "RES >> \n" )
-                  << oss.str( ) << "\n-----\n";
+//        std::cout << (is_request ? "REQ << \n" : "RES >> \n" )
+//                  << oss.str( ) << "\n-----\n";
 
         return oss.str( );
     }

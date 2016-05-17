@@ -1,5 +1,6 @@
 #include <list>
 #include <set>
+#include <iostream>
 
 #include "vtrc-asio.h"
 
@@ -26,6 +27,22 @@ namespace vtrc { namespace common {
         return  l.thread_.get( ) < r.thread_.get( );
     }
 
+    static void exception_default( )
+    {
+        try {
+            throw;
+        } catch( const std::exception &ex ) {
+            std::cerr << "Exception in thread 0x" << std::hex
+                      << vtrc::this_thread::get_id( )
+                      << ". what = " << ex.what( )
+                         ;
+        } catch( ... ) {
+            std::cerr << "Exception '...' in thread 0x" << std::hex
+                      << vtrc::this_thread::get_id( )
+                         ;
+        }
+    }
+
     typedef std::set<thread_context::shared_type>  thread_set_type;
 
     struct thread_pool::impl {
@@ -37,7 +54,9 @@ namespace vtrc { namespace common {
         thread_set_type          threads_;
         thread_set_type          stopped_threads_;
 
+
         mutable shared_mutex     threads_lock_;
+        thread_pool::exception_handler exception_;
 
 //        struct interrupt {
 //            static void raise ( ) { throw interrupt( ); }
@@ -47,6 +66,7 @@ namespace vtrc { namespace common {
             :ios_(ios)
             ,wrk_(new basio::io_service::work(*ios_))
             ,own_ios_(own_ios)
+            ,exception_(&exception_default)
         { }
 
         ~impl( )
@@ -169,10 +189,8 @@ namespace vtrc { namespace common {
                     }
 //                } catch( const interrupt & ) {
 //                    break;
-                } catch( const std::exception &) {
-                    ;;;
                 } catch( ... ) {
-                    ;;;
+                    exception_( );
                 }
             }
             return false; /// interruped by interrupt::raise or

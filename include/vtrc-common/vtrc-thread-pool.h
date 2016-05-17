@@ -3,10 +3,9 @@
 
 #include <stddef.h>
 #include "vtrc-asio-forward.h"
+#include "vtrc-function.h"
 
-VTRC_ASIO_FORWARD(
-    class io_service;
-)
+VTRC_ASIO_FORWARD( class io_service; )
 
 namespace vtrc { namespace common {
 
@@ -19,6 +18,8 @@ namespace vtrc { namespace common {
         void operator = ( const thread_pool & ); // non copyable
 
     public:
+
+        typedef vtrc::function<void(void)> exception_handler;
 
         thread_pool( );
         thread_pool( size_t init_count );
@@ -34,6 +35,8 @@ namespace vtrc { namespace common {
         void add_threads( size_t count );
 
         void join_all( );
+
+        void assign_exception_handler( exception_handler eh );
 
         /// for attach current thread
         /// retrurns:
