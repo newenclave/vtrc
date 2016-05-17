@@ -75,7 +75,6 @@ namespace client {
     private:
 
         void on_close( );
-        std::string prepare_for_write( const char *data, size_t len );
         void raw_call_local ( vtrc::shared_ptr<rpc::lowlevel_unit> ll_mess,
                               common::empty_closure_type done );
 

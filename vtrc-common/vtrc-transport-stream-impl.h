@@ -114,15 +114,6 @@ namespace vtrc { namespace common {
                 return ios_;
             }
 
-            void prepare_for_write( std::string &in_out )
-            {
-                in_out.assign( prepare_for_write( in_out.c_str( ),
-                                                  in_out.size( ) ) );
-            }
-
-            virtual std::string prepare_for_write(const char *data,
-                                                  size_t len) = 0;
-
             message_holder_sptr make_holder( const char *data, size_t length,
                                  vtrc::shared_ptr<system_closure_type> closure,
                                  bool on_send)
@@ -187,8 +178,6 @@ namespace vtrc { namespace common {
 //                }
 
                 bool empty = write_queue_.empty( );
-
-                prepare_for_write( data->message_ );
 
                 write_queue_.push_back( data );
                 if( closure && !data->on_send_ ) {

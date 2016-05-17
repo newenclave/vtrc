@@ -258,12 +258,6 @@ namespace vtrc { namespace common {
             ll_processor_->configure( opts );
         }
 
-        std::string prepare_data( const char *data, size_t length )
-        {
-            //return std::string( data, length );
-            return ll_processor_->pack_message( data, length );
-        }
-
         void process_data( const char *data, size_t length )
         {
             ll_processor_->process_data( data, length );
@@ -335,7 +329,7 @@ namespace vtrc { namespace common {
 
         void send_message( const lowlevel_unit_type &message )
         {
-            std::string ser(ll_processor_->serialize_message( message ));
+            std::string ser(ll_processor_->pack_message( message ));
             send_data( ser.c_str( ), ser.size( ) );
         }
 
@@ -890,11 +884,6 @@ namespace vtrc { namespace common {
     void protocol_layer::process_data( const char *data, size_t length )
     {
         impl_->process_data( data, length );
-    }
-
-    std::string protocol_layer::prepare_data( const char *data, size_t length)
-    {
-        return impl_->prepare_data( data, length );
     }
 
     /*

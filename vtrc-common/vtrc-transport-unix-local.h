@@ -48,9 +48,6 @@ namespace vtrc { namespace common {
 
         virtual void on_write_error( const VTRC_SYSTEM::error_code &err ) = 0;
 
-    private:
-
-        virtual std::string prepare_for_write( const char *data, size_t len );
     };
 
 }}

@@ -37,8 +37,7 @@ namespace vtrc {  namespace common { namespace lowlevel {
         ~default_protocol( );
 
         void        configure( const rpc::session_options &opts );
-        std::string serialize_message( const vtrc::rpc::lowlevel_unit &mess );
-        std::string pack_message( const char *data, size_t length );
+        std::string pack_message( const vtrc::rpc::lowlevel_unit &mess );
         void        process_data( const char *data, size_t length );
 
         size_t      queue_size( ) const;
@@ -49,6 +48,9 @@ namespace vtrc {  namespace common { namespace lowlevel {
                                        google::protobuf::Message &out );
 
     protected:
+
+        std::string pack_message( const char *data, size_t length );
+        std::string pack_message( const std::string &data );
 
         virtual void configure_impl( const rpc::session_options &opts );
         void set_accessor( protocol_accessor *pa );

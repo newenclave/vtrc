@@ -106,11 +106,6 @@ namespace vtrc { namespace client {
         impl_->on_close( );
     }
 
-    std::string client_unix_local::prepare_for_write( const char *d, size_t l )
-    {
-        return impl_->prepare_for_write( d, l );
-    }
-
     void client_unix_local::init( )
     {
         impl_->init( );

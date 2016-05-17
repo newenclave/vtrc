@@ -91,7 +91,6 @@ namespace vtrc { namespace common {
         uint64_t next_index( );
 
         void process_data( const char *data, size_t length );
-        std::string prepare_data( const char *data, size_t length );
 
         virtual void on_write_error( const VTRC_SYSTEM::error_code &err );
         virtual void on_read_error ( const VTRC_SYSTEM::error_code &err );

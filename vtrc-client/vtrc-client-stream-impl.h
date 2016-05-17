@@ -158,11 +158,6 @@ namespace { /// implementation.
             return protocol_->get_call_context( );
         }
 
-        std::string prepare_for_write(const char *data, size_t len)
-        {
-            return protocol_->prepare_data( data, len );
-        }
-
         client::protocol_layer_c &get_protocol( )
         {
             return *protocol_;

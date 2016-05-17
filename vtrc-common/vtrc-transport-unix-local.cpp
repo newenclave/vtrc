@@ -21,11 +21,6 @@ namespace vtrc { namespace common {
             :impl_type(s, n)
         { }
 
-        std::string prepare_for_write(const char *data, size_t len)
-        {
-            return get_parent( )->prepare_for_write( data, len );
-        }
-
         void close_handle( )
         {
             get_socket( ).close( );
@@ -69,12 +64,6 @@ namespace vtrc { namespace common {
         native_handle_type nh;
         nh.value.unix_fd = impl_->get_socket( ).native_handle( );
         return nh;
-    }
-
-    std::string transport_unix_local::prepare_for_write(const char *data,
-                                                        size_t len)
-    {
-        return impl_->prepare_for_write( data, len );
     }
 
     transport_unix_local::socket_type &transport_unix_local::get_socket( )

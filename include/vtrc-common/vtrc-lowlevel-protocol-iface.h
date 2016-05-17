@@ -41,11 +41,8 @@ namespace vtrc { namespace common {
         virtual void configure( const rpc::session_options &opts ) = 0;
 
         /// serialize lowlevel message
-        virtual std::string serialize_message(
+        virtual std::string pack_message(
                             const vtrc::rpc::lowlevel_unit &mess ) = 0;
-
-//        /// pack lowlevel message to protocol view
-        virtual std::string pack_message( const char *data, size_t length ) = 0;
 
         /// accept portion os the data and unpuck message is exists
         virtual void process_data( const char *data, size_t length ) = 0;
@@ -53,7 +50,7 @@ namespace vtrc { namespace common {
         /// ready messages count
         virtual size_t queue_size( ) const = 0;
 
-        /// get ant pop next message
+        /// get and pop next message
         virtual bool pop_proto_message( google::protobuf::Message &result ) = 0;
 
     };

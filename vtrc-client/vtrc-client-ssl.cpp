@@ -221,11 +221,6 @@ namespace vtrc { namespace client {
         impl_->on_close( );
     }
 
-    std::string client_ssl::prepare_for_write( const char *data, size_t len )
-    {
-        return impl_->prepare_for_write( data, len );
-    }
-
     void client_ssl::init( )
     {
         impl_->init( );

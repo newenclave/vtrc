@@ -103,6 +103,7 @@ namespace vtrc { namespace server {
             void send_proto_message( const gpb::MessageLite &mess )
             {
                 std::string s( mess.SerializeAsString( ) );
+                s = pack_message( s.c_str( ), s.size( ) );
                 write( s );
             }
 
@@ -111,6 +112,7 @@ namespace vtrc { namespace server {
                                      bool on_send)
             {
                 std::string s( mess.SerializeAsString( ) );
+                s = pack_message( s.c_str( ), s.size( ) );
                 accessor( )->write( s, closure, on_send );
             }
 
@@ -306,13 +308,14 @@ namespace vtrc { namespace server {
                        common::system_closure_type cb )
             {
                 set_accessor( pa );
-                static const std::string data(first_message( ));
+                static const std::string data(pack_message(first_message( )));
 //                ready_ = true;
 //                pa_->ready( true );
 //                cb( VTRC_SYSTEM::error_code( ) );
 //                return;
 
                 const unsigned to = session_opts_.init_timeout( );
+
                 accessor( )->write( data, cb, true );
                 keepalive_calls_.call_from_now(
                             vtrc::bind( &iface::on_init_timeout, this,
