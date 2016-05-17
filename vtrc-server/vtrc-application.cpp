@@ -14,10 +14,10 @@ namespace vtrc { namespace server {
     struct application::impl {
 
         common::enviroment         env_;
-        VTRC_ASIO::io_service   *ios_;
+        VTRC_ASIO::io_service     *ios_;
         const bool                 own_ios_;
 
-        VTRC_ASIO::io_service   *rpc_ios_;
+        VTRC_ASIO::io_service     *rpc_ios_;
         const bool                 own_rpc_ios_;
 
         vtrc::shared_ptr<common::connection_list> clients_;
