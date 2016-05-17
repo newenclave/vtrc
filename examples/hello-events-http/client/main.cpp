@@ -16,6 +16,7 @@
 
 #include "google/protobuf/descriptor.h"
 
+#include <set>
 
 using namespace vtrc;
 namespace gpb = google::protobuf;
