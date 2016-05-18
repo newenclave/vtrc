@@ -116,7 +116,7 @@ namespace vtrc { namespace common {
 
             message_holder_sptr make_holder( const char *data, size_t length,
                                  vtrc::shared_ptr<system_closure_type> closure,
-                                 bool on_send)
+                                 bool on_send )
             {
                 /// TODO: FIX IT
                 message_holder_sptr mh(vtrc::make_shared<message_holder>());
