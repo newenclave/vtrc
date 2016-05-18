@@ -75,7 +75,7 @@ namespace vtrc { namespace client {
     }
 
     void client_unix_local::async_connect( const std::string &address,
-                                        common::system_closure_type closure )
+                                           common::system_closure_type closure )
     {
         impl_->async_connect( address, closure );
     }

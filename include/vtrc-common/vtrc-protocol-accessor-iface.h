@@ -27,19 +27,19 @@ namespace vtrc { namespace common {
         virtual void set_client_id( const std::string &id ) = 0;
 
         virtual void write( const std::string &data,
-                            system_closure_type cb, bool on_send_success ) = 0;
+                            system_closure_type success_cb,
+                            bool on_send_success ) = 0;
 
         virtual common::connection_iface *connection( ) = 0;
         virtual void close( ) = 0;
         virtual void ready( bool value ) = 0;
 
         virtual void message_ready( ) = 0;
+        virtual void error( const rpc::errors::container &, const char * )
+        { }
 
         /// for client-side only
         virtual void configure_session( const vtrc::rpc::session_options & )
-        { }
-
-        virtual void error( const rpc::errors::container &, const char * )
         { }
 
     };

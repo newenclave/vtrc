@@ -144,8 +144,8 @@ namespace vtrc { namespace common {
                                     parent_->shared_from_this( )));
             }
 
-            void write(const char *data, size_t length,
-                       const system_closure_type &success, bool on_send)
+            void write( const char *data, size_t length,
+                        const system_closure_type &success, bool on_send )
             {
 
                 vtrc::shared_ptr<system_closure_type>
@@ -159,7 +159,6 @@ namespace vtrc { namespace common {
                        vtrc::bind( &this_type::write_impl, this, mh,
                                     closure, parent_->shared_from_this( )));
             }
-
 
             void async_write(  )
             {
@@ -180,8 +179,9 @@ namespace vtrc { namespace common {
                 bool empty = write_queue_.empty( );
 
                 write_queue_.push_back( data );
+
                 if( closure && !data->on_send_ ) {
-                    const bsys::error_code err(0, bsys::get_system_category( ));
+                    static const bsys::error_code err;
                     (*closure)(err);
                 }
 
@@ -247,8 +247,10 @@ namespace vtrc { namespace common {
                         params.total_ += bytes;
 
                         const std::string &top(top_holder.message_);
-                        async_write(top.c_str( ) + params.total_,
-                                    top.size( )  - params.total_, params.total_);
+
+                        async_write( top.c_str( ) + params.total_,
+                                     top.size( )  - params.total_,
+                                     params.total_ );
 
                     } else {
 

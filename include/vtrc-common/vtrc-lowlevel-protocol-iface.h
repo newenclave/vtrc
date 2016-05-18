@@ -26,8 +26,9 @@ namespace vtrc { namespace common {
 
         /// init current protocol
         virtual void init( protocol_accessor *pa,
-                           system_closure_type ready_cb ) = 0;
+                           system_closure_type ready_for_read ) = 0;
 
+        /// close connection
         virtual void close( ) = 0;
 
         /// do handshake with other side
