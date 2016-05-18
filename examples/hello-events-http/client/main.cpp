@@ -200,11 +200,9 @@ int main( int argc, const char **argv )
         cl->connect( address, port );
         std::cout << "Ok" << std::endl;
 
-        vtrc::unique_ptr<common::rpc_channel> channel(cl->create_channel( ));
-
         typedef howto::hello_events_service_Stub stub_type;
 
-        common::stub_wrapper<stub_type> hello(channel.get( ));
+        common::stub_wrapper<stub_type> hello(cl->create_channel( ), true);
 
         std::cout << "main( ) thread id is: 0x"
                   << std::hex

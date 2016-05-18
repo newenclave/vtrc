@@ -56,6 +56,7 @@ namespace vtrc { namespace common {
 
 
         mutable shared_mutex     threads_lock_;
+
         thread_pool::exception_handler exception_;
 
 //        struct interrupt {
@@ -247,6 +248,11 @@ namespace vtrc { namespace common {
     void thread_pool::join_all( )
     {
         impl_->join_all( );
+    }
+
+    void thread_pool::assign_exception_handler( exception_handler eh )
+    {
+        impl_->exception_ = eh ? eh : exception_default;
     }
 
     bool thread_pool::attach( )
