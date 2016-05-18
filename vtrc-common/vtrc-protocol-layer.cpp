@@ -716,8 +716,8 @@ namespace vtrc { namespace common {
 
             get_lowlevel( )->parse_message( llu->request( ),
                                             closure_hold->req_.get( ) );
-            get_lowlevel( )->parse_message( llu->response( ),
-                                            closure_hold->res_.get( ) );
+//            get_lowlevel( )->parse_message( llu->response( ),
+//                                            closure_hold->res_.get( ) );
 
 //            closure_hold->req_->ParseFromString( llu->request( ) );
 //            closure_hold->res_->ParseFromString( llu->response( ));
