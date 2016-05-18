@@ -22,6 +22,10 @@ namespace vtrc { namespace common {
     namespace lowlevel {
 
     struct protocol_layer_iface {
+
+        typedef google::protobuf::Message message_type;
+        typedef rpc::lowlevel_unit        lowlevel_unit;
+
         virtual ~protocol_layer_iface( ) { }
 
         /// init current protocol
@@ -35,7 +39,7 @@ namespace vtrc { namespace common {
         virtual void do_handshake( ) = 0;
 
         /// serialize lowlevel message
-        virtual std::string pack_message( const rpc::lowlevel_unit &mess ) = 0;
+        virtual std::string pack_message( const lowlevel_unit &mess ) = 0;
 
         /// accept portion os the data and unpuck message is exists
         virtual void process_data( const char *data, size_t length ) = 0;
@@ -46,6 +50,13 @@ namespace vtrc { namespace common {
         /// get and pop next message
         virtual bool pop_proto_message( rpc::lowlevel_unit &result ) = 0;
 
+        /// serialize request message
+        /// SerializeAsString as default
+        virtual std::string serialize_message( const message_type *m );
+
+        /// parse response
+        /// ParseFromString as default
+        virtual void parse_message( const std::string &data, message_type *m );
     };
 
     typedef vtrc::shared_ptr<protocol_layer_iface> protocol_layer_sptr;

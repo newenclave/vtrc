@@ -19,6 +19,18 @@ namespace vtrc { namespace common { namespace lowlevel {
     namespace gpb  = google::protobuf;
     namespace spns = data_queue::varint;
 
+    std::string protocol_layer_iface::serialize_message( const message_type *m )
+    {
+        return m->SerializeAsString( );
+    }
+
+    void protocol_layer_iface::parse_message( const std::string &data,
+                                              message_type *mess )
+    {
+        mess->ParseFromString( data );
+    }
+
+
     default_protocol::default_protocol( )
         :hash_maker_(common::hash::create_default( ))
         ,hash_checker_(common::hash::create_default( ))
@@ -34,6 +46,18 @@ namespace vtrc { namespace common { namespace lowlevel {
     default_protocol::~default_protocol( )
     {
         //std::cout << "Destroyed!\n";
+    }
+
+    std::string default_protocol::serialize_message(
+            const protocol_layer_iface::message_type *mess)
+    {
+        return mess->SerializeAsString( );
+    }
+
+    void default_protocol::parse_message( const std::string &data,
+                                protocol_layer_iface::message_type *mess)
+    {
+        mess->ParseFromString( data );
     }
 
     void default_protocol::set_transformer( transformer_iface *ti )

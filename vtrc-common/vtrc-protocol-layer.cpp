@@ -610,7 +610,9 @@ namespace vtrc { namespace common {
             } else {
                 if( llu.opt( ).accept_response( ) ) {
                     //std::cout << "llu has response\n";
-                    llu.set_response( holder->res_->SerializeAsString( ) );
+                    //llu.set_response( holder->res_->SerializeAsString( ) );
+                    llu.set_response( get_lowlevel( )
+                                    ->serialize_message( holder->res_.get( ) ));
                 } else {
                     //std::cout << "llu has not response\n";
                 }
@@ -711,8 +713,14 @@ namespace vtrc { namespace common {
             closure_hold->res_.reset
                 (service->service( )->GetResponsePrototype( meth ).New( ));
 
-            closure_hold->req_->ParseFromString( llu->request( ) );
-            closure_hold->res_->ParseFromString( llu->response( ));
+
+            get_lowlevel( )->parse_message( llu->request( ),
+                                            closure_hold->req_.get( ) );
+            get_lowlevel( )->parse_message( llu->response( ),
+                                            closure_hold->res_.get( ) );
+
+//            closure_hold->req_->ParseFromString( llu->request( ) );
+//            closure_hold->res_->ParseFromString( llu->response( ));
 
             closure_hold->controller_.reset(new common::rpc_controller);
 

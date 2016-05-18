@@ -52,6 +52,7 @@ namespace client {
 
         rpc_channel::lowlevel_unit_sptr
                             raw_call( rpc_channel::lowlevel_unit_sptr llu,
+                                      const google::protobuf::Message* request,
                                       common::lowlevel_closure_type callbacks);
 
         rpc_channel::lowlevel_unit_sptr make_lowlevel(
@@ -60,6 +61,7 @@ namespace client {
                                   google::protobuf::Message* response );
 
         void configure_message_for( common::connection_iface_sptr c,
+                                    const google::protobuf::Message* request,
                                     lowlevel_unit_type &llu ) const;
 
         void send_message( lowlevel_unit_type &llu,

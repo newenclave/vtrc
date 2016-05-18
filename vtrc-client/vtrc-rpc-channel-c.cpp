@@ -92,7 +92,7 @@ namespace vtrc { namespace client {
         void send_message( lowlevel_unit_type &llu,
                      const gpb::MethodDescriptor *method,
                            gpb::RpcController    *controller,
-                     const gpb::Message          * /*  request  */,
+                     const gpb::Message          *request,
                            gpb::Message          *response,
                            gpb::Closure          *done   )
         {
@@ -117,7 +117,7 @@ namespace vtrc { namespace client {
                                             ( call_opt->accept_callbacks( ) );
             }
 
-            parent_->configure_message_for( clk, llu );
+            parent_->configure_message_for( clk, request, llu );
             uint64_t call_id = llu.id( );
 
             if( llu.opt( ).wait( ) ) {  /// Send and wait
@@ -135,6 +135,7 @@ namespace vtrc { namespace client {
         }
 
         lowlevel_unit_sptr send_raw( lowlevel_unit_sptr &llu,
+                                     const google::protobuf::Message* request,
                                      common::lowlevel_closure_type cbacks )
         {
             common::connection_iface_sptr clk(connection_.lock( ));
@@ -144,7 +145,7 @@ namespace vtrc { namespace client {
                 return lowlevel_unit_sptr( );
             }
 
-            parent_->configure_message_for( clk, *llu );
+            parent_->configure_message_for( clk, request, *llu );
             uint64_t call_id = llu->id( );
 
             rpc::options call_opt;
@@ -179,7 +180,7 @@ namespace vtrc { namespace client {
                 return rpc_channel::lowlevel_unit_sptr( );
             }
 
-            parent_->configure_message_for( clk, *res );
+            parent_->configure_message_for( clk, request, *res );
             return res;
         }
 
@@ -213,16 +214,17 @@ namespace vtrc { namespace client {
     }
 
     lowlevel_unit_sptr rpc_channel_c::raw_call( lowlevel_unit_sptr llu,
+                                    const google::protobuf::Message* request,
                                     common::lowlevel_closure_type callbacks )
     {
-        return impl_->send_raw( llu, callbacks );
+        return impl_->send_raw( llu, request, callbacks );
     }
 
     void rpc_channel_c::configure_message_for( common::connection_iface_sptr c,
-                                   rpc_channel::lowlevel_unit_type &llu) const
+                                    const google::protobuf::Message* request,
+                                    rpc_channel::lowlevel_unit_type &llu) const
     {
-        //if( impl_-> )
-        configure_message( c, impl_->message_type( ), llu );
+        configure_message( c, impl_->message_type( ), request, llu );
     }
 
     rpc_channel_c::lowlevel_unit_sptr rpc_channel_c::make_lowlevel(

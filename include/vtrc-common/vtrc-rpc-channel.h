@@ -68,7 +68,8 @@ namespace vtrc { namespace common  {
 
 
         virtual lowlevel_unit_sptr raw_call( lowlevel_unit_sptr llu,
-                                   common::lowlevel_closure_type callbacks );
+                                    const google::protobuf::Message* request,
+                                    common::lowlevel_closure_type callbacks );
 
         void set_channel_data( const std::string &data );
         const std::string &channel_data( );
@@ -102,10 +103,7 @@ namespace vtrc { namespace common  {
 
         void configure_message( common::connection_iface_sptr c,
                                 unsigned specified_call_type,
-                                lowlevel_unit_type &llu ) const;
-
-        void configure_message( vtrc::uint64_t target_id,
-                                unsigned mess_type,
+                                const google::protobuf::Message* request,
                                 lowlevel_unit_type &llu ) const;
 
         void CallMethod(const google::protobuf::MethodDescriptor* method,

@@ -36,6 +36,9 @@ namespace vtrc {  namespace common { namespace lowlevel {
         default_protocol( );
         ~default_protocol( );
 
+        std::string serialize_message( const message_type *mess );
+        void parse_message( const std::string &data, message_type *mess );
+
         void        configure( const rpc::session_options &opts );
         std::string pack_message( const vtrc::rpc::lowlevel_unit &mess );
         void        process_data( const char *data, size_t length );

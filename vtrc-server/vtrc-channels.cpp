@@ -67,6 +67,7 @@ namespace vtrc { namespace server {
             }
 
             lowlevel_unit_sptr raw_call( lowlevel_unit_sptr llu,
+                                         const google::protobuf::Message* req,
                                          common::lowlevel_closure_type events )
             {
                 common::connection_iface_sptr clnt (client_.lock( ));
@@ -78,7 +79,7 @@ namespace vtrc { namespace server {
 
                 const rpc::options call_opt;
 
-                configure_message( clnt, message_type( ), *llu );
+                configure_message( clnt, message_type( ), req, *llu );
                 const gpb::uint64 call_id = llu->id( );
 
                 lowlevel_unit_sptr res;
@@ -121,15 +122,15 @@ namespace vtrc { namespace server {
                        ->set_accept_callbacks( call_opt->accept_callbacks( ) );
                 }
 
-                configure_message( clnt, message_type( ), *llu );
+                configure_message( clnt, message_type( ), req, *llu );
 
                 return llu;
             }
 
             void send_message( lowlevel_unit_type &llu,
                                const gpb::MethodDescriptor* method,
-                                     gpb::RpcController*  controller,
-                               const gpb::Message*        /*request   */,
+                                     gpb::RpcController*    controller,
+                               const gpb::Message*          request,
                                      gpb::Message*          response,
                                      gpb::Closure*          done )
             {
@@ -156,7 +157,7 @@ namespace vtrc { namespace server {
                         ->set_accept_callbacks(call_opt->accept_callbacks( ));
                 }
 
-                configure_message( clnt, message_type( ), llu );
+                configure_message( clnt, message_type( ), request, llu );
                 const gpb::uint64 call_id = llu.id( );
 
                 if( llu.opt( ).wait( ) ) { /// Send and wait
@@ -234,11 +235,12 @@ namespace vtrc { namespace server {
 
             bool send_to_client( common::connection_iface_sptr  next,
                                  const common::connection_iface_sptr &sender,
+                                 const google::protobuf::Message* request,
                                  lowlevel_unit_type &mess,
                                  unsigned mess_type)
             {
                 if( sender != next && next->active( ) ) {
-                    configure_message( next, mess_type, mess );
+                    configure_message( next, mess_type, request, mess );
                     get_protocol( *next ).call_rpc_method( mess );
                 }
                 return true;
@@ -246,11 +248,12 @@ namespace vtrc { namespace server {
 
 
             bool send_to_client2( common::connection_iface_sptr  next,
+                                  const google::protobuf::Message* request,
                                   lowlevel_unit_type &mess,
                                   unsigned mess_type)
             {
                 if( next->active( ) ) {
-                    configure_message( next, mess_type, mess );
+                    configure_message( next, mess_type, request, mess );
                     get_protocol( *next ).call_rpc_method( mess );
                 }
                 return true;
@@ -259,7 +262,7 @@ namespace vtrc { namespace server {
             void send_message(lowlevel_unit_type &llu,
                     const google::protobuf::MethodDescriptor* /* method     */,
                           google::protobuf::RpcController*    /* controller */,
-                    const google::protobuf::Message*          /* request    */,
+                    const google::protobuf::Message*          request,
                           google::protobuf::Message*          /* response   */,
                           google::protobuf::Closure* done )
             {
@@ -283,13 +286,17 @@ namespace vtrc { namespace server {
                     lck_list->foreach_while(
                             vtrc::bind( &this_type::send_to_client, this,
                                          vtrc::placeholders::_1,
-                                         vtrc::cref(clk), vtrc::ref(llu),
+                                         vtrc::cref(clk),
+                                         request,
+                                         vtrc::ref(llu),
                                          message_type_) );
                 } else {
                     lck_list->foreach_while(
                             vtrc::bind( &this_type::send_to_client2, this,
                                          vtrc::placeholders::_1,
-                                         vtrc::ref(llu), message_type_) );
+                                         request,
+                                         vtrc::ref(llu),
+                                         message_type_) );
                 }
             }
         };

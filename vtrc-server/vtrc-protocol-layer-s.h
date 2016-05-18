@@ -42,7 +42,6 @@ namespace server {
         const std::string &client_id( ) const;
 
         void close( );
-        void send_and_close( const google::protobuf::MessageLite &mess );
 
         void drop_service( const std::string &name );
         void drop_all_services(  );

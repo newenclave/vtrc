@@ -122,9 +122,9 @@ namespace vtrc { namespace common  {
         llu->mutable_call( )->set_service_id( serv_name );
         llu->mutable_call( )->set_method_id( meth_name );
 
-        if( request ) {
-            llu->set_request( request->SerializeAsString( ) );
-        }
+//        if( request ) {
+//            llu->set_request( request->SerializeAsString( ) );
+//        }
 
         llu->mutable_opt( )->set_accept_response( response != NULL );
 
@@ -142,8 +142,9 @@ namespace vtrc { namespace common  {
     }
 
     rpc_channel::lowlevel_unit_sptr rpc_channel::raw_call(
-                                rpc_channel::lowlevel_unit_sptr /*llu*/,
-                                lowlevel_closure_type /*callbacks*/ )
+            rpc_channel::lowlevel_unit_sptr /*llu*/,
+            const google::protobuf::Message * /*request*/,
+            lowlevel_closure_type /*callbacks*/ )
     {
         ;;; /// nothing to do here
         return rpc_channel::lowlevel_unit_sptr( );
@@ -179,13 +180,20 @@ namespace vtrc { namespace common  {
         return impl_->data_;
     }
 
-    void rpc_channel::configure_message(common::connection_iface_sptr c,
+    void rpc_channel::configure_message( common::connection_iface_sptr c,
                                          unsigned mess_type,
+                                         const gpb::Message *req,
                                          lowlevel_unit_type &llu ) const
     {
         const common::call_context *cc(common::call_context::get( ));
 
         llu.set_id(c->get_protocol( ).next_index( ));
+
+        if( req ) {
+            llu.set_request( c->get_protocol( )
+                               .get_lowlevel( )
+                              ->serialize_message( req ) );
+        }
 
         if( mess_type == impl_->callback_type_ ) {
 
@@ -212,14 +220,6 @@ namespace vtrc { namespace common  {
         } else {
             llu.mutable_info( )->set_message_type( mess_type );
         }
-    }
-
-    void rpc_channel::configure_message( vtrc::uint64_t target_id,
-                                         unsigned mess_type,
-                                         lowlevel_unit_type &llu ) const
-    {
-        llu.mutable_info( )->set_message_type( mess_type );
-        llu.set_target_id( target_id );
     }
 
     rpc_channel::lowlevel_unit_sptr rpc_channel::call_and_wait_raw (
@@ -343,7 +343,10 @@ namespace vtrc { namespace common  {
                 cl->get_protocol( ).make_local_call( top );
             } else {
                 if( response ) {
-                    response->ParseFromString( top->response( ) );
+                    cl->get_protocol( )
+                       .get_lowlevel( )
+                      ->parse_message( top->response( ), response );
+                    //response->ParseFromString( top->response( ) );
                 }
                 wait = false;
             }

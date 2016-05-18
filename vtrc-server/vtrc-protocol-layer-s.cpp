@@ -183,25 +183,6 @@ namespace vtrc { namespace server {
             return client_id_;
         }
 
-        void send_proto_message( const gpb::MessageLite &mess,
-                                 common::system_closure_type closure,
-                                 bool on_send)
-        {
-            std::string s( mess.SerializeAsString( ) );
-            connection_->write( s.c_str( ), s.size( ), closure, on_send );
-        }
-
-        void send_and_close( const gpb::MessageLite &mess )
-        {
-            DEBUG_LINE(connection_);
-
-            send_proto_message( mess,
-                                vtrc::bind( &this_type::close_client, this,
-                                             vtrc::placeholders::_1,
-                                             connection_->weak_from_this( ) ),
-                                true );
-        }
-
         void close_client( const bsys::error_code &      /*err */,
                            common::connection_iface_wptr &inst )
         {
@@ -373,11 +354,6 @@ namespace vtrc { namespace server {
     void protocol_layer_s::close( )
     {
 
-    }
-
-    void protocol_layer_s::send_and_close(const gpb::MessageLite &mess)
-    {
-        impl_->send_and_close( mess );
     }
 
     void protocol_layer_s::drop_service( const std::string &name )

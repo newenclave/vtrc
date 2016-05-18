@@ -71,7 +71,8 @@ private:
 
             std::cout << "set_channel_id " << chan->channel_data( ) << "\n";
 
-            res = chan->raw_call( llu, common::lowlevel_closure_type( ) );
+            res = chan->raw_call( llu, request,
+                                  common::lowlevel_closure_type( ) );
 
         } else {
             res.reset( new rpc::lowlevel_unit );

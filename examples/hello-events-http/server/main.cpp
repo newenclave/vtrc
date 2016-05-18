@@ -28,6 +28,8 @@ std::set<std::string> run_params;
 
 class http_lowlevel_server: vc::lowlevel::protocol_layer_iface {
 
+    typedef vc::lowlevel::protocol_layer_iface::message_type message_type;
+
     typedef http::header_parser             parser_type;
     typedef vtrc::shared_ptr<parser_type>   parser_sptr;
     typedef std::deque<parser_sptr>         requests_container;
@@ -56,6 +58,16 @@ public:
         reset_current( );
         ready_cb( VTRC_SYSTEM::error_code( ) );
         pa->ready( true );
+    }
+
+    std::string serialize_message( const message_type *mess )
+    {
+        return mess->SerializeAsString( );
+    }
+
+    void parse_message( const std::string &data, message_type *mess )
+    {
+        mess->ParseFromString( data );
     }
 
     std::string pack_message( const rpc::lowlevel_unit &mess )
