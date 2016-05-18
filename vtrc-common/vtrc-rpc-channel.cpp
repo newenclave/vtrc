@@ -111,7 +111,7 @@ namespace vtrc { namespace common  {
 
     rpc_channel::lowlevel_unit_sptr rpc_channel::create_lowlevel(
                                         const gpb::MethodDescriptor *method,
-                                        const gpb::Message *request,
+                                        const gpb::Message */*request*/,
                                               gpb::Message *response)
     {
         lowlevel_unit_sptr llu(vtrc::make_shared<lowlevel_unit_type>( ));
