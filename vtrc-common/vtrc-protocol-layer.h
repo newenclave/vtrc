@@ -80,13 +80,13 @@ namespace vtrc { namespace common {
         bool wait_for_ready_for_millisec( bool ready, uint64_t millisec ) const;
         bool wait_for_ready_for_microsec( bool ready, uint64_t microsec ) const;
 
-    protected:
+        /// ================= ///
 
         void set_ready( bool ready );
         void set_lowlevel( common::lowlevel::protocol_layer_iface *ll );
         common::lowlevel::protocol_layer_iface *get_lowlevel( );
 
-    public:
+        /// ================= ///
 
         uint64_t next_index( );
 
@@ -95,7 +95,7 @@ namespace vtrc { namespace common {
         virtual void on_write_error( const VTRC_SYSTEM::error_code &err );
         virtual void on_read_error ( const VTRC_SYSTEM::error_code &err );
 
-    public:
+        /// ================= ///
 
         void set_precall( const precall_closure_type &func );
         void set_postcall( const postcall_closure_type &func );

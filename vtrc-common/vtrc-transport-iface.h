@@ -25,7 +25,8 @@ namespace vtrc { namespace common {
 
         void raw_write ( vtrc::shared_ptr<rpc::lowlevel_unit> ll_mess )
         {
-            std::string ser( ll_mess->SerializeAsString( ) );
+            std::string ser( get_protocol( ).get_lowlevel( )
+                                           ->pack_message( *ll_mess ) );
             write( ser.empty( ) ? "" : &ser[0], ser.size( ) );
         }
 
