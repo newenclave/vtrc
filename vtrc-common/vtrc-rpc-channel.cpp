@@ -190,8 +190,7 @@ namespace vtrc { namespace common  {
         llu.set_id(c->get_protocol( ).next_index( ));
 
         if( req ) {
-            llu.set_request( c->get_protocol( )
-                               .get_lowlevel( )
+            llu.set_request( c->get_protocol( ).get_lowlevel( )
                               ->serialize_message( req ) );
         }
 
