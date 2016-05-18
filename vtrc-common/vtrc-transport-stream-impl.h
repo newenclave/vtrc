@@ -114,6 +114,7 @@ namespace vtrc { namespace common {
                 return ios_;
             }
 
+            static
             message_holder_sptr make_holder( const char *data, size_t length,
                                  vtrc::shared_ptr<system_closure_type> closure,
                                  bool on_send )
@@ -126,9 +127,10 @@ namespace vtrc { namespace common {
                 return mh;
             }
 
-            message_holder_sptr make_holder( const char *data, size_t length)
+            static
+            message_holder_sptr make_holder( const char *data, size_t length )
             {
-                return make_holder(data, length,
+                return make_holder( data, length,
                            vtrc::shared_ptr<system_closure_type>( ), false );
             }
 
@@ -195,8 +197,7 @@ namespace vtrc { namespace common {
                 size_t length_;
                 size_t total_;
                 common::connection_iface_wptr inst_;
-                handler_params( size_t length,
-                                size_t total,
+                handler_params( size_t length, size_t total,
                                 common::connection_iface_sptr inst )
                     :length_(length)
                     ,total_(total)
