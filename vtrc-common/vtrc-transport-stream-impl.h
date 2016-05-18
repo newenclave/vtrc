@@ -163,7 +163,7 @@ namespace vtrc { namespace common {
             void async_write(  )
             {
                 async_write( write_queue_.front( )->message_.c_str( ),
-                             write_queue_.front( )->message_.size( ), 0);
+                             write_queue_.front( )->message_.size( ), 0 );
             }
 
             /// non concurrence call.
@@ -254,15 +254,16 @@ namespace vtrc { namespace common {
 
                     } else {
 
-
                         if( top_holder.closure_ && top_holder.on_send_) {
                             (*top_holder.closure_)( error );
                         }
 
                         write_queue_.pop_front( );
 
-                        if( !write_queue_.empty( ) )
+                        if( !write_queue_.empty( ) ) {
                             async_write(  );
+                        }
+
                     }
                 } else {
 
