@@ -111,7 +111,6 @@ public:
     }
 
     void close( ) { }
-    void do_handshake( ) { }
 
 };
 

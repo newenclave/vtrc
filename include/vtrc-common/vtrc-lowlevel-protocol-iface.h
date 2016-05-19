@@ -32,11 +32,8 @@ namespace vtrc { namespace common {
         virtual void init( protocol_accessor *pa,
                            system_closure_type ready_for_read ) = 0;
 
-        /// close connection
+        /// connection is closing
         virtual void close( ) = 0;
-
-        /// do handshake with other side
-        // virtual void do_handshake( ) = 0;
 
         /// serialize lowlevel message
         virtual std::string pack_message( const lowlevel_unit &mess ) = 0;
@@ -50,11 +47,11 @@ namespace vtrc { namespace common {
         /// get and pop next message
         virtual bool pop_proto_message( rpc::lowlevel_unit &result ) = 0;
 
-        /// serialize request message
+        /// serialize message request or response
         /// SerializeAsString as default
         virtual std::string serialize_message( const message_type *m );
 
-        /// parse response
+        /// parse request or response
         /// ParseFromString as default
         virtual void parse_message( const std::string &data, message_type *m );
     };

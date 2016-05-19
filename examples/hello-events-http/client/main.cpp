@@ -124,7 +124,6 @@ namespace {
         }
 
         void close( ) { }
-        void do_handshake( ) { }
     };
 
 }
