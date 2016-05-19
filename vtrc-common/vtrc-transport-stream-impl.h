@@ -96,9 +96,8 @@ namespace vtrc { namespace common {
                 vtrc::lock_guard<vtrc::mutex> lk(close_lock_);
                 if( !closed_ ) {
                     closed_ = true;
-                    //stream_->close( );
-                    close_handle( );
                     parent_->on_close( );
+                    close_handle( );
                 }
             }
 
