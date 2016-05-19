@@ -309,26 +309,33 @@ namespace http {
     static
     bool http2lowlevel( header_parser &pars, vtrc::rpc::lowlevel_unit &llu )
     {
-        if( !pars.has_field( "Id" ) && !pars.has_field( "Tid" ) ) {
+        if( !pars.has_field( "X-VTRC-Id" ) && !pars.has_field( "X-VTRC-Tid" ) ){
             return false;
         }
 
-        bool is_request = pars.has_field( "Service" );
+        bool is_request = pars.has_field( "X-VTRC-Service" );
 
-        llu.mutable_info( )->set_message_type( pars.get<unsigned>("Type") );
-        llu.set_id( pars.get<unsigned>("Id") );
-        llu.set_target_id( pars.get<unsigned>("Tid") );
+        llu.mutable_info( )
+                ->set_message_type( pars.get<unsigned>("X-VTRC-Type") );
 
-        flags2opt( pars.get<unsigned>("Options"), llu.mutable_opt( ) );
+        llu.set_id( pars.get<unsigned>("X-VTRC-Id") );
+        llu.set_target_id( pars.get<unsigned>("X-VTRC-Tid") );
 
-        if( pars.has_field( "Error" ) ) {
-            llu.mutable_error( )->set_code( pars.get<unsigned>("Error") );
-            llu.mutable_error( )->set_category( pars.get<unsigned>("Category"));
-            llu.mutable_error( )->set_additional( pars.field( "Message" ) );
+        flags2opt( pars.get<unsigned>("X-VTRC-Options"), llu.mutable_opt( ) );
+
+        if( pars.has_field( "X-VTRC-Error" ) ) {
+            llu.mutable_error( )
+                    ->set_code( pars.get<unsigned>("X-VTRC-Error") );
+            llu.mutable_error( )
+                    ->set_category( pars.get<unsigned>("X-VTRC-Category"));
+            llu.mutable_error( )
+                    ->set_additional( pars.field( "X-VTRC-Message" ) );
         } else {
             if( is_request ) {
-                llu.mutable_call( )->set_service_id( pars.field( "Service" ) );
-                llu.mutable_call( )->set_method_id( pars.field( "Method" ) );
+                llu.mutable_call( )
+                        ->set_service_id( pars.field( "X-VTRC-Service" ) );
+                llu.mutable_call( )
+                        ->set_method_id( pars.field( "X-VTRC-Method" ) );
                 llu.set_request( hex2bin( pars.content( ) ) );
             } else {
                 llu.set_response( hex2bin( pars.content( ) ) );
@@ -352,26 +359,28 @@ namespace http {
         }
 
         oss << "Connection: keep-alive\r\n";
-        oss << "Type: "     << llu.info( ).message_type( ) << "\r\n";
-        oss << "Options: "  << opt2flags( llu.opt( ) ) << "\r\n";
+        oss << "X-VTRC-Type: "     << llu.info( ).message_type( ) << "\r\n";
+        oss << "X-VTRC-Options: "  << opt2flags( llu.opt( ) ) << "\r\n";
 
         if( llu.has_error( ) ) {
-            oss << "Error: "          << llu.error( ).code( )        << "\r\n";
-            oss << "Category: "       << llu.error( ).category( )    << "\r\n";
-            oss << "Message: "        << llu.error( ).additional( )  << "\r\n";
-            oss << "Content-Length: " << 0                           << "\r\n";
+            oss << "X-VTRC-Error: "    << llu.error( ).code( )        << "\r\n";
+            oss << "X-VTRC-Category: " << llu.error( ).category( )    << "\r\n";
+            oss << "X-VTRC-Message: "  << llu.error( ).additional( )  << "\r\n";
+            oss << "Content-Length: "  << 0                           << "\r\n";
         } else {
 
             std::string content(bin2hex( is_request ? llu.request( )
                                                     : llu.response( ) ) );
 
             if( is_request ) {
-                oss << "Service: "    << llu.call( ).service_id( )  << "\r\n";
-                oss << "Method: "     << llu.call( ).method_id( )   << "\r\n";
+                oss << "X-VTRC-Service: "
+                    << llu.call( ).service_id( ) << "\r\n";
+                oss << "X-VTRC-Method: "
+                    << llu.call( ).method_id( )  << "\r\n";
             }
 
-            oss << "Id: "             << llu.id( )                  << "\r\n";
-            oss << "Tid: "            << llu.target_id( )           << "\r\n";
+            oss << "X-VTRC-Id: "      << llu.id( )                  << "\r\n";
+            oss << "X-VTRC-Tid: "     << llu.target_id( )           << "\r\n";
             oss << "Content-Length: " << content.size( )            << "\r\n";
             oss << "\r\n" << content;
         }
