@@ -79,6 +79,11 @@ namespace {
             stub_.call( &stub_type::shutdown );
         }
 
+        void close_me( )
+        {
+            stub_.call( &stub_type::close_me );
+        }
+
     };
 }
 

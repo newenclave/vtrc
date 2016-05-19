@@ -53,6 +53,8 @@ service stress_service {
 
     rpc reg(timer_register_req)     returns (timer_register_res);
     rpc unreg(timer_register_res)   returns (empty);
+
+    rpc close_me(empty)             returns (empty);
 }
 
 /// ============== events or callbacks ================== ///

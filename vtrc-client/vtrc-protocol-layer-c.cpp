@@ -61,11 +61,8 @@ namespace vtrc { namespace client {
         typedef impl this_type;
         typedef protocol_layer_c parent_type;
 
-        typedef vtrc::function<void (void)> stage_funcion_type;
-
         common::transport_iface         *connection_;
         protocol_layer_c                *parent_;
-        stage_funcion_type               stage_call_;
         vtrc_client                     *client_;
         protocol_signals                *callbacks_;
         protocol_stage                   stage_;
@@ -89,11 +86,6 @@ namespace vtrc { namespace client {
         }
 
         //// ================ accessor =================
-
-        void call_setup_function( )
-        {
-            conn_setup_->do_handshake( );
-        }
 
         void set_client_id( const std::string &id )
         {
@@ -120,9 +112,6 @@ namespace vtrc { namespace client {
 
         void ready( bool value )
         {
-            stage_call_ = value
-                        ? vtrc::bind( &this_type::on_rpc_process, this )
-                        : vtrc::bind( &this_type::call_setup_function, this );
             parent_->set_ready( value );
             callbacks_->on_ready( value );
         }
@@ -147,7 +136,6 @@ namespace vtrc { namespace client {
         {
             conn_setup_ = ll_factory_( ); // create_default_setup( client_ );
             parent_->set_lowlevel( conn_setup_ );
-            stage_call_ = vtrc::bind( &this_type::call_setup_function, this );
             conn_setup_->init( this, &this_type::closure_none );
         }
 
@@ -281,7 +269,7 @@ namespace vtrc { namespace client {
 
         void message_ready( )
         {
-            stage_call_( );
+            on_rpc_process( );
         }
 
         void drop_service( const std::string &name )

@@ -14,6 +14,8 @@
 
 #include "boost/system/error_code.hpp"
 
+#include "vtrc-bind.h"
+
 namespace vtrc { namespace common { namespace lowlevel {
 
     namespace gpb  = google::protobuf;
@@ -155,7 +157,7 @@ namespace vtrc { namespace common { namespace lowlevel {
             queue_->append( data, len );
             queue_->process( );
             if( old < queue_->messages( ).size( ) ) {
-                accessor( )->message_ready( );
+                process_stage_( );
             }
         }
     }
@@ -236,6 +238,7 @@ namespace vtrc { namespace common { namespace lowlevel {
 
     void default_protocol::init( protocol_accessor *pa, system_closure_type cb )
     {
+        process_stage_ = vtrc::bind( &default_protocol::ready_call, this );
         set_accessor( pa );
         pa->ready( true );
         cb( VTRC_SYSTEM::error_code( ) );
@@ -246,14 +249,24 @@ namespace vtrc { namespace common { namespace lowlevel {
         ;;;
     }
 
+    void default_protocol::switch_to_ready(  )
+    {
+        process_stage_ = vtrc::bind( &default_protocol::ready_call, this );
+    }
+
+    void default_protocol::switch_to_handshake(  )
+    {
+        process_stage_ = vtrc::bind( &default_protocol::do_handshake, this );
+    }
+
+    void default_protocol::ready_call(  )
+    {
+        accessor( )->message_ready( );
+    }
+
     void default_protocol::do_handshake( )
     {
         ;;;
-    }
-
-    bool default_protocol::ready( ) const
-    {
-        return true;
     }
 
     namespace dumb {

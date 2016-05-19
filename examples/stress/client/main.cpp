@@ -55,7 +55,7 @@ int main( int argc, char *argv[] )
     try {
         start( vm );
     } catch( const vtrc::common::exception &ex ) {
-        std::cerr << "Client start failed: "
+        std::cerr << "Client process failed (v): "
                   << ex.what( );
         std::string add(ex.additional( ));
         if( !add.empty( ) ) {
@@ -64,7 +64,7 @@ int main( int argc, char *argv[] )
         std::cerr << "\n";
         err = 3;
     } catch( const std::exception &ex ) {
-        std::cerr << "Client start failed: " << ex.what( ) << "\n";
+        std::cerr << "Client process failed: " << ex.what( ) << "\n";
         err = 3;
     }
 

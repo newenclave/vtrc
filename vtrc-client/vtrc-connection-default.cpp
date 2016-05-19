@@ -309,6 +309,7 @@ namespace vtrc { namespace client {
                        common::system_closure_type cb )
             {
                 set_accessor( pa );
+                switch_to_handshake( );
                 cb( VTRC_SYSTEM::error_code( ) );
 //                ready_ = true;
 //                pa_->ready( true );
@@ -327,6 +328,7 @@ namespace vtrc { namespace client {
                 } else {
                     stage_call_( data );
                     if( ready_ ) {
+                        switch_to_ready( );
                         accessor( )->ready( ready_ );
                     }
                 }

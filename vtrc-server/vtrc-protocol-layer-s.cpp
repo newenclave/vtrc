@@ -80,8 +80,6 @@ namespace vtrc { namespace server {
 
         vtrc::atomic<unsigned>           current_calls_;
 
-        stage_function_type              stage_call_;
-
         connection_setup_ptr             conn_setup_;
         lowlevel_factory_type            ll_factory_;
 
@@ -92,13 +90,7 @@ namespace vtrc { namespace server {
             ,ready_(false)
             ,closed_(false)
             ,current_calls_(0)
-            //,ll_factory_(create_default_factory( ))
         { }
-
-        void call_setup_function( )
-        {
-            conn_setup_->do_handshake( );
-        }
 
         protocol_layer_s::lowlevel_factory_type create_default_factory( )
         {
@@ -122,16 +114,14 @@ namespace vtrc { namespace server {
 
         void ready( bool value )
         {
-            stage_call_ = value
-                        ? vtrc::bind( &this_type::on_rcp_call_ready, this )
-                        : vtrc::bind( &this_type::call_setup_function, this );
             parent_->set_ready( value );
         }
 
         void close( )
         {
             closed_ = true;
-            connection_->close( );
+            conn_setup_->close( );
+            std::cout << "closed!\n";
         }
 
         common::connection_iface *connection( )
@@ -181,15 +171,6 @@ namespace vtrc { namespace server {
         const std::string &client_id( ) const
         {
             return client_id_;
-        }
-
-        void close_client( const bsys::error_code &      /*err */,
-                           common::connection_iface_wptr &inst )
-        {
-            common::connection_iface_sptr lcked( inst.lock( ) );
-            if( lcked ) {
-                lcked->close( );
-            }
         }
 
         bool get_pop_message( rpc::lowlevel_unit &capsule )
@@ -294,7 +275,6 @@ namespace vtrc { namespace server {
         {
             conn_setup_ = ll_factory_( );
                     //create_default_setup( app_, parent_->session_options( ) );
-            stage_call_ = vtrc::bind( &this_type::call_setup_function, this );
             parent_->set_lowlevel( conn_setup_ );
             conn_setup_->init( this, def_cb );
         }
@@ -303,7 +283,6 @@ namespace vtrc { namespace server {
         {
             conn_setup_ = ll_factory_( );
                     //create_default_setup( app_, parent_->session_options( ) );
-            stage_call_ = vtrc::bind( &this_type::call_setup_function, this );
             parent_->set_lowlevel( conn_setup_ );
             conn_setup_->init( this, clos );
         }
@@ -319,7 +298,7 @@ namespace vtrc { namespace server {
             if( !lckd ) {
                 return;
             }
-            stage_call_( );
+            on_rcp_call_ready( );
         }
 
         void data_ready( )
@@ -353,7 +332,8 @@ namespace vtrc { namespace server {
 
     void protocol_layer_s::close( )
     {
-
+        cancel_all_slots( );
+        impl_->close( );
     }
 
     void protocol_layer_s::drop_service( const std::string &name )

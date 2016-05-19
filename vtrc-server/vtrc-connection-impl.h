@@ -135,11 +135,11 @@ namespace vtrc { namespace server { namespace listeners {
             void close(  )
             {
                 super_type::close( );
-                protocol_->erase_all_slots( );
             }
 
             void on_close(  )
             {
+                protocol_->close( );//erase_all_slots( );
                 close_closure_( this );
             }
 

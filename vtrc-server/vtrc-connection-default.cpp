@@ -308,6 +308,7 @@ namespace vtrc { namespace server {
                        common::system_closure_type cb )
             {
                 set_accessor( pa );
+                switch_to_handshake( );
                 static const std::string data(pack_message(first_message( )));
 //                ready_ = true;
 //                pa_->ready( true );
@@ -335,6 +336,7 @@ namespace vtrc { namespace server {
                 } else {
                     stage_function_( data );
                     if( ready_ ) {
+                        switch_to_ready( );
                         accessor( )->ready( ready_ );
                     }
                 }

@@ -36,7 +36,7 @@ namespace vtrc { namespace common {
         virtual void close( ) = 0;
 
         /// do handshake with other side
-        virtual void do_handshake( ) = 0;
+        // virtual void do_handshake( ) = 0;
 
         /// serialize lowlevel message
         virtual std::string pack_message( const lowlevel_unit &mess ) = 0;

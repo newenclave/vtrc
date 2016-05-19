@@ -25,6 +25,7 @@ namespace stress {
         virtual unsigned register_timer( unsigned microsec ) = 0;
 
         virtual void shutdown( ) = 0;
+        virtual void close_me( ) = 0;
     };
 
     interface *create_stress_client(

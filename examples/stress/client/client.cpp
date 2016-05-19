@@ -122,6 +122,8 @@ void get_options( po::options_description& desc )
         ("key,k", po::value<std::string>( ),
                 "key for access to server; password")
 
+        ("close,Q",         "close this client" )
+
         ("dumb,D", "use dump protocol as lowlevel "
                    "(there are no handshakes or keys here)")
 
@@ -294,6 +296,10 @@ int start( const po::variables_map &params )
         impl->shutdown( );
         std::cout << "Ok\n";
 
+    } if( params.count( "close" ) ) {
+        std::cout << "Request server for close this client...";
+        impl->close_me( );
+        std::cout << "Ok\n";
     } else if( params.count( "ping" ) ) {
 
         unsigned times = params["ping"].as<unsigned>( );

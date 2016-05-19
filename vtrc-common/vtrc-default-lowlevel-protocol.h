@@ -17,6 +17,7 @@ namespace vtrc {  namespace common { namespace lowlevel {
         vtrc::unique_ptr<transformer_iface>      transformer_;
         vtrc::unique_ptr<transformer_iface>      revertor_;
         vtrc::unique_ptr<data_queue::queue_base> queue_;
+        vtrc::function<void(void)>               process_stage_;
 
         protocol_accessor *pa_;
 
@@ -26,7 +27,6 @@ namespace vtrc {  namespace common { namespace lowlevel {
                            system_closure_type ready_cb );
         virtual void close( );
         virtual void do_handshake( );
-        virtual bool ready( ) const;
 
         void set_transformer( transformer_iface *ti );
         void set_revertor( transformer_iface *ti );
@@ -52,6 +52,10 @@ namespace vtrc {  namespace common { namespace lowlevel {
                                        google::protobuf::Message &out );
 
     protected:
+
+        void ready_call( );
+        void switch_to_ready( );
+        void switch_to_handshake( );
 
         std::string pack_message( const char *data, size_t length );
         std::string pack_message( const std::string &data );

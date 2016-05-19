@@ -210,6 +210,16 @@ namespace  {
             app_.stop( );
         }
 
+        void close_me( ::google::protobuf::RpcController* /*controller*/,
+                       const ::vtrc_example::empty*       /*request*/,
+                       ::vtrc_example::empty*             /*response*/,
+                       ::google::protobuf::Closure* done)
+        {
+            common::closure_holder holder(done);
+            std::cout << "close request from: " << c_->name( ) << std::endl;
+            c_->close( );
+        }
+
     };
 
 }
