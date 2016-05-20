@@ -130,12 +130,6 @@ namespace vtrc { namespace server {
 
         // accessor ===================================
 
-        common::connection_iface_sptr lock_connection( )
-        {
-            common::connection_iface_sptr lckd(keeper_.lock( ));
-            return lckd;
-        }
-
         common::rpc_service_wrapper_sptr get_service( const std::string &name )
         {
             upgradable_lock lk( services_lock_ );

@@ -45,13 +45,6 @@ namespace vtrc { namespace client {
 
         typedef vtrc::shared_ptr<gpb::Service> service_str;
 
-        enum protocol_stage {
-             STAGE_HELLO = 1
-            ,STAGE_SETUP = 2
-            ,STAGE_READY = 3
-            ,STAGE_RPC   = 4
-        };
-
         //namespace default_cypher = common::transformers::chacha;
 
     }
@@ -65,7 +58,6 @@ namespace vtrc { namespace client {
         protocol_layer_c                *parent_;
         vtrc_client                     *client_;
         protocol_signals                *callbacks_;
-        protocol_stage                   stage_;
 
         bool                             closed_;
         lowlevel_protocol_layer_iface   *conn_setup_;
@@ -76,7 +68,6 @@ namespace vtrc { namespace client {
             :connection_(c)
             ,client_(client)
             ,callbacks_(cb)
-            ,stage_(STAGE_HELLO)
             ,closed_(false)
         { }
 
