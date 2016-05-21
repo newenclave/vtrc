@@ -71,8 +71,8 @@ namespace vtrc { namespace common {
         }
 #if 0
         struct rpc_unit_index {
-            uint64_t     id_;
-            rpc_unit_index( uint64_t id )
+            vtrc::uint64_t     id_;
+            rpc_unit_index( vtrc::uint64_t id )
                 :id_(id)
             { }
         };
@@ -82,12 +82,15 @@ namespace vtrc { namespace common {
         {
             return lhs.id_ < rhs.id_;
         }
+        typedef rpc_unit_index rpc_index_type;
+#else
+        typedef vtrc::uint64_t rpc_index_type;
 #endif
         typedef rpc::lowlevel_unit                   lowlevel_unit_type;
         typedef vtrc::shared_ptr<lowlevel_unit_type> lowlevel_unit_sptr;
 
         typedef condition_queues <
-                uint64_t,
+                rpc_index_type,
                 lowlevel_unit_sptr
         > rpc_queue_type;
 
@@ -191,14 +194,12 @@ namespace vtrc { namespace common {
         protocol_layer              *parent_;
 
         rpc_queue_type               rpc_queue_;
-        vtrc::atomic<uint64_t>       rpc_index_;
+        vtrc::atomic<vtrc::uint64_t> rpc_index_;
 
         options_map_type             options_map_;
         mutable vtrc::shared_mutex   options_map_lock_;
 
         bool                         ready_;
-//        mutable vtrc::mutex          ready_lock_;
-//        vtrc::condition_variable     ready_var_;
 
         rpc::session_options         session_opts_;
         lowlevel_protocol_layer      ll_processor_;
@@ -316,7 +317,7 @@ namespace vtrc { namespace common {
             send_data( ser.c_str( ), ser.size( ) );
         }
 
-        uint64_t next_index( )
+        vtrc::uint64_t next_index( )
         {
             return ( rpc_index_ += 2 );
         }
@@ -421,7 +422,7 @@ namespace vtrc { namespace common {
                     : NULL;
         }
 
-        size_t push_rpc_message(uint64_t slot_id, lowlevel_unit_sptr mess)
+        size_t push_rpc_message(vtrc::uint64_t slot_id, lowlevel_unit_sptr mess)
         {
             return rpc_queue_.write_queue_if_exists( slot_id, mess );
         }
@@ -431,7 +432,8 @@ namespace vtrc { namespace common {
             return rpc_queue_.write_all( mess );
         }
 
-        void call_rpc_method( uint64_t slot_id, const lowlevel_unit_type &llu )
+        void call_rpc_method( vtrc::uint64_t slot_id,
+                              const lowlevel_unit_type &llu )
         {
             if( !ready_ ) {
                 vtrc::common::raise(
@@ -450,15 +452,15 @@ namespace vtrc { namespace common {
             send_message( llu );
         }
 
-        void wait_call_slot( uint64_t slot_id, uint64_t microsec)
+        void wait_call_slot( vtrc::uint64_t slot_id, vtrc::uint64_t microsec)
         {
             wait_result_codes qwr = rpc_queue_.wait_queue( slot_id,
                              vtrc::chrono::microseconds(microsec) );
             raise_wait_error( qwr );
         }
 
-        void read_slot_for(uint64_t slot_id, lowlevel_unit_sptr &mess,
-                                             uint64_t microsec)
+        void read_slot_for( vtrc::uint64_t slot_id, lowlevel_unit_sptr &mess,
+                                             vtrc::uint64_t microsec)
         {
             wait_result_codes qwr = rpc_queue_.read( slot_id, mess,
                                     vtrc::chrono::microseconds(microsec) );
@@ -466,26 +468,26 @@ namespace vtrc { namespace common {
             raise_wait_error( qwr );
         }
 
-        void read_slot_for( uint64_t slot_id,
+        void read_slot_for( vtrc::uint64_t slot_id,
                             std::deque<lowlevel_unit_sptr> &data_list,
-                            uint64_t microsec )
+                            vtrc::uint64_t microsec )
         {
             wait_result_codes qwr = rpc_queue_.read_queue( slot_id, data_list,
                                          vtrc::chrono::microseconds(microsec));
             raise_wait_error( qwr );
         }
 
-        void close_slot( uint64_t slot_id )
+        void close_slot( vtrc::uint64_t slot_id )
         {
             rpc_queue_.erase_queue( slot_id );
         }
 
-        void cancel_slot( uint64_t slot_id )
+        void cancel_slot( vtrc::uint64_t slot_id )
         {
             rpc_queue_.cancel( slot_id );
         }
 
-        bool slot_exists( uint64_t slot_id ) const
+        bool slot_exists( vtrc::uint64_t slot_id ) const
         {
             return rpc_queue_.queue_exists( slot_id );
         }
@@ -943,7 +945,7 @@ namespace vtrc { namespace common {
         return impl_->parse_and_pop( result );
     }
 
-    uint64_t protocol_layer::next_index( )
+    vtrc::uint64_t protocol_layer::next_index( )
     {
         return impl_->next_index( );
     }
@@ -953,42 +955,43 @@ namespace vtrc { namespace common {
         impl_->call_rpc_method( llu );
     }
 
-    void protocol_layer::call_rpc_method( uint64_t slot_id,
+    void protocol_layer::call_rpc_method( vtrc::uint64_t slot_id,
                                           const lowlevel_unit_type &llu )
     {
         impl_->call_rpc_method( slot_id, llu );
     }
 
-    void protocol_layer::wait_slot_for(uint64_t slot_id, uint64_t microsec )
+    void protocol_layer::wait_slot_for( vtrc::uint64_t slot_id,
+                                        vtrc::uint64_t microsec )
     {
         impl_->wait_call_slot( slot_id, microsec );
     }
 
-    void protocol_layer::read_slot_for(uint64_t slot_id,
-                                       lowlevel_unit_sptr &mess,
-                                       uint64_t microsec)
+    void protocol_layer::read_slot_for( vtrc::uint64_t slot_id,
+                                        lowlevel_unit_sptr &mess,
+                                        vtrc::uint64_t microsec)
     {
         impl_->read_slot_for( slot_id, mess, microsec );
     }
 
-    void protocol_layer::read_slot_for( uint64_t slot_id,
+    void protocol_layer::read_slot_for( vtrc::uint64_t slot_id,
                                       std::deque<lowlevel_unit_sptr> &mess_list,
-                                      uint64_t microsec )
+                                       vtrc::uint64_t microsec )
     {
         impl_->read_slot_for( slot_id, mess_list, microsec );
     }
 
-    void protocol_layer::erase_slot(uint64_t slot_id)
+    void protocol_layer::erase_slot( vtrc::uint64_t slot_id )
     {
         impl_->close_slot( slot_id );
     }
 
-    void protocol_layer::cancel_slot(uint64_t slot_id)
+    void protocol_layer::cancel_slot( vtrc::uint64_t slot_id )
     {
         impl_->cancel_slot( slot_id );
     }
 
-    bool protocol_layer::slot_exists( uint64_t slot_id ) const
+    bool protocol_layer::slot_exists( vtrc::uint64_t slot_id ) const
     {
         return impl_->slot_exists( slot_id );
     }
@@ -1008,7 +1011,7 @@ namespace vtrc { namespace common {
         impl_->erase_all_slots( );
     }
 
-    size_t protocol_layer::push_rpc_message( uint64_t slot_id,
+    size_t protocol_layer::push_rpc_message( vtrc::uint64_t slot_id,
                                              lowlevel_unit_sptr mess)
     {
         return impl_->push_rpc_message(slot_id, mess);

@@ -86,7 +86,7 @@ namespace vtrc { namespace common {
 
         /// ================= ///
 
-        uint64_t next_index( );
+        vtrc::uint64_t next_index( );
 
         void process_data( const char *data, size_t length );
 
@@ -103,21 +103,22 @@ namespace vtrc { namespace common {
                               const protcol_closure_type &done);
 
         void call_rpc_method(                   const lowlevel_unit_type &llu );
-        void call_rpc_method( uint64_t slot_id, const lowlevel_unit_type &llu );
+        void call_rpc_method( vtrc::uint64_t slot_id,
+                              const lowlevel_unit_type &llu );
 
-        void wait_slot_for( uint64_t slot_id, uint64_t microsec );
+        void wait_slot_for( vtrc::uint64_t slot_id, vtrc::uint64_t microsec );
 
-        void read_slot_for( uint64_t slot_id,
+        void read_slot_for( vtrc::uint64_t slot_id,
                             lowlevel_unit_sptr &mess,
-                            uint64_t microsec );
+                            vtrc::uint64_t microsec );
 
-        void read_slot_for( uint64_t slot_id,
+        void read_slot_for( vtrc::uint64_t slot_id,
                             std::deque<lowlevel_unit_sptr> &mess_list,
-                            uint64_t microsec );
+                            vtrc::uint64_t microsec );
 
-        void erase_slot ( uint64_t slot_id );
-        void cancel_slot( uint64_t slot_id );
-        bool slot_exists( uint64_t slot_id ) const;
+        void erase_slot ( vtrc::uint64_t slot_id );
+        void cancel_slot( vtrc::uint64_t slot_id );
+        bool slot_exists( vtrc::uint64_t slot_id ) const;
 
         void erase_all_slots( );
         void cancel_all_slots( );
@@ -202,7 +203,8 @@ namespace vtrc { namespace common {
 
         void configure_session( const rpc::session_options &opts );
 
-        size_t push_rpc_message( uint64_t slot_id, lowlevel_unit_sptr mess);
+        size_t push_rpc_message( vtrc::uint64_t slot_id,
+                                 lowlevel_unit_sptr mess);
 
         size_t push_rpc_message_all( lowlevel_unit_sptr mess );
 
