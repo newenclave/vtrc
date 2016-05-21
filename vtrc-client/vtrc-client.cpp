@@ -692,10 +692,10 @@ namespace vtrc { namespace client {
         impl_->connect( local_name );
     }
 
-//    void vtrc_client::open( const std::string &path, int flags, int mode )
-//    {
-//        impl_->open( path, flags, mode );
-//    }
+    void vtrc_client::open( const std::string &path, int flags, int mode )
+    {
+        impl_->open( path, flags, mode );
+    }
 
 #ifdef _WIN32
     void vtrc_client::connect(const std::wstring &local_name)

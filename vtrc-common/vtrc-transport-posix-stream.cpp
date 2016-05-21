@@ -1,3 +1,4 @@
+#include <iostream>
 
 #include "vtrc-transport-posix-stream.h"
 

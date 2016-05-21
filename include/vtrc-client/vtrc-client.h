@@ -164,7 +164,7 @@ namespace client {
                                 bool tcp_nodelay = false );
 #endif
 
-//        void open( const std::string &path, int flags, int mode );
+        void open( const std::string &path, int flags, int mode );
 
         void connect( const std::string &local_name );
 
