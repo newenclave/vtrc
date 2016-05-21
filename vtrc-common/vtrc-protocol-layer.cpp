@@ -196,11 +196,9 @@ namespace vtrc { namespace common {
         options_map_type             options_map_;
         mutable vtrc::shared_mutex   options_map_lock_;
 
-        mutable vtrc::mutex          ready_lock_;
         bool                         ready_;
-        vtrc::condition_variable     ready_var_;
-
-        unsigned                     level_;
+//        mutable vtrc::mutex          ready_lock_;
+//        vtrc::condition_variable     ready_var_;
 
         rpc::session_options         session_opts_;
         lowlevel_protocol_layer      ll_processor_;
@@ -213,7 +211,6 @@ namespace vtrc { namespace common {
             ,parent_(NULL)
             ,rpc_index_(odd ? 101 : 100)
             ,ready_(false)
-            ,level_(0)
             ,session_opts_(opts)
             ,precall_(empty_pre( ))
             ,postcall_(empty_post( ))
@@ -280,9 +277,7 @@ namespace vtrc { namespace common {
 
         void set_ready( bool ready )
         {
-            vtrc::unique_lock<vtrc::mutex> lck( ready_lock_ );
             ready_ = ready;
-            ready_var_.notify_all( );
         }
 
         void set_lowlevel( lowlevel::protocol_layer_iface *ll )
@@ -308,23 +303,6 @@ namespace vtrc { namespace common {
         bool ready( ) const
         {
             return ready_;
-        }
-
-        void wait_for_ready( bool state )
-        {
-            vtrc::unique_lock<vtrc::mutex> lck( ready_lock_ );
-            if( state != ready_ ) {
-                ready_var_.wait( lck,
-                         vtrc::bind( &this_type::state_predic, this, state ));
-            }
-        }
-
-        template <typename DurationType>
-        bool wait_for_ready_for( bool state, const DurationType &duration )
-        {
-            vtrc::unique_lock<vtrc::mutex> lck( ready_lock_ );
-            return ready_var_.wait_for( lck, duration,
-                     vtrc::bind( &this_type::state_predic, this, state ) );
         }
 
         void send_data( const char *data, size_t length )
@@ -510,16 +488,6 @@ namespace vtrc { namespace common {
         bool slot_exists( uint64_t slot_id ) const
         {
             return rpc_queue_.queue_exists( slot_id );
-        }
-
-        void set_level( unsigned level )
-        {
-            level_ = level;
-        }
-
-        unsigned get_level( ) const
-        {
-            return level_;
         }
 
         const rpc::options *get_method_options(
@@ -860,25 +828,6 @@ namespace vtrc { namespace common {
         return impl_->ready( );
     }
 
-    void protocol_layer::wait_for_ready( bool state )
-    {
-        return impl_->wait_for_ready( state );
-    }
-
-    bool protocol_layer::wait_for_ready_for_millisec(bool ready,
-                                                     uint64_t millisec) const
-    {
-        return impl_->wait_for_ready_for( ready,
-                vtrc::chrono::milliseconds(millisec));
-    }
-
-    bool protocol_layer::wait_for_ready_for_microsec(bool ready,
-                                                     uint64_t microsec) const
-    {
-        return impl_->wait_for_ready_for( ready,
-                vtrc::chrono::microseconds(microsec));
-    }
-
     void protocol_layer::set_ready( bool ready )
     {
         impl_->set_ready( ready );
@@ -904,9 +853,9 @@ namespace vtrc { namespace common {
         impl_->process_data( data, length );
     }
 
-    /*
-     * call context
-    */
+//    /*
+//     * call context
+//    */
 
     call_context *protocol_layer::push_call_context(
                                             vtrc::shared_ptr<call_context> cc)
@@ -966,17 +915,7 @@ namespace vtrc { namespace common {
         return impl::top_call_context( );
     }
 
-    // ===============
-
-    void protocol_layer::set_level( unsigned level )
-    {
-        impl_->set_level( level );
-    }
-
-    unsigned protocol_layer::get_level( ) const
-    {
-        return impl_->get_level( );
-    }
+//    // ===============
 
     void protocol_layer::make_local_call(protocol_layer::lowlevel_unit_sptr llu)
     {
@@ -1059,10 +998,10 @@ namespace vtrc { namespace common {
         impl_->cancel_all_slots( );
     }
 
-//    void protocol_layer::close_queue( )
-//    {
-//        impl_->close_queue( );
-//    }
+////    void protocol_layer::close_queue( )
+////    {
+////        impl_->close_queue( );
+////    }
 
     void protocol_layer::erase_all_slots( )
     {
@@ -1098,18 +1037,6 @@ namespace vtrc { namespace common {
     void protocol_layer::set_postcall(const postcall_closure_type &func )
     {
         impl_->set_postcall( func );
-    }
-
-
-    std::string protocol_layer::get_service_name( gpb::Service *service )
-    {
-        return get_service_name( service->GetDescriptor( ) );
-    }
-
-    std::string protocol_layer::get_service_name(
-                                            const gpb::ServiceDescriptor *sd )
-    {
-        return sd->full_name( );
     }
 
 }}

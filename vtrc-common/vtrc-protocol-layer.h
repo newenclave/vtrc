@@ -76,9 +76,6 @@ namespace vtrc { namespace common {
     public:
 
         bool ready( ) const;
-        void wait_for_ready( bool ready );
-        bool wait_for_ready_for_millisec( bool ready, uint64_t millisec ) const;
-        bool wait_for_ready_for_microsec( bool ready, uint64_t microsec ) const;
 
         /// ================= ///
 
@@ -100,12 +97,6 @@ namespace vtrc { namespace common {
 
         void set_precall( const precall_closure_type &func );
         void set_postcall( const postcall_closure_type &func );
-
-        static std::string get_service_name(
-                                google::protobuf::Service *service );
-
-        static std::string get_service_name(
-                                const google::protobuf::ServiceDescriptor *sd );
 
         void make_local_call( lowlevel_unit_sptr llu );
         void make_local_call( lowlevel_unit_sptr llu,
@@ -170,9 +161,6 @@ namespace vtrc { namespace common {
         friend struct context_holder;
 
     protected:
-
-        void     set_level( unsigned level );
-        unsigned get_level(  ) const;
 
         //// pure virtual
 
