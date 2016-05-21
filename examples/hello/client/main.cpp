@@ -51,8 +51,6 @@ int main( int argc, const char **argv )
 
         std::cout <<  "Connecting..." << std::endl;
 
-        cl->open( "/home/data/github/vtrc/CMakeLists.txt", O_RDONLY, 0 );
-
         cl->connect( address, port );
 
         std::cout << "Ok" << std::endl;
