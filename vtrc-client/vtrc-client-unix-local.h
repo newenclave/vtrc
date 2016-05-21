@@ -54,8 +54,9 @@ namespace client {
 
         const common::call_context *get_call_context( ) const;
 
-        common::protocol_layer     &get_protocol( );
-        common::enviroment         &get_enviroment( );
+        common::protocol_layer       &get_protocol( );
+        const common::protocol_layer &get_protocol( ) const;
+        common::enviroment           &get_enviroment( );
 
     private:
         void on_close( );

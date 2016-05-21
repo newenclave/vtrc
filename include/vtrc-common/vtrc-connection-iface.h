@@ -7,6 +7,7 @@
 
 #include "vtrc-asio-forward.h"
 #include "vtrc-system-forward.h"
+#include "vtrc-lowlevel-protocol-iface.h"
 
 VTRC_ASIO_FORWARD( class io_service; )
 VTRC_SYSTEM_FORWARD( class error_code; )
@@ -57,6 +58,8 @@ namespace vtrc { namespace common {
             return vtrc::weak_ptr<connection_iface const>( shared_from_this( ));
         }
 
+        const lowlevel::protocol_layer_iface *get_lowlevel( );
+
         virtual native_handle_type native_handle( ) const = 0;
 
         /// llu is IN OUT parameter
@@ -74,7 +77,8 @@ namespace vtrc { namespace common {
         friend class rpc_channel;
         friend class call_keeper;
 
-        virtual protocol_layer &get_protocol( )   = 0;
+        virtual protocol_layer &get_protocol( ) = 0;
+        virtual const protocol_layer &get_protocol( ) const = 0;
 
     };
 

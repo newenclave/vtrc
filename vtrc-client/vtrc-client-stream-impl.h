@@ -163,6 +163,11 @@ namespace { /// implementation.
             return *protocol_;
         }
 
+        const client::protocol_layer_c &get_protocol( ) const
+        {
+            return *protocol_;
+        }
+
         void on_write_error( const VTRC_SYSTEM::error_code &err )
         {
             protocol_->on_write_error( err );

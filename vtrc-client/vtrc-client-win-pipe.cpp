@@ -151,6 +151,11 @@ namespace vtrc { namespace client {
         return impl_->get_protocol( );
     }
 
+    const common::protocol_layer &client_win_pipe::get_protocol( ) const
+    {
+        return impl_->get_protocol( );
+    }
+
     common::enviroment &client_win_pipe::get_enviroment( )
     {
         return impl_->get_enviroment( );
