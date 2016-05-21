@@ -295,6 +295,11 @@ namespace vtrc { namespace common {
             return ll_processor_.get( );
         }
 
+        const lowlevel::protocol_layer_iface *get_lowlevel( ) const
+        {
+            return ll_processor_.get( );
+        }
+
         bool state_predic( bool state ) const
         {
             return (ready_ == state);
@@ -885,6 +890,11 @@ namespace vtrc { namespace common {
     }
 
     lowlevel::protocol_layer_iface *protocol_layer::get_lowlevel( )
+    {
+        return impl_->get_lowlevel( );
+    }
+
+    const lowlevel::protocol_layer_iface *protocol_layer::get_lowlevel( ) const
     {
         return impl_->get_lowlevel( );
     }

@@ -58,7 +58,7 @@ namespace vtrc { namespace common {
             return vtrc::weak_ptr<connection_iface const>( shared_from_this( ));
         }
 
-        const lowlevel::protocol_layer_iface *get_lowlevel( );
+        const lowlevel::protocol_layer_iface *get_lowlevel( ) const;
 
         virtual native_handle_type native_handle( ) const = 0;
 

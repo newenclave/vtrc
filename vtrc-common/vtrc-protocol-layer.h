@@ -85,6 +85,7 @@ namespace vtrc { namespace common {
         void set_ready( bool ready );
         void set_lowlevel( common::lowlevel::protocol_layer_iface *ll );
         common::lowlevel::protocol_layer_iface *get_lowlevel( );
+        const common::lowlevel::protocol_layer_iface *get_lowlevel( ) const;
 
         /// ================= ///
 
