@@ -143,6 +143,7 @@ namespace { /// implementation.
                 try {
                     protocol_->process_data( &read_buff_[0], bytes );
                 } catch( const std::exception & /*ex*/ ) {
+                    //protocol_->on_read_error( error );
                     parent_->close( );
                     return;
                 }

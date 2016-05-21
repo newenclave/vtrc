@@ -24,6 +24,10 @@ namespace {
     {
         std::cout << "disconnect...";
     }
+    void on_error( const rpc::errors::container &, const char *mess )
+    {
+        std::cout << mess << "...";
+    }
 }
 
 int main( int argc, const char **argv )
@@ -48,8 +52,12 @@ int main( int argc, const char **argv )
         cl->on_connect_connect( on_connect );
         cl->on_ready_connect( on_ready );
         cl->on_disconnect_connect( on_disconnect );
+        cl->on_init_error_connect( on_error );
 
         std::cout <<  "Connecting..." << std::endl;
+
+//        cl->open( "/dev/random", O_RDONLY, 0 );
+//        tp.attach( );
 
         cl->connect( address, port );
 
