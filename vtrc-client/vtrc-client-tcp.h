@@ -40,7 +40,6 @@ namespace client {
         static shared_type create ( VTRC_ASIO::io_service &ios,
                                     vtrc_client *client,
                                     protocol_signals *callbacks,
-                                    lowlevel_factory_type factory,
                                     bool tcp_nodelay );
 
         ~client_tcp( );

@@ -87,7 +87,6 @@ namespace vtrc { namespace client {
     vtrc::shared_ptr<client_tcp> client_tcp::create(basio::io_service &ios,
                                         vtrc_client *client,
                                         protocol_signals *callbacks,
-                                        lowlevel_factory_type factory,
                                         bool tcp_nodelay)
     {
         vtrc::shared_ptr<client_tcp> new_inst

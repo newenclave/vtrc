@@ -7,6 +7,7 @@
 #include "protocol/hello.pb.h"
 
 #include "boost/lexical_cast.hpp"
+#include <fcntl.h>
 
 using namespace vtrc;
 
@@ -50,7 +51,10 @@ int main( int argc, const char **argv )
 
         std::cout <<  "Connecting..." << std::endl;
 
+        cl->open( "/home/data/github/vtrc/CMakeLists.txt", O_RDONLY, 0 );
+
         cl->connect( address, port );
+
         std::cout << "Ok" << std::endl;
 
         vtrc::unique_ptr<common::rpc_channel> channel(cl->create_channel( ));

@@ -9,6 +9,8 @@
 #include "vtrc-client-ssl.h"
 #include "vtrc-client-unix-local.h"
 #include "vtrc-client-win-pipe.h"
+#include "vtrc-client-posix-stream.h"
+
 #include "vtrc-rpc-channel-c.h"
 #include "vtrc-protocol-layer-c.h"
 
@@ -171,7 +173,7 @@ namespace vtrc { namespace client {
         {
             vtrc::shared_ptr<client_tcp> new_client_inst
                     (client_tcp::create( ios_, parent_, this,
-                                         ll_proto_factory_, tcp_nodelay ));
+                                         tcp_nodelay ));
 
             connection_ =   new_client_inst;
             protocol_   =  &new_client_inst->get_protocol( );
@@ -342,6 +344,14 @@ namespace vtrc { namespace client {
                 new_client->set_no_delay( true );
             }
         }
+
+        void open( const std::string &path, int flags, int mode )
+        {
+            vtrc::shared_ptr<client_posixs>
+                   new_client(client_posixs::create( ios_, parent_, this ));
+            new_client->connect( path, flags, mode );
+        }
+
 
 #ifdef _WIN32
         static void win_connect( client_win_pipe &new_client,
@@ -681,6 +691,11 @@ namespace vtrc { namespace client {
     {
         impl_->connect( local_name );
     }
+
+//    void vtrc_client::open( const std::string &path, int flags, int mode )
+//    {
+//        impl_->open( path, flags, mode );
+//    }
 
 #ifdef _WIN32
     void vtrc_client::connect(const std::wstring &local_name)
