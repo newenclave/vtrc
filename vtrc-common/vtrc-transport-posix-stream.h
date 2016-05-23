@@ -46,7 +46,7 @@ namespace vtrc { namespace common {
 
 }}
 
-#endif _WIN32
+#endif //_WIN32
 
 #endif // VTRC_TRANSPORT_POSIX_STREAM_H
 
