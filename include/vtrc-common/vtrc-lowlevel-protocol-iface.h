@@ -60,7 +60,7 @@ namespace vtrc { namespace common {
     typedef vtrc::unique_ptr<protocol_layer_iface> protocol_layer_uptr;
     typedef vtrc::function<protocol_layer_iface *( )> protocol_factory_type;
 
-    namespace dumb {
+    namespace dummy {
         protocol_layer_iface *create( ); /// do nothing
     }
 

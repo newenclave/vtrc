@@ -269,7 +269,7 @@ namespace vtrc { namespace common { namespace lowlevel {
         ;;;
     }
 
-    namespace dumb {
+    namespace dummy {
         protocol_layer_iface *create( )
         {
             return new default_protocol( );

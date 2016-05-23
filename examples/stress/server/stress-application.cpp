@@ -374,7 +374,7 @@ namespace {
         {
             if( dumb_proto_ ) {
                 listen->assign_lowlevel_protocol_factory(
-                        &common::lowlevel::dumb::create );
+                        &common::lowlevel::dummy::create );
             }
 
             listen->on_new_connection_connect(

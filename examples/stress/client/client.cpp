@@ -250,7 +250,7 @@ int start( const po::variables_map &params )
 
     if( params.count( "dumb" ) ) {
         client->assign_lowlevel_protocol_factory(
-                    &common::lowlevel::dumb::create );
+                    &common::lowlevel::dummy::create );
     }
 
     client->on_connect_connect   ( on_connect );
