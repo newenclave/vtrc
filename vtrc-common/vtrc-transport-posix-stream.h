@@ -1,6 +1,8 @@
 #ifndef VTRC_TRANSPORT_POSIX_STREAM_H
 #define VTRC_TRANSPORT_POSIX_STREAM_H
 
+#ifndef _WIN32
+
 #include "vtrc-transport-iface.h"
 
 #include "vtrc-asio.h"
@@ -43,5 +45,8 @@ namespace vtrc { namespace common {
     };
 
 }}
+
+#endif _WIN32
+
 #endif // VTRC_TRANSPORT_POSIX_STREAM_H
 

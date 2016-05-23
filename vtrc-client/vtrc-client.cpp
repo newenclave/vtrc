@@ -345,13 +345,14 @@ namespace vtrc { namespace client {
             }
         }
 
+#ifndef _WIN32
         void open( const std::string &path, int flags, int mode )
         {
             vtrc::shared_ptr<client_posixs>
                    new_client(client_posixs::create( ios_, parent_, this ));
             new_client->connect( path, flags, mode );
         }
-
+#endif
 
 #ifdef _WIN32
         static void win_connect( client_win_pipe &new_client,

@@ -164,7 +164,9 @@ namespace client {
                                 bool tcp_nodelay = false );
 #endif
 
+#ifndef _WIN32
         void open( const std::string &path, int flags, int mode );
+#endif
 
         void connect( const std::string &local_name );
 

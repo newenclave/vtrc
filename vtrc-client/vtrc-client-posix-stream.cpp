@@ -1,5 +1,7 @@
 #include "vtrc-client-posix-stream.h"
 
+#ifndef _WIN32
+
 #include "vtrc-asio.h"
 #include "vtrc-client-stream-impl.h"
 #include "vtrc-common/vtrc-exception.h"
@@ -151,3 +153,4 @@ namespace vtrc { namespace client {
 
 }}
 
+#endif // _WIN32

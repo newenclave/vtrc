@@ -1,3 +1,6 @@
+
+#ifndef _WIN32
+
 #include <iostream>
 
 #include "vtrc-transport-posix-stream.h"
@@ -87,3 +90,4 @@ namespace vtrc { namespace common {
 
 }}
 
+#endif

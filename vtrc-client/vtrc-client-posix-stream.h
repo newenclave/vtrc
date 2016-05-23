@@ -1,6 +1,8 @@
 #ifndef VTRC_CLIENT_POSIX_STREAM_H
 #define VTRC_CLIENT_POSIX_STREAM_H
 
+#ifndef _WIN32
+
 #include "vtrc-common/vtrc-transport-posix-stream.h"
 #include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
 #include "vtrc-memory.h"
@@ -62,6 +64,7 @@ namespace client {
     };
 }}
 
+#endif // _WIN32
 
 #endif // VTRCCLIENTPOSIXSTREAM_H
 
