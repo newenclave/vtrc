@@ -10,7 +10,7 @@ namespace vtrc { namespace common { namespace data_queue {
 
     struct queue_base::impl {
 
-        std::deque<char>        data_;
+        plain_data_type         data_;
         std::deque<std::string> packed_;
         size_t                  max_valid_length_;
 
@@ -199,8 +199,8 @@ namespace vtrc { namespace common { namespace data_queue {
 
                     size_t len = SPP::unpack(data.begin( ), data.end( ));
 
-                    size_t maxval = get_maximum_length( );
-                    (void)(maxval);
+//                    size_t maxval = get_maximum_length( );
+//                    (void)(maxval);
 
                     if( len > get_maximum_length( ) ) {
                         //std::cout << "Message is too long " << len << "\n";
@@ -211,9 +211,9 @@ namespace vtrc { namespace common { namespace data_queue {
 
                     if( (len + next) <= data.size( ) ) {
 
-                        std::deque<char>::iterator b( data.begin( ) );
-                        std::deque<char>::iterator n( b );
-                        std::deque<char>::iterator e( b );
+                        plain_data_type::iterator b( data.begin( ) );
+                        plain_data_type::iterator n( b );
+                        plain_data_type::iterator e( b );
 
                         std::advance( n, next );
                         std::advance( e, len + next );
