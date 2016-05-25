@@ -199,9 +199,6 @@ namespace vtrc { namespace common { namespace data_queue {
 
                     size_t len = SPP::unpack(data.begin( ), data.end( ));
 
-//                    size_t maxval = get_maximum_length( );
-//                    (void)(maxval);
-
                     if( len > get_maximum_length( ) ) {
                         //std::cout << "Message is too long " << len << "\n";
                         common::raise(
