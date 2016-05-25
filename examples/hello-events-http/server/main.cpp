@@ -83,6 +83,8 @@ public:
     {
         bool ok = false;
 
+        std::cout << std::string( data, length );
+
         while( length ) {
             size_t r = current_header_->push( data, data + length );
             length -= r;

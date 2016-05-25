@@ -398,10 +398,17 @@ namespace http {
         oss << "X-VTRC-Options: "  << opt2flags( llu.opt( ) ) << "\r\n";
 
         if( llu.has_error( ) ) {
+            std::ostringstream error;
+            error << "<H1>"
+                  << "Error: " << llu.error( ).code( ) << "<br>"
+                  << llu.error( ).additional( ) << "\n"
+                     "</H1>";
             oss << "X-VTRC-Error: "    << llu.error( ).code( )       << "\r\n";
             oss << "X-VTRC-Category: " << llu.error( ).category( )   << "\r\n";
             oss << "X-VTRC-Message: "  << llu.error( ).additional( ) << "\r\n";
-            oss << "Content-Length: "  << 0                          << "\r\n";
+            oss << "Content-Length: "  << error.str( ).size( )       << "\r\n";
+            oss << "\r\n";
+            oss << error.str( );
         } else {
 
             std::string content(bin2hex( is_request ? llu.request( )
