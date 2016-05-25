@@ -66,9 +66,11 @@ namespace vtrc { namespace client {
         impl( common::transport_iface *c, vtrc_client *client,
               protocol_signals *cb )
             :connection_(c)
+            ,parent_(NULL)
             ,client_(client)
             ,callbacks_(cb)
             ,closed_(false)
+            ,conn_setup_(NULL)
         { }
 
         protocol_layer_c::lowlevel_factory_type create_default_factory( )

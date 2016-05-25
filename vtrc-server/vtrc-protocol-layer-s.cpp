@@ -87,9 +87,11 @@ namespace vtrc { namespace server {
             :app_(a)
             ,connection_(c)
             ,keeper_(c->weak_from_this( ))
+            ,parent_(NULL)
             ,ready_(false)
             ,closed_(false)
             ,current_calls_(0)
+            ,conn_setup_(NULL)
         { }
 
         protocol_layer_s::lowlevel_factory_type create_default_factory( )

@@ -75,6 +75,7 @@ namespace vtrc { namespace client {
         impl( basio::io_service &ios, basio::io_service &rpc_ios )
             :ios_(ios)
             ,rpc_ios_(rpc_ios)
+            ,parent_(NULL)
             ,protocol_(NULL)
             ,key_set_(false)
         { }

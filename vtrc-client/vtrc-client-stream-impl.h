@@ -41,6 +41,7 @@ namespace { /// implementation.
                             vtrc_client *client, protocol_signals *callbacks,
                             size_t read_buffer_size )
             :ios_(ios)
+            ,parent_(NULL)
             ,client_(client)
             ,callbacks_(callbacks)
             ,read_buff_(read_buffer_size)

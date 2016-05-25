@@ -92,7 +92,7 @@ namespace {
 
         pipe_listener( application &app,
                 const rpc::session_options &opts, 
-                const std::string pipe_name,
+                const std::string &pipe_name,
                 size_t max_inst)
             :listener(app, opts)
             ,ios_(app.get_io_service( ))

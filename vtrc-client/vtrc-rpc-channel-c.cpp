@@ -47,6 +47,7 @@ namespace vtrc { namespace client {
 
         impl(vtrc::shared_ptr<common::connection_iface> c)
             :connection_(c)
+            ,parent_(NULL)
             ,accept_callbacks_(false)
             ,target_id_(0)
         {
