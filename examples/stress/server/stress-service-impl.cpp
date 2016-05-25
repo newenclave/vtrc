@@ -145,6 +145,7 @@ namespace  {
 
             bool dis_wait = !request->wait( );
 
+            /// warning! Not thread safe
             if( request->callback( ) ) {
                 channel_.reset(unicast::create_callback_channel(
                                                         c_sptr, dis_wait ));
