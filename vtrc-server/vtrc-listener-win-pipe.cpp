@@ -137,11 +137,11 @@ namespace {
 
             SECURITY_DESCRIPTOR secdesc;
             SECURITY_ATTRIBUTES secarttr;
-            InitializeSecurityDescriptor(&secdesc,
-                                         SECURITY_DESCRIPTOR_REVISION);
+            InitializeSecurityDescriptor( &secdesc,
+                                          SECURITY_DESCRIPTOR_REVISION );
 
-            SetSecurityDescriptorDacl(&secdesc, TRUE,
-                                      static_cast<PACL>(NULL), FALSE);
+            SetSecurityDescriptorDacl( &secdesc, TRUE,
+                                       static_cast<PACL>(NULL), FALSE );
 
             secarttr.nLength              = sizeof(SECURITY_ATTRIBUTES);
             secarttr.bInheritHandle       = FALSE;
