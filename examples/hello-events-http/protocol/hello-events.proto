@@ -11,6 +11,7 @@ message response_message {
 
 service hello_events_service {
     rpc generate_events( request_message ) returns ( response_message );
+    rpc say_hello( request_message ) returns ( response_message );
 }
 
 message event_req { }

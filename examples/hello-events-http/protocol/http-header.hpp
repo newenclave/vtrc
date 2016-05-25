@@ -12,6 +12,33 @@
 
 namespace http {
 
+    typedef std::pair<std::string, std::string> string_pair;
+
+    static void replace_path( std::string &path, char f, char t )
+    {
+        typedef std::string::iterator itr;
+        if( *path.rbegin( ) == f ) {
+            path.resize( path.size( ) - 1 );
+        }
+        for( itr b(path.begin( )), e(path.end( )); b!=e; ++b ) {
+            if( *b == f ) {
+                *b = t;
+            }
+        }
+    }
+
+    static string_pair path_to_service( std::string &path )
+    {
+        typedef std::string::iterator itr;
+        itr iter;
+        for( itr b(path.begin( )), e(path.end( )); b!=e; ++b ) {
+            if( *b == '.' ) {
+                iter = b;
+            }
+        }
+        return std::make_pair( std::string( path.begin( ) + 1, iter ),
+                               std::string( iter + 1, path.end( ) ) );
+    }
 
     class header_parser
     {
@@ -158,7 +185,7 @@ namespace http {
         }
 
         template <typename T>
-        T get( const std::string &fld ) const
+        T get( const std::string &fld, const T &def = T( ) ) const
         {
             typedef std::map<std::string, std::string>::const_iterator itr;
 
@@ -166,7 +193,7 @@ namespace http {
             if( f != cont_.end( ) ) {
                 return boost::lexical_cast<T>(f->second);
             }
-            return T( );
+            return def;
         }
 
         const std::string &field( const std::string &fld ) const
@@ -302,26 +329,24 @@ namespace http {
     void flags2opt( unsigned flags, vtrc::rpc::unit_options *opts )
     {
         opts->set_wait            ( flags & REQ_WAIT       );
-        opts->set_accept_callbacks( flags & REQ_ACCEPT_CBS );
         opts->set_accept_response ( flags & REQ_ACCEPT_RES );
+        opts->set_accept_callbacks( flags & REQ_ACCEPT_CBS );
     }
 
     static
     bool http2lowlevel( header_parser &pars, vtrc::rpc::lowlevel_unit &llu )
     {
-        if( !pars.has_field( "X-VTRC-Id" ) && !pars.has_field( "X-VTRC-Tid" ) ){
-            return false;
-        }
 
-        bool is_request = pars.has_field( "X-VTRC-Service" );
+        bool is_request = (pars.method( ).begin( )->compare( "GET" ) == 0);
 
         llu.mutable_info( )
-                ->set_message_type( pars.get<unsigned>("X-VTRC-Type") );
+                ->set_message_type( pars.get<unsigned>("X-VTRC-Type", 1) );
 
         llu.set_id( pars.get<unsigned>("X-VTRC-Id") );
         llu.set_target_id( pars.get<unsigned>("X-VTRC-Tid") );
 
-        flags2opt( pars.get<unsigned>("X-VTRC-Options"), llu.mutable_opt( ) );
+        flags2opt( pars.get<unsigned>("X-VTRC-Options", 3),
+                   llu.mutable_opt( ) );
 
         if( pars.has_field( "X-VTRC-Error" ) ) {
             llu.mutable_error( )
@@ -332,10 +357,13 @@ namespace http {
                     ->set_additional( pars.field( "X-VTRC-Message" ) );
         } else {
             if( is_request ) {
-                llu.mutable_call( )
-                        ->set_service_id( pars.field( "X-VTRC-Service" ) );
-                llu.mutable_call( )
-                        ->set_method_id( pars.field( "X-VTRC-Method" ) );
+                if( pars.method( ).size( ) > 1 ) {
+                    std::string path = *(++pars.method( ).begin( ));
+                    replace_path( path, '/', '.' );
+                    string_pair sp = path_to_service( path );
+                    llu.mutable_call( )->set_service_id( sp.first );
+                    llu.mutable_call( )->set_method_id( sp.second );
+                }
                 llu.set_request( hex2bin( pars.content( ) ) );
             } else {
                 llu.set_response( hex2bin( pars.content( ) ) );
@@ -352,8 +380,15 @@ namespace http {
 
         bool is_request = llu.has_call( );
 
-        if( is_request ) {
-            oss << "GET / HTTP/1.1\r\n";
+        if( is_request && !llu.has_error( ) ) {
+            std::string ser("/");
+            ser.append(llu.call( ).service_id( ));
+
+            replace_path( ser, '.', '/' );
+
+            ser.append("/");
+            ser.append(llu.call( ).method_id( ));
+            oss << "GET " << ser << " HTTP/1.1\r\n";
         } else {
             oss << "HTTP/1.1 200 OK\r\n"; //
         }
@@ -371,13 +406,6 @@ namespace http {
 
             std::string content(bin2hex( is_request ? llu.request( )
                                                     : llu.response( ) ) );
-
-            if( is_request ) {
-                oss << "X-VTRC-Service: "
-                    << llu.call( ).service_id( ) << "\r\n";
-                oss << "X-VTRC-Method: "
-                    << llu.call( ).method_id( )  << "\r\n";
-            }
 
             oss << "X-VTRC-Id: "      << llu.id( )                  << "\r\n";
             oss << "X-VTRC-Tid: "     << llu.target_id( )           << "\r\n";

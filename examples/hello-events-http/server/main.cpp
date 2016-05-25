@@ -157,6 +157,15 @@ class  hello_service_impl: public howto::hello_events_service {
         }
     }
 
+    void say_hello(::google::protobuf::RpcController* controller,
+                         const ::howto::request_message* request,
+                         ::howto::response_message* response,
+                         ::google::protobuf::Closure* done)
+    {
+        common::closure_holder ch( done ); /// instead of done->Run( );
+        response->set_hello( "Hello!" );
+    }
+
 public:
 
     hello_service_impl( common::connection_iface *cl )
