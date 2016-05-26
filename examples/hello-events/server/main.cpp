@@ -39,7 +39,8 @@ class  hello_service_impl: public howto::hello_events_service {
             common::rpc_channel *ec =
                             create_event_channel( cl_->shared_from_this( ) );
 
-            common::stub_wrapper<stub_type> event( ec );
+            // true == own_channel
+            common::stub_wrapper<stub_type> event( ec, true );
             event.call( &stub_type::hello_event );
         }
 
@@ -47,7 +48,8 @@ class  hello_service_impl: public howto::hello_events_service {
             common::rpc_channel *cc =
                             create_callback_channel( cl_->shared_from_this( ) );
 
-            common::stub_wrapper<stub_type> callback( cc );
+            // true == own_channel
+            common::stub_wrapper<stub_type> callback( cc, true );
             howto::event_res response;
 
             callback.call_response( &stub_type::hello_callback, &response );
