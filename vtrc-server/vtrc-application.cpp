@@ -186,10 +186,10 @@ namespace vtrc { namespace server {
                                     common::connection_iface * connection,
                                     const std::string &        service_name)
     {
-        common::rpc_service_wrapper_sptr res =
-                vtrc::make_shared<common::rpc_service_wrapper>
-                    ( impl_->factory_( connection, service_name ) );
-        return res;
+        vtrc::shared_ptr<gpb::Service> svc =
+                     impl_->factory_( connection, service_name );
+        return svc ? vtrc::make_shared<common::rpc_service_wrapper>( svc )
+                   : common::rpc_service_wrapper_sptr( );
     }
 
     std::string application::get_session_key(common::connection_iface *conn,
