@@ -36,7 +36,7 @@ namespace vtrc { namespace common {
 
         /// names for protocol
         virtual const std::string &name( );
-        virtual const method_type *get_method ( const std::string &name ) const;
+        virtual const method_type *get_method( const std::string &name ) const;
 
         google::protobuf::Service       *service( );
         const google::protobuf::Service *service( ) const;

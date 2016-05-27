@@ -6,6 +6,8 @@
 
 #include "vtrc-asio-forward.h"
 
+#include "vtrc-function.h"
+
 VTRC_ASIO_FORWARD( class io_service; )
 
 namespace google { namespace protobuf {
@@ -31,6 +33,11 @@ namespace vtrc {
     }
 
 namespace server {
+
+    typedef vtrc::function<
+        vtrc::shared_ptr<google::protobuf::Service> ( common::connection_iface*,
+                                                      const std::string & )
+    > service_factory_type;
 
     class application {
 
@@ -62,6 +69,8 @@ namespace server {
         const VTRC_ASIO::io_service &get_rpc_service( ) const;
 
         vtrc::shared_ptr<common::connection_list>  get_clients( );
+
+        void assign_service_factory( service_factory_type factory );
 
         virtual void configure_session( common::connection_iface* connection,
                                         rpc::session_options &opts );

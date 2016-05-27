@@ -11,6 +11,16 @@
 
 namespace vtrc { namespace server {
 
+    namespace {
+        namespace gpb = google::protobuf;
+        static
+        vtrc::shared_ptr<gpb::Service>
+        default_factory( common::connection_iface *, const std::string & )
+        {
+            return vtrc::shared_ptr<gpb::Service>( );
+        }
+    }
+
     struct application::impl {
 
         common::enviroment         env_;
@@ -22,12 +32,15 @@ namespace vtrc { namespace server {
 
         vtrc::shared_ptr<common::connection_list> clients_;
 
+        service_factory_type        factory_;
+
         impl( )
             :ios_(new VTRC_ASIO::io_service)
             ,own_ios_(true)
             ,rpc_ios_(ios_)
             ,own_rpc_ios_(false)
             ,clients_(common::connection_list::create( ))
+            ,factory_(&default_factory)
         { }
 
         impl( VTRC_ASIO::io_service *ios )
@@ -36,6 +49,7 @@ namespace vtrc { namespace server {
             ,rpc_ios_(ios)
             ,own_rpc_ios_(false)
             ,clients_(common::connection_list::create( ))
+            ,factory_(&default_factory)
         { }
 
         impl( VTRC_ASIO::io_service *ios, VTRC_ASIO::io_service *rpc_ios )
@@ -44,6 +58,7 @@ namespace vtrc { namespace server {
             ,rpc_ios_(rpc_ios)
             ,own_rpc_ios_(false)
             ,clients_(common::connection_list::create( ))
+            ,factory_(&default_factory)
         { }
 
         static bool close_all_connection( common::connection_iface_sptr next )
@@ -156,6 +171,11 @@ namespace vtrc { namespace server {
         return impl_->get_clients( );
     }
 
+    void application::assign_service_factory( service_factory_type factory )
+    {
+        impl_->factory_ = factory ? factory : &default_factory;
+    }
+
     void application::configure_session( common::connection_iface *  /*c*/,
                                          rpc::session_options & /*opts*/ )
     {
@@ -163,10 +183,13 @@ namespace vtrc { namespace server {
     }
 
     common::rpc_service_wrapper_sptr application::get_service_by_name(
-                                    common::connection_iface * /*connection*/,
-                                    const std::string &        /*service_name*/)
+                                    common::connection_iface * connection,
+                                    const std::string &        service_name)
     {
-        return common::rpc_service_wrapper_sptr( );
+        common::rpc_service_wrapper_sptr res =
+                vtrc::make_shared<common::rpc_service_wrapper>
+                    (impl_->factory_( connection, service_name ) );
+        return res;
     }
 
     std::string application::get_session_key(common::connection_iface *conn,
