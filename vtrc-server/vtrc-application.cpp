@@ -34,6 +34,9 @@ namespace vtrc { namespace server {
 
         service_factory_type        factory_;
 
+        impl( const impl & );
+        impl & operator = ( const impl & );
+
         impl( )
             :ios_(new VTRC_ASIO::io_service)
             ,own_ios_(true)
@@ -192,14 +195,14 @@ namespace vtrc { namespace server {
                    : common::rpc_service_wrapper_sptr( );
     }
 
-    std::string application::get_session_key(common::connection_iface *conn,
-                                             const std::string &id)
+    std::string application::get_session_key(common::connection_iface * /*c*/,
+                                             const std::string & /*id*/ )
     {
         return std::string( );
     }
 
-    bool application::session_key_required( common::connection_iface* conn,
-                                            const std::string &id)
+    bool application::session_key_required( common::connection_iface * /*conn*/,
+                                            const std::string & /*id*/)
     {
         return false;
     }
