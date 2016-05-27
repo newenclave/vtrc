@@ -188,7 +188,7 @@ namespace vtrc { namespace server {
     {
         common::rpc_service_wrapper_sptr res =
                 vtrc::make_shared<common::rpc_service_wrapper>
-                    (impl_->factory_( connection, service_name ) );
+                    ( impl_->factory_( connection, service_name ) );
         return res;
     }
 
