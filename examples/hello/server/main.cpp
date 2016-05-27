@@ -52,31 +52,18 @@ public:
 
 };
 
-class hello_application: public server::application {
-
-    typedef common::rpc_service_wrapper     wrapper_type;
-    typedef vtrc::shared_ptr<wrapper_type>  wrapper_sptr;
-
-public:
-
-    hello_application( common::thread_pool &tp )
-        :server::application(tp.get_io_service( ))
-    { }
-
-    wrapper_sptr get_service_by_name( common::connection_iface* connection,
-                                      const std::string &service_name )
-    {
-        if( service_name == hello_service_impl::service_name( ) ) {
-
-             hello_service_impl *new_impl = new hello_service_impl(connection);
-
-             return vtrc::make_shared<wrapper_type>( new_impl );
-
-        }
-        return wrapper_sptr( );
+vtrc::shared_ptr<google::protobuf::Service> make_service(
+                                           common::connection_iface* connection,
+                                           const std::string &service_name )
+{
+    if( service_name == hello_service_impl::service_name( ) ) {
+        std::cout << "Create service " << service_name
+                  << " for " << connection->name( )
+                  << "\n";
+        return vtrc::make_shared<hello_service_impl>( connection );
     }
-
-};
+    return vtrc::shared_ptr<google::protobuf::Service>( );
+}
 
 } // namespace
 
@@ -94,7 +81,9 @@ int main( int argc, const char **argv )
     }
 
     common::thread_pool tp;
-    hello_application app( tp );
+    server::application app( tp.get_io_service( ) );
+
+    app.assign_service_factory( &make_service );
 
     try {
 
