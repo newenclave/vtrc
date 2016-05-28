@@ -37,7 +37,7 @@ namespace vtrc { namespace common {
         virtual const rpc::options *get_method_options(
                         const google::protobuf::MethodDescriptor* method ) = 0;
 
-    //protected:
+    //protected: /// need for for rpc_channel
 
         /// calls for rpc_channel
         friend class rpc_channel;
@@ -47,7 +47,7 @@ namespace vtrc { namespace common {
         virtual void read_slot_for( vtrc::uint64_t slot_id,
                                     lowlevel_unit_sptr &mess,
                                     vtrc::uint64_t microsec ) = 0;
-        virtual void erase_slot ( vtrc::uint64_t slot_id ) = 0;
+        virtual void erase_slot( vtrc::uint64_t slot_id ) = 0;
         virtual void make_local_call( lowlevel_unit_sptr llu ) = 0;
 
 

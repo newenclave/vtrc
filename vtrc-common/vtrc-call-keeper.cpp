@@ -12,7 +12,6 @@ namespace vtrc { namespace common {
     struct call_keeper::impl {
 
         connection_iface_wptr       connection_;
-        protocol_layer             *protocol_;
         google::protobuf::Closure  *done_;
 
         protocol_layer::call_stack_type stack_;

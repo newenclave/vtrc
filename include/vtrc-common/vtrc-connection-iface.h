@@ -76,7 +76,6 @@ namespace vtrc { namespace common {
     protected:
 
         friend class rpc_channel;
-        friend class call_keeper;
 
         virtual protocol_iface &get_protocol( ) = 0;
         virtual const protocol_iface &get_protocol( ) const = 0;
