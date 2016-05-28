@@ -13,6 +13,7 @@
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"
 #include "vtrc-common/vtrc-closure.h"
 #include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
+#include "vtrc-common/vtrc-protocol-iface.h"
 
 VTRC_SYSTEM_FORWARD( class error_code; )
 
@@ -50,7 +51,7 @@ namespace vtrc { namespace common {
     struct transport_iface;
     class  call_context;
 
-    class protocol_layer {
+    class protocol_layer: public protocol_iface {
 
         struct        impl;
         friend struct impl;
@@ -134,21 +135,17 @@ namespace vtrc { namespace common {
 //    protected:
 
         struct context_holder {
-            protocol_layer *p_;
             call_context   *ctx_;
-            context_holder( protocol_layer *parent,
-                            lowlevel_unit_type *llu )
-                :p_(parent)
-
+            context_holder( lowlevel_unit_type *llu )
             {
                 ctx_ = new call_context( llu );
-                p_->push_call_context( ctx_ );
+                protocol_layer::push_call_context( ctx_ );
             }
 
             ~context_holder( )
             {
                 try {
-                    p_->pop_call_context( );
+                    protocol_layer::pop_call_context( );
                 } catch( ... ) { ;;; /*Cthulhu*/ }
             }
 

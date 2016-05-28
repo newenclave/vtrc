@@ -354,7 +354,7 @@ namespace vtrc { namespace common  {
         return true;
     }
 
-    protocol_layer &rpc_channel::get_protocol(connection_iface &cl)
+    protocol_iface &rpc_channel::get_protocol(connection_iface &cl)
     {
         return cl.get_protocol( );
     }

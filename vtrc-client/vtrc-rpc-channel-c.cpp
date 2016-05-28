@@ -85,7 +85,7 @@ namespace vtrc { namespace client {
             return connection_.lock( ) != NULL;
         }
 
-        common::protocol_layer &get_protocol(common::connection_iface_sptr &clk)
+        common::protocol_iface &get_protocol(common::connection_iface_sptr &clk)
         {
             return parent_->get_protocol( *clk );
         }
@@ -123,7 +123,7 @@ namespace vtrc { namespace client {
 
             if( llu.opt( ).wait( ) ) {  /// Send and wait
 
-                context_holder ch( &get_protocol( clk ), &llu );
+                context_holder ch( &llu );
                 ch.ctx_->set_call_options( call_opt );
                 ch.ctx_->set_done_closure( done );
 
@@ -154,7 +154,7 @@ namespace vtrc { namespace client {
 
             if( llu->opt( ).wait( ) ) {  /// Send and wait
 
-                context_holder ch( &get_protocol( clk ), llu.get( ) );
+                context_holder ch( llu.get( ) );
                 ch.ctx_->set_call_options( &call_opt );
 
                 res = parent_->call_and_wait_raw( call_id, *llu,

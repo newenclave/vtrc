@@ -99,7 +99,7 @@ namespace vtrc { namespace common  {
 
         //typedef protocol_layer::context_holder context_holder;
 
-        protocol_layer &get_protocol( common::connection_iface &cl );
+        protocol_iface &get_protocol( common::connection_iface &cl );
 
         void configure_message( common::connection_iface_sptr c,
                                 unsigned specified_call_type,

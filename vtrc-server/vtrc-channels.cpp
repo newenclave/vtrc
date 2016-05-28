@@ -86,7 +86,7 @@ namespace vtrc { namespace server {
 
                 if( llu->opt( ).wait( ) ) { /// Send and wait
 
-                    context_holder ch( &get_protocol(*clnt), llu.get( ) );
+                    context_holder ch( llu.get( ) );
                     ch.ctx_->set_call_options( &call_opt );
 
                     res = call_and_wait_raw( call_id, *llu,
@@ -162,7 +162,7 @@ namespace vtrc { namespace server {
 
                 if( llu.opt( ).wait( ) ) { /// Send and wait
 
-                    context_holder ch(&get_protocol(*clnt), &llu);
+                    context_holder ch( &llu );
                     ch.ctx_->set_call_options( call_opt );
                     ch.ctx_->set_done_closure( done );
 

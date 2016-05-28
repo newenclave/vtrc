@@ -20,6 +20,7 @@ namespace vtrc { namespace common {
 
     class enviroment;
     class protocol_layer;
+    class protocol_iface;
     class call_context;
     class rpc_channel;
 
@@ -77,8 +78,8 @@ namespace vtrc { namespace common {
         friend class rpc_channel;
         friend class call_keeper;
 
-        virtual protocol_layer &get_protocol( ) = 0;
-        virtual const protocol_layer &get_protocol( ) const = 0;
+        virtual protocol_iface &get_protocol( ) = 0;
+        virtual const protocol_iface &get_protocol( ) const = 0;
 
     };
 

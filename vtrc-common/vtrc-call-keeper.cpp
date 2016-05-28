@@ -17,14 +17,13 @@ namespace vtrc { namespace common {
 
         protocol_layer::call_stack_type stack_;
 
-        impl( connection_iface_wptr conn, protocol_layer *proto )
+        impl( connection_iface_wptr conn )
             :connection_(conn)
-            ,protocol_(proto)
         {
-            if( !protocol_->get_call_context( ) ) {
+            if( !protocol_layer::get_call_context( ) ) {
                 raise( std::runtime_error( "Call context is not found." ) );
             }
-            protocol_->copy_call_stack( stack_ );
+            protocol_layer::copy_call_stack( stack_ );
             done_ = stack_.front( )->get_done_closure( );
         }
 
@@ -49,8 +48,7 @@ namespace vtrc { namespace common {
     };
 
     call_keeper::call_keeper( connection_iface *connection )
-        :impl_(new impl(connection->weak_from_this( ),
-                        &connection->get_protocol( )))
+        :impl_(new impl(connection->weak_from_this( )))
     { }
 
     call_keeper::~call_keeper( )

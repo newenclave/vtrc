@@ -654,7 +654,7 @@ namespace vtrc { namespace common {
         void make_local_call_impl( lowlevel_unit_sptr  &llu,
                                    closure_holder_sptr &closure_hold)
         {
-            protocol_layer::context_holder ch( parent_, llu.get( ) );
+            protocol_layer::context_holder ch( llu.get( ) );
 
             if( ch.ctx_->depth( ) > session_opts_.max_stack_size( ) ) {
                 common::raise( common::exception( rpc::errors::ERR_OVERFLOW ) );
