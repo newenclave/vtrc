@@ -37,7 +37,7 @@ namespace vtrc { namespace common {
         virtual const rpc::options *get_method_options(
                         const google::protobuf::MethodDescriptor* method ) = 0;
 
-    //protected: /// need for for rpc_channel
+    //protected: /// need fix for rpc_channel
 
         /// calls for rpc_channel
         friend class rpc_channel;
@@ -55,5 +55,5 @@ namespace vtrc { namespace common {
 
 }}
 
-#endif // VTRCPROTOCOLLAYERIFACE_H
+#endif // VTRC_PROTOCOL_IFACE_H
 
