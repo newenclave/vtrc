@@ -102,7 +102,7 @@ namespace vtrc { namespace common {
         void make_local_call( lowlevel_unit_sptr llu,
                               const protcol_closure_type &done);
 
-        void call_rpc_method(                   const lowlevel_unit_type &llu );
+        void call_rpc_method( const lowlevel_unit_type &llu );
         void call_rpc_method( vtrc::uint64_t slot_id,
                               const lowlevel_unit_type &llu );
 
