@@ -105,7 +105,7 @@ namespace vtrc { namespace client {
 
         const common::call_context *get_call_context( ) const
         {
-            return (connection_ ? connection_->get_call_context( ) : NULL);
+            return common::call_context::get( );
         }
 
         void set_session_key( const std::string &id, const std::string &key )

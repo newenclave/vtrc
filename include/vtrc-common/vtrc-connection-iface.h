@@ -46,8 +46,8 @@ namespace vtrc { namespace common {
 
         virtual void close( )                           = 0;
         virtual bool active( ) const                    = 0;
-        virtual common::enviroment   &get_enviroment( ) = 0;
-        virtual const call_context   *get_call_context( ) const = 0;
+        //virtual common::enviroment   &get_enviroment( ) = 0;
+        //virtual const call_context   *get_call_context( ) const = 0;
 
         vtrc::weak_ptr<connection_iface> weak_from_this( )
         {
