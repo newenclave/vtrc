@@ -31,7 +31,7 @@ namespace vtrc { namespace server { namespace listeners {
 
     custom::~custom( )
     {
-
+        delete impl_;
     }
 
     custom::shared_type custom::create( application &app,
