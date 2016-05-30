@@ -372,5 +372,39 @@ namespace vtrc { namespace common  {
         send_message( *llu, method, controller, request, response, done );
     }
 
+    void rpc_channel::call_rpc_method( common::connection_iface *c,
+                          const lowlevel_unit_type &llu )
+    {
+        c->get_protocol( ).call_rpc_method( llu );
+    }
+
+    void rpc_channel::call_rpc_method( common::connection_iface *c,
+                                       vtrc::uint64_t slot_id,
+                                       const lowlevel_unit_type &llu )
+    {
+        c->get_protocol( ).call_rpc_method( slot_id, llu );
+    }
+
+    void rpc_channel::read_slot_for( common::connection_iface *c,
+                                     vtrc::uint64_t slot_id,
+                                     lowlevel_unit_sptr &mess,
+                                     vtrc::uint64_t microsec )
+    {
+        c->get_protocol( ).read_slot_for( slot_id, mess, microsec );
+    }
+
+    void rpc_channel::erase_slot( common::connection_iface *c,
+                                  vtrc::uint64_t slot_id )
+    {
+        c->get_protocol( ).erase_slot( slot_id );
+    }
+
+    void rpc_channel::make_local_call( common::connection_iface *c,
+                                       lowlevel_unit_sptr llu )
+    {
+        c->get_protocol( ).make_local_call( llu );
+    }
+
+
 }}
 

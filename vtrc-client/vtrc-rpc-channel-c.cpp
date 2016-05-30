@@ -130,7 +130,7 @@ namespace vtrc { namespace client {
                 parent_->call_and_wait( call_id, llu, response, clk, call_opt );
 
             } else {                    /// Send and ... just send
-                get_protocol( clk ).call_rpc_method( llu );
+                parent_->call_rpc_method( clk.get( ), llu );
             }
 
         }
@@ -161,7 +161,7 @@ namespace vtrc { namespace client {
                                                   clk, cbacks, &call_opt );
 
             } else {                    /// Send and ... just send
-                get_protocol( clk ).call_rpc_method( *llu );
+                parent_->call_rpc_method( clk.get( ), *llu );
             }
             return res;
         }

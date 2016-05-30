@@ -122,6 +122,25 @@ namespace vtrc { namespace common  {
                           google::protobuf::Message* response,
                           google::protobuf::Closure* done ) = 0;
 
+        void call_rpc_method( common::connection_iface *c,
+                              const lowlevel_unit_type &llu );
+
+        void call_rpc_method( common::connection_iface *c,
+                              vtrc::uint64_t slot_id,
+                              const lowlevel_unit_type &llu );
+
+        void read_slot_for( common::connection_iface *c,
+                            vtrc::uint64_t slot_id,
+                            lowlevel_unit_sptr &mess,
+                            vtrc::uint64_t microsec );
+
+        void erase_slot( common::connection_iface *c,
+                         vtrc::uint64_t slot_id );
+
+        void make_local_call( common::connection_iface *c,
+                              lowlevel_unit_sptr llu );
+
+
     };
 }}
 

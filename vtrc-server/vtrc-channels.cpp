@@ -93,7 +93,7 @@ namespace vtrc { namespace server {
                                              clnt, events, &call_opt );
 
                 } else {                  /// Send and ... just send
-                    get_protocol( *clnt ).call_rpc_method( *llu );
+                    call_rpc_method( clnt.get( ), *llu );
                 }
                 return res;
             }
@@ -169,7 +169,7 @@ namespace vtrc { namespace server {
                     call_and_wait( call_id, llu, response, clnt, call_opt );
 
                 } else {                  /// Send and ... just send
-                    get_protocol( *clnt ).call_rpc_method( llu );
+                    call_rpc_method( clnt.get( ), llu );
                 }
             }
         };
@@ -241,7 +241,7 @@ namespace vtrc { namespace server {
             {
                 if( sender != next && next->active( ) ) {
                     configure_message( next, mess_type, request, mess );
-                    get_protocol( *next ).call_rpc_method( mess );
+                    call_rpc_method( next.get( ), mess );
                 }
                 return true;
             }
@@ -254,7 +254,7 @@ namespace vtrc { namespace server {
             {
                 if( next->active( ) ) {
                     configure_message( next, mess_type, request, mess );
-                    get_protocol( *next ).call_rpc_method( mess );
+                    call_rpc_method( next.get( ), mess );
                 }
                 return true;
             }
