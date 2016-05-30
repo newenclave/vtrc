@@ -101,8 +101,8 @@ namespace client {
         vtrc::shared_ptr<vtrc_client> create( VTRC_ASIO::io_service &ios );
 
         static
-        vtrc::shared_ptr<vtrc_client> create(VTRC_ASIO::io_service &ios,
-                                             VTRC_ASIO::io_service &rpc_ios );
+        vtrc::shared_ptr<vtrc_client> create( VTRC_ASIO::io_service &ios,
+                                              VTRC_ASIO::io_service &rpc_ios );
         static
         vtrc::shared_ptr<vtrc_client> create( common::pool_pair &pool );
 

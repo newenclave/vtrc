@@ -15,12 +15,12 @@ namespace vtrc { namespace common {
     struct transport_iface: public connection_iface {
 
         virtual ~transport_iface( ) { }
+        virtual void init( )                = 0;
 
 #if 0
         virtual std::string name( ) const   = 0;
         virtual void close( )               = 0;
         virtual bool active( ) const        = 0;
-        virtual void init( )                = 0;
 
         //virtual VTRC_ASIO::io_service::strand &get_dispatcher( ) = 0;
 
