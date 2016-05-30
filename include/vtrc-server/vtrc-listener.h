@@ -101,9 +101,6 @@ namespace server {
         void call_on_accept_failed( const VTRC_SYSTEM::error_code &err );
         void call_on_stop( );
         void call_on_start( );
-
-
-
     };
 
     typedef vtrc::shared_ptr<listener> listener_sptr;

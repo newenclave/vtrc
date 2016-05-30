@@ -91,14 +91,13 @@ namespace vtrc { namespace server { namespace listeners {
 
         proto->assign_lowlevel_factory( lowlevel_protocol_factory( ) );
 
-        proto->init( );
-
         get_application( ).get_clients( )->store( conn );
 
         new_connection( conn.get( ) );
 
         try {
             conn->init( );
+            proto->init( );
         } catch( ... ) {
             get_application( ).get_clients( )->drop( conn.get( ) );
             throw;

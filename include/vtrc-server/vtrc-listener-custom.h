@@ -94,8 +94,7 @@ namespace vtrc { namespace server {
         void stop_client( vtrc::common::connection_iface *con );
 
     private:
-        common::protocol_iface *init_protocol(
-                common::connection_iface_sptr conn );
+        common::protocol_iface *init_protocol( common::connection_iface_sptr c);
 
     };
     } /// namespace listeners

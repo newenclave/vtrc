@@ -7,6 +7,9 @@
 #include "protocol/hello.pb.h"
 
 #include "boost/lexical_cast.hpp"
+
+#include "vtrc-system.h"
+
 #include <fcntl.h>
 
 using namespace vtrc;
@@ -28,21 +31,98 @@ namespace {
     {
         std::cout << mess << "...";
     }
+
+
+    class connection: public common::connection_iface {
+
+        connection( )
+        { }
+
+        vtrc::unique_ptr<common::protocol_iface> protocol_;
+
+        common::protocol_iface &get_protocol( )
+        {
+            return *protocol_;
+        }
+
+        const common::protocol_iface &get_protocol( ) const
+        {
+            return *protocol_;
+        }
+
+    public:
+
+        static
+        vtrc::shared_ptr<connection> create( )
+        {
+            connection *n = new connection;
+            vtrc::shared_ptr<connection> ns(n);
+
+    //        /// have to create and init protocol!
+    //        n->protocol_.reset( server::protocol::create( app, ns ) );
+    //        n->protocol_->init( );
+
+            return ns;
+        }
+
+        void init( )
+        {
+
+        }
+
+        void set_protocol( common::protocol_iface* protocol )
+        {
+            protocol_.reset( protocol );
+        }
+
+        std::string name( ) const
+        {
+            return "customtransport://1";
+        }
+
+        const std::string &id( )  const
+        {
+            static const std::string id( "" );
+            return id;
+        }
+
+        void close( )
+        {
+            std::cout << "closed!\n";
+            /// does nothing
+        }
+
+        bool active( ) const
+        {
+            return true;
+        }
+
+        void write( const char *data, size_t length )
+        {
+            std::cout << std::string( data, length );
+        }
+
+        void write( const char *data, size_t length,
+                    const common::system_closure_type &success,
+                    bool /*success_on_send*/ )
+        {
+            std::cout << std::string( data, length );
+            success( VTRC_SYSTEM::error_code( ) );
+        }
+
+        common::native_handle_type native_handle( ) const
+        {
+            common::native_handle_type res;
+            res.value.ptr_ = NULL;
+            return res;
+        }
+
+    };
 }
 
 int main( int argc, const char **argv )
 {
     common::thread_pool tp( 1 );
-
-    const char *address = "127.0.0.1";
-    unsigned short port = 56560;
-
-    if( argc > 2 ) {
-        address = argv[1];
-        port = boost::lexical_cast<unsigned short>( argv[2] );
-    } else if( argc > 1 ) {
-        port = boost::lexical_cast<unsigned short>( argv[1] );
-    }
 
     try {
 
@@ -61,11 +141,13 @@ int main( int argc, const char **argv )
 //        cl->open( "/dev/random", O_RDONLY, 0 );
 //        tp.attach( );
 
-        cl->connect( address, port );
+        vtrc::shared_ptr<connection> c = cl->assign<connection>( );
 
         std::cout << "Ok" << std::endl;
 
         vtrc::unique_ptr<common::rpc_channel> channel(cl->create_channel( ));
+
+        channel->set_flag( common::rpc_channel::DISABLE_WAIT );
 
         typedef howto::hello_service_Stub stub_type;
 

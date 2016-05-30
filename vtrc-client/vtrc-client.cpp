@@ -173,7 +173,7 @@ namespace vtrc { namespace client {
                     (client_tcp::create( ios_, parent_, this,
                                          tcp_nodelay ));
 
-            connection_ =   new_client_inst;
+            connection_ = new_client_inst;
 
             return new_client_inst;
         }
@@ -841,6 +841,16 @@ namespace vtrc { namespace client {
     void  vtrc_client::reset_session_info( )
     {
         impl_->reset_session_info( );
+    }
+
+    common::protocol_iface *vtrc_client::init_protocol(
+                                  common::connection_iface_sptr c )
+    {
+        vtrc::unique_ptr<protocol_layer_c> proto
+                (new protocol_layer_c( c.get( ), this, impl_ ));
+        proto->init( );
+        impl_->connection_ = c;
+        return proto.release( );
     }
 
 }}

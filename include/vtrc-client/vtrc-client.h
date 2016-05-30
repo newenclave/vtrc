@@ -7,6 +7,7 @@
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-closure-holder.h"
 #include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
+#include "vtrc-common/vtrc-protocol-iface.h"
 
 #include "vtrc-common/vtrc-closure.h"
 #include "vtrc-common/vtrc-rpc-channel.h"
@@ -138,6 +139,53 @@ namespace client {
 
     public:
 
+        template <typename Conn>
+        vtrc::shared_ptr<Conn> assign(  )
+        {
+            vtrc::shared_ptr<Conn> n = Conn::create(  );
+            n->set_protocol( init_protocol( n ) );
+            return n;
+        }
+
+#if VTRC_DISABLE_CXX11
+        template <typename Conn, typename T0>
+        vtrc::shared_ptr<Conn> assign( T0 &t0 )
+        {
+            vtrc::shared_ptr<Conn> n = Conn::create( t0 );
+            n->set_protocol( init_protocol( n ) );
+            return n;
+        }
+
+        template <typename Conn, typename T0, typename T1>
+        vtrc::shared_ptr<Conn> assign( T0 &t0,
+                                       const T1 &t1 )
+        {
+            vtrc::shared_ptr<Conn> n = Conn::create( t0, t1 );
+            n->set_protocol( init_protocol( n ) );
+            return n;
+        }
+
+        template <typename Conn, typename T0, typename T1, typename T2>
+        vtrc::shared_ptr<Conn> assign( T0 &t0,
+                                       const T1 &t1,
+                                       const T2 &t2 )
+        {
+            vtrc::shared_ptr<Conn> n = Conn::create( t0, t1, t2 );
+            n->set_protocol( init_protocol( n ) );
+            return n;
+        }
+#else
+        template <typename Conn, typename ...Args >
+        vtrc::shared_ptr<Conn> assign( Args && ... args )
+        {
+            vtrc::shared_ptr<Conn> n = Conn::create( args... );
+            n->set_protocol( init_protocol( n ) );
+            return n;
+        }
+#endif
+
+    public:
+
 #if VTRC_OPENSSL_ENABLED
         void connect_ssl( const std::string &address,
                           unsigned short service,
@@ -210,6 +258,8 @@ namespace client {
         void erase_rpc_handler( const std::string &name );
         void erase_all_rpc_handlers( );
 
+    private:
+        common::protocol_iface *init_protocol(common::connection_iface_sptr c );
     };
 
     typedef vtrc::shared_ptr<vtrc_client> vtrc_client_sptr;
