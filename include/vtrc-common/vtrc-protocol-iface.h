@@ -25,6 +25,7 @@ namespace vtrc { namespace common {
 
         virtual ~protocol_iface( ) { }
 
+        virtual bool ready( ) const = 0;
         virtual vtrc::uint64_t next_index( ) = 0;
         virtual void process_data( const char *data, size_t length ) = 0;
 
