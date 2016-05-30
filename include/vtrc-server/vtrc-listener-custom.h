@@ -45,7 +45,7 @@ namespace vtrc { namespace server {
         vtrc::shared_ptr<Conn> accept(  )
         {
             vtrc::shared_ptr<Conn> n = Conn::create(  );
-            n->set_protocol( create_protocol( n ) );
+            n->set_protocol( init_protocol( n ) );
             return n;
         }
 
@@ -54,7 +54,7 @@ namespace vtrc { namespace server {
         vtrc::shared_ptr<Conn> accept( T0 &t0 )
         {
             vtrc::shared_ptr<Conn> n = Conn::create( t0 );
-            n->set_protocol( create_protocol( n ) );
+            n->set_protocol( init_protocol( n ) );
             return n;
         }
 
@@ -63,7 +63,7 @@ namespace vtrc { namespace server {
                                        const T1 &t1 )
         {
             vtrc::shared_ptr<Conn> n = Conn::create( t0, t1 );
-            n->set_protocol( create_protocol( n ) );
+            n->set_protocol( init_protocol( n ) );
             return n;
         }
 
@@ -73,7 +73,7 @@ namespace vtrc { namespace server {
                                        const T2 &t2 )
         {
             vtrc::shared_ptr<Conn> n = Conn::create( t0, t1, t2 );
-            n->set_protocol( create_protocol( n ) );
+            n->set_protocol( init_protocol( n ) );
             return n;
         }
 #else
@@ -81,7 +81,7 @@ namespace vtrc { namespace server {
         vtrc::shared_ptr<Conn> accept( Args && ... args )
         {
             vtrc::shared_ptr<Conn> n = Conn::create( args... );
-            n->set_protocol( create_protocol( n ) );
+            n->set_protocol( init_protocol( n ) );
             return n;
         }
 #endif
@@ -94,7 +94,7 @@ namespace vtrc { namespace server {
         void stop_client( vtrc::common::connection_iface *con );
 
     private:
-        common::protocol_iface *create_protocol(
+        common::protocol_iface *init_protocol(
                 common::connection_iface_sptr conn );
 
     };
