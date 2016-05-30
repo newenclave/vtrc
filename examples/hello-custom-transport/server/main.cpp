@@ -4,18 +4,22 @@
 #include "vtrc-server/vtrc-application.h"
 #include "vtrc-server/vtrc-listener-tcp.h"
 #include "vtrc-server/vtrc-listener-ssl.h"
+#include "vtrc-server/vtrc-listener-custom.h"
 
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-closure-holder.h"
 #include "vtrc-common/vtrc-thread-pool.h"
 #include "vtrc-common/vtrc-closure.h"
 #include "vtrc-common/vtrc-delayed-call.h"
+#include "vtrc-common/vtrc-connection-list.h"
 
 #include "protocol/hello.pb.h"          /// hello protocol
 #include "google/protobuf/descriptor.h" /// for descriptor( )->full_name( )
 #include "boost/lexical_cast.hpp"
 
-#include "vtrc-server/vtrc-protocol-layer.h"
+#include "vtrc-common/vtrc-protocol-iface.h"
+
+//#include "vtrc-server/vtrc-protocol-layer.h"
 
 using namespace vtrc;
 
@@ -87,20 +91,33 @@ class connection: public common::connection_iface {
         return *protocol_;
     }
 
+    vtrc::weak_ptr<server::listeners::custom> lst_;
+
 public:
 
     static
-    common::connection_iface_sptr create( server::application &app )
+    vtrc::shared_ptr<connection> create(
+            server::listeners::custom::shared_type &l )
     {
         connection *n = new connection;
+        n->lst_ = l;
+        vtrc::shared_ptr<connection> ns(n);
 
-        common::connection_iface_sptr ns(n);
-
-        /// have to create and init protocol!
-        n->protocol_.reset( server::protocol::create( app, ns ) );
-        n->protocol_->init( );
+//        /// have to create and init protocol!
+//        n->protocol_.reset( server::protocol::create( app, ns ) );
+//        n->protocol_->init( );
 
         return ns;
+    }
+
+    void init( )
+    {
+
+    }
+
+    void set_protocol( common::protocol_iface* protocol )
+    {
+        protocol_.reset( protocol );
     }
 
     std::string name( ) const
@@ -116,6 +133,13 @@ public:
 
     void close( )
     {
+        if( !lst_.expired( ) ) {
+            server::listeners::custom::shared_type l = lst_.lock( );
+            if( l ) {
+                l->stop_client( this );
+            }
+        }
+        std::cout << "closed!\n";
         /// does nothing
     }
 
@@ -152,7 +176,7 @@ public:
 int main( int argc, const char **argv )
 {
 
-    common::thread_pool tp(1);
+    common::thread_pool tp(0);
     server::application app( tp.get_io_service( ) );
 
     const char *filename = argc > 1 ? argv[1] : "message.txt";
@@ -161,7 +185,13 @@ int main( int argc, const char **argv )
 
     try {
 
-        common::connection_iface_sptr c(connection::create( app ));
+        server::listeners::custom::shared_type l =
+                server::listeners::custom::create( app, "custom" );
+
+        l->assign_lowlevel_protocol_factory( &common::lowlevel::dummy::create );
+        common::connection_iface_sptr c = l->accept<connection>( l );
+
+        //common::connection_iface_sptr c(connection::create( app ));
 
         if( FILE *f = fopen( filename, "rb" ) ) {
             char buf[256];
@@ -170,13 +200,13 @@ int main( int argc, const char **argv )
             }
             fclose( f );
         }
+        tp.get_io_service( ).run_one( );
+        tp.stop( );
+        tp.join_all( );
 
     } catch( const std::exception &ex ) {
         std::cerr << "Hello, world failed: " << ex.what( ) << "\n";
     }
-
-    tp.stop( );
-    tp.join_all( );
 
     /// make valgrind happy.
     google::protobuf::ShutdownProtobufLibrary( );
