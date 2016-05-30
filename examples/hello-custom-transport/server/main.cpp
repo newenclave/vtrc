@@ -151,7 +151,7 @@ public:
 int main( int argc, const char **argv )
 {
 
-    common::thread_pool tp;
+    common::thread_pool tp(1);
     server::application app( tp.get_io_service( ) );
 
     const char *filename = argc > 1 ? argv[1] : "message.txt";
@@ -170,12 +170,11 @@ int main( int argc, const char **argv )
             fclose( f );
         }
 
-        tp.attach( );
-
     } catch( const std::exception &ex ) {
         std::cerr << "Hello, world failed: " << ex.what( ) << "\n";
     }
 
+    tp.stop( );
     tp.join_all( );
 
     /// make valgrind happy.

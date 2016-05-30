@@ -1,0 +1,5 @@
+@g"!
+howto.hello_service
+send_hello2 (¢
+
+%USERNAME%
