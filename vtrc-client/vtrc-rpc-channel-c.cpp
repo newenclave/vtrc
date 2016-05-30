@@ -119,7 +119,7 @@ namespace vtrc { namespace client {
             }
 
             parent_->configure_message_for( clk, request, llu );
-            uint64_t call_id = llu.id( );
+            vtrc::uint64_t call_id = llu.id( );
 
             if( llu.opt( ).wait( ) ) {  /// Send and wait
 
@@ -147,7 +147,7 @@ namespace vtrc { namespace client {
             }
 
             parent_->configure_message_for( clk, request, *llu );
-            uint64_t call_id = llu->id( );
+            vtrc::uint64_t call_id = llu->id( );
 
             rpc::options call_opt;
             lowlevel_unit_sptr res;
@@ -244,6 +244,18 @@ namespace vtrc { namespace client {
                                       gpb::Closure *done)
     {
         impl_->send_message( llu, method, controller, request, response, done );
+    }
+
+    namespace channels {
+        common::rpc_channel *create( common::connection_iface_sptr c )
+        {
+            return new rpc_channel_c( c );
+        }
+        common::rpc_channel *create( common::connection_iface_sptr c,
+                                 unsigned flags )
+        {
+            return new rpc_channel_c( c, flags );
+        }
     }
 
 }}
