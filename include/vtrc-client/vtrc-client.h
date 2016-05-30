@@ -184,6 +184,7 @@ namespace client {
         }
 #endif
 
+
     public:
 
 #if VTRC_OPENSSL_ENABLED
