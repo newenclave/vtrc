@@ -54,7 +54,7 @@ namespace vtrc { namespace client {
         typedef impl this_type;
         typedef protocol_layer_c parent_type;
 
-        common::transport_iface         *connection_;
+        common::connection_iface        *connection_;
         protocol_layer_c                *parent_;
         vtrc_client                     *client_;
         protocol_signals                *callbacks_;
@@ -63,7 +63,7 @@ namespace vtrc { namespace client {
         lowlevel_protocol_layer_iface   *conn_setup_;
         lowlevel_factory_type            ll_factory_;
 
-        impl( common::transport_iface *c, vtrc_client *client,
+        impl( common::connection_iface *c, vtrc_client *client,
               protocol_signals *cb )
             :connection_(c)
             ,parent_(NULL)
@@ -277,7 +277,7 @@ namespace vtrc { namespace client {
 
     };
 
-    protocol_layer_c::protocol_layer_c(common::transport_iface   *connection,
+    protocol_layer_c::protocol_layer_c( common::connection_iface *connection,
                                         vtrc::client::vtrc_client *client ,
                                         protocol_signals *callbacks)
         :common::protocol_layer(connection, true)

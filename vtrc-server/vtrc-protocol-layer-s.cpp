@@ -67,7 +67,7 @@ namespace vtrc { namespace server {
         typedef protocol_layer_s parent_type;
 
         application                     &app_;
-        common::transport_iface         *connection_;
+        common::connection_iface        *connection_;
         common::connection_iface_wptr    keeper_;
         protocol_layer_s                *parent_;
         bool                             ready_;
@@ -83,7 +83,7 @@ namespace vtrc { namespace server {
         connection_setup_ptr             conn_setup_;
         lowlevel_factory_type            ll_factory_;
 
-        impl( application &a, common::transport_iface *c )
+        impl( application &a, common::connection_iface *c )
             :app_(a)
             ,connection_(c)
             ,keeper_(c->weak_from_this( ))
@@ -298,7 +298,7 @@ namespace vtrc { namespace server {
     };
 
     protocol_layer_s::protocol_layer_s( application &a,
-                                        common::transport_iface *connection,
+                                        common::connection_iface *connection,
                                         const rpc::session_options &opts )
         :common::protocol_layer(connection, false, opts )
         ,impl_(new impl(a, connection ))

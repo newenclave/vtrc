@@ -28,7 +28,7 @@ namespace server {
     public:
 
         protocol_layer_s( application &app,
-                          common::transport_iface *connection,
+                          common::connection_iface *connection,
                           const rpc::session_options &opts );
 
         ~protocol_layer_s( );

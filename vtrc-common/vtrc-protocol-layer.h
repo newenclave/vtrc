@@ -69,8 +69,8 @@ namespace vtrc { namespace common {
 
         typedef std::deque<std::string> message_queue_type;
 
-        protocol_layer( transport_iface *connection, bool oddside );
-        protocol_layer( transport_iface *connection, bool oddside,
+        protocol_layer( connection_iface *connection, bool oddside );
+        protocol_layer( connection_iface *connection, bool oddside,
                         const rpc::session_options &opts );
         virtual ~protocol_layer( );
 

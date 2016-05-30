@@ -16,37 +16,21 @@ namespace vtrc { namespace common {
 
         virtual ~transport_iface( ) { }
 
+#if 0
         virtual std::string name( ) const   = 0;
         virtual void close( )               = 0;
         virtual bool active( ) const        = 0;
         virtual void init( )                = 0;
 
-//        virtual VTRC_ASIO::io_service::strand &get_dispatcher( ) = 0;
-
-        void raw_write ( vtrc::shared_ptr<rpc::lowlevel_unit> ll_mess )
-        {
-            std::string ser( get_protocol( ).get_lowlevel( )
-                                           ->pack_message( *ll_mess ) );
-            write( ser.empty( ) ? "" : &ser[0], ser.size( ) );
-        }
+        //virtual VTRC_ASIO::io_service::strand &get_dispatcher( ) = 0;
 
         virtual void write( const char *data, size_t length ) = 0;
 
         virtual void write( const char *data, size_t length,
                             const system_closure_type &success,
                             bool success_on_send ) = 0;
-
+#endif
         virtual void on_close( ) { }
-
-        virtual void drop_service( const std::string &name )
-        {
-            get_protocol( ).drop_service( name );
-        }
-
-        virtual void drop_all_services(  )
-        {
-            get_protocol( ).drop_all_services( );
-        }
 
     };
 

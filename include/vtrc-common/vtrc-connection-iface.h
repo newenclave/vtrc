@@ -59,6 +59,10 @@ namespace vtrc { namespace common {
             return vtrc::weak_ptr<connection_iface const>( shared_from_this( ));
         }
 
+        void drop_service( const std::string &name );
+        void drop_all_services(  );
+        void raw_write ( vtrc::shared_ptr<rpc::lowlevel_unit> llu );
+
         const lowlevel::protocol_layer_iface *get_lowlevel( ) const;
 
         virtual native_handle_type native_handle( ) const = 0;
@@ -68,10 +72,10 @@ namespace vtrc { namespace common {
         virtual void raw_call_local ( vtrc::shared_ptr<rpc::lowlevel_unit> llu,
                                       common::empty_closure_type done ) = 0;
 
-        virtual void raw_write ( vtrc::shared_ptr<rpc::lowlevel_unit> llu ) = 0;
-
-        virtual void drop_service( const std::string &name ) = 0;
-        virtual void drop_all_services(  ) = 0;
+        virtual void write( const char *data, size_t length ) = 0;
+        virtual void write( const char *data, size_t length,
+                            const system_closure_type &success,
+                            bool success_on_send ) = 0;
 
     protected:
 

@@ -190,7 +190,7 @@ namespace vtrc { namespace common {
         typedef parent_type::call_stack_type                 call_stack_type;
         typedef boost::thread_specific_ptr<call_stack_type>  call_context_ptr;
 
-        transport_iface             *connection_;
+        connection_iface            *connection_;
         protocol_layer              *parent_;
 
         rpc_queue_type               rpc_queue_;
@@ -207,7 +207,7 @@ namespace vtrc { namespace common {
         precall_closure_type         precall_;
         postcall_closure_type        postcall_;
 
-        impl( transport_iface *c, bool odd, const rpc::session_options &opts )
+        impl( connection_iface *c, bool odd, const rpc::session_options &opts )
             :connection_(c)
             ,parent_(NULL)
             ,rpc_index_(odd ? 101 : 100)
@@ -806,15 +806,15 @@ namespace vtrc { namespace common {
 
     };
 
-    protocol_layer::protocol_layer( transport_iface *connection, bool oddside )
+    protocol_layer::protocol_layer( connection_iface *connection, bool oddside )
         :impl_(new impl(connection, oddside, defaults::session_options( )))
     {
         impl_->parent_ = this;
     }
 
-     protocol_layer::protocol_layer(transport_iface *connection,
-                                    bool oddside,
-                                    const rpc::session_options &opts)
+     protocol_layer::protocol_layer( connection_iface *connection,
+                                     bool oddside,
+                                     const rpc::session_options &opts)
         :impl_(new impl(connection, oddside, opts ))
      {
          impl_->parent_ = this;
