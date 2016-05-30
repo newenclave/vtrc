@@ -58,10 +58,6 @@ namespace {
             connection *n = new connection;
             vtrc::shared_ptr<connection> ns(n);
 
-    //        /// have to create and init protocol!
-    //        n->protocol_.reset( server::protocol::create( app, ns ) );
-    //        n->protocol_->init( );
-
             return ns;
         }
 
@@ -137,9 +133,6 @@ int main( int argc, const char **argv )
         cl->assign_lowlevel_protocol_factory( &common::lowlevel::dummy::create );
 
         std::cout <<  "Connecting..." << std::endl;
-
-//        cl->open( "/dev/random", O_RDONLY, 0 );
-//        tp.attach( );
 
         vtrc::shared_ptr<connection> c = cl->assign<connection>( );
 
