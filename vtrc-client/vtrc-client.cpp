@@ -55,7 +55,6 @@ namespace vtrc { namespace client {
         basio::io_service              &ios_;
         basio::io_service              &rpc_ios_;
         vtrc_client                    *parent_;
-        common::protocol_layer         *protocol_;
         common::connection_iface_sptr   connection_;
 
         service_weak_map                weak_services_;
@@ -76,7 +75,6 @@ namespace vtrc { namespace client {
             :ios_(ios)
             ,rpc_ios_(rpc_ios)
             ,parent_(NULL)
-            ,protocol_(NULL)
             ,key_set_(false)
         { }
 
@@ -166,7 +164,6 @@ namespace vtrc { namespace client {
                         ClientType::create( ios_, parent_, this ));
 
             connection_ =  c;
-            protocol_   = &c->get_protocol( );
             return c;
         }
 
@@ -177,7 +174,6 @@ namespace vtrc { namespace client {
                                          tcp_nodelay ));
 
             connection_ =   new_client_inst;
-            protocol_   =  &new_client_inst->get_protocol( );
 
             return new_client_inst;
         }
@@ -192,7 +188,6 @@ namespace vtrc { namespace client {
                                          verify_file, tcp_nodelay ));
 
             connection_ =   new_client_inst;
-            protocol_   =  &new_client_inst->get_protocol( );
 
             return new_client_inst;
         }
@@ -465,7 +460,7 @@ namespace vtrc { namespace client {
 
         bool ready( ) const
         {
-            return ( protocol_ && protocol_->ready( ) );
+            return connection_ ? connection_->get_protocol( ).ready( ) : false;
         }
 
         void disconnect( )
