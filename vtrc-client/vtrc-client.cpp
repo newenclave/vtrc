@@ -848,6 +848,7 @@ namespace vtrc { namespace client {
     {
         vtrc::unique_ptr<protocol_layer_c> proto
                 (new protocol_layer_c( c.get( ), this, impl_ ));
+        on_connect_( );
         proto->init( );
         impl_->connection_ = c;
         return proto.release( );
