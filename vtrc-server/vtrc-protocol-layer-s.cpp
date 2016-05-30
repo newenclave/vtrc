@@ -92,6 +92,7 @@ namespace vtrc { namespace server {
             ,closed_(false)
             ,current_calls_(0)
             ,conn_setup_(NULL)
+            ,ll_factory_(&common::lowlevel::dummy::create)
         { }
 
         protocol_layer_s::lowlevel_factory_type create_default_factory( )

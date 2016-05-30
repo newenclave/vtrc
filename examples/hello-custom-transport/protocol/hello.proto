@@ -1,0 +1,14 @@
+package howto;
+option cc_generic_services = true;
+
+message request_message {
+    optional string name = 1 [default = "ываы"];
+}
+
+message response_message {
+    optional string hello = 1;
+}
+
+service hello_service {
+    rpc send_hello( request_message ) returns ( response_message );
+}

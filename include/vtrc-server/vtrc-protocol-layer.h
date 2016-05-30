@@ -1,8 +1,8 @@
 #ifndef VTRC_PROTOCOL_LAYER_H
 #define VTRC_PROTOCOL_LAYER_H
 
-#include "vtrc-protocol-iface.h"
-#include "vtrc-connection-iface.h"
+#include "vtrc-common/vtrc-protocol-iface.h"
+#include "vtrc-common/vtrc-connection-iface.h"
 
 namespace vtrc { namespace rpc {
     class session_options;

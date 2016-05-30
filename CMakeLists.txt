@@ -173,7 +173,7 @@ if(WITH_EXAMPLES)
     add_subdirectory( examples/hello        )
     add_subdirectory( examples/hello-events )
     add_subdirectory( examples/hello-events-http )
-
+    add_subdirectory( examples/hello-custom-transport )
 if(OPENSSL_FOUND)
     add_subdirectory( examples/hello-ssl-handshake )
 endif(OPENSSL_FOUND)

@@ -213,6 +213,7 @@ namespace vtrc { namespace common {
             ,rpc_index_(odd ? 101 : 100)
             ,ready_(false)
             ,session_opts_(opts)
+            ,ll_processor_(lowlevel::dummy::create( ))
             ,precall_(empty_pre( ))
             ,postcall_(empty_post( ))
         { }

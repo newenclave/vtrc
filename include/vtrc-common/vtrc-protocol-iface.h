@@ -38,6 +38,8 @@ namespace vtrc { namespace common {
         virtual const rpc::options *get_method_options(
                         const google::protobuf::MethodDescriptor* method ) = 0;
 
+        virtual void init( ) = 0;
+
     protected:
 
         /// calls for rpc_channel

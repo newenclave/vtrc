@@ -70,16 +70,12 @@ namespace vtrc { namespace common {
         /// llu is IN OUT parameter
         /// dont do this if not sure!
         virtual void raw_call_local ( vtrc::shared_ptr<rpc::lowlevel_unit> llu,
-                                      common::empty_closure_type done ) = 0;
+                                      common::empty_closure_type done ) { }
 
         virtual void write( const char *data, size_t length ) = 0;
         virtual void write( const char *data, size_t length,
                             const system_closure_type &success,
                             bool success_on_send ) = 0;
-
-    protected:
-
-        friend class rpc_channel;
 
         virtual protocol_iface &get_protocol( ) = 0;
         virtual const protocol_iface &get_protocol( ) const = 0;
