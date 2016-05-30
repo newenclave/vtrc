@@ -353,6 +353,23 @@ namespace vtrc { namespace server {
         return impl_->get_service(name);
     }
 
+    namespace protocol {
+        common::protocol_iface *create( application &app,
+                                        common::connection_iface_sptr conn,
+                                        const rpc::session_options &opts )
+        {
+            protocol_layer_s *n = new protocol_layer_s( app, conn.get( ),
+                                                        opts );
+            return n;
+        }
+
+        common::protocol_iface *create( application &app,
+                                        common::connection_iface_sptr conn )
+        {
+            rpc::session_options opts = common::defaults::session_options( );
+            return create( app, conn, opts );
+        }
+    }
 
 }}
 
