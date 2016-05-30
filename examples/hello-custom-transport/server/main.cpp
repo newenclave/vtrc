@@ -13,6 +13,9 @@
 #include "vtrc-common/vtrc-delayed-call.h"
 #include "vtrc-common/vtrc-connection-list.h"
 
+#include "vtrc-bind.h"
+#include "vtrc-ref.h"
+
 #include "protocol/hello.pb.h"          /// hello protocol
 #include "google/protobuf/descriptor.h" /// for descriptor( )->full_name( )
 #include "boost/lexical_cast.hpp"
@@ -173,6 +176,11 @@ public:
 
 } // namespace
 
+void stop( common::thread_pool &tp )
+{
+    tp.stop( );
+}
+
 int main( int argc, const char **argv )
 {
 
@@ -199,8 +207,9 @@ int main( int argc, const char **argv )
                 c->get_protocol( ).process_data( buf, t );
             }
             fclose( f );
+            tp.get_io_service( ).post( vtrc::bind( stop, vtrc::ref( tp ) ) );
         }
-        tp.get_io_service( ).run_one( );
+        tp.attach( );
         tp.stop( );
         tp.join_all( );
 

@@ -95,14 +95,14 @@ namespace {
 
         void write( const char *data, size_t length )
         {
-            std::cout << std::string( data, length );
+            std::cerr << std::string( data, length );
         }
 
         void write( const char *data, size_t length,
                     const common::system_closure_type &success,
                     bool /*success_on_send*/ )
         {
-            std::cout << std::string( data, length );
+            std::cerr << std::string( data, length );
             success( VTRC_SYSTEM::error_code( ) );
         }
 
