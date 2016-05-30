@@ -84,6 +84,63 @@ namespace vtrc { namespace common {
 
     };
 
+    class connection_empty: public connection_iface {
+
+        common::protocol_iface *protocol_;
+
+        common::protocol_iface &get_protocol( )
+        {
+            return *protocol_;
+        }
+
+        const common::protocol_iface &get_protocol( ) const
+        {
+            return *protocol_;
+        }
+
+    protected:
+
+        connection_empty( )
+            :protocol_(NULL)
+        { }
+
+    public:
+
+        ~connection_empty( );
+
+        void init( )
+        { }
+
+        void set_protocol( common::protocol_iface* protocol )
+        {
+            protocol_ = protocol;
+        }
+
+        virtual std::string name( ) const;
+
+        virtual const std::string &id( ) const
+        {
+            static const std::string id( "" );
+            return id;
+        }
+
+        virtual void close( )
+        { }
+
+        virtual bool active( ) const
+        {
+            return true;
+        }
+
+        virtual common::native_handle_type native_handle( ) const
+        {
+            common::native_handle_type res;
+            res.value.ptr_ = NULL;
+            return res;
+        }
+
+    };
+
     typedef vtrc::shared_ptr<connection_iface> connection_iface_sptr;
     typedef vtrc::weak_ptr<connection_iface>   connection_iface_wptr;
 

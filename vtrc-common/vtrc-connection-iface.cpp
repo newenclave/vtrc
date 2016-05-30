@@ -2,6 +2,8 @@
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-protocol-layer.h"
 
+#include <sstream>
+
 namespace vtrc { namespace common {
 
     namespace ll = lowlevel;
@@ -26,6 +28,21 @@ namespace vtrc { namespace common {
         std::string ser( get_protocol( ).get_lowlevel( )
                          ->pack_message( *ll ) );
         write( ser.empty( ) ? "" : &ser[0], ser.size( ) );
+    }
+
+
+    connection_empty::~connection_empty( )
+    {
+        if( protocol_ ) {
+            delete protocol_;
+        }
+    }
+
+    std::string connection_empty::name( ) const
+    {
+        std::ostringstream oss;
+        oss << "empty://0x" << std::hex << reinterpret_cast<const void *>(this);
+        return oss.str( );
     }
 
 }}

@@ -33,22 +33,10 @@ namespace {
     }
 
 
-    class connection: public common::connection_iface {
+    class connection: public common::connection_empty {
 
         connection( )
         { }
-
-        vtrc::unique_ptr<common::protocol_iface> protocol_;
-
-        common::protocol_iface &get_protocol( )
-        {
-            return *protocol_;
-        }
-
-        const common::protocol_iface &get_protocol( ) const
-        {
-            return *protocol_;
-        }
 
     public:
 
@@ -61,36 +49,10 @@ namespace {
             return ns;
         }
 
-        void init( )
-        {
-
-        }
-
-        void set_protocol( common::protocol_iface* protocol )
-        {
-            protocol_.reset( protocol );
-        }
-
-        std::string name( ) const
-        {
-            return "customtransport://1";
-        }
-
-        const std::string &id( )  const
-        {
-            static const std::string id( "" );
-            return id;
-        }
-
         void close( )
         {
             std::cout << "closed!\n";
             /// does nothing
-        }
-
-        bool active( ) const
-        {
-            return true;
         }
 
         void write( const char *data, size_t length )
@@ -104,13 +66,6 @@ namespace {
         {
             std::cerr << std::string( data, length );
             success( VTRC_SYSTEM::error_code( ) );
-        }
-
-        common::native_handle_type native_handle( ) const
-        {
-            common::native_handle_type res;
-            res.value.ptr_ = NULL;
-            return res;
         }
 
     };
@@ -151,7 +106,9 @@ int main( int argc, const char **argv )
 
         req.set_name( "%USERNAME%" );
 
-        hello.call( &stub_type::send_hello, &req, &res );
+        for( int i=0; i<1; ++i ) {
+            hello.call( &stub_type::send_hello, &req, &res );
+        }
 
         std::cout <<  res.hello( ) << std::endl;
 

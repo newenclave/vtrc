@@ -210,7 +210,6 @@ namespace vtrc { namespace server {
         void process_call( lowlevel_unit_sptr &llu )
         {
             DEBUG_LINE(connection_);
-
             if( ++current_calls_ <= max_calls( ) ) {
                 app_.get_rpc_service( ).post(
                         vtrc::bind( &this_type::push_call, this,

@@ -22,6 +22,8 @@
 
 #include "vtrc-common/vtrc-protocol-iface.h"
 
+#include "vtrc-rpc-lowlevel.pb.h"
+
 //#include "vtrc-server/vtrc-protocol-layer.h"
 
 using namespace vtrc;
@@ -40,12 +42,12 @@ class  hello_service_impl: public howto::hello_service {
         common::closure_holder ch( done ); /// instead of done->Run( );
         std::ostringstream oss;
 
-        std::cout << "make call for '" << cl_->name( ) << "'\n";
+//        std::cout << "make call for '" << cl_->name( ) << "'\n";
 
-        oss << "Hello " << request->name( )
-            << " from hello_service_impl::send_hello!\n"
-            << "Your transport name is '"
-            << cl_->name( ) << "'.\nHave a nice day.";
+//        oss << "Hello " << request->name( )
+//            << " from hello_service_impl::send_hello!\n"
+//            << "Your transport name is '"
+//            << cl_->name( ) << "'.\nHave a nice day.";
 
         response->set_hello( oss.str( ) );
         /// done->Run( ); /// ch will call it
@@ -77,22 +79,10 @@ vtrc::shared_ptr<google::protobuf::Service> make_service(
     return vtrc::shared_ptr<google::protobuf::Service>( );
 }
 
-class connection: public common::connection_iface {
+class connection: public common::connection_empty {
 
     connection( )
     { }
-
-    vtrc::unique_ptr<common::protocol_iface> protocol_;
-
-    common::protocol_iface &get_protocol( )
-    {
-        return *protocol_;
-    }
-
-    const common::protocol_iface &get_protocol( ) const
-    {
-        return *protocol_;
-    }
 
     vtrc::weak_ptr<server::listeners::custom> lst_;
 
@@ -105,33 +95,7 @@ public:
         connection *n = new connection;
         n->lst_ = l;
         vtrc::shared_ptr<connection> ns(n);
-
-//        /// have to create and init protocol!
-//        n->protocol_.reset( server::protocol::create( app, ns ) );
-//        n->protocol_->init( );
-
         return ns;
-    }
-
-    void init( )
-    {
-
-    }
-
-    void set_protocol( common::protocol_iface* protocol )
-    {
-        protocol_.reset( protocol );
-    }
-
-    std::string name( ) const
-    {
-        return "customtransport://1";
-    }
-
-    const std::string &id( )  const
-    {
-        static const std::string id( "" );
-        return id;
     }
 
     void close( )
@@ -146,11 +110,6 @@ public:
         /// does nothing
     }
 
-    bool active( ) const
-    {
-        return true;
-    }
-
     void write( const char *data, size_t length )
     {
         //std::cout << std::string( data, length );
@@ -162,13 +121,6 @@ public:
     {
         //std::cout << std::string( data, length );
         success( VTRC_SYSTEM::error_code( ) );
-    }
-
-    common::native_handle_type native_handle( ) const
-    {
-        common::native_handle_type res;
-        res.value.ptr_ = NULL;
-        return res;
     }
 
 };
@@ -193,20 +145,27 @@ int main( int argc, const char **argv )
 
     try {
 
+        rpc::session_options opts = common::defaults::session_options( );
+
+        opts.set_max_active_calls( 100000 );
+
         server::listeners::custom::shared_type l =
-                server::listeners::custom::create( app, "custom" );
+                server::listeners::custom::create( app, opts, "custom" );
 
         l->assign_lowlevel_protocol_factory( &common::lowlevel::dummy::create );
         common::connection_iface_sptr c = l->accept<connection>( l );
 
         //common::connection_iface_sptr c(connection::create( app ));
 
+        std::vector<char> data;
+
         if( FILE *f = fopen( filename, "rb" ) ) {
-            char buf[256];
-            while( size_t t = fread( buf, 1, 256, f ) ) {
-                c->get_protocol( ).process_data( buf, t );
+            char buf[1024];
+            while( size_t t = fread( buf, 1, 1024, f ) ) {
+                data.insert( data.end( ), buf, buf + t );
             }
             fclose( f );
+            c->get_protocol( ).process_data( &data[0], data.size( ) );
             tp.get_io_service( ).post( vtrc::bind( stop, vtrc::ref( tp ) ) );
         }
         tp.attach( );
