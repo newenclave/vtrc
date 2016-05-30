@@ -96,6 +96,7 @@ public:
 
         common::connection_iface_sptr ns(n);
 
+        /// have to create and init protocol!
         n->protocol_.reset( server::protocol::create( app, ns ) );
         n->protocol_->init( );
 
