@@ -130,7 +130,7 @@ int main( int argc, const char **argv )
         cl->on_disconnect_connect( on_disconnect );
         cl->on_init_error_connect( on_error );
 
-        cl->assign_lowlevel_protocol_factory( &common::lowlevel::dummy::create );
+        //cl->assign_lowlevel_protocol_factory( &common::lowlevel::dummy::create );
 
         std::cout <<  "Connecting..." << std::endl;
 
