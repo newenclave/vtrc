@@ -75,7 +75,7 @@ namespace vtrc { namespace server { namespace listeners {
     }
 
     common::protocol_iface *custom::init_protocol(
-            common::connection_iface_sptr conn )
+                            common::connection_iface_sptr conn )
     {
         vtrc::unique_ptr<protocol_layer_s> proto(
                     new protocol_layer_s( get_application( ), conn.get( ),
