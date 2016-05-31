@@ -12,8 +12,7 @@
 #include "protocol/vtrc-rpc-options.pb.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
 
-#include "boost/system/error_code.hpp"
-
+#include "vtrc-system.h"
 #include "vtrc-bind.h"
 
 namespace vtrc { namespace common { namespace lowlevel {
