@@ -64,6 +64,7 @@ int main( int argc, const char **argv )
         std::cout << "Ok" << std::endl;
 
         vtrc::unique_ptr<common::rpc_channel> channel(cl->create_channel( ));
+        //channel->set_flag( common::rpc_channel::DISABLE_WAIT );
 
         typedef howto::hello_service_Stub stub_type;
 

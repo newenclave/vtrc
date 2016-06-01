@@ -9,6 +9,7 @@
 #include "vtrc-common/vtrc-thread-pool.h"
 #include "vtrc-common/vtrc-closure.h"
 #include "vtrc-common/vtrc-delayed-call.h"
+#include "vtrc-common/vtrc-call-context.h"
 
 #include "protocol/hello.pb.h"          /// hello protocol
 #include "google/protobuf/descriptor.h" /// for descriptor( )->full_name( )
@@ -34,6 +35,10 @@ class  hello_service_impl: public howto::hello_service {
             << " from hello_service_impl::send_hello!\n"
             << "Your transport name is '"
             << cl_->name( ) << "'.\nHave a nice day.";
+
+//        std::cout << "Context: "
+//                  << std::hex
+//                  << common::call_context::get( ) << "\n";
 
         response->set_hello( oss.str( ) );
         /// done->Run( ); /// ch will call it
