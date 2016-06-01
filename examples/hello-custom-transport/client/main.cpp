@@ -106,7 +106,7 @@ int main( int argc, const char **argv )
 
         req.set_name( "%USERNAME%" );
 
-        for( int i=0; i<1; ++i ) {
+        for( int i=0; i<1000000; ++i ) {
             hello.call( &stub_type::send_hello, &req, &res );
         }
 

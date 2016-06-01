@@ -28,6 +28,8 @@
 
 using namespace vtrc;
 
+static uint64_t count = 0;
+
 namespace {
 
 class  hello_service_impl: public howto::hello_service {
@@ -49,6 +51,7 @@ class  hello_service_impl: public howto::hello_service {
 //            << "Your transport name is '"
 //            << cl_->name( ) << "'.\nHave a nice day.";
 
+        count++;
         response->set_hello( oss.str( ) );
         /// done->Run( ); /// ch will call it
     }
@@ -147,7 +150,7 @@ int main( int argc, const char **argv )
 
         rpc::session_options opts = common::defaults::session_options( );
 
-        opts.set_max_active_calls( 100000 );
+        opts.set_max_active_calls( 1000000 );
 
         server::listeners::custom::shared_type l =
                 server::listeners::custom::create( app, opts, "custom" );
@@ -159,17 +162,26 @@ int main( int argc, const char **argv )
 
         std::vector<char> data;
 
+        using namespace vtrc::chrono;
+
+        high_resolution_clock::time_point start;
+
         if( FILE *f = fopen( filename, "rb" ) ) {
             char buf[1024];
             while( size_t t = fread( buf, 1, 1024, f ) ) {
                 data.insert( data.end( ), buf, buf + t );
             }
             fclose( f );
+            start = high_resolution_clock::now( );
             c->get_protocol( ).process_data( &data[0], data.size( ) );
             tp.get_io_service( ).post( vtrc::bind( stop, vtrc::ref( tp ) ) );
         }
         tp.attach( );
+        std::cout << "microsec: " <<
+            duration_cast<microseconds>(high_resolution_clock::now( ) - start).count( )
+                  << "\n";
         tp.stop( );
+        std::cout << count << "\n";
         tp.join_all( );
 
     } catch( const std::exception &ex ) {
