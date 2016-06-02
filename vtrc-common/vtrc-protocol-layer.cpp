@@ -573,6 +573,7 @@ namespace vtrc { namespace common {
 
             llu.clear_request( );
             llu.clear_call( );
+            llu.clear_channel_data( );
 
             if( failed ) {
 
