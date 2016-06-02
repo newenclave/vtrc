@@ -675,7 +675,8 @@ namespace vtrc { namespace common {
                 (service->get_method(llu->call( ).method_id( )));
 
             if( !meth ) {
-                common::raise( common::exception( rpc::errors::ERR_NO_FUNC ) );
+                common::raise( common::exception( rpc::errors::ERR_NO_FUNC,
+                                                  "Method not found" ) );
                 return;
             }
 
