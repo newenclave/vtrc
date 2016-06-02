@@ -44,12 +44,12 @@ class  hello_service_impl: public howto::hello_service {
         common::closure_holder ch( done ); /// instead of done->Run( );
         std::ostringstream oss;
 
-//        std::cout << "make call for '" << cl_->name( ) << "'\n";
+        //        std::cout << "make call for '" << cl_->name( ) << "'\n";
 
-//        oss << "Hello " << request->name( )
-//            << " from hello_service_impl::send_hello!\n"
-//            << "Your transport name is '"
-//            << cl_->name( ) << "'.\nHave a nice day.";
+        //        oss << "Hello " << request->name( )
+        //            << " from hello_service_impl::send_hello!\n"
+        //            << "Your transport name is '"
+        //            << cl_->name( ) << "'.\nHave a nice day.";
 
         count++;
         response->set_hello( oss.str( ) );
@@ -70,8 +70,8 @@ public:
 };
 
 vtrc::shared_ptr<google::protobuf::Service> make_service(
-                                           common::connection_iface* connection,
-                                           const std::string &service_name )
+        common::connection_iface* connection,
+        const std::string &service_name )
 {
     if( service_name == hello_service_impl::service_name( ) ) {
         std::cout << "Create service " << service_name
