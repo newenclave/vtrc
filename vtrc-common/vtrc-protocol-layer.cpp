@@ -653,7 +653,7 @@ namespace vtrc { namespace common {
         }
 
         void make_local_call_impl( lowlevel_unit_sptr  &llu,
-                                   closure_holder_sptr &closure_hold)
+                                   closure_holder_sptr &closure_hold )
         {
             protocol_layer::context_holder ch( llu.get( ) );
 
@@ -1014,7 +1014,7 @@ namespace vtrc { namespace common {
     }
 
     size_t protocol_layer::push_rpc_message( vtrc::uint64_t slot_id,
-                                             lowlevel_unit_sptr mess)
+                                             lowlevel_unit_sptr mess )
     {
         return impl_->push_rpc_message(slot_id, mess);
     }
@@ -1024,12 +1024,12 @@ namespace vtrc { namespace common {
         return impl_->push_rpc_message_all( mess );
     }
 
-    void protocol_layer::on_write_error(const VTRC_SYSTEM::error_code &err)
+    void protocol_layer::on_write_error( const VTRC_SYSTEM::error_code &err )
     {
         impl_->on_system_error( err, "Transport write error." );
     }
 
-    void protocol_layer::on_read_error(const VTRC_SYSTEM::error_code &err)
+    void protocol_layer::on_read_error( const VTRC_SYSTEM::error_code &err )
     {
         impl_->on_system_error( err, "Transport read error." );
     }
@@ -1039,7 +1039,7 @@ namespace vtrc { namespace common {
         impl_->set_precall( func );
     }
 
-    void protocol_layer::set_postcall(const postcall_closure_type &func )
+    void protocol_layer::set_postcall( const postcall_closure_type &func )
     {
         impl_->set_postcall( func );
     }
