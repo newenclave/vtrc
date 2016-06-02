@@ -777,8 +777,8 @@ namespace vtrc { namespace common {
             }
         }
 
-        void on_system_error(const VTRC_SYSTEM::error_code &err,
-                             const std::string &add )
+        void on_system_error( const VTRC_SYSTEM::error_code &err,
+                              const std::string &add )
         {
             set_ready( false );
 
