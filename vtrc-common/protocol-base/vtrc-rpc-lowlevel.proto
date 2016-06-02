@@ -57,7 +57,7 @@ message lowlevel_unit {
     optional unit_options                  opt  = 6;
     optional bytes                channel_data  = 7; // some optional data from
                                                      // the OTHER side!
-    optional bytes               reserved_data  = 8; // some optional data
+    optional bytes               lowlevel_data  = 8; // some optional data
                                                      // proto lowlevel can use
 
     // --- //
