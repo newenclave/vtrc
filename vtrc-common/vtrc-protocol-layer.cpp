@@ -335,7 +335,7 @@ namespace vtrc { namespace common {
         }
 
         static
-        call_context *push_call_context(vtrc::shared_ptr<call_context> cc)
+        call_context *push_call_context( vtrc::shared_ptr<call_context> cc )
         {
             check_create_stack( );
             call_context *top = top_call_context( );
@@ -345,7 +345,7 @@ namespace vtrc { namespace common {
         }
 
         static
-        call_context *push_call_context( call_context *cc)
+        call_context *push_call_context( call_context *cc )
         {
             return push_call_context( vtrc::shared_ptr<call_context>(cc) );
         }
