@@ -155,6 +155,14 @@ int main( int argc, const char **argv )
         server::listeners::custom::shared_type l =
                 server::listeners::custom::create( app, opts, "custom" );
 
+//        l->on_new_connection_connect( []( common::connection_iface *c ) {
+//            std::cout << "New connection! " << c->name( ) << "\n";
+//        } );
+
+//        l->on_stop_connection_connect( []( common::connection_iface *c ) {
+//            std::cout << "close connection! " << c->name( ) << "\n";
+//        } );
+
         l->assign_lowlevel_protocol_factory( &common::lowlevel::dummy::create );
         common::connection_iface_sptr c = l->accept<connection>( l );
 
@@ -181,6 +189,7 @@ int main( int argc, const char **argv )
                   << duration_cast<microseconds>(high_resolution_clock::now( )
                                                  - start).count( )
                   << "\n";
+        c->close( );
         tp.stop( );
         std::cout << count << "\n";
         tp.join_all( );
