@@ -177,8 +177,9 @@ int main( int argc, const char **argv )
             tp.get_io_service( ).post( vtrc::bind( stop, vtrc::ref( tp ) ) );
         }
         tp.attach( );
-        std::cout << "microsec: " <<
-            duration_cast<microseconds>(high_resolution_clock::now( ) - start).count( )
+        std::cout << "microsec: "
+                  << duration_cast<microseconds>(high_resolution_clock::now( )
+                                                 - start).count( )
                   << "\n";
         tp.stop( );
         std::cout << count << "\n";
