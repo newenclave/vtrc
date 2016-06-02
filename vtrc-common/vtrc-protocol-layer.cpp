@@ -597,7 +597,7 @@ namespace vtrc { namespace common {
             send_message( llu );
         }
 
-        void closure_runner( closure_holder_sptr holder, bool wait )
+        void closure_runner( closure_holder_sptr holder )
         {
 
             if( holder->proto_closure_ ) {
@@ -608,7 +608,10 @@ namespace vtrc { namespace common {
             }
 
             connection_iface_sptr lck(holder->connection_.lock( ));
-            if( !lck ) return;
+
+            if( !lck ) {
+                return;
+            }
 
             if( !std::uncaught_exception( ) ) {
                 closure_done( holder );
@@ -622,31 +625,28 @@ namespace vtrc { namespace common {
             }
         }
 
-        gpb::Closure *make_closure(closure_holder_sptr &closure_hold, bool wait)
+        gpb::Closure *make_closure( closure_holder_sptr &closure_hold )
         {
             class  closure_impl: public gpb::Closure {
 
                 this_type           *impl_;
                 closure_holder_sptr  closure_hold_;
-                bool                 wait_;
 
             public:
 
-                closure_impl( this_type *im,
-                              closure_holder_sptr &closure_hold, bool wait )
+                closure_impl( this_type *im, closure_holder_sptr &closure_hold )
                     :impl_(im)
                     ,closure_hold_(closure_hold)
-                    ,wait_(wait)
                 { }
 
                 void Run( )
                 {
-                    impl_->closure_runner(closure_hold_, wait_);
+                    impl_->closure_runner( closure_hold_ );
                 }
             };
 
             closure_hold->proto_closure_ =
-                    new closure_impl( this, closure_hold, wait );
+                    new closure_impl( this, closure_hold );
 //                  gpb::NewPermanentCallback( this, &this_type::closure_runner,
 //                                             closure_hold, wait );
             return closure_hold->proto_closure_;
@@ -704,7 +704,7 @@ namespace vtrc { namespace common {
             closure_hold->connection_ = connection_->weak_from_this( );
             closure_hold->llu_        = llu;
 
-            gpb::Closure* clos(make_closure(closure_hold, llu->opt( ).wait( )));
+            gpb::Closure* clos( make_closure( closure_hold ) );
             ch.ctx_->set_done_closure( clos );
 
             precall_( *connection_, meth, *llu );
