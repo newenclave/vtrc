@@ -182,8 +182,9 @@ int main( int argc, const char **argv )
             fclose( f );
             start = high_resolution_clock::now( );
             c->get_protocol( ).process_data( &data[0], data.size( ) );
-            tp.get_io_service( ).post( vtrc::bind( stop, vtrc::ref( tp ) ) );
         }
+
+        tp.get_io_service( ).post( vtrc::bind( stop, vtrc::ref( tp ) ) );
         tp.attach( );
         std::cout << "microsec: "
                   << duration_cast<microseconds>(high_resolution_clock::now( )
