@@ -17,7 +17,7 @@ message session_options {
 //    optional uint32 max_total_calls     = 3; //[default = 20];
     optional uint32 max_stack_size      = 4; //[default = 64];     //per user
     optional uint32 read_buffer_size    = 5; //[default = 4096];   //per user
-    optional uint32 init_timeout        = 6; //[default = 4096];   //millisec
+    optional uint32 init_timeout        = 6; //[default = 10000];  //millisec
                                                                    // per user
 
 }
