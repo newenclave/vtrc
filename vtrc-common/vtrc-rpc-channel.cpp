@@ -136,9 +136,10 @@ namespace vtrc { namespace common  {
                         const google::protobuf::Message* request,
                               google::protobuf::Message* response )
     {
-        rpc_channel::lowlevel_unit_sptr res =
-                create_lowlevel( method, request, response );
-        return res;
+//        rpc_channel::lowlevel_unit_sptr res =
+//                create_lowlevel( method, request, response );
+//        return res;
+        return create_lowlevel( method, request, response );
     }
 
     rpc_channel::lowlevel_unit_sptr rpc_channel::raw_call(
