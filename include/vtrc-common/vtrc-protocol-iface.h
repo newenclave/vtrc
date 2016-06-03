@@ -5,6 +5,7 @@
 #include "vtrc-rpc-channel.h"
 #include "vtrc-memory.h"
 #include "vtrc-stdint.h"
+#include "vtrc-function.h"
 
 namespace vtrc { namespace rpc {
     class lowlevel_unit;
@@ -22,6 +23,9 @@ namespace vtrc { namespace common {
 
         typedef rpc::lowlevel_unit                   lowlevel_unit_type;
         typedef vtrc::shared_ptr<lowlevel_unit_type> lowlevel_unit_sptr;
+
+        typedef vtrc::function<void (void)>       call_type;
+        typedef vtrc::function<void (call_type)>  executor_type;
 
         virtual ~protocol_iface( ) { }
 

@@ -19,6 +19,8 @@ namespace vtrc { namespace server {
         {
             return vtrc::shared_ptr<gpb::Service>( );
         }
+
+        typedef common::protocol_iface::call_type call_type;
     }
 
     struct application::impl {
@@ -172,6 +174,11 @@ namespace vtrc { namespace server {
     vtrc::shared_ptr<common::connection_list> application::get_clients()
     {
         return impl_->get_clients( );
+    }
+
+    void application::execute( common::protocol_iface::call_type call )
+    {
+        impl_->rpc_ios_->post( call );
     }
 
     void application::assign_service_factory( service_factory_type factory )

@@ -151,7 +151,7 @@ int main( int argc, const char **argv )
 
         rpc::session_options opts = common::defaults::session_options( );
 
-        opts.set_max_active_calls( 1000000 );
+        opts.set_max_active_calls( 10000000 );
 
         server::listeners::custom::shared_type l =
                 server::listeners::custom::create( app, opts, "custom" );

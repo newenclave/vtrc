@@ -3,6 +3,7 @@
 
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"
 #include "vtrc-common/vtrc-protocol-defaults.h"
+#include "vtrc-common/vtrc-protocol-iface.h"
 
 #include "vtrc-asio-forward.h"
 
@@ -60,17 +61,19 @@ namespace server {
 
         void stop_all_clients( );
 
-        common::enviroment            &get_enviroment ( );
+        common::enviroment          &get_enviroment ( );
         VTRC_ASIO::io_service       &get_io_service ( );
         VTRC_ASIO::io_service       &get_rpc_service( );
 
-        const common::enviroment      &get_enviroment ( ) const;
+        const common::enviroment    &get_enviroment ( ) const;
         const VTRC_ASIO::io_service &get_io_service ( ) const;
         const VTRC_ASIO::io_service &get_rpc_service( ) const;
 
         vtrc::shared_ptr<common::connection_list>  get_clients( );
 
         void assign_service_factory( service_factory_type factory );
+
+        virtual void execute( common::protocol_iface::call_type call );
 
         virtual void configure_session( common::connection_iface* connection,
                                         rpc::session_options &opts );

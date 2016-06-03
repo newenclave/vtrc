@@ -46,6 +46,8 @@ namespace vtrc { namespace client {
         typedef std::map< std::string, service_wptr> service_weak_map;
         typedef std::map< std::string, service_sptr> service_shared_map;
 
+        typedef common::protocol_iface::call_type       proto_call_type;
+        typedef common::protocol_iface::executor_type   executor_type;
     }
 
     struct vtrc_client::impl: public protocol_signals {
@@ -71,12 +73,16 @@ namespace vtrc { namespace client {
 
         vtrc::shared_mutex              factory_lock_;
 
+        executor_type                   exec_;
+
         impl( basio::io_service &ios, basio::io_service &rpc_ios )
             :ios_(ios)
             ,rpc_ios_(rpc_ios)
             ,parent_(NULL)
             ,key_set_(false)
-        { }
+        {
+            set_default_exec( );
+        }
 
         /// ============= signals =============== /////
         void on_init_error(const rpc::errors::container &err,
@@ -155,6 +161,17 @@ namespace vtrc { namespace client {
         {
             reset_session_id( );
             reset_session_key( );
+        }
+
+        void set_default_exec(  )
+        {
+            namespace ph = vtrc::placeholders;
+            exec_ = vtrc::bind( &impl::default_exec, this, ph::_1 );
+        }
+
+        void default_exec( proto_call_type call )
+        {
+            rpc_ios_.post( call );
         }
 
         template<typename ClientType>
@@ -795,6 +812,26 @@ namespace vtrc { namespace client {
     void vtrc_client::assign_service_factory( service_factory_type factory )
     {
         impl_->assign_service_factory( factory );
+    }
+
+    void vtrc_client::assign_call_executor(
+            common::protocol_iface::executor_type exec )
+    {
+        if( exec ) {
+            impl_->exec_ = exec;
+        } else {
+            impl_->set_default_exec( );
+        }
+    }
+
+    common::protocol_iface::executor_type vtrc_client::call_executor( )
+    {
+        return impl_->exec_;
+    }
+
+    void vtrc_client::execute( common::protocol_iface::call_type call )
+    {
+        impl_->exec_( call );
     }
 
     void vtrc_client::assign_lowlevel_protocol_factory(

@@ -160,8 +160,7 @@ namespace vtrc { namespace client {
             }
         }
 
-        void process_event_impl( vtrc_client_wptr client,
-                                 lowlevel_unit_sptr llu)
+        void process_call_( vtrc_client_wptr client, lowlevel_unit_sptr llu )
         {
             vtrc_client_sptr c(client.lock( ));
             if( !c ) {
@@ -173,9 +172,8 @@ namespace vtrc { namespace client {
         void process_call( lowlevel_unit_sptr &llu )
         {
             if ( llu->id( ) != 0 ) {
-                client_->get_rpc_service( ).post(
-                    vtrc::bind( &this_type::process_event_impl, this,
-                                 client_->weak_from_this( ), llu));
+                client_->execute( vtrc::bind( &this_type::process_call_, this,
+                                              client_->weak_from_this( ), llu));
             } else {
                 parent_->push_rpc_message_all( llu );
             }

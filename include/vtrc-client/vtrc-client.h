@@ -247,6 +247,11 @@ namespace client {
                           vtrc::weak_ptr<google::protobuf::Service> handler);
 
         void assign_service_factory( service_factory_type factory );
+
+        void assign_call_executor( common::protocol_iface::executor_type exec );
+        common::protocol_iface::executor_type call_executor( );
+        void execute( common::protocol_iface::call_type call );
+
         void assign_lowlevel_protocol_factory( lowlevel_factory_type factory );
         lowlevel_factory_type lowlevel_protocol_factory( );
 
