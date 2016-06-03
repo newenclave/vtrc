@@ -130,6 +130,17 @@ public:
 
 };
 
+class application: public server::application  {
+public:
+    application( common::pool_pair &tp )
+        :server::application( tp )
+    { }
+
+//    void execute( common::protocol_iface::call_type call )
+//    {
+//        call( );
+//    }
+};
 
 } // namespace
 
@@ -142,7 +153,7 @@ int main( int argc, const char **argv )
 {
 
     common::pool_pair tp( 0, 8 );
-    server::application app( tp );
+    application app( tp );
     count = 0;
 
     const char *filename = argc > 1 ? argv[1] : "message.txt";
