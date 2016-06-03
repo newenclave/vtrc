@@ -16,6 +16,7 @@
 
 #include "vtrc-bind.h"
 #include "vtrc-ref.h"
+#include "vtrc-atomic.h"
 
 #include "protocol/hello.pb.h"          /// hello protocol
 #include "google/protobuf/descriptor.h" /// for descriptor( )->full_name( )
@@ -29,7 +30,7 @@
 
 using namespace vtrc;
 
-static uint64_t count = 0;
+static vtrc::atomic<uint64_t> count;
 
 namespace {
 
@@ -47,10 +48,10 @@ class  hello_service_impl: public howto::hello_service {
 
         //        std::cout << "make call for '" << cl_->name( ) << "'\n";
 
-        //        oss << "Hello " << request->name( )
-        //            << " from hello_service_impl::send_hello!\n"
-        //            << "Your transport name is '"
-        //            << cl_->name( ) << "'.\nHave a nice day.";
+//        oss << "Hello " << request->name( )
+//            << " from hello_service_impl::send_hello!\n"
+//            << "Your transport name is '"
+//            << cl_->name( ) << "'.\nHave a nice day.";
 
         count++;
         response->set_hello( oss.str( ) );
@@ -140,8 +141,9 @@ void stop( common::thread_pool &tp )
 int main( int argc, const char **argv )
 {
 
-    common::pool_pair tp(0, 0);
+    common::pool_pair tp( 0, 8 );
     server::application app( tp );
+    count = 0;
 
     const char *filename = argc > 1 ? argv[1] : "message.txt";
 
