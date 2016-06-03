@@ -9,6 +9,7 @@
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-closure-holder.h"
 #include "vtrc-common/vtrc-thread-pool.h"
+#include "vtrc-common/vtrc-pool-pair.h"
 #include "vtrc-common/vtrc-closure.h"
 #include "vtrc-common/vtrc-delayed-call.h"
 #include "vtrc-common/vtrc-connection-list.h"
@@ -139,8 +140,8 @@ void stop( common::thread_pool &tp )
 int main( int argc, const char **argv )
 {
 
-    common::thread_pool tp(0);
-    server::application app( tp.get_io_service( ) );
+    common::pool_pair tp(0, 0);
+    server::application app( tp );
 
     const char *filename = argc > 1 ? argv[1] : "message.txt";
 
@@ -184,14 +185,15 @@ int main( int argc, const char **argv )
             c->get_protocol( ).process_data( &data[0], data.size( ) );
         }
 
-        tp.get_io_service( ).post( vtrc::bind( stop, vtrc::ref( tp ) ) );
-        tp.attach( );
+        tp.get_rpc_service( ).post( vtrc::bind( stop,
+                                    vtrc::ref( tp.get_rpc_pool( ) ) ) );
+        tp.get_rpc_pool( ).attach( );
         std::cout << "microsec: "
                   << duration_cast<microseconds>(high_resolution_clock::now( )
                                                  - start).count( )
                   << "\n";
         c->close( );
-        tp.stop( );
+        tp.stop_all( );
         std::cout << count << "\n";
         tp.join_all( );
 
