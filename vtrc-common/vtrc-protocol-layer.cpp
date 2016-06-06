@@ -566,7 +566,7 @@ namespace vtrc { namespace common {
 
              } else if( holder->controller_->Failed( ) ) {
 
-                errorcode = rpc::errors::ERR_INTERNAL;
+                errorcode = rpc::errors::ERR_CALL_FAILED;
                 failed = true;
 
             }
