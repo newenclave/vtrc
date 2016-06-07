@@ -508,7 +508,7 @@ namespace vtrc { namespace client {
 
         void assign_handler( vtrc::shared_ptr<gpb::Service> serv )
         {
-            assign_handler(vtrc::make_shared<service_wrapper_type>(serv));
+            assign_handlerw(vtrc::make_shared<service_wrapper_type>(serv));
         }
 
         void assign_weak_handler( vtrc::weak_ptr<gpb::Service> serv )
@@ -517,11 +517,11 @@ namespace vtrc { namespace client {
             if( lock ) {
                 service_wrapper_sptr wrap =
                         vtrc::make_shared<service_wrapper_type>(lock);
-                assign_weak_handler( wrap );
+                assign_weak_handlerw( wrap );
             }
         }
 
-        void assign_handler( service_wrapper_sptr serv )
+        void assign_handlerw( service_wrapper_sptr serv )
         {
             const std::string serv_name(serv->service( )
                                         ->GetDescriptor( )
@@ -539,7 +539,7 @@ namespace vtrc { namespace client {
             }
         }
 
-        void assign_weak_handler( service_wrapper_wptr serv )
+        void assign_weak_handlerw( service_wrapper_wptr serv )
         {
             service_wrapper_sptr lock(serv.lock( ));
             if( lock ) {
@@ -564,21 +564,25 @@ namespace vtrc { namespace client {
 
         service_wrapper_sptr get_handler( const std::string &name )
         {
-            vtrc::upgradable_lock lk(services_lock_);
             service_wrapper_sptr result;
 
-            service_weak_map::iterator f( weak_services_.find( name ) );
-            if( f != weak_services_.end( ) ) {
-                result = f->second.lock( );
-                if( !result ) {
-                    vtrc::upgrade_to_unique ulk(lk);
-                    weak_services_.erase( f );
+            {
+                vtrc::upgradable_lock lk(services_lock_);
+                service_weak_map::iterator f( weak_services_.find( name ) );
+                if( f != weak_services_.end( ) ) {
+                    result = f->second.lock( );
+                    if( !result ) {
+                        vtrc::upgrade_to_unique ulk(lk);
+                        weak_services_.erase( f );
+                    }
                 }
             }
 
-            if( !result && factory_ ) {
+            if( !result ) {
                 vtrc::shared_lock shl( factory_lock_ );
-                result = factory_( name );
+                if( factory_ ) {
+                    result = factory_( name );
+                }
             }
 
             return result;
@@ -834,12 +838,12 @@ namespace vtrc { namespace client {
 
     void vtrc_client::assign_rpc_handler( service_wrapper_sptr handler )
     {
-        impl_->assign_handler( handler );
+        impl_->assign_handlerw( handler );
     }
 
     void vtrc_client::assign_weak_rpc_handler( service_wrapper_wptr handler)
     {
-        impl_->assign_weak_handler( handler );
+        impl_->assign_weak_handlerw( handler );
     }
 
     void vtrc_client::assign_service_factory( service_factory_type factory )

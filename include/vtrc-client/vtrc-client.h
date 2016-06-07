@@ -269,7 +269,6 @@ namespace client {
 
         void assign_service_factory( service_factory_type factory );
 
-
         service_wrapper_sptr get_rpc_handler( const std::string &name );
 
         void assign_call_executor( common::protocol_iface::executor_type exec );
