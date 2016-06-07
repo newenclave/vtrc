@@ -31,6 +31,18 @@ namespace vtrc { namespace common { namespace lowlevel {
         mess->ParseFromString( data );
     }
 
+    std::string protocol_layer_iface::service_id(
+                           const message_descriptor_type *desc )
+    {
+        return desc->service( )->full_name( );
+    }
+
+    std::string protocol_layer_iface::method_id(
+                           const message_descriptor_type *desc )
+    {
+        return desc->name( );
+    }
+
 
     default_protocol::default_protocol( )
         :hash_maker_(common::hash::create_default( ))
@@ -47,18 +59,6 @@ namespace vtrc { namespace common { namespace lowlevel {
     default_protocol::~default_protocol( )
     {
         //std::cout << "Destroyed!\n";
-    }
-
-    std::string default_protocol::serialize_message(
-            const protocol_layer_iface::message_type *mess)
-    {
-        return mess->SerializeAsString( );
-    }
-
-    void default_protocol::parse_message( const std::string &data,
-                                protocol_layer_iface::message_type *mess)
-    {
-        mess->ParseFromString( data );
     }
 
     void default_protocol::set_transformer( transformer_iface *ti )

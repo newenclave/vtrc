@@ -10,6 +10,7 @@
 namespace google { namespace protobuf {
     class MessageLite;
     class Message;
+    class MethodDescriptor;
 }}
 
 namespace vtrc { namespace rpc {
@@ -23,8 +24,9 @@ namespace vtrc { namespace common {
 
     struct protocol_layer_iface {
 
-        typedef google::protobuf::Message message_type;
-        typedef rpc::lowlevel_unit        lowlevel_unit;
+        typedef google::protobuf::MethodDescriptor  message_descriptor_type;
+        typedef google::protobuf::Message           message_type;
+        typedef rpc::lowlevel_unit                  lowlevel_unit;
 
         virtual ~protocol_layer_iface( ) { }
 
@@ -54,6 +56,9 @@ namespace vtrc { namespace common {
         /// parse request or response
         /// ParseFromString as default
         virtual void parse_message( const std::string &data, message_type *m );
+
+        virtual std::string service_id( const message_descriptor_type *desc );
+        virtual std::string method_id ( const message_descriptor_type *desc );
     };
 
     typedef vtrc::shared_ptr<protocol_layer_iface> protocol_layer_sptr;
