@@ -710,10 +710,9 @@ namespace vtrc { namespace common {
 
             precall_( *connection_, meth, *llu );
 
-            service->service( )->CallMethod( meth,
-                                     closure_hold->controller_.get( ),
-                                     closure_hold->req_.get( ),
-                                     closure_hold->res_.get( ), clos );
+            service->call_method( meth, closure_hold->controller_.get( ),
+                                  closure_hold->req_.get( ),
+                                  closure_hold->res_.get( ), clos );
         }
 
         void make_local_call( protocol_layer::lowlevel_unit_sptr llu )

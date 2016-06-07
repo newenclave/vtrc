@@ -77,4 +77,13 @@ namespace vtrc { namespace common {
         return impl_->find_method( name );
     }
 
+    void rpc_service_wrapper::call_method( const method_type *method,
+                                           gpb::RpcController* controller,
+                                           const gpb::Message* request,
+                                           gpb::Message* response,
+                                           gpb::Closure* done )
+    {
+        impl_->service( )->CallMethod( method, controller,
+                                       request, response, done );
+    }
 }}

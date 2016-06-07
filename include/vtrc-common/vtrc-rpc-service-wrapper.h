@@ -7,6 +7,9 @@
 namespace google { namespace protobuf {
     class Service;
     class MethodDescriptor;
+    class Message;
+    class RpcController;
+    class Closure;
 }}
 
 namespace vtrc { namespace common {
@@ -37,9 +40,15 @@ namespace vtrc { namespace common {
         /// names for protocol
         virtual const std::string &name( );
         virtual const method_type *get_method( const std::string &name ) const;
+        virtual void call_method( const method_type *method,
+                             google::protobuf::RpcController* controller,
+                             const google::protobuf::Message* request,
+                             google::protobuf::Message* response,
+                             google::protobuf::Closure* done );
 
         google::protobuf::Service       *service( );
         const google::protobuf::Service *service( ) const;
+
 
     protected:
 
