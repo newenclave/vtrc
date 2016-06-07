@@ -5,7 +5,6 @@
 
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-closure.h"
-#include "vtrc-common/protocol/vtrc-rpc-lowlevel.pb.h"
 
 #include "vtrc-protocol-layer.h"
 

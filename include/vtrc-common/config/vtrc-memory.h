@@ -68,6 +68,13 @@ namespace vtrc {
             this_type( p ).swap( *this );
         }
 
+        element_type *release( )
+        {
+            element_type *t = ptr_;
+            ptr_ = NULL;
+            return t;
+        }
+
         element_type &operator * ( ) const // throws( )
         {
             return *ptr_;

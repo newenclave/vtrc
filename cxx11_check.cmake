@@ -5,7 +5,7 @@ macro( check_cxx11 VAR_ENABLED )
 
     if( MSVC )                                          ### MS
 
-        if( NOT ( MSVC10 OR MSVC11 OR MSVC12 ) )
+        if( NOT ( MSVC10 OR MSVC11 OR MSVC12 OR MSVC13 OR MSVC14 OR MSVC15 ) )
             set( ${VAR_ENABLED} 0 )
         endif( )
 
