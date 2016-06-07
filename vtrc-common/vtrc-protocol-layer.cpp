@@ -622,10 +622,12 @@ namespace vtrc { namespace common {
                 if( NULL == cc ) { // ok we are not in context!
                                    // we have to send answer back to client;
 #if VTRC_DISABLE_CXX11
-                    holder->controller_->SetFailed( "Unhandled exception." );
+                    holder->controller_->SetFailed(
+                                "Uncaught exception while running closure" );
 #else
-                    /// TODO: think about retrow exception to client
-                    holder->controller_->SetFailed( "Unhandled exception." );
+                    /// TODO: think about rethrow exception to client
+                    holder->controller_->SetFailed(
+                                "Uncaught exception while running closure" );
 #endif
                     closure_done( holder );
                 }
