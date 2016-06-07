@@ -43,8 +43,12 @@ namespace vtrc { namespace client {
 
         typedef vtrc::shared_ptr<gpb::RpcChannel>  channel_sptr;
 
-        typedef std::map< std::string, service_wptr> service_weak_map;
-        typedef std::map< std::string, service_sptr> service_shared_map;
+        typedef vtrc_client::service_wrapper_type service_wrapper_type;
+        typedef vtrc_client::service_wrapper_wptr service_wrapper_wptr;
+        typedef vtrc_client::service_wrapper_sptr service_wrapper_sptr;
+
+        typedef std::map< std::string, service_wrapper_wptr> service_weak_map;
+        typedef std::map< std::string, service_wrapper_sptr> service_shared_map;
 
         typedef common::protocol_iface::call_type       proto_call_type;
         typedef common::protocol_iface::executor_type   executor_type;
@@ -504,25 +508,44 @@ namespace vtrc { namespace client {
 
         void assign_handler( vtrc::shared_ptr<gpb::Service> serv )
         {
-            const std::string serv_name(serv->GetDescriptor( )->full_name( ));
-            vtrc::upgradable_lock lk(services_lock_);
-            service_shared_map::iterator f( hold_services_.find( serv_name ) );
-            if( f != hold_services_.end( ) ) {
-                f->second = serv;
-                upgrade_to_unique ulk(lk);
-                weak_services_[serv_name] = service_wptr(serv);
-            } else {
-                upgrade_to_unique ulk(lk);
-                hold_services_.insert( std::make_pair(serv_name, serv) );
-                weak_services_[serv_name] = service_wptr(serv);
-            }
+            assign_handler(vtrc::make_shared<service_wrapper_type>(serv));
         }
 
         void assign_weak_handler( vtrc::weak_ptr<gpb::Service> serv )
         {
             service_sptr lock(serv.lock( ));
             if( lock ) {
-                const std::string s_name(lock->GetDescriptor( )->full_name( ));
+                service_wrapper_sptr wrap =
+                        vtrc::make_shared<service_wrapper_type>(lock);
+                assign_weak_handler( wrap );
+            }
+        }
+
+        void assign_handler( service_wrapper_sptr serv )
+        {
+            const std::string serv_name(serv->service( )
+                                        ->GetDescriptor( )
+                                        ->full_name( ));
+            vtrc::upgradable_lock lk(services_lock_);
+            service_shared_map::iterator f( hold_services_.find( serv_name ) );
+            if( f != hold_services_.end( ) ) {
+                f->second = serv;
+                upgrade_to_unique ulk(lk);
+                weak_services_[serv_name] = service_wrapper_wptr(serv);
+            } else {
+                upgrade_to_unique ulk(lk);
+                hold_services_.insert( std::make_pair(serv_name, serv) );
+                weak_services_[serv_name] = service_wrapper_wptr(serv);
+            }
+        }
+
+        void assign_weak_handler( service_wrapper_wptr serv )
+        {
+            service_wrapper_sptr lock(serv.lock( ));
+            if( lock ) {
+                const std::string s_name(lock->service( )
+                                         ->GetDescriptor( )
+                                         ->full_name( ));
                 vtrc::unique_shared_lock lk(services_lock_);
                 weak_services_[s_name] = serv;
             }
@@ -539,10 +562,10 @@ namespace vtrc { namespace client {
             ll_proto_factory_ = factory;
         }
 
-        service_sptr get_handler( const std::string &name )
+        service_wrapper_sptr get_handler( const std::string &name )
         {
             vtrc::upgradable_lock lk(services_lock_);
-            service_sptr result;
+            service_wrapper_sptr result;
 
             service_weak_map::iterator f( weak_services_.find( name ) );
             if( f != weak_services_.end( ) ) {
@@ -809,6 +832,16 @@ namespace vtrc { namespace client {
         impl_->assign_weak_handler( serv );
     }
 
+    void vtrc_client::assign_rpc_handler( service_wrapper_sptr handler )
+    {
+        impl_->assign_handler( handler );
+    }
+
+    void vtrc_client::assign_weak_rpc_handler( service_wrapper_wptr handler)
+    {
+        impl_->assign_weak_handler( handler );
+    }
+
     void vtrc_client::assign_service_factory( service_factory_type factory )
     {
         impl_->assign_service_factory( factory );
@@ -845,7 +878,7 @@ namespace vtrc { namespace client {
         return impl_->ll_proto_factory_;
     }
 
-    service_sptr vtrc_client::get_rpc_handler( const std::string &name )
+    service_wrapper_sptr vtrc_client::get_rpc_handler( const std::string &name )
     {
         return impl_->get_handler( name );
     }

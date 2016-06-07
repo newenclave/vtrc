@@ -8,6 +8,7 @@
 #include "vtrc-common/vtrc-closure-holder.h"
 #include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
 #include "vtrc-common/vtrc-protocol-iface.h"
+#include "vtrc-common/vtrc-rpc-service-wrapper.h"
 
 #include "vtrc-common/vtrc-closure.h"
 #include "vtrc-common/vtrc-rpc-channel.h"
@@ -54,7 +55,7 @@ namespace vtrc {
 namespace client {
 
     typedef vtrc::function<
-               vtrc::shared_ptr<google::protobuf::Service> (const std::string &)
+               common::rpc_service_wrapper_sptr (const std::string &)
             > service_factory_type;
 
     typedef  common::lowlevel::protocol_factory_type lowlevel_factory_type;
@@ -241,12 +242,35 @@ namespace client {
 
         /// This handlers (rpc_handler, weak_rpc_handler) always have priority
         /// over the handlers from the factory
-        void assign_rpc_handler(
-                          vtrc::shared_ptr<google::protobuf::Service> handler);
-        void assign_weak_rpc_handler(
-                          vtrc::weak_ptr<google::protobuf::Service> handler);
+
+        typedef google::protobuf::Service       service_type;
+        typedef vtrc::shared_ptr<service_type>  service_sptr;
+        typedef vtrc::weak_ptr<service_type>    service_wptr;
+
+        typedef common::rpc_service_wrapper             service_wrapper_type;
+        typedef vtrc::shared_ptr<service_wrapper_type>  service_wrapper_sptr;
+        typedef vtrc::weak_ptr<service_wrapper_type>    service_wrapper_wptr;
+
+        void assign_rpc_handler( service_sptr handler);
+        void assign_weak_rpc_handler( service_wptr handler);
+
+        void assign_rpc_handler( service_wrapper_sptr handler );
+        void assign_weak_rpc_handler( service_wrapper_wptr handler);
+
+        service_wrapper_sptr wrap_service( service_sptr svc )
+        {
+            return vtrc::make_shared<service_wrapper_type>( svc );
+        }
+
+        service_wrapper_sptr wrap_service( service_type *svc )
+        {
+            return vtrc::make_shared<service_wrapper_type>( svc );
+        }
 
         void assign_service_factory( service_factory_type factory );
+
+
+        service_wrapper_sptr get_rpc_handler( const std::string &name );
 
         void assign_call_executor( common::protocol_iface::executor_type exec );
         common::protocol_iface::executor_type call_executor( );
@@ -255,10 +279,7 @@ namespace client {
         void assign_lowlevel_protocol_factory( lowlevel_factory_type factory );
         lowlevel_factory_type lowlevel_protocol_factory( );
 
-        vtrc::shared_ptr<google::protobuf::Service> get_rpc_handler(
-                                                    const std::string &name );
-        void erase_rpc_handler(
-                          vtrc::shared_ptr<google::protobuf::Service> handler);
+        void erase_rpc_handler( service_sptr handler);
 
         void erase_rpc_handler( const std::string &name );
         void erase_all_rpc_handlers( );

@@ -151,13 +151,7 @@ namespace vtrc { namespace client {
 
         wrapper_sptr get_service_by_name( const std::string &name )
         {
-            vtrc::shared_ptr<gpb::Service> res(client_->get_rpc_handler(name));
-
-            if( res ) {
-                return wrapper_sptr (new common::rpc_service_wrapper( res ));
-            } else {
-                return wrapper_sptr( );
-            }
+            return client_->get_rpc_handler(name);
         }
 
         void process_call_( vtrc_client_wptr client, lowlevel_unit_sptr llu )

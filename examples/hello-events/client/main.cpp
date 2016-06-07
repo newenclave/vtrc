@@ -68,12 +68,14 @@ class hello_event_impl: public howto::hello_events {
     }
 };
 
-vtrc::shared_ptr<gpb::Service> make_events( const std::string &name )
+vtrc::common::rpc_service_wrapper_sptr make_events( const std::string &name )
 {
+    typedef vtrc::common::rpc_service_wrapper wrapper;
+    typedef vtrc::common::rpc_service_wrapper_sptr wrapper_sptr;
     if( name == howto::hello_events::descriptor( )->full_name( ) ) {
-        return vtrc::make_shared<hello_event_impl>( );
+        return vtrc::make_shared<wrapper>(new hello_event_impl);
     }
-    return vtrc::shared_ptr<gpb::Service>( );
+    return wrapper_sptr( );
 }
 
 int main( int argc, const char **argv )
