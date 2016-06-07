@@ -630,12 +630,13 @@ namespace vtrc { namespace common {
                                 "Uncaught exception while running closure" );
 #endif
                     closure_done( holder );
+                } else {
+//                    std::cerr << "Uncaught exception at done handler for "
+//                              << holder->llu_->call( ).service_id( )
+//                              << "::"
+//                              << holder->llu_->call( ).method_id( )
+//                              << std::endl;
                 }
-//                std::cerr << "Uncaught exception at done handler for "
-//                          << holder->llu_->call( ).service_id( )
-//                          << "::"
-//                          << holder->llu_->call( ).method_id( )
-//                          << std::endl;
             }
         }
 
