@@ -19,7 +19,7 @@ namespace vtrc { namespace common  {
     class rpc_channel: public google::protobuf::RpcChannel {
 
         rpc_channel( const rpc_channel & );
-        rpc_channel&  operator = ( const rpc_channel & );
+        rpc_channel& operator = ( const rpc_channel & );
 
         struct  impl;
         impl   *impl_;
