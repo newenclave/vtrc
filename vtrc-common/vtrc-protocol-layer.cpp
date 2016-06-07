@@ -618,6 +618,17 @@ namespace vtrc { namespace common {
                 closure_done( holder );
                 //wait ? closure_done( holder ) : closure_fake( holder );
             } else {
+                const common::call_context *cc = common::call_context::get( );
+                if( NULL == cc ) { // ok we are not in context!
+                                   // we have to send answer back to client;
+#if VTRC_DISABLE_CXX11
+                    holder->controller_->SetFailed( "Unhandled exception." );
+#else
+                    /// TODO: think about retrow exception to client
+                    holder->controller_->SetFailed( "Unhandled exception." );
+#endif
+                    closure_done( holder );
+                }
 //                std::cerr << "Uncaught exception at done handler for "
 //                          << holder->llu_->call( ).service_id( )
 //                          << "::"
@@ -784,7 +795,7 @@ namespace vtrc { namespace common {
             set_ready( false );
 
             vtrc::shared_ptr<rpc::lowlevel_unit>
-                            llu( new  rpc::lowlevel_unit );
+                            llu = vtrc::make_shared<rpc::lowlevel_unit>( );
 
             rpc::errors::container *err_cont = llu->mutable_error( );
 
