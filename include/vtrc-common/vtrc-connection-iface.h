@@ -72,7 +72,8 @@ namespace vtrc { namespace common {
         /// llu is IN OUT parameter
         /// dont do this if not sure!
         virtual void raw_call_local ( vtrc::shared_ptr<rpc::lowlevel_unit> llu,
-                                      common::empty_closure_type done ) { }
+                                      common::empty_closure_type done )
+        { }
 
         virtual void write( const char *data, size_t length ) = 0;
         virtual void write( const char *data, size_t length,
