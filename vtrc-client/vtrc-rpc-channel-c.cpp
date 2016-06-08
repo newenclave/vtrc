@@ -136,7 +136,7 @@ namespace vtrc { namespace client {
         }
 
         lowlevel_unit_sptr send_raw( lowlevel_unit_sptr &llu,
-                                     const google::protobuf::Message* request,
+                                     const gpb::Message* request,
                                      common::lowlevel_closure_type cbacks )
         {
             common::connection_iface_sptr clk(connection_.lock( ));
@@ -167,9 +167,9 @@ namespace vtrc { namespace client {
         }
 
         rpc_channel::lowlevel_unit_sptr make_lowlevel(
-                            const google::protobuf::MethodDescriptor* method,
-                            const google::protobuf::Message* request,
-                                  google::protobuf::Message* response ) const
+                            const gpb::MethodDescriptor* method,
+                            const gpb::Message* request,
+                                  gpb::Message* response ) const
         {
             rpc_channel::lowlevel_unit_sptr res =
                     create_lowlevel( method, request, response );
@@ -215,23 +215,23 @@ namespace vtrc { namespace client {
     }
 
     lowlevel_unit_sptr rpc_channel_c::raw_call( lowlevel_unit_sptr llu,
-                                    const google::protobuf::Message* request,
+                                    const gpb::Message* request,
                                     common::lowlevel_closure_type callbacks )
     {
         return impl_->send_raw( llu, request, callbacks );
     }
 
     void rpc_channel_c::configure_message_for( common::connection_iface_sptr c,
-                                    const google::protobuf::Message* request,
+                                    const gpb::Message* request,
                                     rpc_channel::lowlevel_unit_type &llu) const
     {
         configure_message( c, impl_->message_type( ), request, llu );
     }
 
     rpc_channel_c::lowlevel_unit_sptr rpc_channel_c::make_lowlevel(
-                        const google::protobuf::MethodDescriptor* method,
-                        const google::protobuf::Message* request,
-                              google::protobuf::Message* response )
+                        const gpb::MethodDescriptor* method,
+                        const gpb::Message* request,
+                              gpb::Message* response )
     {
         return impl_->make_lowlevel( method, request, response );
     }
