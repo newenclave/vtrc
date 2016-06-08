@@ -39,6 +39,10 @@ namespace vtrc { namespace common {
 
     struct connection_iface: public enable_shared_from_this<connection_iface> {
 
+        connection_iface( )
+            :user_data_(NULL)
+        { }
+
         virtual ~connection_iface( ) { }
 
         virtual       std::string name( ) const         = 0;
@@ -82,6 +86,24 @@ namespace vtrc { namespace common {
 
         virtual protocol_iface &get_protocol( ) = 0;
         virtual const protocol_iface &get_protocol( ) const = 0;
+
+        void *user_data( )
+        {
+            return user_data_;
+        }
+
+        const void *user_data( ) const
+        {
+            return user_data_;
+        }
+
+        void set_user_data( void *ud )
+        {
+            user_data_ = ud;
+        }
+
+    private:
+        void *user_data_;
 
     };
 
