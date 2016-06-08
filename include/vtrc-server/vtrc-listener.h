@@ -74,9 +74,6 @@ namespace server {
 
         typedef common::lowlevel::protocol_factory_type lowlevel_factory_type;
 
-        void set_precall( const common::precall_closure_type &func );
-        void set_postcall( const common::postcall_closure_type &func );
-
         void assign_lowlevel_protocol_factory( lowlevel_factory_type factory );
         lowlevel_factory_type lowlevel_protocol_factory( );
 
@@ -87,13 +84,6 @@ namespace server {
         virtual bool is_local( )    const = 0;
 
     protected:
-
-        void mk_precall( common::connection_iface &connection,
-                         const google::protobuf::MethodDescriptor *method,
-                         rpc::lowlevel_unit &llu );
-
-        void mk_postcall( common::connection_iface &connection,
-                          rpc::lowlevel_unit &llu );
 
         void new_connection(  common::connection_iface *conn );
         void stop_connection( common::connection_iface *conn );

@@ -53,6 +53,11 @@ namespace vtrc { namespace common {
     protected:
 
         const method_type *find_method ( const std::string &name ) const;
+        void call_default( const method_type *method,
+                           google::protobuf::RpcController* controller,
+                           const google::protobuf::Message* request,
+                           google::protobuf::Message* response,
+                           google::protobuf::Closure* done );
 
     };
 

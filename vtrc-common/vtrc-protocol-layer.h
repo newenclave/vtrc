@@ -96,9 +96,6 @@ namespace vtrc { namespace common {
 
         /// ================= ///
 
-        void set_precall( const precall_closure_type &func );
-        void set_postcall( const postcall_closure_type &func );
-
         void make_local_call( lowlevel_unit_sptr llu );
         void make_local_call( lowlevel_unit_sptr llu,
                               const protcol_closure_type &done);
