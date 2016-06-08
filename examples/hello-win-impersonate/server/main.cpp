@@ -24,31 +24,33 @@ using namespace vtrc;
 namespace {
 
 void precall_closure( common::connection_iface &ci,
-       const google::protobuf::MethodDescriptor *meth,
-       rpc::lowlevel_unit & )
+       const google::protobuf::MethodDescriptor *meth )
 {
     BOOL res = ImpersonateNamedPipeClient( ci.native_handle( ).value.win_handle );
+
     if( !res ) {
         std::cerr << "ImpersonateNamedPipeClient failed for " 
             <<  meth->full_name( )
             << ": " << GetLastError( ) << "\n"
             ;
-        // throws; valid action here 
-        // vtrc::common::throw_system_error( GetLastError( ) );  
+    } else {
+        std::cout << "ImpersonateNamedPipeClient Ok."
+                  << "\n"
+                ;    
     }
 }
 
-void postcall_closure( common::connection_iface &, rpc::lowlevel_unit & )
+void postcall_closure( )
 {
     BOOL res = RevertToSelf( );
     if( !res ) {
         std::cerr << "RevertToSelf failed " 
             << GetLastError( ) << "\n";
             ;
-        // THROW is Invalid action here; never do this here
-        // use rpc::lowlevel_unit & parameter for set/change 
-        // error info
-        // vtrc::common::throw_system_error( GetLastError( ) );  
+    } else {
+        std::cout << "RevertToSelf Ok."
+            << "\n"
+            ;
     }
 }
 
@@ -97,8 +99,9 @@ public:
 
 class hello_application: public server::application {
 
-    typedef common::rpc_service_wrapper     wrapper_type;
-    typedef vtrc::shared_ptr<wrapper_type>  wrapper_sptr;
+    typedef common::rpc_service_wrapper                   wrapper_type;
+    typedef vtrc::shared_ptr<wrapper_type>                wrapper_sptr;
+    typedef common::rpc_service_wrapper::service_type     service_type;
 
 public:
 
@@ -106,14 +109,33 @@ public:
         :server::application(tp.get_io_service( ))
     { }
 
-    wrapper_sptr get_service_by_name( common::connection_iface* connection,
+    class service_wrapper: public wrapper_type {
+        common::connection_iface* c_;
+    public:
+        service_wrapper( common::connection_iface* c, service_type *svc )
+            :wrapper_type(svc)
+            ,c_(c)
+        { }
+        void call_method( const method_type *method,
+            google::protobuf::RpcController* controller,
+            const google::protobuf::Message* request,
+            google::protobuf::Message* response,
+            google::protobuf::Closure* done )
+        {
+            precall_closure( *c_, method );
+            call_default( method, controller, 
+                          request, response, done );
+            postcall_closure( );
+        }
+    };
+
+    wrapper_sptr get_service_by_name( common::connection_iface* c,
                                       const std::string &service_name )
     {
         if( service_name == hello_service_impl::service_name( ) ) {
 
-             hello_service_impl *new_impl = new hello_service_impl(connection);
-
-             return vtrc::make_shared<wrapper_type>( new_impl );
+             hello_service_impl *new_impl = new hello_service_impl(c);
+             return vtrc::make_shared<service_wrapper>( c, new_impl );
 
         }
         return wrapper_sptr( );
@@ -139,9 +161,6 @@ int main( int argc, const char **argv )
 
         vtrc::shared_ptr<server::listener>
              pipe( server::listeners::local::create( app, address ) );
-
-        pipe->set_precall( &precall_closure );
-        pipe->set_postcall( &postcall_closure);
 
         pipe->start( );
 

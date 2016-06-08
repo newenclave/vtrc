@@ -33,7 +33,7 @@ class my_ssl_wrapper: public ssl_wrapper_server {
 
 public:
     my_ssl_wrapper( )
-        :ssl_wrapper_server(TLSv1_2_server_method( ))
+        :ssl_wrapper_server(SSLv23_client_method( ))
     { }
 
 private:

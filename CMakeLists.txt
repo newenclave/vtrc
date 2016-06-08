@@ -49,7 +49,7 @@ if( OPENSSL_FOUND )
     set( OPENSSL_INCLUDE_DIRS ${OPENSSL_INCLUDE_DIR} )
     message("OpenSSL dir: " ${OPENSSL_INCLUDE_DIRS})
 
-else(OPENSSL_FOUND)
+else(OPENSSL_FOUND) 
     # clean up variables
     set(LIB_EAY_LIBRARY)
     set(SSL_EAY_LIBRARY)
