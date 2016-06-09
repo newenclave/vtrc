@@ -293,14 +293,17 @@ namespace lukki_db {
             send_subscribed( *channel );
         }
 
+        void execute( vtrc::function<void(void)> func )
+        {
+            func( );
+        }
+
     };
 
     application::application( vtrc::common::pool_pair &pp )
         :vtrc::server::application(pp)
         ,impl_(new impl(pp.get_rpc_service( )))
-    {
-
-    }
+    { }
 
     application::~application( )
     {
@@ -356,6 +359,11 @@ namespace lukki_db {
                       new lukki_db_impl( *this, conn ) );
         }
         return vtrc::shared_ptr<common::rpc_service_wrapper>( );
+    }
+
+    void application::execute( common::protocol_iface::call_type call )
+    {
+        call( );
     }
 
     void application::attach_start_listener( server::listener_sptr listen )

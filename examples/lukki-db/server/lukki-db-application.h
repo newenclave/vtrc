@@ -4,6 +4,7 @@
 #include "vtrc-server/vtrc-application.h"
 #include "vtrc-common/vtrc-pool-pair.h"
 #include "vtrc-server/vtrc-listener.h"
+#include "vtrc-common/vtrc-protocol-iface.h"
 
 #include "vtrc-function.h"
 
@@ -36,6 +37,8 @@ namespace lukki_db {
         vtrc::shared_ptr<vtrc::common::rpc_service_wrapper>
                  get_service_by_name( vtrc::common::connection_iface* conn,
                                       const std::string &service_name );
+
+        void execute( vtrc::common::protocol_iface::call_type call );
 
         void set( const std::string &name,
                   const vtrc_example::lukki_string_list &value,
