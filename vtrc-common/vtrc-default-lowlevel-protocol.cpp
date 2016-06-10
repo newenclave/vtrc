@@ -1,13 +1,12 @@
 #include <iostream>
 #include <algorithm>
 
-#include "vtrc-default-lowlevel-protocol.h"
 #include "vtrc-common/vtrc-protocol-accessor-iface.h"
+#include "vtrc-common/vtrc-protocol-defaults.h"
+#include "vtrc-default-lowlevel-protocol.h"
 
 #include "google/protobuf/descriptor.h"
 #include "google/protobuf/message.h"
-
-#include "vtrc-common/vtrc-protocol-defaults.h"
 
 #include "protocol/vtrc-rpc-options.pb.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
