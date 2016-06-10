@@ -150,7 +150,6 @@ namespace vtrc { namespace client {
         impl_->raw_call_local( ll_mess, done );
     }
 
-
 }}
 
 #endif // _WIN32

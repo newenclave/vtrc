@@ -105,6 +105,7 @@ namespace vtrc { namespace client {
                     controller->SetFailed( "Connection lost" );
                 }
                 parent_->get_channel_error_callback( )( "Connection lost" );
+                return;
             }
 
             const rpc::options *call_opt
@@ -127,7 +128,8 @@ namespace vtrc { namespace client {
                 ch.ctx_->set_call_options( call_opt );
                 ch.ctx_->set_done_closure( done );
 
-                parent_->call_and_wait( call_id, llu, response, clk, call_opt );
+                parent_->call_and_wait( call_id, llu, controller,
+                                        response, clk, call_opt );
 
             } else {                    /// Send and ... just send
                 parent_->call_rpc_method( clk.get( ), llu );
