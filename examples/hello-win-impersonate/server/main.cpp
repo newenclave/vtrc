@@ -23,36 +23,44 @@ using namespace vtrc;
 
 namespace {
 
-void precall_closure( common::connection_iface &ci,
-       const google::protobuf::MethodDescriptor *meth )
-{
-    BOOL res = ImpersonateNamedPipeClient( ci.native_handle( ).value.win_handle );
-
-    if( !res ) {
-        std::cerr << "ImpersonateNamedPipeClient failed for " 
-            <<  meth->full_name( )
-            << ": " << GetLastError( ) << "\n"
-            ;
-    } else {
-        std::cout << "ImpersonateNamedPipeClient Ok."
-                  << "\n"
-                ;    
+class impersonator {
+    bool impersonated_;
+public:
+    impersonator( common::connection_iface *cl,
+        const google::protobuf::MethodDescriptor *meth )
+        :impersonated_( false )
+    {
+        BOOL res = ImpersonateNamedPipeClient(
+            cl->native_handle( ).value.win_handle );
+        if( !res ) {
+            std::cerr << "ImpersonateNamedPipeClient failed for "
+                << meth->full_name( )
+                << ": " << GetLastError( ) << "\n"
+                ;
+        } else {
+            impersonated_ = true;
+            std::cout << "ImpersonateNamedPipeClient Ok."
+                << "\n"
+                ;
+        }
     }
-}
 
-void postcall_closure( )
-{
-    BOOL res = RevertToSelf( );
-    if( !res ) {
-        std::cerr << "RevertToSelf failed " 
-            << GetLastError( ) << "\n";
-            ;
-    } else {
-        std::cout << "RevertToSelf Ok."
-            << "\n"
-            ;
+    ~impersonator( )
+    {
+        if( impersonated_ ) {
+            BOOL res = RevertToSelf( );
+            if( !res ) {
+                std::cerr << "RevertToSelf failed "
+                    << GetLastError( ) << "\n";
+                ;
+            } else {
+                std::cout << "RevertToSelf Ok."
+                    << "\n"
+                    ;
+            }
+        }
     }
-}
+};
 
 
 class  hello_service_impl: public howto::hello_service {
@@ -122,10 +130,9 @@ public:
             google::protobuf::Message* response,
             google::protobuf::Closure* done )
         {
-            precall_closure( *c_, method );
+            impersonator imp( c_, method );
             call_default( method, controller, 
                           request, response, done );
-            postcall_closure( );
         }
     };
 
