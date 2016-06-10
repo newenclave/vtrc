@@ -43,7 +43,6 @@ namespace vtrc { namespace common { namespace lowlevel {
         return desc->name( );
     }
 
-
     default_protocol::default_protocol( )
         :hash_maker_(common::hash::create_default( ))
         ,hash_checker_(common::hash::create_default( ))
