@@ -90,7 +90,7 @@ int start( const po::variables_map &params )
     typedef std::vector<std::string> string_vector;
     string_vector servers = params["server"].as<string_vector>( );
 
-    common::pool_pair pp( io_size - 1 ); /// only ONE dispatcher
+    common::pool_pair pp( io_size - 1, 1 );
     lukki_db::application app( pp );
 
     for( string_vector::const_iterator b(servers.begin( )), e(servers.end( ));

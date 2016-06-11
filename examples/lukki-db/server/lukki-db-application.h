@@ -4,8 +4,13 @@
 #include "vtrc-server/vtrc-application.h"
 #include "vtrc-common/vtrc-pool-pair.h"
 #include "vtrc-server/vtrc-listener.h"
+#include "vtrc-common/vtrc-protocol-iface.h"
 
 #include "vtrc-function.h"
+
+namespace google { namespace protobuf {
+    class RpcController;
+}}
 
 namespace vtrc_example {
     class lukki_string_list;
@@ -33,27 +38,26 @@ namespace lukki_db {
                  get_service_by_name( vtrc::common::connection_iface* conn,
                                       const std::string &service_name );
 
+        void execute( vtrc::common::protocol_iface::call_type call );
+
         void set( const std::string &name,
                   const vtrc_example::lukki_string_list &value,
-                  const operation_closure &closure);
+                  google::protobuf::RpcController *controller );
 
         void upd( const std::string &name,
                   const vtrc_example::lukki_string_list &value,
-                  const operation_closure &closure);
+                  google::protobuf::RpcController *controller );
 
         void get( const std::string &name,
-                  vtrc::shared_ptr<vtrc_example::lukki_string_list> value,
-                  const operation_closure &closure);
+                  vtrc_example::lukki_string_list *value,
+                  google::protobuf::RpcController *controller );
 
         void del( const std::string &name,
-                  const operation_closure &closure);
+                  google::protobuf::RpcController *controller );
 
-        void stat( vtrc::shared_ptr<vtrc_example::db_stat> stat,
-                   const operation_closure &closure);
+        void stat( vtrc_example::db_stat *stat );
 
-        void exist( const std::string &name,
-                    vtrc::shared_ptr<vtrc_example::exist_res> res,
-                    const operation_closure &closure);
+        void exist(const std::string &name, vtrc_example::exist_res *res );
 
         void subscribe_client( vtrc::common::connection_iface* conn );
 

@@ -28,6 +28,8 @@ namespace lukki_db {
 
     namespace {
 
+        namespace gpb = google::protobuf;
+
         typedef std::map<std::string, vtrc_example::lukki_string_list> db_type;
 
         class lukki_db_impl: public vtrc_example::lukki_db {
@@ -46,145 +48,66 @@ namespace lukki_db {
 
         private:
 
-            /// simple closure method;
-            /// Sets fail message if call was not success
-            static void yks_closure( bool success, const std::string &mess,
-                              ::google::protobuf::RpcController* controller,
-                              vtrc::shared_ptr<common::closure_holder> holder)
-            {
-                if( !success ) {
-                    controller->SetFailed( mess );
-                }
-            }
-
             void init(::google::protobuf::RpcController* /*controller*/,
                          const ::vtrc_example::empty* /*request*/,
                          ::vtrc_example::empty* /*response*/,
-                         ::google::protobuf::Closure* done)
-            {
-                done->Run( );
-            }
+                         ::google::protobuf::Closure* /*done*/)
+            { }
 
             void set(::google::protobuf::RpcController* controller,
                          const ::vtrc_example::value_set_req* request,
-                         ::vtrc_example::empty* response,
-                         ::google::protobuf::Closure* done)
+                         ::vtrc_example::empty* /*response*/,
+                         ::google::protobuf::Closure* /*done*/)
             {
-                vtrc::shared_ptr<common::closure_holder> holder(
-                            common::closure_holder::create(done) );
-                app_.set( request->name( ), request->value( ),
-                          vtrc::bind( &this_type::yks_closure,
-                                      vtrc::placeholders::_1,
-                                      vtrc::placeholders::_2,
-                                      controller, holder) );
+                app_.set( request->name( ), request->value( ), controller );
             }
 
             void upd(::google::protobuf::RpcController* controller,
                             const ::vtrc_example::value_set_req* request,
-                            ::vtrc_example::empty* response,
-                            ::google::protobuf::Closure* done)
+                            ::vtrc_example::empty* /*response*/,
+                            ::google::protobuf::Closure* /*done*/)
             {
-                vtrc::shared_ptr<common::closure_holder> holder(
-                            common::closure_holder::create(done) );
-                app_.upd( request->name( ), request->value( ),
-                          vtrc::bind( &this_type::yks_closure,
-                                      vtrc::placeholders::_1,
-                                      vtrc::placeholders::_2,
-                                      controller, holder) );
+                app_.upd( request->name( ), request->value( ), controller );
             }
 
             void del(::google::protobuf::RpcController* controller,
                          const ::vtrc_example::name_req* request,
-                         ::vtrc_example::empty* response,
-                         ::google::protobuf::Closure* done)
+                         ::vtrc_example::empty* /*response*/,
+                         ::google::protobuf::Closure* /*done*/)
             {
-                vtrc::shared_ptr<common::closure_holder> holder(
-                            common::closure_holder::create(done) );
-
-                app_.del( request->name( ),
-                          vtrc::bind( &this_type::yks_closure,
-                                      vtrc::placeholders::_1,
-                                      vtrc::placeholders::_2,
-                                      controller, holder) );
-
-            }
-
-            /// closure method with response message;
-            /// Fills response if success
-            /// Sets fail message if call was not success
-            template <typename ResType>
-            static void mess_closure( bool success, const std::string &mess,
-                     vtrc::shared_ptr<ResType> res, ResType* response,
-                     ::google::protobuf::RpcController* controller,
-                     vtrc::shared_ptr<common::closure_holder> holder )
-            {
-                if( !success ) {
-                    controller->SetFailed( mess );
-                } else {
-                    response->Swap( res.get( ) );
-                }
+                app_.del( request->name( ), controller );
             }
 
             void get(::google::protobuf::RpcController* controller,
                          const ::vtrc_example::name_req* request,
                          ::vtrc_example::lukki_string_list* response,
-                         ::google::protobuf::Closure* done)
+                         ::google::protobuf::Closure* /*done*/)
             {
-                vtrc::shared_ptr<common::closure_holder> holder(
-                            common::closure_holder::create(done) );
-
-                typedef vtrc_example::lukki_string_list res_type;
-
-                vtrc::shared_ptr<res_type> res(new res_type);
-
-                app_.get( request->name( ), res,
-                           vtrc::bind( &this_type::mess_closure<res_type>,
-                                        vtrc::placeholders::_1,
-                                        vtrc::placeholders::_2,
-                                        res, response, controller, holder) );
+                app_.get( request->name( ), response, controller );
             }
 
-            void stat(::google::protobuf::RpcController* controller,
-                         const ::vtrc_example::empty* request,
+            void stat(::google::protobuf::RpcController* /*controller*/,
+                         const ::vtrc_example::empty* /*request*/,
                          ::vtrc_example::db_stat* response,
-                         ::google::protobuf::Closure* done)
+                         ::google::protobuf::Closure* /*done*/)
             {
 
-                vtrc::shared_ptr<common::closure_holder> holder(
-                            common::closure_holder::create(done) );
-
-                typedef vtrc_example::db_stat res_type;
-
-                vtrc::shared_ptr<res_type> res(new res_type);
-                app_.stat( res, vtrc::bind( &this_type::mess_closure<res_type>,
-                                            vtrc::placeholders::_1,
-                                            vtrc::placeholders::_2,
-                                            res, response, controller, holder));
+                app_.stat( response );
             }
 
             void exist(::google::protobuf::RpcController* controller,
                      const ::vtrc_example::name_req* request,
                      ::vtrc_example::exist_res* response,
-                     ::google::protobuf::Closure* done )
+                     ::google::protobuf::Closure* /*done*/)
             {
-                vtrc::shared_ptr<common::closure_holder> holder(
-                            common::closure_holder::create(done) );
-
-                typedef vtrc_example::exist_res res_type;
-                vtrc::shared_ptr<res_type> res (new res_type);
-                app_.exist( request->name( ), res,
-                            vtrc::bind( &this_type::mess_closure<res_type>,
-                                        vtrc::placeholders::_1,
-                                        vtrc::placeholders::_2,
-                                        res, response, controller, holder ));
+                app_.exist( request->name( ), response );
 
             }
-            void subscribe(::google::protobuf::RpcController* controller,
-                     const ::vtrc_example::empty* request,
-                     ::vtrc_example::empty* response,
-                     ::google::protobuf::Closure* done)
+            void subscribe(::google::protobuf::RpcController* /*controller*/,
+                     const ::vtrc_example::empty* /*request*/,
+                     ::vtrc_example::empty* /*response*/,
+                     ::google::protobuf::Closure* /*done*/)
             {
-                common::closure_holder holder(done);
                 app_.subscribe_client( connection_ );
             }
         };
@@ -234,76 +157,67 @@ namespace lukki_db {
 
         void set( const std::string &name,
                   const vtrc_example::lukki_string_list &value,
-                  const operation_closure &closure)
+                  gpb::RpcController *controller )
         {
             if( db_.find( name ) != db_.end( ) ) {
-                if( closure ) closure( false, "Record already exists" );
+                controller->SetFailed( "Record exists" );
             } else {
                 db_stat_.set_set_requests( db_stat_.set_requests( ) + 1 );
                 db_[name] = value;
                 db_stat_.set_total_records( db_.size( ) );
                 send_event( name , RECORD_ADDED );
-                if( closure ) closure( true, "Success" );
             }
         }
 
         void upd( const std::string &name,
                   const vtrc_example::lukki_string_list &value,
-                  const operation_closure &closure)
+                  gpb::RpcController *controller )
         {
             db_stat_.set_upd_requests( db_stat_.upd_requests( ) + 1 );
             db_type::iterator f( db_.find( name ));
 
             if( f == db_.end( ) ) {
-                if( closure ) closure( false, "Record was not found" );
+                controller->SetFailed( "Record was not found" );
             } else {
                 f->second.CopyFrom( value );
                 send_event( name , RECORD_CHANGED );
-                if( closure ) closure( true, "Success" );
             }
         }
 
         void get( const std::string &name,
-                  vtrc::shared_ptr<vtrc_example::lukki_string_list> value,
-                  const operation_closure &closure)
+                  vtrc_example::lukki_string_list *value,
+                  gpb::RpcController *controller )
         {
             db_stat_.set_get_requests( db_stat_.get_requests( ) + 1 );
             db_type::const_iterator f( db_.find( name ));
             if( f == db_.end( ) ) {
-                if( closure ) closure( false, "Record was not found" );
+                controller->SetFailed( "Record was not found" );
             } else {
                 value->CopyFrom( f->second );
-                if( closure ) closure( true, "Success" );
             }
         }
 
         void del( const std::string &name,
-                  const operation_closure &closure)
+                  gpb::RpcController *controller )
         {
             db_stat_.set_del_requests( db_stat_.del_requests( ) + 1 );
             db_type::iterator f( db_.find( name ));
             if( f == db_.end( ) ) {
-                if( closure ) closure( false, "Record was not found" );
+                controller->SetFailed( "Record was not found" );
             } else {
                 db_.erase( f );
                 send_event( name , RECORD_DELETED );
-                if( closure ) closure( true, "Success" );
             }
         }
 
-        void stat( vtrc::shared_ptr<vtrc_example::db_stat> stat,
-                   const operation_closure &closure)
+        void stat( vtrc_example::db_stat *stat )
         {
             stat->CopyFrom( db_stat_ );
-            if( closure ) closure( true, "Success" );
         }
 
-        void exist( const std::string &name,
-                    vtrc::shared_ptr<vtrc_example::exist_res> res,
-                    const operation_closure &closure)
+        void exist( const std::string &name, vtrc_example::exist_res *res )
         {
             res->set_value( db_.find( name ) != db_.end( ) );
-            if( closure ) closure( true, "Success" );
         }
 
         /// events
@@ -318,7 +232,7 @@ namespace lukki_db {
 
 
         void send_event( vtrc::shared_ptr<common::rpc_channel> channel,
-                         const std::string &record, unsigned changed)
+                         const std::string &record, unsigned changed )
         {
             try {
 
@@ -368,22 +282,20 @@ namespace lukki_db {
             }
         }
 
-        void subscribe_impl( common::connection_iface_wptr conn )
-        {
-            common::connection_iface_sptr lck(conn.lock( ));
-            if( lck ) {
-                vtrc::shared_ptr<common::rpc_channel> channel
-                    (server::channels::unicast::create_event_channel
-                            ( lck, true ));
-                subscribers_.push_back( std::make_pair(conn, channel) );
-                send_subscribed( *channel );
-            }
-        }
-
         void subscribe_client( vtrc::common::connection_iface* conn )
         {
-            event_queue_.post( vtrc::bind(&impl::subscribe_impl, this,
-                               conn->weak_from_this( ) ));
+            vtrc::shared_ptr<common::rpc_channel> channel
+                    (server::channels::unicast::create_event_channel
+                     ( conn->shared_from_this( ), true ));
+
+            subscribers_.push_back( std::make_pair( conn->weak_from_this( ),
+                                                    channel) );
+            send_subscribed( *channel );
+        }
+
+        void execute( vtrc::function<void(void)> func )
+        {
+            func( );
         }
 
     };
@@ -391,24 +303,67 @@ namespace lukki_db {
     application::application( vtrc::common::pool_pair &pp )
         :vtrc::server::application(pp)
         ,impl_(new impl(pp.get_rpc_service( )))
-    {
-
-    }
+    { }
 
     application::~application( )
     {
         delete impl_;
     }
 
+    class svc_wrapper: public common::rpc_service_wrapper {
+        boost::asio::io_service::strand &dispatch_;
+        common::connection_iface_wptr cl_;
+    public:
+        svc_wrapper( boost::asio::io_service::strand &dispatch,
+                     common::connection_iface_wptr cl,
+                     common::rpc_service_wrapper::service_type *svc )
+            :common::rpc_service_wrapper(svc)
+            ,dispatch_(dispatch)
+            ,cl_(cl)
+        { }
+
+        void call( common::connection_iface_wptr cl,
+                   const method_type *method,
+                   google::protobuf::RpcController* controller,
+                   const google::protobuf::Message* request,
+                   google::protobuf::Message* response,
+                   google::protobuf::Closure* done )
+        {
+            common::connection_iface_sptr lock(cl.lock( ));
+            if( lock ) {
+                common::closure_holder _(done);
+                call_default( method, controller, request, response, done );
+            }
+        }
+
+        void call_method( const method_type *method,
+                     google::protobuf::RpcController* controller,
+                     const google::protobuf::Message* request,
+                     google::protobuf::Message* response,
+                     google::protobuf::Closure* done )
+        {
+            dispatch_.post( vtrc::bind( &svc_wrapper::call, this, cl_,
+                                        method, controller, request, response,
+                                        done ) );
+        }
+    };
+
     vtrc::shared_ptr<common::rpc_service_wrapper>
          application::get_service_by_name( vtrc::common::connection_iface* conn,
                                   const std::string &service_name )
     {
         if( service_name == lukki_db_impl::descriptor( )->full_name( ) ) {
-            return vtrc::make_shared<common::rpc_service_wrapper>
-                                        ( new lukki_db_impl( *this, conn ) );
+            return vtrc::make_shared<svc_wrapper>
+                    ( vtrc::ref( impl_->event_queue_ ),
+                      conn->weak_from_this( ),
+                      new lukki_db_impl( *this, conn ) );
         }
         return vtrc::shared_ptr<common::rpc_service_wrapper>( );
+    }
+
+    void application::execute( common::protocol_iface::call_type call )
+    {
+        call( );
     }
 
     void application::attach_start_listener( server::listener_sptr listen )
@@ -429,49 +384,41 @@ namespace lukki_db {
     /// pass the calls to this thread
     /// so we don't need locks for DB access
     void application::set( const std::string &name,
-              const vtrc_example::lukki_string_list &value,
-              const operation_closure &closure)
+                           const vtrc_example::lukki_string_list &value,
+                           gpb::RpcController *controller  )
     {
-        impl_->db_thread_.get_io_service( ).post(
-                    vtrc::bind( &impl::set, impl_,name, value, closure));
+        impl_->set( name, value, controller );
     }
 
     void application::upd( const std::string &name,
               const vtrc_example::lukki_string_list &value,
-              const operation_closure &closure)
+                           gpb::RpcController *controller )
     {
-        impl_->db_thread_.get_io_service( ).post(
-                    vtrc::bind( &impl::upd, impl_,name, value, closure));
+        impl_->upd( name, value, controller );
     }
 
     void application::get( const std::string &name,
-                       vtrc::shared_ptr<vtrc_example::lukki_string_list> value,
-                       const operation_closure &closure)
+                           vtrc_example::lukki_string_list *value,
+                           gpb::RpcController *controller )
     {
-        impl_->db_thread_.get_io_service( ).post(
-                    vtrc::bind( &impl::get, impl_, name, value, closure));
+        impl_->get( name, value, controller );
     }
 
     void application::del( const std::string &name,
-                           const operation_closure &closure)
+                           gpb::RpcController *controller )
     {
-        impl_->db_thread_.get_io_service( ).post(
-                    vtrc::bind( &impl::del, impl_, name, closure));
+        impl_->del( name, controller );
     }
 
-    void application::stat(vtrc::shared_ptr<vtrc_example::db_stat> stat,
-                            const operation_closure &closure)
+    void application::stat( vtrc_example::db_stat *stat )
     {
-        impl_->db_thread_.get_io_service( ).post(
-               vtrc::bind( &impl::stat, impl_, stat, closure));
+        impl_->stat( stat );
     }
 
     void application::exist( const std::string &name,
-                vtrc::shared_ptr<vtrc_example::exist_res> res,
-                const operation_closure &closure)
+                             vtrc_example::exist_res *res )
     {
-        impl_->db_thread_.get_io_service( ).post(
-               vtrc::bind( &impl::exist, impl_, name, res, closure));
+        impl_->exist( name, res );
     }
 
     void application::subscribe_client( vtrc::common::connection_iface* conn )

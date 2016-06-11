@@ -1,13 +1,12 @@
 #include <iostream>
 #include <algorithm>
 
-#include "vtrc-default-lowlevel-protocol.h"
 #include "vtrc-common/vtrc-protocol-accessor-iface.h"
+#include "vtrc-common/vtrc-protocol-defaults.h"
+#include "vtrc-default-lowlevel-protocol.h"
 
 #include "google/protobuf/descriptor.h"
 #include "google/protobuf/message.h"
-
-#include "vtrc-common/vtrc-protocol-defaults.h"
 
 #include "protocol/vtrc-rpc-options.pb.h"
 #include "protocol/vtrc-rpc-lowlevel.pb.h"
@@ -42,7 +41,6 @@ namespace vtrc { namespace common { namespace lowlevel {
     {
         return desc->name( );
     }
-
 
     default_protocol::default_protocol( )
         :hash_maker_(common::hash::create_default( ))

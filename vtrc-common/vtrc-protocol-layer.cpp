@@ -156,29 +156,6 @@ namespace vtrc { namespace common {
 
 #endif  /// VTRC_DISABLE_CXX11
 
-        precall_closure_type empty_pre( )
-        {
-            struct call_type {
-                static void call( connection_iface &,
-                                  const gpb::MethodDescriptor *,
-                                  rpc::lowlevel_unit & )
-                { }
-            };
-            namespace ph = vtrc::placeholders;
-            return vtrc::bind( &call_type::call, ph::_1, ph::_2, ph::_3 );
-        }
-
-        postcall_closure_type empty_post( )
-        {
-            struct call_type {
-                static void call( connection_iface &,
-                                  rpc::lowlevel_unit & )
-                { }
-            };
-            namespace ph = vtrc::placeholders;
-            return vtrc::bind( &call_type::call, ph::_1, ph::_2 );
-        }
-
     }
 
     struct protocol_layer::impl {
@@ -204,9 +181,6 @@ namespace vtrc { namespace common {
         rpc::session_options         session_opts_;
         lowlevel_protocol_layer      ll_processor_;
 
-        precall_closure_type         precall_;
-        postcall_closure_type        postcall_;
-
         impl( connection_iface *c, bool odd, const rpc::session_options &opts )
             :connection_(c)
             ,parent_(NULL)
@@ -214,8 +188,6 @@ namespace vtrc { namespace common {
             ,ready_(false)
             ,session_opts_(opts)
             ,ll_processor_(lowlevel::dummy::create( ))
-            ,precall_(empty_pre( ))
-            ,postcall_(empty_post( ))
         { }
 
 
@@ -722,8 +694,6 @@ namespace vtrc { namespace common {
             gpb::Closure* clos( make_closure( closure_hold ) );
             ch.ctx_->set_done_closure( clos );
 
-            precall_( *connection_, meth, *llu );
-
             service->call_method( meth, closure_hold->controller_.get( ),
                                   closure_hold->req_.get( ),
                                   closure_hold->res_.get( ), clos );
@@ -768,12 +738,6 @@ namespace vtrc { namespace common {
                 llu->clear_response( );
             }
 
-//            try {
-                postcall_( *connection_, *llu );
-//            } catch( ... ) {
-//                ;;;
-//            }
-
             if( llu->opt( ).wait( ) ) {
                 if( failed ) {
                     send_message( *llu );
@@ -808,16 +772,6 @@ namespace vtrc { namespace common {
             err_cont->set_additional( add );
 
             parent_->push_rpc_message_all( llu );
-        }
-
-        void set_precall( const precall_closure_type &func )
-        {
-            precall_ = func ? func : empty_pre( );
-        }
-
-        void set_postcall( const postcall_closure_type &func )
-        {
-            postcall_ = func ? func : empty_post( );;
         }
 
     };
@@ -1046,16 +1000,6 @@ namespace vtrc { namespace common {
     void protocol_layer::on_read_error( const VTRC_SYSTEM::error_code &err )
     {
         impl_->on_system_error( err, "Transport read error." );
-    }
-
-    void protocol_layer::set_precall( const precall_closure_type &func )
-    {
-        impl_->set_precall( func );
-    }
-
-    void protocol_layer::set_postcall( const postcall_closure_type &func )
-    {
-        impl_->set_postcall( func );
     }
 
 }}

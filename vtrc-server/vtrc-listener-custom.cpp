@@ -83,12 +83,6 @@ namespace vtrc { namespace server { namespace listeners {
 
         namespace ph = vtrc::placeholders;
 
-        proto->set_precall( vtrc::bind( &custom::mk_precall, this,
-                                ph::_1, ph::_2, ph::_3 ) );
-
-        proto->set_postcall( vtrc::bind( &custom::mk_postcall, this,
-                                   ph::_1, ph::_2 ) );
-
         proto->assign_lowlevel_factory( lowlevel_protocol_factory( ) );
 
         get_application( ).get_clients( )->store( conn );

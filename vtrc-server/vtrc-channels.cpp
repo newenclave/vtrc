@@ -166,7 +166,8 @@ namespace vtrc { namespace server {
                     ch.ctx_->set_call_options( call_opt );
                     ch.ctx_->set_done_closure( done );
 
-                    call_and_wait( call_id, llu, response, clnt, call_opt );
+                    call_and_wait( call_id, llu, controller,
+                                   response, clnt, call_opt );
 
                 } else {                  /// Send and ... just send
                     call_rpc_method( clnt.get( ), llu );

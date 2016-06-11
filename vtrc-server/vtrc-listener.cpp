@@ -11,31 +11,7 @@
 namespace vtrc { namespace server {
 
     namespace {
-
         namespace  gpb = google::protobuf;
-
-        common::precall_closure_type empty_pre( )
-        {
-            struct call_type {
-                static void call( common::connection_iface &,
-                                  const gpb::MethodDescriptor *,
-                                  rpc::lowlevel_unit & )
-                { }
-            };
-            namespace ph = vtrc::placeholders;
-            return vtrc::bind( &call_type::call, ph::_1, ph::_2, ph::_3 );
-        }
-
-        common::postcall_closure_type empty_post( )
-        {
-            struct call_type {
-                static void call( common::connection_iface &,
-                                  rpc::lowlevel_unit & )
-                { }
-            };
-            namespace ph = vtrc::placeholders;
-            return vtrc::bind( &call_type::call, ph::_1, ph::_2 );
-        }
     }
 
     struct listener::impl {
@@ -46,8 +22,6 @@ namespace vtrc { namespace server {
         listener                 *parent_;
         vtrc::atomic<size_t>      client_count_;
 
-        common::precall_closure_type    precall_;
-        common::postcall_closure_type   postcall_;
         listener::lowlevel_factory_type lowlevel_factory_;
 
         impl( application &app, const rpc::session_options &opts )
@@ -56,8 +30,6 @@ namespace vtrc { namespace server {
             ,opts_(opts)
             ,parent_(NULL)
             ,client_count_(0)
-            ,precall_(empty_pre( ))
-            ,postcall_(empty_post( ))
         { }
     };
 
@@ -102,19 +74,6 @@ namespace vtrc { namespace server {
         return vtrc::weak_ptr<listener const>( shared_from_this( ));
     }
 
-    void listener::mk_precall( common::connection_iface &connection,
-                               const google::protobuf::MethodDescriptor *method,
-                               rpc::lowlevel_unit &llu )
-    {
-        impl_->precall_( connection, method, llu );
-    }
-
-    void listener::mk_postcall( common::connection_iface &connection,
-                                rpc::lowlevel_unit &llu )
-    {
-        impl_->postcall_( connection, llu );
-    }
-
     void listener::new_connection( common::connection_iface *conn )
     {
         ++impl_->client_count_;
@@ -140,16 +99,6 @@ namespace vtrc { namespace server {
     void listener::call_on_start( )
     {
         on_start_( );
-    }
-
-    void listener::set_precall( const common::precall_closure_type &func )
-    {
-        impl_->precall_ = func;
-    }
-
-    void listener::set_postcall( const common::postcall_closure_type &func )
-    {
-        impl_->postcall_ = func;
     }
 
     void listener::assign_lowlevel_protocol_factory(

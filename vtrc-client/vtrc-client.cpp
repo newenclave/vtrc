@@ -47,8 +47,9 @@ namespace vtrc { namespace client {
         typedef vtrc_client::service_wrapper_wptr service_wrapper_wptr;
         typedef vtrc_client::service_wrapper_sptr service_wrapper_sptr;
 
-        typedef std::map< std::string, service_wrapper_wptr> service_weak_map;
-        typedef std::map< std::string, service_wrapper_sptr> service_shared_map;
+        typedef std::map<std::string, service_wptr> native_service_weak_map;
+        typedef std::map<std::string, service_wrapper_wptr> service_weak_map;
+        typedef std::map<std::string, service_wrapper_sptr> service_shared_map;
 
         typedef common::protocol_iface::call_type       proto_call_type;
         typedef common::protocol_iface::executor_type   executor_type;
@@ -63,6 +64,7 @@ namespace vtrc { namespace client {
         vtrc_client                    *parent_;
         common::connection_iface_sptr   connection_;
 
+        native_service_weak_map         weak_native_services_;
         service_weak_map                weak_services_;
         service_shared_map              hold_services_;
         vtrc::shared_mutex              services_lock_;
@@ -508,24 +510,24 @@ namespace vtrc { namespace client {
 
         void assign_handler( vtrc::shared_ptr<gpb::Service> serv )
         {
-            assign_handlerw(vtrc::make_shared<service_wrapper_type>(serv));
+            assign_handlerw( parent_->wrap_service( serv ) );
         }
 
         void assign_weak_handler( vtrc::weak_ptr<gpb::Service> serv )
         {
             service_sptr lock(serv.lock( ));
             if( lock ) {
-                service_wrapper_sptr wrap =
-                        vtrc::make_shared<service_wrapper_type>(lock);
-                assign_weak_handlerw( wrap );
+                const std::string s_name(lock->GetDescriptor( )->full_name( ));
+                vtrc::unique_shared_lock lk(services_lock_);
+                weak_native_services_[s_name] = serv;
             }
         }
 
         void assign_handlerw( service_wrapper_sptr serv )
         {
-            const std::string serv_name(serv->service( )
-                                        ->GetDescriptor( )
-                                        ->full_name( ));
+            const std::string serv_name( serv->service( )
+                                         ->GetDescriptor( )
+                                         ->full_name( ));
             vtrc::upgradable_lock lk(services_lock_);
             service_shared_map::iterator f( hold_services_.find( serv_name ) );
             if( f != hold_services_.end( ) ) {
@@ -579,6 +581,21 @@ namespace vtrc { namespace client {
             }
 
             if( !result ) {
+                vtrc::upgradable_lock lk(services_lock_);
+                native_service_weak_map::iterator f =
+                        weak_native_services_.find( name );
+                if( f != weak_native_services_.end( ) ) {
+                    service_sptr res = f->second.lock( );
+                    if( !res ) {
+                        vtrc::upgrade_to_unique ulk(lk);
+                        weak_native_services_.erase( f );
+                    } else {
+                        result = parent_->wrap_service( res );
+                    }
+                }
+            }
+
+            if( !result ) {
                 vtrc::shared_lock shl( factory_lock_ );
                 if( factory_ ) {
                     result = factory_( name );
@@ -597,6 +614,7 @@ namespace vtrc { namespace client {
 
             if( sf != hold_services_.end( ) ) hold_services_.erase( sf );
             if( wf != weak_services_.end( ) ) weak_services_.erase( wf );
+            weak_native_services_.erase( name );
         }
 
         void erase_all_rpc_handlers( )

@@ -105,6 +105,7 @@ namespace vtrc { namespace client {
                     controller->SetFailed( "Connection lost" );
                 }
                 parent_->get_channel_error_callback( )( "Connection lost" );
+                return;
             }
 
             const rpc::options *call_opt
@@ -127,7 +128,8 @@ namespace vtrc { namespace client {
                 ch.ctx_->set_call_options( call_opt );
                 ch.ctx_->set_done_closure( done );
 
-                parent_->call_and_wait( call_id, llu, response, clk, call_opt );
+                parent_->call_and_wait( call_id, llu, controller,
+                                        response, clk, call_opt );
 
             } else {                    /// Send and ... just send
                 parent_->call_rpc_method( clk.get( ), llu );
@@ -136,7 +138,7 @@ namespace vtrc { namespace client {
         }
 
         lowlevel_unit_sptr send_raw( lowlevel_unit_sptr &llu,
-                                     const google::protobuf::Message* request,
+                                     const gpb::Message* request,
                                      common::lowlevel_closure_type cbacks )
         {
             common::connection_iface_sptr clk(connection_.lock( ));
@@ -167,9 +169,9 @@ namespace vtrc { namespace client {
         }
 
         rpc_channel::lowlevel_unit_sptr make_lowlevel(
-                            const google::protobuf::MethodDescriptor* method,
-                            const google::protobuf::Message* request,
-                                  google::protobuf::Message* response ) const
+                            const gpb::MethodDescriptor* method,
+                            const gpb::Message* request,
+                                  gpb::Message* response ) const
         {
             rpc_channel::lowlevel_unit_sptr res =
                     create_lowlevel( method, request, response );
@@ -215,23 +217,23 @@ namespace vtrc { namespace client {
     }
 
     lowlevel_unit_sptr rpc_channel_c::raw_call( lowlevel_unit_sptr llu,
-                                    const google::protobuf::Message* request,
+                                    const gpb::Message* request,
                                     common::lowlevel_closure_type callbacks )
     {
         return impl_->send_raw( llu, request, callbacks );
     }
 
     void rpc_channel_c::configure_message_for( common::connection_iface_sptr c,
-                                    const google::protobuf::Message* request,
+                                    const gpb::Message* request,
                                     rpc_channel::lowlevel_unit_type &llu) const
     {
         configure_message( c, impl_->message_type( ), request, llu );
     }
 
     rpc_channel_c::lowlevel_unit_sptr rpc_channel_c::make_lowlevel(
-                        const google::protobuf::MethodDescriptor* method,
-                        const google::protobuf::Message* request,
-                              google::protobuf::Message* response )
+                        const gpb::MethodDescriptor* method,
+                        const gpb::Message* request,
+                              gpb::Message* response )
     {
         return impl_->make_lowlevel( method, request, response );
     }
