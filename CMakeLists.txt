@@ -185,8 +185,11 @@ endif(MSVC)
 
 endif(WITH_EXAMPLES)
 
-configure_file ("${PROJECT_SOURCE_DIR}/vtrc-import.cmake.in"
-                "${PROJECT_SOURCE_DIR}/vtrc-import.cmake" )
+configure_file (  "${PROJECT_SOURCE_DIR}/vtrc-import.cmake.in"
+                  "${PROJECT_SOURCE_DIR}/vtrc-import.cmake" )
+
+file( COPY        "${PROJECT_SOURCE_DIR}/vtrc-import.cmake"
+      DESTINATION "${CMAKE_CURRENT_BINARY_DIR}" )
 
 if( CUSTOM_CONFIG )
 
@@ -202,7 +205,6 @@ if( CUSTOM_CONFIG )
              "${CUSTOM_CONFIG} -> ${custom_config_output}")
 
     configure_file ( "${CUSTOM_CONFIG}" "${custom_config_output}" )
-
 endif( )
 
 
