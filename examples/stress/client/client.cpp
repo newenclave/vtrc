@@ -324,6 +324,8 @@ int start( const po::variables_map &params )
 
     } else if( params.count( "gen-events" ) ) {
 
+        vtrc::thread t;
+
         std::cout << "Ask server for events; "
                   << "payload: " << payload
                   << "\n";

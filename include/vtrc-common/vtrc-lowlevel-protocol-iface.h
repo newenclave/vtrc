@@ -37,6 +37,9 @@ namespace vtrc { namespace common {
         /// connection is closing
         virtual void close( ) = 0;
 
+        /// configure session
+        virtual void configure( const rpc::session_options & ) { }
+
         /// serialize lowlevel message
         virtual std::string pack_message( const lowlevel_unit &mess ) = 0;
 

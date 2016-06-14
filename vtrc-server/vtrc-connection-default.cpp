@@ -152,6 +152,7 @@ namespace vtrc { namespace server {
                 app_.configure_session( conn( ),
                                        *session_setup.mutable_options( ) );
 
+                configure( session_setup.options( ) );
                 capsule.set_body( session_setup.SerializeAsString( ) );
 
                 ready_ = true;

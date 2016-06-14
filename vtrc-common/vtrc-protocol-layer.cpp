@@ -226,7 +226,7 @@ namespace vtrc { namespace common {
         void configure_session( const rpc::session_options &opts )
         {
             session_opts_.CopyFrom( opts );
-            //ll_processor_->configure( opts );
+            ll_processor_->configure( opts );
         }
 
         void process_data( const char *data, size_t length )
@@ -257,6 +257,7 @@ namespace vtrc { namespace common {
         void set_lowlevel( lowlevel::protocol_layer_iface *ll )
         {
             ll_processor_.reset( ll );
+            ll_processor_->configure( session_opts_ );
         }
 
         lowlevel::protocol_layer_iface *get_lowlevel( )
