@@ -123,11 +123,13 @@ namespace {
 
         public:
 
+            vtrc::atomic<vtrc::uint64_t> call_count_;
             stress::application *parent_app_;
             std::string key_;
 
             app_impl( common::pool_pair &pp )
                 :server::application(pp)
+                ,call_count_(0)
             { }
 
             void configure_session( common::connection_iface* connection,
@@ -137,6 +139,12 @@ namespace {
                 res.set_max_message_length( 65536 );
                 res.set_max_stack_size    ( 64 );
                 res.set_read_buffer_size  ( 4096 );
+            }
+
+            void execute( common::protocol_iface::call_type call )
+            {
+                ++call_count_;
+                get_rpc_service( ).post( call );
             }
 
             bool session_key_required( common::connection_iface* /*conn*/,
@@ -191,6 +199,8 @@ namespace {
 
         bool                                dumb_proto_;
 
+        delayed_call                        counter_timer_;
+
         impl( unsigned io_threads )
             :pp_(io_threads)
             ,app_(pp_)
@@ -201,6 +211,7 @@ namespace {
             ,next_id_(0)
             ,timer_pool_(1)
             ,dumb_proto_(false)
+            ,counter_timer_(timer_pool_.get_io_service( ))
         { }
 
         impl( unsigned io_threads, unsigned rpc_threads )
@@ -208,15 +219,38 @@ namespace {
             ,app_(pp_)
             ,counter_(0)
             ,retry_timer_(pp_.get_io_service( ))
+            ,accept_errors_(0)
             ,max_clients_(1000)
             ,next_id_(0)
             ,timer_pool_(1)
             ,dumb_proto_(false)
+            ,counter_timer_(timer_pool_.get_io_service( ))
         { }
 
         unsigned next_id( )
         {
             return ++next_id_;
+        }
+
+        void start_counter_timer( vtrc::uint64_t last )
+        {
+            namespace ph = vtrc::placeholders;
+            counter_timer_.call_from_now(
+                        vtrc::bind( &impl::counter_timer_handler,
+                                    this, ph::_1, last),
+                        common::delayed_call::seconds( 1 ) );
+        }
+
+        void counter_timer_handler( const bsys::error_code &err,
+                                    vtrc::uint64_t last )
+        {
+            if( !err ) {
+                vtrc::uint64_t current = app_.call_count_.load( );
+                if( current - last != 0 ) {
+                    std::cout << "Last count: " << current - last << "\n";
+                }
+                start_counter_timer( current );
+            }
         }
 
         void timer_handler( const bsys::error_code &err,
@@ -359,11 +393,13 @@ namespace {
 
             }
 
+            start_counter_timer( 0 );
             if( use_only_pool ) {
                 pp_.get_io_pool( ).attach( );
             } else {
                 pp_.get_rpc_pool( ).attach( );
             }
+            counter_timer_.cancel( );
             pp_.join_all( );
         }
 

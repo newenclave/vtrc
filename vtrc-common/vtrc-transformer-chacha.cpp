@@ -21,7 +21,6 @@ namespace vtrc { namespace common {
             {
                 std::string key;
                 key.reserve( 32 );
-                size_t max = 32;
 
                 static const size_t input_len = sizeof(ctx_.input) /
                                                 sizeof(ctx_.input[0]);
@@ -31,11 +30,10 @@ namespace vtrc { namespace common {
                 }
 
                 if( t_length < 32 ) {
-                    while( max < 32 ) {
-                        size_t next_len = std::min( 32 - max, t_length );
-                        key.append( transform_key + max, next_len );
-                        max += next_len;
+                    while( key.size( ) < 32 ) {
+                        key.append( transform_key, t_length );
                     }
+                    key.resize( 32 );
                 } else {
                     key.assign( transform_key, transform_key + 32 );
                 }

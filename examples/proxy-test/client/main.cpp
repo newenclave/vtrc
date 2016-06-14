@@ -134,13 +134,13 @@ int main( int argc, const char **argv )
     const char *target  = NULL;
     unsigned short port = 56560;
 
-    address = argv[1];
-    port = boost::lexical_cast<unsigned short>( argv[2] );
-    if( argc > 3 ) {
-        target = argv[3];
-    }
-
     try {
+
+        address = argv[1];
+        port = boost::lexical_cast<unsigned short>( argv[2] );
+        if( argc > 3 ) {
+            target = argv[3];
+        }
 
         client::vtrc_client_sptr cl = client::vtrc_client::create( pp );
 

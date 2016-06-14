@@ -40,6 +40,10 @@ class http_lowlevel_server: vc::lowlevel::protocol_layer_iface {
 
 public:
 
+    http_lowlevel_server( )
+        :pa_(NULL)
+    { }
+
     static
     vc::lowlevel::protocol_layer_iface *create( )
     {

@@ -53,6 +53,10 @@ namespace {
         parser_sptr              current_header_;
     public:
 
+        http_lowlevel_client( )
+            :pa_(NULL)
+        { }
+
         static
         vc::lowlevel::protocol_layer_iface *create( )
         {

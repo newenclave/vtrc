@@ -237,10 +237,15 @@ namespace http {
                                            '5', '6', '7', '8', '9',
                                            'A', 'B', 'C', 'D', 'E', 'F' };
         struct hi_lo_t {
-            unsigned char h :4;
-            unsigned char l :4;
+            unsigned h :4;
+            unsigned l :4;
             char line[3];
-            hi_lo_t(){ line[2] = 0; }
+            hi_lo_t( )
+                :h(0)
+                ,l(0)
+            {
+                line[2] = 0;
+            }
             const char * operator( )(const char _in) {
                 h = (_in >> 4);
                 l = (_in & 0xF);

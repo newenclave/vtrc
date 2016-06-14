@@ -173,17 +173,17 @@ int main( int argc, const char **argv )
     const char *address = "127.0.0.1";
     unsigned short port = 56560;
 
-    if( argc > 2 ) {
-        address = argv[1];
-        port = boost::lexical_cast<unsigned short>( argv[2] );
-    } else if( argc > 1 ) {
-        port = boost::lexical_cast<unsigned short>( argv[1] );
-    }
-
     common::pool_pair pp( 0, 1 );
     proxy_application app( pp );
 
     try {
+
+        if( argc > 2 ) {
+            address = argv[1];
+            port = boost::lexical_cast<unsigned short>( argv[2] );
+        } else if( argc > 1 ) {
+            port = boost::lexical_cast<unsigned short>( argv[1] );
+        }
 
         vtrc::shared_ptr<server::listener>
                 tcp( server::listeners::tcp::create( app, address, port ) );
