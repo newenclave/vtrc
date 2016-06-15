@@ -25,15 +25,28 @@ namespace vtrc { namespace common {
 
     public:
 
-        typedef google::protobuf::Service       service_type;
-        typedef service_type*                   service_ptr;
-        typedef vtrc::shared_ptr<service_type>  service_sptr;
+        typedef vtrc::shared_ptr<rpc_service_wrapper>   shared_type;
+        typedef google::protobuf::Service               service_type;
+        typedef service_type*                           service_ptr;
+        typedef vtrc::shared_ptr<service_type>          service_sptr;
 
         typedef google::protobuf::MethodDescriptor method_type;
         typedef method_type*                       method_ptr;
 
         explicit rpc_service_wrapper( service_type *serv );
         explicit rpc_service_wrapper( service_sptr  serv );
+
+        static
+        shared_type wrap( service_sptr  serv )
+        {
+            return vtrc::make_shared<rpc_service_wrapper>( serv );
+        }
+
+        static
+        shared_type wrap( service_type *serv )
+        {
+            return vtrc::make_shared<rpc_service_wrapper>( serv );
+        }
 
         virtual ~rpc_service_wrapper( );
 
