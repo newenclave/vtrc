@@ -51,24 +51,7 @@ int main( int argc, char *argv[] )
         show_help( description );
         return 0;
     }
-    int err = 0;
-    try {
-        start( vm );
-    } catch( const vtrc::common::exception &ex ) {
-        std::cerr << "Client process failed (v): "
-                  << ex.what( );
-        std::string add(ex.additional( ));
-        if( !add.empty( ) ) {
-            std::cerr << " '" << add << "'";
-        }
-        std::cerr << "\n";
-        err = 3;
-    } catch( const std::exception &ex ) {
-        std::cerr << "Client process failed: " << ex.what( ) << "\n";
-        err = 3;
-    }
 
-    google::protobuf::ShutdownProtobufLibrary( );
-    return err;
+    return  start( vm );
 }
 

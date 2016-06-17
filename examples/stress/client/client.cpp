@@ -216,6 +216,7 @@ void register_timers( vtrc::shared_ptr<stress::interface> impl,
 
 int start( const po::variables_map &params )
 {
+    int err = 0;
     if( params.count( "server" ) == 0 ) {
         throw std::runtime_error("Server is not defined;\n"
                                  "Use --help for details");
@@ -290,6 +291,7 @@ int start( const po::variables_map &params )
 
     std::vector<unsigned> timers;
 
+    try {
     if( params.count( "shutdown" ) ) {
 
         std::cout << "Shutdown remote server...";
@@ -393,6 +395,20 @@ int start( const po::variables_map &params )
 
     }
 
+    } catch( const vtrc::common::exception &ex ) {
+        std::cerr << "Client process failed (v): "
+                  << ex.what( );
+        std::string add(ex.additional( ));
+        if( !add.empty( ) ) {
+            std::cerr << " '" << add << "'";
+        }
+        std::cerr << "\n";
+        err = 3;
+    } catch( const std::exception &ex ) {
+        std::cerr << "Client process failed: " << ex.what( ) << "\n";
+        err = 3;
+    }
+
     if( params.count( "sleep" ) ) {
         unsigned value = params["sleep"].as<unsigned>( );
         sleep_( MILLISECONDS(value) * 1000 );
@@ -406,5 +422,5 @@ int start( const po::variables_map &params )
     std::cout << "Stopped\n";
 
     google::protobuf::ShutdownProtobufLibrary( );
-    return 0;
+    return err;
 }
