@@ -55,7 +55,7 @@ namespace vtrc { namespace common { namespace policies {
         {
             char res[max_length];
             for( size_t current =  max_length; current > 0; --current ) {
-                res[current-1] = static_cast<char>( size & 0xFF );
+                res[current-1]  = static_cast<char>( size & 0xFF );
                 size >>= 8;
             }
             return std::string( &res[0], &res[max_length] );
@@ -63,9 +63,9 @@ namespace vtrc { namespace common { namespace policies {
 
         static size_t pack( size_type size, void *result )
         {
-            vtrc::uint8_t *res = reinterpret_cast<vtrc::uint8_t *>(result);
+            vtrc::uint8_t *res  = reinterpret_cast<vtrc::uint8_t *>(result);
             for( size_t current = max_length; current > 0; --current ) {
-                res[current-1] = static_cast<vtrc::uint8_t>( size & 0xFF );
+                res[current-1]  = static_cast<vtrc::uint8_t>( size & 0xFF );
                 size >>= 8;
             }
             return max_length;
