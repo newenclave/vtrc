@@ -3,6 +3,7 @@
 
 #include <string>
 #include <limits>
+#include "vtrc-stdint.h"
 
 #include "boost/static_assert.hpp"
 
@@ -62,9 +63,9 @@ namespace vtrc { namespace common { namespace policies {
 
         static size_t pack( size_type size, void *result )
         {
-            uint8_t *res = reinterpret_cast<uint8_t *>(result);
+            vtrc::uint8_t *res = reinterpret_cast<vtrc::uint8_t *>(result);
             for( size_t current = max_length; current > 0; --current ) {
-                res[current-1] = static_cast<uint8_t>( size & 0xFF );
+                res[current-1] = static_cast<vtrc::uint8_t>( size & 0xFF );
                 size >>= 8;
             }
             return max_length;
@@ -76,7 +77,7 @@ namespace vtrc { namespace common { namespace policies {
             size_type  res   = 0x00;
             for(size_t cur=max_length; cur>0 && begin!=end; --cur, ++begin) {
                 res |= static_cast<size_type>(
-                            static_cast<unsigned char>(*begin))
+                            static_cast<vtrc::uint8_t>(*begin))
                                             << ((cur - 1) << 3);
             }
             return res;
@@ -101,11 +102,11 @@ namespace vtrc { namespace common { namespace policies {
         static size_t size_length( IterT begin, const IterT &end )
         {
             size_t        length = 0x00;
-            unsigned char last   = 0x80;
+            vtrc::uint8_t last   = 0x80;
 
             for( ;(begin != end) && (last & 0x80); ++begin ) {
                 ++length;
-                last = static_cast<unsigned char>(*begin);
+                last = static_cast<vtrc::uint8_t>(*begin);
             }
             return (last & 0x80) ? 0 : length;
         }
@@ -131,7 +132,7 @@ namespace vtrc { namespace common { namespace policies {
         static size_t pack( size_type size, void *result )
         {
             size_t   index = 0;
-            uint8_t *res = reinterpret_cast<uint8_t *>(result);
+            vtrc::uint8_t *res = reinterpret_cast<vtrc::uint8_t *>(result);
             for( ; size > 0x7F; size >>= 7 ) {
                 res[index++] = (static_cast<char>(size & 0x7F) | 0x80);
             }
