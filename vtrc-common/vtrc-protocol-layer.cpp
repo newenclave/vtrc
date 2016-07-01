@@ -51,24 +51,6 @@ namespace vtrc { namespace common {
 
         typedef protocol_layer::message_queue_type message_queue_type;
 
-        void raise_error( unsigned code )
-        {
-            vtrc::common::raise( vtrc::common::exception( code ) );
-        }
-
-        void raise_wait_error( wait_result_codes wr )
-        {
-            switch ( wr ) {
-            case WAIT_RESULT_CANCELED:
-                raise_error( rpc::errors::ERR_CANCELED );
-                break;
-            case  WAIT_RESULT_TIMEOUT:
-                raise_error( rpc::errors::ERR_TIMEOUT );
-                break;
-            default:
-                break;
-            }
-        }
 #if 0
         struct rpc_unit_index {
             vtrc::uint64_t     id_;
@@ -194,6 +176,20 @@ namespace vtrc { namespace common {
         ~impl( )
         {
             //delete ll_processor_; /// temporary
+        }
+
+        void raise_wait_error( wait_result_codes wr )
+        {
+            switch ( wr ) {
+            case WAIT_RESULT_CANCELED:
+                parent_->raise_error( rpc::errors::ERR_CANCELED );
+                break;
+            case  WAIT_RESULT_TIMEOUT:
+                parent_->raise_error( rpc::errors::ERR_TIMEOUT );
+                break;
+            default:
+                break;
+            }
         }
 
         /// call_stack pointer BOOST ///
@@ -1003,4 +999,8 @@ namespace vtrc { namespace common {
         impl_->on_system_error( err, "Transport read error." );
     }
 
+    void protocol_layer::raise_error( unsigned code )
+    {
+        vtrc::common::raise( vtrc::common::exception( code ) );
+    }
 }}

@@ -209,6 +209,8 @@ namespace vtrc { namespace common {
         /// protocol violation; we have to close connection in this case
         bool   parse_and_pop( rpc::lowlevel_unit &result );
 
+        virtual void raise_error( unsigned  );
+
     };
 }}
 
