@@ -18,11 +18,11 @@ namespace vtrc { namespace rpc {
 
 namespace vtrc { namespace common {
 
-    class enviroment;
-    class protocol_layer;
-    class protocol_iface;
-    class call_context;
-    class rpc_channel;
+    class  enviroment;
+    class  protocol_layer;
+    class  call_context;
+    class  rpc_channel;
+    struct protocol_iface;
 
     struct native_handle_type {
         typedef void *pvoid;
