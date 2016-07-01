@@ -282,7 +282,7 @@ namespace vtrc { namespace common {
 
         void send_message( const lowlevel_unit_type &message )
         {
-            std::string ser(ll_processor_->pack_message( message ));
+            std::string ser(ll_processor_->serialize_lowlevel( message ));
             send_data( ser.c_str( ), ser.size( ) );
         }
 

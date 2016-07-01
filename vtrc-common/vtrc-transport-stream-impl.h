@@ -180,6 +180,10 @@ namespace vtrc { namespace common {
 
                 bool empty = write_queue_.empty( );
 
+                get_parent( )->get_protocol( )
+                              .get_lowlevel( )
+                             ->pack_message( data->message_ );
+
                 write_queue_.push_back( data );
 
                 if( closure && !data->on_send_ ) {

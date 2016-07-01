@@ -103,7 +103,7 @@ namespace vtrc { namespace server {
             void send_proto_message( const gpb::MessageLite &mess )
             {
                 std::string s( mess.SerializeAsString( ) );
-                s = pack_message( s.c_str( ), s.size( ) );
+                //s = pack_message( s.c_str( ), s.size( ) );
                 write( s );
             }
 
@@ -112,7 +112,7 @@ namespace vtrc { namespace server {
                                      bool on_send)
             {
                 std::string s( mess.SerializeAsString( ) );
-                s = pack_message( s.c_str( ), s.size( ) );
+                //s = pack_message( s.c_str( ), s.size( ) );
                 accessor( )->write( s, closure, on_send );
             }
 
@@ -310,7 +310,7 @@ namespace vtrc { namespace server {
             {
                 set_accessor( pa );
                 switch_to_handshake( );
-                static const std::string data(pack_message(first_message( )));
+                static const std::string data(first_message( ));
 //                ready_ = true;
 //                pa_->ready( true );
 //                cb( VTRC_SYSTEM::error_code( ) );

@@ -26,7 +26,7 @@ namespace vtrc { namespace common {
     void connection_iface::raw_write( vtrc::shared_ptr<rpc::lowlevel_unit> ll )
     {
         std::string ser( get_protocol( ).get_lowlevel( )
-                         ->pack_message( *ll ) );
+                         ->serialize_lowlevel( *ll ) );
         write( ser.empty( ) ? "" : &ser[0], ser.size( ) );
     }
 

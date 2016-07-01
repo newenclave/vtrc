@@ -99,19 +99,22 @@ namespace vtrc { namespace common { namespace lowlevel {
     { }
 
     std::string
-    default_protocol::pack_message( const rpc::lowlevel_unit &mess )
+    default_protocol::serialize_lowlevel( const rpc::lowlevel_unit &mess )
     {
-//        return mess.SerializeAsString( );
-        std::string ser(mess.SerializeAsString( ));
-        return pack_message( ser.c_str( ), ser.size( ) );
+        return mess.SerializeAsString( );
     }
 
-    std::string default_protocol::pack_message( const std::string &data )
+    void default_protocol::pack_message( std::string &mess )
     {
-        return pack_message( data.c_str( ), data.size( ) );
+        mess = pack_message_( mess );
     }
 
-    std::string default_protocol::pack_message( const char *data, size_t len )
+    std::string default_protocol::pack_message_( const std::string &data )
+    {
+        return pack_message_( data.c_str( ), data.size( ) );
+    }
+
+    std::string default_protocol::pack_message_( const char *data, size_t len )
     {
         /**
          * message_header = <packed_size(data_length + hash_length)>

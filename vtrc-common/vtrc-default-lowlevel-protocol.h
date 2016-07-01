@@ -37,7 +37,8 @@ namespace vtrc {  namespace common { namespace lowlevel {
         ~default_protocol( );
 
         void        configure( const rpc::session_options &opts );
-        std::string pack_message( const vtrc::rpc::lowlevel_unit &mess );
+        std::string serialize_lowlevel( const vtrc::rpc::lowlevel_unit &mess );
+        void        pack_message( std::string &mess );
         void        process_data( const char *data, size_t length );
 
         size_t      queue_size( ) const;
@@ -54,8 +55,8 @@ namespace vtrc {  namespace common { namespace lowlevel {
         void switch_to_ready( );
         void switch_to_handshake( );
 
-        std::string pack_message( const char *data, size_t length );
-        std::string pack_message( const std::string &data );
+        std::string pack_message_( const char *data, size_t length );
+        std::string pack_message_( const std::string &data );
 
         virtual void configure_impl( const rpc::session_options &opts );
         void set_accessor( protocol_accessor *pa );

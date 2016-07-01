@@ -40,8 +40,11 @@ namespace vtrc { namespace common {
         /// configure session
         virtual void configure( const rpc::session_options & ) { }
 
-        /// serialize lowlevel message
-        virtual std::string pack_message( const lowlevel_unit &mess ) = 0;
+        /// serialize lowlevel message; threads!
+        virtual std::string serialize_lowlevel( const lowlevel_unit &mess ) = 0;
+
+        /// pack lowlevel message; non threads!
+        virtual void pack_message( std::string &mess ) { }
 
         /// accept portion os the data and unpuck message is exists
         virtual void process_data( const char *data, size_t length ) = 0;

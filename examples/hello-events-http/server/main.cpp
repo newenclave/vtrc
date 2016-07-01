@@ -64,6 +64,11 @@ public:
         pa->ready( true );
     }
 
+    std::string serialize_lowlevel( const lowlevel_unit &mess )
+    {
+        return pack_message( mess );
+    }
+
     std::string serialize_message( const message_type *mess )
     {
         return mess->SerializeAsString( );

@@ -75,7 +75,7 @@ namespace vtrc { namespace client {
             void send_proto_message( const gpb::MessageLite &mess )
             {
                 std::string s(mess.SerializeAsString( ));
-                s = pack_message( s.c_str( ), s.size( ) );
+                //s = pack_message( s.c_str( ), s.size( ) );
                 accessor( )->write( s, default_cb, true );
             }
 
@@ -84,7 +84,7 @@ namespace vtrc { namespace client {
                                      bool on_send )
             {
                 std::string s(mess.SerializeAsString( ));
-                s = pack_message( s.c_str( ), s.size( ) );
+                //s = pack_message( s.c_str( ), s.size( ) );
                 accessor( )->write( s, closure, on_send );
             }
 
