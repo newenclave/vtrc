@@ -229,6 +229,10 @@ namespace vtrc { namespace common  {
                         lowlevel_closure_type events,
                         const rpc::options *call_opt ) const
     {
+        if( !cl->active( ) ) {
+            get_channel_error_callback( )( "Channel is not ready." );
+            return false;
+        }
         cl->get_protocol( ).call_rpc_method( call_id, llu );
 
         const unsigned mess_type( llu.info( ).message_type( ) );
