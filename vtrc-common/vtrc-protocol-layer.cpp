@@ -172,7 +172,6 @@ namespace vtrc { namespace common {
             ,ll_processor_(lowlevel::dummy::create( ))
         { }
 
-
         ~impl( )
         {
             //delete ll_processor_; /// temporary
@@ -435,6 +434,11 @@ namespace vtrc { namespace common {
             wait_result_codes qwr = rpc_queue_.read( slot_id, mess,
                                     vtrc::chrono::microseconds(microsec) );
 
+//            if( WAIT_RESULT_SUCCESS != qwr ) {
+//                mess->mutable_error( )->set_code( qwr == WAIT_RESULT_CANCELED
+//                                                ? rpc::errors::ERR_CANCELED
+//                                                : rpc::errors::ERR_TIMEOUT );
+//            }
             raise_wait_error( qwr );
         }
 
