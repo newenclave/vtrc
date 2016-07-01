@@ -309,11 +309,16 @@ namespace vtrc { namespace common  {
 
     bool rpc_channel::call_and_wait( google::protobuf::uint64 call_id,
                                      const lowlevel_unit_type &llu,
-                                     google::protobuf::RpcController *ctrl,
+                                     google::protobuf::RpcController */*ctrl*/,
                                      google::protobuf::Message *response,
                                      connection_iface_sptr &cl,
                                      const rpc::options *call_opt ) const
     {
+        if( !cl->active( ) ) {
+            get_channel_error_callback( )( "Channel is not ready." );
+            return false;
+        }
+
         cl->get_protocol( ).call_rpc_method( call_id, llu );
 
         const unsigned mess_type(llu.info( ).message_type( ));
