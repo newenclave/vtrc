@@ -55,8 +55,8 @@ namespace vtrc {  namespace common { namespace lowlevel {
         void switch_to_ready( );
         void switch_to_handshake( );
 
-        std::string pack_message_( const char *data, size_t length );
-        std::string pack_message_( const std::string &data );
+        std::string pack_message_impl( const char *data, size_t length );
+        std::string pack_message_impl( const std::string &data );
 
         virtual void configure_impl( const rpc::session_options &opts );
         void set_accessor( protocol_accessor *pa );

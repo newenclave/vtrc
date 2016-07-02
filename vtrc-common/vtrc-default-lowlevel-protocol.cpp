@@ -106,15 +106,16 @@ namespace vtrc { namespace common { namespace lowlevel {
 
     void default_protocol::pack_message( std::string &mess )
     {
-        mess = pack_message_( mess );
+        mess = pack_message_impl( mess );
     }
 
-    std::string default_protocol::pack_message_( const std::string &data )
+    std::string default_protocol::pack_message_impl( const std::string &data )
     {
-        return pack_message_( data.c_str( ), data.size( ) );
+        return pack_message_impl( data.c_str( ), data.size( ) );
     }
 
-    std::string default_protocol::pack_message_( const char *data, size_t len )
+    std::string default_protocol::pack_message_impl( const char *data,
+                                                     size_t len )
     {
         /**
          * message_header = <packed_size(data_length + hash_length)>
