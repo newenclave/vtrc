@@ -421,35 +421,36 @@ namespace vtrc { namespace common {
             send_message( llu );
         }
 
-        void wait_call_slot( vtrc::uint64_t slot_id, vtrc::uint64_t microsec)
-        {
-            wait_result_codes qwr = rpc_queue_.wait_queue( slot_id,
-                             vtrc::chrono::microseconds(microsec) );
-            raise_wait_error( qwr );
-        }
-
         void read_slot_for( vtrc::uint64_t slot_id, lowlevel_unit_sptr &mess,
-                                             vtrc::uint64_t microsec)
+                            vtrc::uint64_t microsec )
         {
             wait_result_codes qwr = rpc_queue_.read( slot_id, mess,
                                     vtrc::chrono::microseconds(microsec) );
 
-//            if( WAIT_RESULT_SUCCESS != qwr ) {
-//                mess->mutable_error( )->set_code( qwr == WAIT_RESULT_CANCELED
-//                                                ? rpc::errors::ERR_CANCELED
-//                                                : rpc::errors::ERR_TIMEOUT );
-//            }
-            raise_wait_error( qwr );
+            /// todo: think about
+            if( WAIT_RESULT_SUCCESS != qwr ) {
+                mess->mutable_error( )->set_code( qwr == WAIT_RESULT_CANCELED
+                                                ? rpc::errors::ERR_CANCELED
+                                                : rpc::errors::ERR_TIMEOUT );
+            }
+//            raise_wait_error( qwr );
         }
 
-        void read_slot_for( vtrc::uint64_t slot_id,
-                            std::deque<lowlevel_unit_sptr> &data_list,
-                            vtrc::uint64_t microsec )
-        {
-            wait_result_codes qwr = rpc_queue_.read_queue( slot_id, data_list,
-                                         vtrc::chrono::microseconds(microsec));
-            raise_wait_error( qwr );
-        }
+
+//        void wait_call_slot( vtrc::uint64_t slot_id, vtrc::uint64_t microsec)
+//        {
+//            wait_result_codes qwr = rpc_queue_.wait_queue( slot_id,
+//                             vtrc::chrono::microseconds(microsec) );
+//            raise_wait_error( qwr );
+//        }
+//        void read_slot_for( vtrc::uint64_t slot_id,
+//                            std::deque<lowlevel_unit_sptr> &data_list,
+//                            vtrc::uint64_t microsec )
+//        {
+//            wait_result_codes qwr = rpc_queue_.read_queue( slot_id, data_list,
+//                                         vtrc::chrono::microseconds(microsec));
+//            raise_wait_error( qwr );
+//        }
 
         void close_slot( vtrc::uint64_t slot_id )
         {
@@ -932,11 +933,11 @@ namespace vtrc { namespace common {
         impl_->call_rpc_method( slot_id, llu );
     }
 
-    void protocol_layer::wait_slot_for( vtrc::uint64_t slot_id,
-                                        vtrc::uint64_t microsec )
-    {
-        impl_->wait_call_slot( slot_id, microsec );
-    }
+//    void protocol_layer::wait_slot_for( vtrc::uint64_t slot_id,
+//                                        vtrc::uint64_t microsec )
+//    {
+//        impl_->wait_call_slot( slot_id, microsec );
+//    }
 
     void protocol_layer::read_slot_for( vtrc::uint64_t slot_id,
                                         lowlevel_unit_sptr &mess,
@@ -945,12 +946,12 @@ namespace vtrc { namespace common {
         impl_->read_slot_for( slot_id, mess, microsec );
     }
 
-    void protocol_layer::read_slot_for( vtrc::uint64_t slot_id,
-                                      std::deque<lowlevel_unit_sptr> &mess_list,
-                                       vtrc::uint64_t microsec )
-    {
-        impl_->read_slot_for( slot_id, mess_list, microsec );
-    }
+//    void protocol_layer::read_slot_for( vtrc::uint64_t slot_id,
+//                                    std::deque<lowlevel_unit_sptr> &mess_list,
+//                                    vtrc::uint64_t microsec )
+//    {
+//        impl_->read_slot_for( slot_id, mess_list, microsec );
+//    }
 
     void protocol_layer::erase_slot( vtrc::uint64_t slot_id )
     {

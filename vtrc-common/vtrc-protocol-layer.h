@@ -104,15 +104,15 @@ namespace vtrc { namespace common {
         void call_rpc_method( vtrc::uint64_t slot_id,
                               const lowlevel_unit_type &llu );
 
-        void wait_slot_for( vtrc::uint64_t slot_id, vtrc::uint64_t microsec );
-
         void read_slot_for( vtrc::uint64_t slot_id,
                             lowlevel_unit_sptr &mess,
                             vtrc::uint64_t microsec );
 
-        void read_slot_for( vtrc::uint64_t slot_id,
-                            std::deque<lowlevel_unit_sptr> &mess_list,
-                            vtrc::uint64_t microsec );
+//        void wait_slot_for( vtrc::uint64_t slot_id, vtrc::uint64_t microsec );
+
+//        void read_slot_for( vtrc::uint64_t slot_id,
+//                            std::deque<lowlevel_unit_sptr> &mess_list,
+//                            vtrc::uint64_t microsec );
 
         void erase_slot ( vtrc::uint64_t slot_id );
         void cancel_slot( vtrc::uint64_t slot_id );

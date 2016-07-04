@@ -233,6 +233,25 @@ namespace vtrc { namespace common  {
             get_channel_error_callback( )( "Channel is not ready." );
             return false;
         }
+
+        struct slot_erase {
+
+            common::protocol_iface &proto_;
+            google::protobuf::uint64 id_;
+
+            slot_erase( common::protocol_iface &proto, gpb::uint64 id )
+                :proto_(proto)
+                ,id_(id)
+            { }
+
+            ~slot_erase( )
+            {
+                proto_.erase_slot( id_ );
+            }
+        };
+
+        slot_erase slot_keeper(cl->get_protocol( ), call_id);
+
         cl->get_protocol( ).call_rpc_method( call_id, llu );
 
         const unsigned mess_type( llu.info( ).message_type( ) );
@@ -248,7 +267,8 @@ namespace vtrc { namespace common  {
         while( wait ) {
 
             //lowlevel_unit_sptr top (vtrc::make_shared<lowlevel_unit_type>( ));
-            top->Clear( );
+            //top->Clear( );
+
             top = vtrc::make_shared<lowlevel_unit_type>( );
 
             cl->get_protocol( ).read_slot_for( call_id, top,
@@ -264,7 +284,7 @@ namespace vtrc { namespace common  {
                 wait = false;
             }
         }
-        cl->get_protocol( ).erase_slot( call_id );
+        //cl->get_protocol( ).erase_slot( call_id );
         return top;
     }
 
@@ -323,6 +343,23 @@ namespace vtrc { namespace common  {
             return false;
         }
 
+        struct slot_erase {
+
+            common::protocol_iface &proto_;
+            google::protobuf::uint64 id_;
+
+            slot_erase( common::protocol_iface &proto, gpb::uint64 id )
+                :proto_(proto)
+                ,id_(id)
+            { }
+
+            ~slot_erase( )
+            {
+                proto_.erase_slot( id_ );
+            }
+        };
+
+        slot_erase slot_keeper(cl->get_protocol( ), call_id);
         cl->get_protocol( ).call_rpc_method( call_id, llu );
 
         const unsigned mess_type(llu.info( ).message_type( ));
@@ -340,7 +377,7 @@ namespace vtrc { namespace common  {
                                                call_opt->timeout( ) );
 
             if( top->error( ).code( ) != rpc::errors::ERR_NO_ERROR ) {
-                cl->get_protocol( ).erase_slot( call_id );
+                //cl->get_protocol( ).erase_slot( call_id );
                 impl_->error_cb_( top->error( ).code( ),
                                   top->error( ).category( ),
                                   top->error( ).additional( ).c_str( ) );
@@ -361,7 +398,7 @@ namespace vtrc { namespace common  {
                 wait = false;
             }
         }
-        cl->get_protocol( ).erase_slot( call_id );
+        //cl->get_protocol( ).erase_slot( call_id );
         return true;
     }
 
