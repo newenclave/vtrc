@@ -213,7 +213,7 @@ namespace vtrc { namespace common {
             {
                 DEBUG_LINE(parent_);
 
-                try {
+                //try {
                     stream_->async_write_some(
                             basio::buffer( data, length ),
                             write_dispatcher_.wrap(
@@ -227,9 +227,9 @@ namespace vtrc { namespace common {
                                         )
                                     )
                             ));
-                } catch( const std::exception & ) {
-                    this->close( );
-                }
+//                } catch( const std::exception & ) {
+//                    this->close( );
+//                }
 
             }
 

@@ -145,16 +145,17 @@ namespace  {
 
             bool dis_wait = !request->wait( );
 
-            /// warning! Not thread safe
+            vtrc::unique_ptr<common::rpc_channel> channel;
+
             if( request->callback( ) ) {
-                channel_.reset(unicast::create_callback_channel(
-                                                        c_sptr, dis_wait ));
+                channel.reset(unicast::create_callback_channel(
+                                                       c_sptr, dis_wait ));
             } else {
-                channel_.reset(unicast::create_event_channel(
+                channel.reset(unicast::create_event_channel(
                                                         c_sptr, dis_wait ));
             }
 
-            stub_wrapper_type stub(channel_.get( ));
+            stub_wrapper_type stub(channel.get( ));
             vtrc_example::event_req req;
             req.set_payload( payload );
 
