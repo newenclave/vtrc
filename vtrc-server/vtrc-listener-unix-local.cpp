@@ -106,6 +106,7 @@ namespace vtrc { namespace server { namespace listeners {
                 std::ostringstream oss;
                 oss << "unix://" << endpoint_.path( );
 
+#ifdef SO_PEERCRED
                 ucred cred = { 0 };
                 unsigned len = sizeof(cred);
 
@@ -123,7 +124,7 @@ namespace vtrc { namespace server { namespace listeners {
                 } else {
                     oss << "[get PEERCRED error " << errno << "]";
                 }
-
+#endif
                 con->set_name( oss.str( ) );
             }
 
