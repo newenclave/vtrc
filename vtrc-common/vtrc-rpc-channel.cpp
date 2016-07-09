@@ -231,7 +231,7 @@ namespace vtrc { namespace common  {
     {
         if( !cl->active( ) ) {
             get_channel_error_callback( )( "Channel is not ready." );
-            return false;
+            return rpc_channel::lowlevel_unit_sptr( );
         }
 
         struct slot_erase {
