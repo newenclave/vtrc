@@ -6,7 +6,7 @@
 #include "vtrc-client-stream-impl.h"
 #include "vtrc-common/vtrc-exception.h"
 
-#include <error.h>
+//#include <error.h>
 
 namespace vtrc { namespace client {
 
