@@ -39,26 +39,6 @@
 
 namespace stress {
 
-namespace {
-
-#if 0
-    void precall_closure( vtrc::common::connection_iface &c,
-                          const google::protobuf::MethodDescriptor *m,
-                          vtrc::rpc::lowlevel_unit & )
-    {
-        std::cout << "Precall " << m->full_name( ) << "\n";
-        c.close( );
-    }
-
-    void postcall_closure( vtrc::common::connection_iface &,
-                           vtrc::rpc::lowlevel_unit & )
-    {
-        std::cout << "Postcall " << "\n";
-    }
-#endif
-
-}
-
     using namespace vtrc;
     namespace po = boost::program_options;
     namespace gpb = google::protobuf;
@@ -276,7 +256,7 @@ namespace {
         }
 
         void on_new_connection( server::listener *l,
-                                const common::connection_iface *c )
+                                common::connection_iface *c )
         {
             std::cout << "New connection: "
                       << "\n\tep:     " << l->name( )
@@ -284,6 +264,7 @@ namespace {
                       << "\n\ttotal:  " << ++counter_
                       << "\n"
                         ;
+            //c->close( );
         }
 
         void on_stop_connection( server::listener *l,

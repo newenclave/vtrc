@@ -293,7 +293,9 @@ namespace vtrc { namespace client {
 
     void protocol_layer_c::close( )
     {
-        impl_->conn_setup_->close( );
+        if( impl_->conn_setup_ ) {
+            impl_->conn_setup_->close( );
+        }
         cancel_all_slots( );
         impl_->callbacks_->on_disconnect( );
     }

@@ -123,7 +123,9 @@ namespace vtrc { namespace server {
         void close( )
         {
             closed_ = true;
-            conn_setup_->close( );
+            if( conn_setup_ ) {
+                conn_setup_->close( );
+            }
         }
 
         common::connection_iface *connection( )
