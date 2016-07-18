@@ -160,7 +160,7 @@ namespace vtrc { namespace server {
     {
         return impl_->get_enviroment( );
     }
-1
+
     const VTRC_ASIO::io_service &application::get_io_service( )  const
     {
         return impl_->get_io_service( );
