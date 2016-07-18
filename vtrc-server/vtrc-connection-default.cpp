@@ -135,7 +135,6 @@ namespace vtrc { namespace server {
                                     true );
             }
 
-
             void set_client_ready( rpc::auth::init_capsule &capsule )
             {
                 keepalive_calls_.cancel( );

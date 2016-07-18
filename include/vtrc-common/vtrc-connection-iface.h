@@ -19,7 +19,6 @@ namespace vtrc { namespace rpc {
 namespace vtrc { namespace common {
 
     class  enviroment;
-    class  protocol_layer;
     class  call_context;
     class  rpc_channel;
     struct protocol_iface;
