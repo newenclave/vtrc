@@ -293,11 +293,6 @@ namespace lukki_db {
             send_subscribed( *channel );
         }
 
-        void execute( vtrc::function<void(void)> func )
-        {
-            func( );
-        }
-
     };
 
     application::application( vtrc::common::pool_pair &pp )
