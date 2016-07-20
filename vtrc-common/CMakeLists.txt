@@ -88,10 +88,10 @@ list( APPEND public_proto_files
 
 foreach( next_proto ${public_proto_files} )
 
-    file(COPY
-            protocol-base/${next_proto}
-        DESTINATION
-            ${VTRC_PROTOCOL_INCLUDE_DIR} )
+    file( COPY
+              protocol-base/${next_proto}
+          DESTINATION
+              ${VTRC_PROTOCOL_INCLUDE_DIR} )
 
 endforeach( )
 
