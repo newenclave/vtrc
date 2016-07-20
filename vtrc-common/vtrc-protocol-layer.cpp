@@ -473,6 +473,7 @@ namespace vtrc { namespace common {
             upgradable_lock lck(options_map_lock_);
             static rpc::options defaults( common::defaults::method_options( ) );
 
+            // TODO: think if we need it!
             options_map_type::const_iterator f(options_map_.find(method));
 
             vtrc::shared_ptr<rpc::options> result;

@@ -82,7 +82,7 @@ foreach(next_proto ${protofiles})
 endforeach( )
 
 list( APPEND public_proto_files
-        vtrc-rpc-options.proto
+        #vtrc-rpc-options.proto
         #vtrc-errors.proto
     )
 
