@@ -51,6 +51,8 @@ namespace vtrc { namespace common  {
         void set_flag( unsigned );
         void reset_flag( unsigned );
 
+        vtrc::uint64_t timeout( ) const;
+        void set_timeout( vtrc::uint64_t new_value );
 
         virtual bool alive( ) const = 0;
 

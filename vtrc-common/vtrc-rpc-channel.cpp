@@ -83,6 +83,8 @@ namespace vtrc { namespace common  {
         rpc_channel::proto_error_cb_type    error_cb_;
         rpc_channel::channel_error_cb_type  chan_error_cb_;
 
+        vtrc::uint64_t timeout_;
+
         impl( unsigned direct_call_type, unsigned callback_type )
             :direct_type_(direct_call_type)
             ,callback_type_(callback_type)
@@ -91,6 +93,7 @@ namespace vtrc { namespace common  {
             ,accept_callbacks_(false)
             ,error_cb_(get_default_error_cb( ))
             ,chan_error_cb_(get_default_chan_error_cb( ))
+            ,timeout_(30000000) // microseconds
         {
             const common::call_context *ctx = common::call_context::get( );
             if( ctx ) {
@@ -174,6 +177,16 @@ namespace vtrc { namespace common  {
     void rpc_channel::reset_flag( unsigned value )
     {
         impl_->flags_ &= (~value);
+    }
+
+    vtrc::uint64_t rpc_channel::timeout() const
+    {
+        return impl_->timeout_;
+    }
+
+    void rpc_channel::set_timeout( vtrc::uint64_t new_value )
+    {
+        impl_->timeout_ = new_value;
     }
 
     const std::string &rpc_channel::channel_data( )
@@ -271,8 +284,8 @@ namespace vtrc { namespace common  {
 
             top = vtrc::make_shared<lowlevel_unit_type>( );
 
-            cl->get_protocol( ).read_slot_for( call_id, top,
-                                               call_opt->timeout( ) );
+            cl->get_protocol( ).read_slot_for( call_id, top, impl_->timeout_ );
+                                               //call_opt->timeout( ) );
 
             if( top->error( ).code( ) != rpc::errors::ERR_NO_ERROR ) {
                 wait = false;
@@ -373,8 +386,8 @@ namespace vtrc { namespace common  {
             lowlevel_unit_sptr top (vtrc::make_shared<lowlevel_unit_type>( ));
             //top->Clear( );
 
-            cl->get_protocol( ).read_slot_for( call_id, top,
-                                               call_opt->timeout( ) );
+            cl->get_protocol( ).read_slot_for( call_id, top, impl_->timeout_ );
+                                               //call_opt->timeout( ) );
 
             if( top->error( ).code( ) != rpc::errors::ERR_NO_ERROR ) {
                 //cl->get_protocol( ).erase_slot( call_id );

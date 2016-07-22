@@ -154,10 +154,10 @@ namespace vtrc { namespace common {
 
         rpc_queue_type               rpc_queue_;
         vtrc::atomic<vtrc::uint64_t> rpc_index_;
-
+#if 0
         options_map_type             options_map_;
         mutable vtrc::shared_mutex   options_map_lock_;
-
+#endif
         bool                         ready_;
 
         rpc::session_options         session_opts_;
@@ -470,8 +470,12 @@ namespace vtrc { namespace common {
         const rpc::options *get_method_options(
                                     const gpb::MethodDescriptor *method)
         {
-            upgradable_lock lck(options_map_lock_);
             static rpc::options defaults( common::defaults::method_options( ) );
+
+            return &defaults;
+
+#if 0
+            upgradable_lock lck(options_map_lock_);
 
             // TODO: think if we need it!
             options_map_type::const_iterator f(options_map_.find(method));
@@ -500,6 +504,7 @@ namespace vtrc { namespace common {
             }
 
             return result.get( );
+#endif
         }
 
         void erase_all_slots(  )

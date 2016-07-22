@@ -280,9 +280,6 @@ namespace vtrc { namespace server {
                 llu.mutable_info( )->set_message_type( message_type_ );
                 llu.mutable_opt( )->set_wait( false );
 
-//                const rpc_lowlevel::options &call_opt
-//                          ( clk->get_protocol( ).get_method_options(method));
-
                 if( clk ) {
                     lck_list->foreach_while(
                             vtrc::bind( &this_type::send_to_client, this,
