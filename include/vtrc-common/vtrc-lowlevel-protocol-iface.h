@@ -44,7 +44,7 @@ namespace vtrc { namespace common {
         virtual std::string serialize_lowlevel( const lowlevel_unit &mess ) = 0;
 
         /// pack lowlevel message; non threads!
-        virtual void pack_message( std::string &mess ) { }
+        virtual void pack_message( std::string & /*mess*/ ) { }
 
         /// accept portion os the data and unpuck message is exists
         virtual void process_data( const char *data, size_t length ) = 0;
