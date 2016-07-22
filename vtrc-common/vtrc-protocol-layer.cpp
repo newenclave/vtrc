@@ -468,9 +468,10 @@ namespace vtrc { namespace common {
         }
 
         const rpc::options *get_method_options(
-                                    const gpb::MethodDescriptor *method)
+                                    const gpb::MethodDescriptor * /*method*/ )
         {
-            static rpc::options defaults( common::defaults::method_options( ) );
+            namespace defs = common::defaults;
+            static const rpc::options defaults( defs::method_options( ) );
 
             return &defaults;
 
