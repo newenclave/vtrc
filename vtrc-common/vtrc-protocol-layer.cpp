@@ -475,7 +475,6 @@ namespace vtrc { namespace common {
             return &defaults;
 
 #if 0
-
             upgradable_lock lck(options_map_lock_);
 
             // TODO: think if we need it!
