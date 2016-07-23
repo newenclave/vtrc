@@ -10,6 +10,12 @@
 #include "vtrc-bind.h"
 #include "vtrc-thread.h"
 
+#if VTRC_DISABLE_CXX11
+
+#include "boost/thread/tss.hpp"
+
+#endif
+
 ///// TODO: need some fix here
 namespace vtrc { namespace common {
 
@@ -44,6 +50,43 @@ namespace vtrc { namespace common {
     }
 
     typedef std::set<thread_context::shared_type>  thread_set_type;
+
+    namespace {
+        typedef std::string thread_id_type;
+#if VTRC_DISABLE_CXX11
+        /// call context ptr BOOST
+        typedef boost::thread_specific_ptr<thread_id_type> thread_id_ptr;
+        static thread_id_ptr s_thread_id;
+        thread_id_type *thread_id_get( )
+        {
+            return s_thread_id.get( );
+        }
+
+        void thread_id_reset( thread_id_type *new_inst = NULL )
+        {
+            s_thread_id.reset( new_inst );
+        }
+#else
+        //// NON BOOST
+        typedef thread_id_type *thread_id_ptr;
+        static VTRC_THREAD_LOCAL thread_id_ptr s_thread_id = nullptr;
+
+        thread_id_type *thread_id_get( )
+        {
+            return s_thread_id;
+        }
+
+        void thread_id_reset( thread_id_type *new_inst = nullptr )
+        {
+            if( s_thread_id ) {
+                delete s_thread_id;
+            }
+            s_thread_id = new_inst;
+        }
+
+#endif  /// VTRC_DISABLE_CXX11
+
+    }
 
 #if 0
     struct thread_pool::impl_ {
@@ -231,13 +274,19 @@ namespace vtrc { namespace common {
 
         void run( thread_context::shared_type thread )
         {
-            run_impl( thread.get( ) );
+            run_impl( thread.get( ), "" );
 //            move_to_stopped( thread ); /// must not remove it here;
 //                                       /// moving to stopped_thread_
         }
 
-        bool run_impl( thread_context * /*context*/ )
+        bool run_impl( thread_context * /*context*/, const char *prefix )
         {
+            std::ostringstream oss;
+            oss << prefix;
+            oss << vtrc::this_thread::get_id( );
+
+            thread_id_reset( new std::string( oss.str( ) ) );
+
             while ( true  ) {
                 try {
                     while ( true ) {
@@ -250,13 +299,14 @@ namespace vtrc { namespace common {
                     exception_( );
                 }
             }
+            thread_id_reset( NULL );
             return false; /// interruped by interrupt::raise or
                           ///               boost::thread_interrupted
         }
 
-        bool attach( )
+        bool attach( const char * prefix = "" )
         {
-            return run_impl( NULL );
+            return run_impl( NULL, prefix );
         }
 
     };

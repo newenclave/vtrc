@@ -128,7 +128,7 @@ namespace vtrc { namespace common {
 
 #if VTRC_DISABLE_CXX11
         /// call context ptr BOOST
-        typedef std::deque< vtrc::shared_ptr<call_context> > call_stack_type;
+        //typedef std::deque< vtrc::shared_ptr<call_context> > call_stack_type;
         typedef boost::thread_specific_ptr<call_stack_type>  call_context_ptr;
         static call_context_ptr s_call_context;
 #else
