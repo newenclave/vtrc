@@ -600,13 +600,13 @@ namespace vtrc { namespace common {
                 //wait ? closure_done( holder ) : closure_fake( holder );
             } else {
                 const common::call_context *cc = common::call_context::get( );
-                if( NULL == cc ) { // ok we are not in context!
-                                   // we have to send answer back to client;
+                if( NULL == cc ) { // ok we are not in the context!
+                                   // we have to send answer back to the client;
 #if VTRC_DISABLE_CXX11
                     holder->controller_->SetFailed(
                                 "Uncaught exception while running closure" );
 #else
-                    /// TODO: think about rethrow exception to client
+                    /// TODO: think about rethrow exception to the client
                     holder->controller_->SetFailed(
                                 "Uncaught exception while running closure" );
 #endif
