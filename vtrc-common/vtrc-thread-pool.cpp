@@ -45,6 +45,63 @@ namespace vtrc { namespace common {
 
     typedef std::set<thread_context::shared_type>  thread_set_type;
 
+#if 0
+    struct thread_pool::impl_ {
+        basio::io_service              *ios_;
+        basio::io_service::work        *wrk_;
+        bool                            own_ios_;
+        thread_pool::exception_handler  exception_;
+        thread_set_type                 threads_;
+
+        impl( basio::io_service *ios, bool own_ios )
+            :ios_(ios)
+            ,wrk_(new basio::io_service::work(*ios_))
+            ,own_ios_(own_ios)
+            ,exception_(&exception_default)
+        { }
+
+        ~impl( )
+        {
+            try {
+                if( wrk_ ) {
+                    stop( );
+                }
+                join_all( );
+            } catch( ... ) {
+                ;;;
+            }
+
+            if( own_ios_ ) {
+                delete ios_;
+            }
+        }
+
+        void add( size_t count )
+        {
+            std::list<thread_context::shared_type> tmp;
+            while( count-- ) {
+                tmp.push_back(create_thread( ));
+            }
+            unique_shared_lock lck(threads_lock_);
+            threads_.insert( tmp.begin( ), tmp.end( ) );
+            stopped_threads_.clear( );
+        }
+
+        thread_context::shared_type create_thread(  )
+        {
+
+            thread_context::shared_type new_inst(
+                        vtrc::make_shared<thread_context>( ));
+
+            new_inst->thread_.reset(
+                     new vtrc::thread(vtrc::bind(&impl::run, this, new_inst)));
+
+            return new_inst;
+        }
+
+    };
+#endif
+
     struct thread_pool::impl {
 
         basio::io_service       *ios_;
@@ -53,7 +110,6 @@ namespace vtrc { namespace common {
 
         thread_set_type          threads_;
         thread_set_type          stopped_threads_;
-
 
         mutable shared_mutex     threads_lock_;
 
