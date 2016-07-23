@@ -158,15 +158,18 @@ namespace vtrc { namespace common {
 
         thread_pool::exception_handler exception_;
 
+        std::string prefix_;
+
 //        struct interrupt {
 //            static void raise ( ) { throw interrupt( ); }
 //        };
 
-        impl( basio::io_service *ios, bool own_ios )
+        impl( basio::io_service *ios, bool own_ios, const char *prefix )
             :ios_(ios)
             ,wrk_(new basio::io_service::work(*ios_))
             ,own_ios_(own_ios)
             ,exception_(&exception_default)
+            ,prefix_(prefix)
         { }
 
         ~impl( )
@@ -274,18 +277,25 @@ namespace vtrc { namespace common {
 
         void run( thread_context::shared_type thread )
         {
-            run_impl( thread.get( ), "" );
+            run_impl( thread.get( ), prefix_.c_str( ) );
 //            move_to_stopped( thread ); /// must not remove it here;
 //                                       /// moving to stopped_thread_
         }
 
         bool run_impl( thread_context * /*context*/, const char *prefix )
         {
-            std::ostringstream oss;
-            oss << prefix;
-            oss << vtrc::this_thread::get_id( );
 
-            thread_id_reset( new std::string( oss.str( ) ) );
+            struct tss_keeper {
+                tss_keeper( const char *prefix )
+                {
+                    thread_id_reset( new std::string( prefix ) );
+                }
+
+                ~tss_keeper( )
+                {
+                    thread_id_reset( NULL );
+                }
+            } _( prefix );
 
             while ( true  ) {
                 try {
@@ -299,36 +309,56 @@ namespace vtrc { namespace common {
                     exception_( );
                 }
             }
-            thread_id_reset( NULL );
             return false; /// interruped by interrupt::raise or
                           ///               boost::thread_interrupted
         }
 
-        bool attach( const char * prefix = "" )
+        bool attach( const char * prefix )
         {
             return run_impl( NULL, prefix );
         }
 
     };
 
-    thread_pool::thread_pool( )
-        :impl_(new impl(new basio::io_service, true))
+    thread_pool::thread_pool(  )
+        :impl_(new impl(new basio::io_service, true, "_"))
     { }
 
     thread_pool::thread_pool( size_t init_count )
-        :impl_(new impl(new basio::io_service, true))
+        :impl_(new impl(new basio::io_service, true, "_"))
     {
         impl_->add( init_count );
     }
 
     thread_pool::thread_pool( VTRC_ASIO::io_service &ios, size_t init_count )
-        :impl_(new impl(&ios, false))
+        :impl_(new impl(&ios, false, "_"))
     {
         impl_->add( init_count );
     }
 
     thread_pool::thread_pool( VTRC_ASIO::io_service &ios )
-        :impl_(new impl(&ios, false))
+        :impl_(new impl(&ios, false, "_"))
+    { }
+
+    thread_pool::thread_pool( const char *prefix )
+        :impl_(new impl(new basio::io_service, true, prefix))
+    { }
+
+    thread_pool::thread_pool( size_t init_count, const char *prefix )
+        :impl_(new impl(new basio::io_service, true, prefix))
+    {
+        impl_->add( init_count );
+    }
+
+    thread_pool::thread_pool( VTRC_ASIO::io_service &ios,
+                              size_t init_count, const char *prefix )
+        :impl_(new impl(&ios, false, prefix))
+    {
+        impl_->add( init_count );
+    }
+
+    thread_pool::thread_pool( VTRC_ASIO::io_service &ios, const char *prefix )
+        :impl_(new impl(&ios, false, prefix))
     { }
 
     thread_pool::~thread_pool( )
@@ -361,9 +391,14 @@ namespace vtrc { namespace common {
         impl_->exception_ = eh ? eh : exception_default;
     }
 
-    bool thread_pool::attach( )
+    bool thread_pool::attach( const char *prefix )
     {
-        return impl_->attach( );
+        return impl_->attach( prefix );
+    }
+
+    bool thread_pool::attach(  )
+    {
+        return impl_->attach( impl_->prefix_.c_str( ) );
     }
 
     void thread_pool::add_thread( )
@@ -374,6 +409,18 @@ namespace vtrc { namespace common {
     void thread_pool::add_threads( size_t count )
     {
         impl_->add(count);
+    }
+
+    const char *thread_pool::get_thread_prefix( )
+    {
+        static const char *tmp = "";
+        const thread_id_type *tt = thread_id_get( );
+        return tt ? tt->c_str( ) : tmp;
+    }
+
+    void thread_pool::set_thread_prefix( const char *prefix )
+    {
+        thread_id_reset( new std::string( prefix ? prefix : "" ) );
     }
 
     VTRC_ASIO::io_service &thread_pool::get_io_service( )

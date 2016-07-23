@@ -14,14 +14,14 @@ namespace vtrc { namespace common {
         const bool                     same_;
 
         impl( unsigned thread_count )
-            :io_(new thread_pool(thread_count))
+            :io_(new thread_pool(thread_count, "I"))
             ,rpc_(io_.get( ))
             ,same_(true)
         { }
 
         impl( unsigned thread_count, unsigned rpc_thread_count )
-            :io_(new thread_pool(thread_count))
-            ,rpc_(new thread_pool(rpc_thread_count))
+            :io_(new thread_pool(thread_count, "I"))
+            ,rpc_(new thread_pool(rpc_thread_count, "R"))
             ,same_(false)
         { }
 

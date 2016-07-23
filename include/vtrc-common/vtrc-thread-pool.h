@@ -21,10 +21,17 @@ namespace vtrc { namespace common {
 
         typedef vtrc::function<void(void)> exception_handler;
 
-        thread_pool( );
+        thread_pool(  );
         thread_pool( size_t init_count );
         thread_pool( VTRC_ASIO::io_service &ios, size_t init_count );
         thread_pool( VTRC_ASIO::io_service &ios );
+
+        thread_pool( const char *prefix );
+        thread_pool( size_t init_count, const char *prefix );
+        thread_pool( VTRC_ASIO::io_service &ios,
+                     size_t init_count, const char *prefix );
+        thread_pool( VTRC_ASIO::io_service &ios, const char *prefix );
+
         ~thread_pool( );
 
         size_t size( ) const;
@@ -34,6 +41,9 @@ namespace vtrc { namespace common {
         void add_thread( );
         void add_threads( size_t count );
 
+        static const char *get_thread_prefix( );
+        static void set_thread_prefix( const char *prefix );
+
         void join_all( );
 
         void assign_exception_handler( exception_handler eh );
@@ -42,6 +52,7 @@ namespace vtrc { namespace common {
         /// retrurns:
         ///     false if interrupted by interrupt_one( )
         ///     true  if stopped by stop( )
+        bool attach( const char *prefix );
         bool attach(  );
 
         VTRC_ASIO::io_service       &get_io_service( );
