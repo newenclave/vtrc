@@ -33,6 +33,9 @@ namespace vtrc { namespace common {
         return  l.thread_.get( ) < r.thread_.get( );
     }
 
+    static void decorator_default( thread_pool::call_decorator_type )
+    { }
+
     static void exception_default( )
     {
         try {
@@ -50,43 +53,6 @@ namespace vtrc { namespace common {
     }
 
     typedef std::set<thread_context::shared_type>  thread_set_type;
-
-    namespace {
-        typedef std::string thread_id_type;
-#if VTRC_DISABLE_CXX11
-        /// call context ptr BOOST
-        typedef boost::thread_specific_ptr<thread_id_type> thread_id_ptr;
-        static thread_id_ptr s_thread_id;
-        thread_id_type *thread_id_get( )
-        {
-            return s_thread_id.get( );
-        }
-
-        void thread_id_reset( thread_id_type *new_inst = NULL )
-        {
-            s_thread_id.reset( new_inst );
-        }
-#else
-        //// NON BOOST
-        typedef thread_id_type *thread_id_ptr;
-        static VTRC_THREAD_LOCAL thread_id_ptr s_thread_id = nullptr;
-
-        thread_id_type *thread_id_get( )
-        {
-            return s_thread_id;
-        }
-
-        void thread_id_reset( thread_id_type *new_inst = nullptr )
-        {
-            if( s_thread_id ) {
-                delete s_thread_id;
-            }
-            s_thread_id = new_inst;
-        }
-
-#endif  /// VTRC_DISABLE_CXX11
-
-    }
 
 #if 0
     struct thread_pool::impl_ {
@@ -157,19 +123,18 @@ namespace vtrc { namespace common {
         mutable shared_mutex     threads_lock_;
 
         thread_pool::exception_handler exception_;
-
-        std::string prefix_;
+        thread_pool::thread_decorator  decorator_;
 
 //        struct interrupt {
 //            static void raise ( ) { throw interrupt( ); }
 //        };
 
-        impl( basio::io_service *ios, bool own_ios, const char *prefix )
+        impl( basio::io_service *ios, bool own_ios )
             :ios_(ios)
             ,wrk_(new basio::io_service::work(*ios_))
             ,own_ios_(own_ios)
             ,exception_(&exception_default)
-            ,prefix_(prefix)
+            ,decorator_(&decorator_default)
         { }
 
         ~impl( )
@@ -277,31 +242,40 @@ namespace vtrc { namespace common {
 
         void run( thread_context::shared_type thread )
         {
-            run_impl( thread.get( ), prefix_.c_str( ) );
+            run_impl( thread.get( ), decorator_ );
 //            move_to_stopped( thread ); /// must not remove it here;
 //                                       /// moving to stopped_thread_
         }
 
-        bool run_impl( thread_context * /*context*/, const char *prefix )
+        bool run_impl( thread_context * /*context*/,
+                       thread_pool::thread_decorator td )
         {
+            struct decoratot_keeper {
+                thread_pool::thread_decorator td_;
 
-            struct tss_keeper {
-                tss_keeper( const char *prefix )
+                decoratot_keeper( thread_pool::thread_decorator td )
+                    :td_(td)
                 {
-                    thread_id_reset( new std::string( prefix ) );
+                    td_( thread_pool::CALL_PROLOGUE );
                 }
 
-                ~tss_keeper( )
+                ~decoratot_keeper( )
                 {
-                    thread_id_reset( NULL );
+                    try {
+                        td_( thread_pool::CALL_EPILOGUE );
+                    } catch ( ... ) {
+
+                    }
                 }
-            } _( prefix );
+            } _(td);
 
             while ( true  ) {
                 try {
                     while ( true ) {
                         const size_t count = ios_->run_one( );
-                        if( !count ) return true; /// stopped;
+                        if( 0 == count ) {
+                            return true; /// stopped;
+                        }
                     }
 //                } catch( const interrupt & ) {
 //                    break;
@@ -313,52 +287,31 @@ namespace vtrc { namespace common {
                           ///               boost::thread_interrupted
         }
 
-        bool attach( const char * prefix )
+        bool attach( thread_pool::thread_decorator td )
         {
-            return run_impl( NULL, prefix );
+            return run_impl( NULL, td );
         }
 
     };
 
     thread_pool::thread_pool(  )
-        :impl_(new impl(new basio::io_service, true, "_"))
+        :impl_(new impl(new basio::io_service, true))
     { }
 
     thread_pool::thread_pool( size_t init_count )
-        :impl_(new impl(new basio::io_service, true, "_"))
+        :impl_(new impl(new basio::io_service, true))
     {
         impl_->add( init_count );
     }
 
     thread_pool::thread_pool( VTRC_ASIO::io_service &ios, size_t init_count )
-        :impl_(new impl(&ios, false, "_"))
+        :impl_(new impl(&ios, false))
     {
         impl_->add( init_count );
     }
 
     thread_pool::thread_pool( VTRC_ASIO::io_service &ios )
-        :impl_(new impl(&ios, false, "_"))
-    { }
-
-    thread_pool::thread_pool( const char *prefix )
-        :impl_(new impl(new basio::io_service, true, prefix))
-    { }
-
-    thread_pool::thread_pool( size_t init_count, const char *prefix )
-        :impl_(new impl(new basio::io_service, true, prefix))
-    {
-        impl_->add( init_count );
-    }
-
-    thread_pool::thread_pool( VTRC_ASIO::io_service &ios,
-                              size_t init_count, const char *prefix )
-        :impl_(new impl(&ios, false, prefix))
-    {
-        impl_->add( init_count );
-    }
-
-    thread_pool::thread_pool( VTRC_ASIO::io_service &ios, const char *prefix )
-        :impl_(new impl(&ios, false, prefix))
+        :impl_(new impl(&ios, false))
     { }
 
     thread_pool::~thread_pool( )
@@ -391,14 +344,20 @@ namespace vtrc { namespace common {
         impl_->exception_ = eh ? eh : exception_default;
     }
 
-    bool thread_pool::attach( const char *prefix )
+    void thread_pool::assign_thread_decorator( thread_pool::thread_decorator d )
     {
-        return impl_->attach( prefix );
+        impl_->decorator_ = d ? d : decorator_default;
     }
+
 
     bool thread_pool::attach(  )
     {
-        return impl_->attach( impl_->prefix_.c_str( ) );
+        return impl_->attach( impl_->decorator_ );
+    }
+
+    bool thread_pool::attach( thread_decorator td )
+    {
+        return impl_->attach( td );
     }
 
     void thread_pool::add_thread( )
@@ -409,18 +368,6 @@ namespace vtrc { namespace common {
     void thread_pool::add_threads( size_t count )
     {
         impl_->add(count);
-    }
-
-    const char *thread_pool::get_thread_prefix( )
-    {
-        static const char *tmp = "";
-        const thread_id_type *tt = thread_id_get( );
-        return tt ? tt->c_str( ) : tmp;
-    }
-
-    void thread_pool::set_thread_prefix( const char *prefix )
-    {
-        thread_id_reset( new std::string( prefix ? prefix : "" ) );
     }
 
     VTRC_ASIO::io_service &thread_pool::get_io_service( )
