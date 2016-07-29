@@ -84,7 +84,8 @@ namespace {
         {
             native_handle_type res;
 #ifdef _WIN32
-            res.value.win_handle = acceptor_->native_handle( );
+            res.value.win_handle = reinterpret_cast<native_handle_type::handle>
+                    ((SOCKET)acceptor_->native_handle( ));
 #else
             res.value.unix_fd = acceptor_->native_handle( );
 #endif
