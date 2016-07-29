@@ -10,6 +10,7 @@
 
 #include "vtrc-memory.h"
 #include "vtrc-system-forward.h"
+#include "vtrc-common/vtrc-handle.h"
 
 namespace google { namespace protobuf {
     class MethodDescriptor;
@@ -73,6 +74,7 @@ namespace server {
     public:
 
         typedef common::lowlevel::protocol_factory_type lowlevel_factory_type;
+        typedef common::native_handle_type native_handle_type;
 
         void assign_lowlevel_protocol_factory( lowlevel_factory_type factory );
         lowlevel_factory_type lowlevel_protocol_factory( );
@@ -82,6 +84,12 @@ namespace server {
         virtual void stop ( )             = 0;
         virtual bool is_active( )   const = 0;
         virtual bool is_local( )    const = 0;
+        virtual native_handle_type native_handle( ) const
+        {
+            native_handle_type res;
+            res.value.ptr_ = NULL;
+            return res;
+        }
 
     protected:
 

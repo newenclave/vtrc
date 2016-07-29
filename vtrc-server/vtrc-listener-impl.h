@@ -80,6 +80,17 @@ namespace {
             return "unknown://";
         }
 
+        virtual native_handle_type native_handle( ) const
+        {
+            native_handle_type res;
+#ifdef _WIN32
+            res.value.win_handle = acceptor_->native_handle( );
+#else
+            res.value.unix_fd = acceptor_->native_handle( );
+#endif
+            return res;
+        }
+
         void start_accept(  )
         {
 

@@ -9,6 +9,8 @@
 #include "vtrc-system-forward.h"
 #include "vtrc-lowlevel-protocol-iface.h"
 
+#include "vtrc-handle.h"
+
 VTRC_ASIO_FORWARD( class io_service; )
 VTRC_SYSTEM_FORWARD( class error_code; )
 
@@ -22,19 +24,6 @@ namespace vtrc { namespace common {
     class  call_context;
     class  rpc_channel;
     struct protocol_iface;
-
-    struct native_handle_type {
-        typedef void *pvoid;
-        typedef pvoid handle;
-        union {
-#ifdef _WIN32
-            handle  win_handle;
-#else
-            int     unix_fd;
-#endif
-            handle  ptr_;
-        } value;
-    };
 
     struct connection_iface: public enable_shared_from_this<connection_iface> {
 
