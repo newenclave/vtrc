@@ -25,6 +25,7 @@ namespace vtrc { namespace common {  namespace hash {
             }
         };
 
+#if 0
         typedef boost::crc_optimal <
                 64,
                 0xad93d23594c935a9ULL, 0ULL, 0ULL,
@@ -72,6 +73,7 @@ namespace vtrc { namespace common {  namespace hash {
 
             }
         };
+#endif
 
         struct hasher_crc32: public hasher_crc_base<boost::crc_32_type> {
             std::string get_data_hash( const void *data,
@@ -154,11 +156,12 @@ namespace vtrc { namespace common {  namespace hash {
         {
             return new hasher_crc32;
         }
-
+#if 0
         hash_iface *create64( )
         {
             return new hasher_crc64;
         }
+#endif
     }
 
 

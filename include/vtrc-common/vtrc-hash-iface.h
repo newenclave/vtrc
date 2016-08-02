@@ -39,7 +39,7 @@ namespace vtrc { namespace common {
         namespace crc {
             hash_iface *create16( );
             hash_iface *create32( );
-            hash_iface *create64( );
+            //hash_iface *create64( );
         }
 
         hash_iface *create_by_index( unsigned var );
