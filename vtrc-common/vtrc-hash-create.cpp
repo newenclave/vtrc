@@ -23,8 +23,8 @@ namespace vtrc { namespace common {  namespace hash {
         case auth::HASH_CRC_32:
             result = crc::create32( );
             break;
-        case auth::HASH_CRC_64:
-            result = crc::create64( );
+//        case auth::HASH_CRC_64:
+//            result = crc::create64( );
             break;
         case auth::HASH_SHA2_256:
             result = sha2::create256( );
