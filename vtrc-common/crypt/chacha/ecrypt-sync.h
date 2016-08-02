@@ -10,6 +10,10 @@
 #ifndef ECRYPT_SYNC
 #define ECRYPT_SYNC
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "ecrypt-portable.h"
 
 /* ------------------------------------------------------------------------- */
@@ -66,9 +70,6 @@ typedef struct
 
 /* Mandatory functions */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /*
  * Key and message independent initialization. This function will be
