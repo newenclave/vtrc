@@ -111,10 +111,10 @@ namespace {
 
         void start( )
         {
-            working_ = true;
             acceptor_.reset(new acceptor_type(ios_, endpoint_));
             acceptor_->listen( 5 );
             start_accept( );
+            working_ = true;
             call_on_start( );
         }
 
