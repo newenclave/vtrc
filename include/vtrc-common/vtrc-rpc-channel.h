@@ -18,8 +18,15 @@ namespace vtrc { namespace common  {
 
     class rpc_channel: public google::protobuf::RpcChannel {
 
+#if VTRC_DISABLE_CXX11
         rpc_channel( const rpc_channel & );
         rpc_channel& operator = ( const rpc_channel & );
+#else
+    public:
+        rpc_channel( const rpc_channel & )              = delete;
+        rpc_channel& operator = ( const rpc_channel & ) = delete;
+    private:
+#endif
 
         struct  impl;
         impl   *impl_;
