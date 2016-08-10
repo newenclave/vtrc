@@ -33,6 +33,34 @@ namespace vtrc { namespace common  {
             ,USE_STATIC_CONTEXT = 1 << 2 /// only with USE_CONTEXT_CALL
         };
 
+        class scoped_flags {
+            rpc_channel &channel_;
+            unsigned     old_flags_;
+
+#if VTRC_DISABLE_CXX11
+            scoped_flags( const scoped_flags & );
+            scoped_flags & operator = ( const scoped_flags & );
+#else
+        public:
+            scoped_flags( const scoped_flags & )               = delete;
+            scoped_flags( scoped_flags && )                    = delete;
+            scoped_flags & operator = ( const scoped_flags & ) = delete;
+            scoped_flags & operator = ( scoped_flags && )      = delete;
+#endif
+        public:
+            scoped_flags( rpc_channel &channel, unsigned flags )
+                :channel_(channel)
+                ,old_flags_(channel_.get_flags( ))
+            {
+                channel_.set_flags( flags );
+            }
+
+            ~scoped_flags( )
+            {
+                channel_.set_flags( old_flags_ );
+            }
+        };
+
         typedef rpc::lowlevel_unit                   lowlevel_unit_type;
         typedef vtrc::shared_ptr<lowlevel_unit_type> lowlevel_unit_sptr;
 
