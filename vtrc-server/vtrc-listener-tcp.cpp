@@ -43,17 +43,12 @@ namespace vtrc { namespace server { namespace listeners {
             std::string name( ) const
             {
                 std::ostringstream oss;
-
+                oss << "tcp://" << endpoint_.address( ).to_string( )
+                    << ":";
                 if( is_active( ) ) {
-                    oss << "tcp://" << endpoint_.address( ).to_string( )
-                        << ":"
-                        << acceptor( )->local_endpoint( ).port( )
-                           ;
+                    oss << acceptor( )->local_endpoint( ).port( ) ;
                 } else {
-                    oss << "tcp://" << endpoint_.address( ).to_string( )
-                        << ":"
-                        << endpoint_.port( )
-                           ;
+                    oss << endpoint_.port( );
                 }
                 return oss.str( );
             }
