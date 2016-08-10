@@ -115,8 +115,12 @@ namespace {
             acceptor_->listen( 5 );
             start_accept( );
             working_ = true;
+            start_success( );
             call_on_start( );
         }
+
+        virtual void start_success( )
+        { }
 
         void stop ( )
         {
