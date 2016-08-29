@@ -25,6 +25,7 @@ namespace vtrc { namespace server { namespace listeners {
         struct listener_tcp: public super_type {
 
             bool no_delay_;
+            std::string name_;
 
             static endpoint_type make_endpoint( const std::string &address,
                                                 unsigned short port )
@@ -38,22 +39,30 @@ namespace vtrc { namespace server { namespace listeners {
                           unsigned short port, bool no_delay )
                 :super_type( app, opts, make_endpoint(address, port))
                 ,no_delay_(no_delay)
-            { }
+            {
+                std::ostringstream oss;
+                oss << "tcp://" << endpoint_.address( ).to_string( )
+                    << ":" << endpoint_.port( );
+                name_ = oss.str( );
+            }
 
             std::string name( ) const
             {
-                std::ostringstream oss;
-
-                oss << "tcp://" << endpoint_.address( ).to_string( )
-                    << ":"
-                    << endpoint_.port( );
-
-                return oss.str( );
+                return name_;
             }
 
             bool is_local( ) const
             {
                 return false;
+            }
+
+            void start_success( )
+            {
+                std::ostringstream oss;
+                oss << "tcp://" << endpoint_.address( ).to_string( )
+                    << ":"
+                    << acceptor( )->local_endpoint( ).port( );
+                name_ = oss.str( );
             }
 
             void connection_setup( vtrc::shared_ptr<connection_type> &con )

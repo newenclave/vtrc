@@ -34,8 +34,8 @@ message message_info {
         MESSAGE_CLIENT_CALLBACK = 3; // from client
         MESSAGE_SERVER_CALLBACK = 4; // from server
 
-        MESSAGE_SERVICE         = 5; // intervals
-        MESSAGE_INTERNAL        = 6; // intervals
+        MESSAGE_SERVICE         = 5; // internal
+        MESSAGE_INTERNAL        = 6; // internal
     }
 
     optional uint32 message_type    = 1; //[default = 0]; // @message_type_enum
