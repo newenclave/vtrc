@@ -10,7 +10,6 @@ namespace vtrc { namespace client { namespace channels {
     common::rpc_channel *create( common::connection_iface_sptr c,
                                  unsigned flags );
 
-
 }}}
 
 #endif // VTRCCHANNELS_H
