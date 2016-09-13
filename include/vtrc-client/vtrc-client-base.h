@@ -10,6 +10,7 @@
 #include "vtrc-common/vtrc-pool-pair.h"
 #include "vtrc-common/vtrc-closure.h"
 #include "vtrc-common/vtrc-rpc-channel.h"
+#include "vtrc-common/vtrc-connection-iface.h"
 
 namespace vtrc {
 
@@ -48,6 +49,8 @@ namespace client {
         base( VTRC_ASIO::io_service &ios,
               VTRC_ASIO::io_service &rpc_ios );
         base( common::pool_pair &pools );
+
+        void reset_connection( common::connection_iface_sptr new_conn );
 
     public:
 

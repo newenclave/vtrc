@@ -19,6 +19,11 @@ namespace vtrc { namespace client {
             ,rpc_ios_(&rpcio)
         { }
 
+        void reset_connection( common::connection_iface_sptr new_conn )
+        {
+            connection_ = new_conn;
+        }
+
         rpc_channel_c *create_channel( )
         {
             rpc_channel_c *new_ch( new rpc_channel_c( connection_ ) );
@@ -65,6 +70,11 @@ namespace vtrc { namespace client {
         :impl_(new impl(pools.get_io_service(), pools.get_rpc_service( )))
     {
         impl_->parent_ = this;
+    }
+
+    void base::reset_connection( common::connection_iface_sptr new_conn )
+    {
+        impl_->reset_connection( new_conn );
     }
 
     vtrc::weak_ptr<base> base::weak_from_this( )
