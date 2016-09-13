@@ -31,6 +31,21 @@ namespace vtrc { namespace client {
             return new_ch;
         }
 
+        bool ready( ) const
+        {
+            return connection_ ? connection_->get_protocol( ).ready( ) : false;
+        }
+
+        void disconnect( )
+        {
+            if( connection_ && connection_->active( ) ) {
+                try {
+                    connection_->close( );
+                } catch( ... ) { }
+            };
+            connection_.reset( );
+        }
+
     };
 
     base::base( VTRC_ASIO::io_service &ios )
@@ -52,8 +67,7 @@ namespace vtrc { namespace client {
         impl_->parent_ = this;
     }
 
-
-    vtrc::weak_ptr<base>       base::weak_from_this( )
+    vtrc::weak_ptr<base> base::weak_from_this( )
     {
         return vtrc::weak_ptr<base>(shared_from_this());
     }
@@ -91,6 +105,16 @@ namespace vtrc { namespace client {
     common::rpc_channel *base::create_channel( unsigned flags )
     {
         return impl_->create_channel(flags);
+    }
+
+    bool base::ready( ) const
+    {
+        return impl_->ready( );
+    }
+
+    void base::disconnect( )
+    {
+        impl_->disconnect( );
     }
 
 }}

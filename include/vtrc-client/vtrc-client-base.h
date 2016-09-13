@@ -46,6 +46,7 @@ namespace client {
         base( VTRC_ASIO::io_service &ios,
               VTRC_ASIO::io_service &rpc_ios );
         base( common::pool_pair &pools );
+
     public:
 
         vtrc::weak_ptr<base>       weak_from_this( );
@@ -63,6 +64,9 @@ namespace client {
     public:
         virtual void connect( ) = 0;
         virtual void async_connect( common::system_closure_type ) = 0;
+    public:
+        bool ready( ) const;
+        void disconnect( );
     };
 }}
 

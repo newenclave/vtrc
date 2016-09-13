@@ -20,11 +20,13 @@ namespace vtrc { namespace common {
         impl  *impl_;
 
     public:
+        /// get context
+        static const call_context *get(  );
+
+    public:
 
         call_context( rpc::lowlevel_unit *lowlevel );
         virtual ~call_context( );
-
-        static const call_context *get(  );
 
         call_context( const call_context &other );
         call_context &operator = ( const call_context &other );
