@@ -22,6 +22,8 @@ namespace rpc { namespace errors {
 }}
 
 namespace client {
+
+    //// IS NOT YET COMPLETE
     class base: public vtrc::enable_shared_from_this<base> {
 
         struct        impl;
