@@ -51,8 +51,12 @@ namespace client {
 
     public:
 
-        vtrc::weak_ptr<base>       weak_from_this( );
-        vtrc::weak_ptr<base const> weak_from_this( ) const;
+        virtual void connect( ) = 0;
+        virtual void async_connect( common::system_closure_type ) = 0;
+
+    public:
+        vtrc::weak_ptr<base>         weak_from_this( );
+        vtrc::weak_ptr<base const>   weak_from_this( ) const;
 
         VTRC_ASIO::io_service       &get_io_service( );
         const VTRC_ASIO::io_service &get_io_service( ) const;
@@ -60,13 +64,9 @@ namespace client {
         VTRC_ASIO::io_service       &get_rpc_service( );
         const VTRC_ASIO::io_service &get_rpc_service( ) const;
 
-        common::rpc_channel *create_channel( );
-        common::rpc_channel *create_channel( unsigned flags );
+        common::rpc_channel         *create_channel( );
+        common::rpc_channel         *create_channel( unsigned flags );
 
-    public:
-        virtual void connect( ) = 0;
-        virtual void async_connect( common::system_closure_type ) = 0;
-    public:
         bool ready( ) const;
         void disconnect( );
     };
