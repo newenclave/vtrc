@@ -210,6 +210,11 @@ namespace vtrc { namespace common  {
 
         if( mess_type == impl_->callback_type_ ) {
 
+            if( get_flags( ) & rpc_channel::CONTEXT_NOT_REQUIRE ) {
+                llu.mutable_info( )
+                 ->set_message_flags( rpc::message_info::FLAG_CALLBACK_ALONE );
+            }
+
             if( get_flags( ) & rpc_channel::USE_STATIC_CONTEXT ) {
 
                 if( !impl_->accept_callbacks_ ) {

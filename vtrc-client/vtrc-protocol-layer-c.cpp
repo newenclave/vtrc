@@ -47,6 +47,21 @@ namespace vtrc { namespace client {
 
         //namespace default_cypher = common::transformers::chacha;
 
+        bool alone_callback(const lowlevel_unit_sptr &llu)
+        {
+            return llu->info( ).message_flags( ) &
+                   rpc::message_info::FLAG_CALLBACK_ALONE;
+        }
+
+        void fill_error( lowlevel_unit_sptr &llu, unsigned code,
+                         const char *message, bool fatal )
+        {
+            rpc::errors::container *err = llu->mutable_error( );
+            err->set_code( code );
+            err->set_additional( message );
+            err->set_fatal( fatal );
+        }
+
     }
 
     struct protocol_layer_c::impl: common::protocol_accessor {
@@ -191,7 +206,17 @@ namespace vtrc { namespace client {
         void process_insertion( lowlevel_unit_sptr &llu )
         {
             if( 0 == parent_->push_rpc_message( llu->target_id( ), llu ) ) {
-                process_call( llu );
+                if( alone_callback( llu ) ) {
+                    process_call( llu );
+                } else {
+                    llu->clear_request( );
+                    llu->clear_response( );
+                    llu->clear_call( );
+                    llu->clear_opt( );
+                    fill_error( llu, rpc::errors::ERR_CONTEXT,
+                                "Context was not found.", false );
+                    parent_->call_rpc_method( *llu );
+                }
             }
         }
 
@@ -211,10 +236,8 @@ namespace vtrc { namespace client {
                 if( !check ) {
 
                     llu->Clear( );
-                    rpc::errors::container *err = llu->mutable_error( );
-                    err->set_code( rpc::errors::ERR_PROTOCOL);
-                    err->set_additional("Bad message was received");
-                    err->set_fatal( true );
+                    fill_error( llu, rpc::errors::ERR_PROTOCOL,
+                                "Bad message was received", true );
 
                     parent_->push_rpc_message_all( llu );
                     connection_->close( );

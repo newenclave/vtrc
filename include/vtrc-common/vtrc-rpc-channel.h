@@ -34,10 +34,11 @@ namespace vtrc { namespace common  {
     public:
 
         enum flags {
-             DEFAULT            = 0
-            ,DISABLE_WAIT       = 1
-            ,USE_CONTEXT_CALL   = 1 << 1
-            ,USE_STATIC_CONTEXT = 1 << 2 /// only with USE_CONTEXT_CALL
+             DEFAULT             = 0
+            ,DISABLE_WAIT        = 1
+            ,USE_CONTEXT_CALL    = 1 << 1
+            ,USE_STATIC_CONTEXT  = 1 << 2 /// only with USE_CONTEXT_CALL
+            ,CONTEXT_NOT_REQUIRE = 1 << 3 /// only with USE_CONTEXT_CALL
         };
 
         class scoped_flags {
