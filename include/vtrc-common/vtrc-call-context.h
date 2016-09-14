@@ -50,7 +50,7 @@ namespace vtrc { namespace common {
         google::protobuf::Closure       *get_done_closure(  );
         const google::protobuf::Closure *get_done_closure(  ) const;
 
-        const size_t depth( ) const;
+        size_t depth( ) const;
 
         const std::string &channel_data( ) const;
 
