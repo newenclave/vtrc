@@ -71,12 +71,12 @@ namespace vtrc { namespace common  {
 
     struct rpc_channel::impl {
 
-        unsigned direct_type_;
-        unsigned callback_type_;
-        unsigned flags_;
+        unsigned        direct_type_;
+        unsigned        callback_type_;
 
-        vtrc::uint64_t static_target_;
-        bool           accept_callbacks_;
+        vtrc::uint32_t  flags_;
+        vtrc::uint64_t  static_target_;
+        bool            accept_callbacks_;
 
         std::string data_;
 
@@ -164,22 +164,22 @@ namespace vtrc { namespace common  {
         impl_->flags_ = flags;
     }
 
-    unsigned rpc_channel::get_flags( ) const
+    vtrc::uint32_t rpc_channel::get_flags( ) const
     {
         return impl_->flags_;
     }
 
-    void rpc_channel::set_flag( unsigned value )
+    void rpc_channel::set_flag( vtrc::uint32_t value )
     {
         impl_->flags_ |= value;
     }
 
-    void rpc_channel::reset_flag( unsigned value )
+    void rpc_channel::reset_flag( vtrc::uint32_t value )
     {
         impl_->flags_ &= (~value);
     }
 
-    vtrc::uint64_t rpc_channel::timeout() const
+    vtrc::uint64_t rpc_channel::timeout( ) const
     {
         return impl_->timeout_;
     }

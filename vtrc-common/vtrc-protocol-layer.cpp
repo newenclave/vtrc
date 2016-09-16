@@ -745,8 +745,22 @@ namespace vtrc { namespace common {
             if( failed ) {
                 llu->mutable_error( )->set_code( errorcode );
                 llu->clear_response( );
-            }
+                if( llu->opt( ).wait( ) ) {
+                    send_message( *llu );
 
+                    /// here we must reset internal_closure
+                    /// for preventing double call
+                    if( hold ) {
+                        hold->internal_closure_.reset( );
+                    }
+
+                    /// call 'done';
+                    if( done ) {
+                        done( llu->error( ) );
+                    }
+                }
+            }
+#if 0
             if( llu->opt( ).wait( ) ) {
                 if( failed ) {
                     send_message( *llu );
@@ -763,6 +777,7 @@ namespace vtrc { namespace common {
                     }
                 }
             }
+#endif
         }
 
         void on_system_error( const VTRC_SYSTEM::error_code &err,

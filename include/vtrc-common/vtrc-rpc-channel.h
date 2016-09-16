@@ -82,10 +82,10 @@ namespace vtrc { namespace common  {
         virtual ~rpc_channel( );
 
         virtual void set_flags( unsigned /*flags*/ );
-        virtual unsigned get_flags( ) const;
+        virtual vtrc::uint32_t get_flags( ) const;
 
-        void set_flag( unsigned );
-        void reset_flag( unsigned );
+        void set_flag( vtrc::uint32_t );
+        void reset_flag( vtrc::uint32_t );
 
         vtrc::uint64_t timeout( ) const;
         void set_timeout( vtrc::uint64_t new_value );

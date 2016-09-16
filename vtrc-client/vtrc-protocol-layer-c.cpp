@@ -209,13 +209,15 @@ namespace vtrc { namespace client {
                 if( alone_callback( llu ) ) {
                     process_call( llu );
                 } else {
-                    llu->clear_request( );
-                    llu->clear_response( );
-                    llu->clear_call( );
-                    llu->clear_opt( );
-                    fill_error( llu, rpc::errors::ERR_CONTEXT,
-                                "Context was not found.", false );
-                    parent_->call_rpc_method( *llu );
+                    if( llu->opt( ).wait( ) ) {
+                        llu->clear_request( );
+                        llu->clear_response( );
+                        llu->clear_call( );
+                        llu->clear_opt( );
+                        fill_error( llu, rpc::errors::ERR_CONTEXT,
+                                    "Context was not found.", false );
+                        parent_->call_rpc_method( *llu );
+                    }
                 }
             }
         }
