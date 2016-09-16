@@ -93,7 +93,7 @@ namespace vtrc { namespace common  {
             ,accept_callbacks_(false)
             ,error_cb_(get_default_error_cb( ))
             ,chan_error_cb_(get_default_chan_error_cb( ))
-            ,timeout_(30000000) // microseconds
+            ,timeout_(30000000) // microseconds 30 000 000
         {
             const common::call_context *ctx = common::call_context::get( );
             if( ctx ) {
@@ -208,13 +208,15 @@ namespace vtrc { namespace common  {
                               ->serialize_message( req ) );
         }
 
-        if( mess_type == impl_->callback_type_ ) {
+        if( mess_type == impl_->callback_type_ ) { /// callback
 
+            /// can be made without context
             if( get_flags( ) & rpc_channel::CONTEXT_NOT_REQUIRE ) {
                 llu.mutable_info( )
                  ->set_message_flags( rpc::message_info::FLAG_CALLBACK_ALONE );
             }
 
+            /// we have to have context here
             if( get_flags( ) & rpc_channel::USE_STATIC_CONTEXT ) {
 
                 if( !impl_->accept_callbacks_ ) {
