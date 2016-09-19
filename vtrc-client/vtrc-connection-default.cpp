@@ -240,6 +240,8 @@ namespace vtrc { namespace client {
                         accessor( )->error( capsule.error( ),
                                     "Server is not ready; stage: 'Ready'" );
                     }
+                    accessor( )->close( );
+                    return;
                 }
 
                 rpc::auth::session_setup opts;
