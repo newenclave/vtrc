@@ -37,7 +37,8 @@ namespace vtrc { namespace client {
         enum protocol_stage {
              STAGE_HELLO = 1
             ,STAGE_SETUP = 2
-            ,STAGE_READY = 3
+            ,STAGE_ERROR = 3
+            ,STAGE_READY = 4
         };
 
         void default_cb( bs::error_code const & )
@@ -121,6 +122,10 @@ namespace vtrc { namespace client {
                     stage_call_ = vtrc::bind( &iface::on_trans_setup, this,
                                               vtrc::placeholders::_1 );
                     break;
+                case STAGE_ERROR:
+                    stage_call_ = vtrc::bind( &iface::on_trans_error, this,
+                                              vtrc::placeholders::_1 );
+                    break;
                 case STAGE_READY:
                     stage_call_ = vtrc::bind( &iface::on_server_ready, this,
                                               vtrc::placeholders::_1 );
@@ -160,6 +165,8 @@ namespace vtrc { namespace client {
                        common::hash::create_by_index( default_hash_value ));
                 }
             }
+
+            void on_trans_error( const std::string &data ) { }
 
             void on_trans_setup( const std::string &data )
             {
@@ -240,8 +247,9 @@ namespace vtrc { namespace client {
                         accessor( )->error( capsule.error( ),
                                     "Server is not ready; stage: 'Ready'" );
                     }
-                    close( );
-                    //accessor( )->close( );
+                    //close( );
+                    change_stage( STAGE_ERROR );
+                    accessor( )->close( );
                     return;
                 }
 
