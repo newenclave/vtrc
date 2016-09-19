@@ -332,6 +332,7 @@ namespace vtrc { namespace client {
             {
                 std::string data;
                 if( !pop_raw_message( data ) ) {
+                    change_stage( STAGE_ERROR );
                     accessor( )->error(
                                 create_error( rpc::errors::ERR_INTERNAL, "" ),
                                 "Bad hash." );
