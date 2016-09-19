@@ -240,7 +240,8 @@ namespace vtrc { namespace client {
                         accessor( )->error( capsule.error( ),
                                     "Server is not ready; stage: 'Ready'" );
                     }
-                    accessor( )->close( );
+                    close( );
+                    //accessor( )->close( );
                     return;
                 }
 
