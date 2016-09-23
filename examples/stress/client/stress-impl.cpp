@@ -11,13 +11,12 @@ using namespace vtrc;
 
 namespace {
 
+    typedef common::rpc_channel channel_type;
     typedef vtrc_example::stress_service::Stub stub_type;
-    typedef common::stub_wrapper<stub_type>    stub_wrapper_type;
+    typedef common::stub_wrapper<stub_type, channel_type> stub_wrapper_type;
     namespace gpb = google::protobuf;
 
     struct impl: public interface {
-
-        typedef common::rpc_channel channel_type;
 
         stub_wrapper_type stub_;
 
@@ -54,7 +53,9 @@ namespace {
             req.set_callback( insert );
             req.set_wait( wait );
             req.set_payload_size( payload );
+            //stub_.channel( )->set_flag( 1 );
             stub_.call_request( &stub_type::generate_event, &req );
+            //sleep(1);
         }
 
         void recursive_call( unsigned count, unsigned payload )

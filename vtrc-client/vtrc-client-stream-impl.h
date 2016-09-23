@@ -129,14 +129,20 @@ namespace { /// implementation.
                         vtrc::bind( &this_type::read_handler, this,
                              vtrc::placeholders::error,
                              vtrc::placeholders::bytes_transferred,
-                             parent_->shared_from_this( ) )
+                             //parent_->shared_from_this( ),
+                             client_->weak_from_this( ) )
                 );
 #endif
         }
 
         void read_handler( const bsys::error_code &error, size_t bytes,
-                           const common::connection_iface_sptr & /*inst*/ )
+//                           const common::connection_iface_sptr /*inst*/,
+                           const vtrc_client_wptr client )
         {
+            vtrc_client_sptr lck(client.lock( ));
+            if( !lck ) {
+                return;
+            }
 //            common::connection_iface_sptr lk(inst.lock( ));
 //            if( !lk ) return;
 
