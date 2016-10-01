@@ -36,8 +36,6 @@ namespace vtrc { namespace server {
 
         typedef vtrc::function<void (const std::string &)> stage_function_type;
 
-        typedef vtrc::unique_ptr<common::delayed_call> delayed_call_ptr;
-
         std::string first_message( )
         {
             rpc::auth::init_capsule cap;
@@ -64,7 +62,7 @@ namespace vtrc { namespace server {
 
             application               &app_;
             bool                       ready_;
-            delayed_call_ptr           keepalive_calls_;
+            common::delayed_call       keepalive_calls_;
             stage_function_type        stage_function_;
             std::string                client_id_;
             rpc::session_options       session_opts_;
@@ -72,7 +70,7 @@ namespace vtrc { namespace server {
             iface( application &a, const rpc::session_options &opts )
                 :app_(a)
                 ,ready_(false)
-                ,keepalive_calls_(new common::delayed_call(a.get_io_service( )))
+                ,keepalive_calls_(a.get_io_service( ))
                 ,session_opts_(opts)
             {
                 stage_function_ =
@@ -121,7 +119,7 @@ namespace vtrc { namespace server {
                                common::connection_iface_wptr &inst )
             {
                 common::connection_iface_sptr lcked( inst.lock( ) );
-                ready_ = true;
+                ready_ = false;
                 if( lcked ) {
                     lcked->close( );
                 }
@@ -138,7 +136,7 @@ namespace vtrc { namespace server {
 
             void set_client_ready( rpc::auth::init_capsule &capsule )
             {
-                keepalive_calls_.reset( );
+                keepalive_calls_.cancel( );
 
                 capsule.set_ready( true );
                 capsule.set_text( "Kiva nahda sinut!" );
@@ -311,15 +309,11 @@ namespace vtrc { namespace server {
                 set_accessor( pa );
                 switch_to_handshake( );
                 static const std::string data(first_message( ));
-//                ready_ = true;
-//                pa_->ready( true );
-//                cb( VTRC_SYSTEM::error_code( ) );
-//                return;
 
                 const unsigned to = session_opts_.init_timeout( );
 
                 accessor( )->write( data, cb, true );
-                keepalive_calls_->call_from_now(
+                keepalive_calls_.call_from_now(
                             vtrc::bind( &iface::on_init_timeout, this,
                                          vtrc::placeholders::_1 ),
                             boost::posix_time::milliseconds( to ));
