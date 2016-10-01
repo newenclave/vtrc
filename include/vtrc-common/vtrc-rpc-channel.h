@@ -46,6 +46,7 @@ namespace vtrc { namespace common  {
             unsigned     old_flags_;
 
 #if VTRC_DISABLE_CXX11
+        private:
             scoped_flags( const scoped_flags & );
             scoped_flags & operator = ( const scoped_flags & );
 #else
