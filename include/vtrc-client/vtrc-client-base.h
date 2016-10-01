@@ -96,6 +96,8 @@ namespace client {
 
         typedef common::protocol_iface::executor_type executor_type;
 
+        /// service wrappers
+        ///
         service_wrapper_sptr wrap_service( service_sptr svc )
         {
             return vtrc::make_shared<service_wrapper_type>( svc );
@@ -106,6 +108,8 @@ namespace client {
             return vtrc::make_shared<service_wrapper_type>( svc );
         }
 
+        /// services
+        ///
         void assign_rpc_handler( service_sptr handler);
         void assign_weak_rpc_handler( service_wptr handler);
 
