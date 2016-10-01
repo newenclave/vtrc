@@ -508,9 +508,9 @@ namespace vtrc { namespace client {
             return new_ch;
         }
 
-        void assign_handler( vtrc::shared_ptr<gpb::Service> serv )
+        void assign_protocol_factory( lowlevel_factory_type factory )
         {
-            assign_handlerw( parent_->wrap_service( serv ) );
+            ll_proto_factory_ = factory;
         }
 
         void assign_weak_handler( vtrc::weak_ptr<gpb::Service> serv )
@@ -523,11 +523,16 @@ namespace vtrc { namespace client {
             }
         }
 
+        void assign_handler( vtrc::shared_ptr<gpb::Service> serv )
+        {
+            assign_handlerw( parent_->wrap_service( serv ) );
+        }
+
         void assign_handlerw( service_wrapper_sptr serv )
         {
             const std::string serv_name( serv->service( )
-                                         ->GetDescriptor( )
-                                         ->full_name( ));
+                                            ->GetDescriptor( )
+                                            ->full_name( ));
             vtrc::upgradable_lock lk(services_lock_);
             service_shared_map::iterator f( hold_services_.find( serv_name ) );
             if( f != hold_services_.end( ) ) {
@@ -557,11 +562,6 @@ namespace vtrc { namespace client {
         {
             vtrc::unique_shared_lock lck(factory_lock_);
             factory_ = factory;
-        }
-
-        void assign_protocol_factory( lowlevel_factory_type factory )
-        {
-            ll_proto_factory_ = factory;
         }
 
         service_wrapper_sptr get_handler( const std::string &name )

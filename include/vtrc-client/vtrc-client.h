@@ -17,6 +17,7 @@
 #include "vtrc-function.h"
 #include "vtrc-asio-forward.h"
 #include "vtrc-system-forward.h"
+#include "vtrc-client-base.h"
 
 VTRC_ASIO_FORWARD( class io_service; )
 
@@ -53,11 +54,8 @@ namespace vtrc {
 
 namespace client {
 
-    typedef vtrc::function<
-               common::rpc_service_wrapper_sptr (const std::string &)
-            > service_factory_type;
-
-    typedef  common::lowlevel::protocol_factory_type lowlevel_factory_type;
+    typedef base::service_factory_type  service_factory_type;
+    typedef base::lowlevel_factory_type lowlevel_factory_type;
 
 #if VTRC_OPENSSL_ENABLED
     typedef vtrc::function<
@@ -242,9 +240,9 @@ namespace client {
         /// This handlers (rpc_handler, weak_rpc_handler) always have priority
         /// over the handlers from the factory
 
-        typedef google::protobuf::Service       service_type;
-        typedef vtrc::shared_ptr<service_type>  service_sptr;
-        typedef vtrc::weak_ptr<service_type>    service_wptr;
+        typedef google::protobuf::Service               service_type;
+        typedef vtrc::shared_ptr<service_type>          service_sptr;
+        typedef vtrc::weak_ptr<service_type>            service_wptr;
 
         typedef common::rpc_service_wrapper             service_wrapper_type;
         typedef vtrc::shared_ptr<service_wrapper_type>  service_wrapper_sptr;
