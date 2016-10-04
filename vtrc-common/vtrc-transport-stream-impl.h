@@ -213,7 +213,9 @@ namespace vtrc { namespace common {
             {
                 DEBUG_LINE(parent_);
 
-                //try { /// TODO
+                //vtrc::lock_guard<vtrc::mutex> lk(close_lock_);
+
+//                try { /// TODO
                 if( !closed_ ) {
                     stream_->async_write_some(
                             basio::buffer( data, length ),
