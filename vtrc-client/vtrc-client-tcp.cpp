@@ -19,7 +19,7 @@ namespace vtrc { namespace client {
         std::string name_;
 
         impl( VTRC_ASIO::io_service &ios,
-              vtrc_client *client, protocol_signals *callbacks,
+              client::base *client, protocol_signals *callbacks,
               bool nodelay )
             :super_type(ios, client, callbacks, 4096)
             ,no_delay_(nodelay)
@@ -75,7 +75,7 @@ namespace vtrc { namespace client {
     }
 
     client_tcp::client_tcp(VTRC_ASIO::io_service &ios,
-                            vtrc_client *client,
+                           client::base *client,
                            protocol_signals *callbacks,
                            bool tcp_nodelay)
         :common::transport_tcp(create_socket(ios))
@@ -84,13 +84,13 @@ namespace vtrc { namespace client {
         impl_->set_parent( this );
     }
 
-    vtrc::shared_ptr<client_tcp> client_tcp::create(basio::io_service &ios,
-                                        vtrc_client *client,
+    vtrc::shared_ptr<client_tcp> client_tcp::create( client::base *client,
                                         protocol_signals *callbacks,
                                         bool tcp_nodelay)
     {
         vtrc::shared_ptr<client_tcp> new_inst
-                    (new client_tcp( ios, client, callbacks, tcp_nodelay ));
+                    (new client_tcp( client->get_io_service( ), client,
+                                     callbacks, tcp_nodelay ));
         new_inst->init( );
         return new_inst;
     }

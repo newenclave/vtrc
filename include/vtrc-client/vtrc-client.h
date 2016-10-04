@@ -63,23 +63,11 @@ namespace client {
     > verify_callback_type;
 #endif
 
-    class vtrc_client: public vtrc::enable_shared_from_this<vtrc_client> {
+    class vtrc_client: public vtrc::client::base {
 
         struct        impl;
         friend struct impl;
         impl         *impl_;
-
-        vtrc_client( const vtrc_client &other );
-        vtrc_client & operator = ( const vtrc_client &other );
-
-        VTRC_DECLARE_SIGNAL( on_init_error,
-                             void( const rpc::errors::container &,
-                                   const char *message ) );
-
-        VTRC_DECLARE_SIGNAL( on_connect,    void( ) );
-
-        VTRC_DECLARE_SIGNAL( on_disconnect, void( ) );
-        VTRC_DECLARE_SIGNAL( on_ready,      void( ) );
 
     protected:
 
@@ -94,8 +82,6 @@ namespace client {
 
         ~vtrc_client( );
 
-        common::connection_iface_sptr connection( );
-
         static
         vtrc::shared_ptr<vtrc_client> create( VTRC_ASIO::io_service &ios );
 
@@ -107,33 +93,15 @@ namespace client {
 
     public:
 
-        vtrc::weak_ptr<vtrc_client>       weak_from_this( );
-        vtrc::weak_ptr<vtrc_client const> weak_from_this( ) const;
-
-        VTRC_ASIO::io_service       &get_io_service( );
-        const VTRC_ASIO::io_service &get_io_service( ) const;
-
-        VTRC_ASIO::io_service       &get_rpc_service( );
-        const VTRC_ASIO::io_service &get_rpc_service( ) const;
-
-        common::rpc_channel *create_channel( );
-        common::rpc_channel *create_channel( unsigned flags );
-
         void set_session_key( const std::string &id, const std::string &key );
         void set_session_key( const std::string &key );
-        void set_session_id ( const std::string &id );
 
-        const std::string &get_session_key(  ) const;
-        const std::string &get_session_id (  ) const;
-        bool  is_key_set( ) const;
+        std::string get_session_key(  ) const;
 
-        void  reset_session_id( );
         void  reset_session_key( );
         void  reset_session_info( ); // key and id
 
-    public:
-
-        const common::call_context *get_call_context( ) const;
+        static const common::call_context *get_call_context( );
 
     public:
 
@@ -233,55 +201,9 @@ namespace client {
                             common::system_closure_type closure);
 #endif
 
-        bool ready( ) const;
+        void connect( );
+        void async_connect( common::system_closure_type );
 
-        void disconnect( );
-
-        /// This handlers (rpc_handler, weak_rpc_handler) always have priority
-        /// over the handlers from the factory
-
-        typedef google::protobuf::Service               service_type;
-        typedef vtrc::shared_ptr<service_type>          service_sptr;
-        typedef vtrc::weak_ptr<service_type>            service_wptr;
-
-        typedef common::rpc_service_wrapper             service_wrapper_type;
-        typedef vtrc::shared_ptr<service_wrapper_type>  service_wrapper_sptr;
-        typedef vtrc::weak_ptr<service_wrapper_type>    service_wrapper_wptr;
-
-        void assign_rpc_handler( service_sptr handler);
-        void assign_weak_rpc_handler( service_wptr handler);
-
-        void assign_rpc_handler( service_wrapper_sptr handler );
-        void assign_weak_rpc_handler( service_wrapper_wptr handler);
-
-        service_wrapper_sptr wrap_service( service_sptr svc )
-        {
-            return vtrc::make_shared<service_wrapper_type>( svc );
-        }
-
-        service_wrapper_sptr wrap_service( service_type *svc )
-        {
-            return vtrc::make_shared<service_wrapper_type>( svc );
-        }
-
-        void assign_service_factory( service_factory_type factory );
-
-        service_wrapper_sptr get_rpc_handler( const std::string &name );
-
-        void assign_call_executor( common::protocol_iface::executor_type exec );
-        common::protocol_iface::executor_type call_executor( );
-        void execute( common::protocol_iface::call_type call );
-
-        void assign_lowlevel_protocol_factory( lowlevel_factory_type factory );
-        lowlevel_factory_type lowlevel_protocol_factory( );
-
-        void erase_rpc_handler( service_sptr handler);
-
-        void erase_rpc_handler( const std::string &name );
-        void erase_all_rpc_handlers( );
-
-    private:
-        common::protocol_iface *init_protocol(common::connection_iface_sptr c );
     };
 
     typedef vtrc::shared_ptr<vtrc_client> vtrc_client_sptr;

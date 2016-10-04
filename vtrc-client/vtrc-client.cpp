@@ -59,10 +59,7 @@ namespace vtrc { namespace client {
 
         typedef impl this_type;
 
-        basio::io_service              &ios_;
-        basio::io_service              &rpc_ios_;
         vtrc_client                    *parent_;
-        common::connection_iface_sptr   connection_;
 
         native_service_weak_map         weak_native_services_;
         service_weak_map                weak_services_;
@@ -74,42 +71,39 @@ namespace vtrc { namespace client {
         bool                            key_set_;
         //vtrc::mutex                     session_info_lock_;
 
-        service_factory_type            factory_;
-        lowlevel_factory_type           ll_proto_factory_;
-
-        vtrc::shared_mutex              factory_lock_;
-
-        executor_type                   exec_;
-
-        impl( basio::io_service &ios, basio::io_service &rpc_ios )
-            :ios_(ios)
-            ,rpc_ios_(rpc_ios)
-            ,parent_(NULL)
+        impl( )
+            :parent_(NULL)
             ,key_set_(false)
+        { }
+
+
+        bool ready( ) const
         {
-            set_default_exec( );
+            return  parent_->connection( )
+                  ? parent_->connection( )->get_protocol( ).ready( )
+                  : false;
         }
 
         /// ============= signals =============== /////
         void on_init_error(const rpc::errors::container &err,
                                    const char *message)
         {
-            parent_->on_init_error_( err, message );
+            parent_->get_on_init_error( )( err, message );
         }
 
         void on_connect( )
         {
-            parent_->on_connect_( );
+            parent_->get_on_connect( )( );
         }
 
         void on_disconnect( )
         {
-            parent_->on_disconnect_( );
+            parent_->get_on_disconnect( )( );
         }
 
         void on_ready( bool /*value*/ )
         {
-            parent_->on_ready_( );
+            parent_->get_on_ready( )( );
         }
         /// ====================================== /////
 
@@ -120,83 +114,48 @@ namespace vtrc { namespace client {
 
         void set_session_key( const std::string &id, const std::string &key )
         {
-            //vtrc::lock_guard<vtrc::mutex> lck(session_info_lock_);
-            key_set_     = true;
-            session_id_.assign( id );
-            session_key_.assign( key );
+            parent_->set_session_id( id );
+            set_session_key( key );
         }
 
-        void set_session_id( const std::string &id )
+        void set_session_key( const std::string &value )
         {
-            //vtrc::lock_guard<vtrc::mutex> lck(session_info_lock_);
-            session_id_.assign( id );
+            parent_->env( ).set( "session_key", value );
         }
 
-        const std::string &get_session_key(  ) const
+        std::string get_session_key(  ) const
         {
-            //vtrc::lock_guard<vtrc::mutex> lck(session_info_lock_);
-            return session_key_;
-        }
-
-        const std::string &get_session_id(  ) const
-        {
-            //vtrc::lock_guard<vtrc::mutex> lck(session_info_lock_);
-            return session_id_;
-        }
-
-        bool is_key_set( ) const
-        {
-            //vtrc::lock_guard<vtrc::mutex> lck(session_info_lock_);
-            return key_set_;
-        }
-
-        void  reset_session_id( )
-        {
-            //vtrc::lock_guard<vtrc::mutex> lck(session_info_lock_);
-            session_id_.clear( );
+            return parent_->env( ).get( "session_key" );
         }
 
         void  reset_session_key( )
         {
-            //vtrc::lock_guard<vtrc::mutex> lck(session_info_lock_);
-            session_key_.clear( );
-            key_set_ = false;
+            parent_->env( ).remove( "session_key" );
         }
 
         void  reset_session_info( )
         {
-            reset_session_id( );
+            parent_->reset_session_id( );
             reset_session_key( );
         }
 
-        void set_default_exec(  )
-        {
-            namespace ph = vtrc::placeholders;
-            exec_ = vtrc::bind( &impl::default_exec, this, ph::_1 );
-        }
-
-        void default_exec( proto_call_type call )
-        {
-            rpc_ios_.post( call );
-        }
 
         template<typename ClientType>
         vtrc::shared_ptr<ClientType> create_client(  )
         {
             vtrc::shared_ptr<ClientType> c(
-                        ClientType::create( ios_, parent_, this ));
+                        ClientType::create( parent_, this ));
 
-            connection_ =  c;
+            parent_->reset_connection( c );
             return c;
         }
 
         vtrc::shared_ptr<client_tcp> create_client_tcp( bool tcp_nodelay )
         {
             vtrc::shared_ptr<client_tcp> new_client_inst
-                    (client_tcp::create( ios_, parent_, this,
-                                         tcp_nodelay ));
+                    (client_tcp::create( parent_, this, tcp_nodelay ));
 
-            connection_ = new_client_inst;
+            parent_->reset_connection( new_client_inst );
 
             return new_client_inst;
         }
@@ -207,10 +166,10 @@ namespace vtrc { namespace client {
                         const std::string &verify_file, bool tcp_nodelay )
         {
             vtrc::shared_ptr<client_ssl> new_client_inst
-                    (client_ssl::create( ios_, parent_, this,
+                    (client_ssl::create( parent_, this,
                                          verify_file, tcp_nodelay ));
 
-            connection_ =   new_client_inst;
+            parent_->reset_connection( new_client_inst );
 
             return new_client_inst;
         }
@@ -330,7 +289,7 @@ namespace vtrc { namespace client {
             /// call connect
             conn_func( );
 
-            parent_->on_connect_( );
+            parent_->get_on_connect( )( );
 
             bool ok = cond.wait_for( ul,
                       vtrc::chrono::seconds( 10 ),
@@ -368,7 +327,7 @@ namespace vtrc { namespace client {
         void open( const std::string &path, int flags, int mode )
         {
             vtrc::shared_ptr<client_posixs>
-                   new_client(client_posixs::create( ios_, parent_, this ));
+                   new_client(client_posixs::create( parent_, this ));
             new_client->connect( path, flags, mode );
         }
 #endif
@@ -404,23 +363,18 @@ namespace vtrc { namespace client {
 #endif
         }
 
-        common::connection_iface_sptr connection( )
-        {
-            return connection_;
-        }
-
         void async_connect_success( const bsys::error_code &err,
                                     common::system_closure_type closure )
         {
             if( !err ) {
-                parent_->on_connect_( );
+                parent_->get_on_connect( )( );
             } else {
                 rpc::errors::container errc;
                 errc.set_code( err.value( ) );
                 errc.set_category( rpc::errors::CATEGORY_SYSTEM );
                 errc.set_fatal( true );
                 errc.set_additional( err.message( ) );
-                parent_->on_init_error_( errc, err.message( ).c_str() );
+                parent_->get_on_init_error( )( errc, err.message( ).c_str() );
             }
 
             closure(err);
@@ -480,160 +434,19 @@ namespace vtrc { namespace client {
                     vtrc::bind( &this_type::async_connect_success,
                                 this, ph::error, closure ));
         }
-
-        bool ready( ) const
-        {
-            return connection_ ? connection_->get_protocol( ).ready( ) : false;
-        }
-
-        void disconnect( )
-        {
-            if( connection_ && connection_->active( ) ) {
-                try {
-                    connection_->close( );
-                } catch( ... ) { }
-            };
-            connection_.reset( );
-        }
-
-        rpc_channel_c *create_channel( )
-        {
-            rpc_channel_c *new_ch( new rpc_channel_c( connection_ ) );
-            return new_ch;
-        }
-
-        rpc_channel_c *create_channel( unsigned opts )
-        {
-            rpc_channel_c *new_ch( new rpc_channel_c( connection_, opts ) );
-            return new_ch;
-        }
-
-        void assign_protocol_factory( lowlevel_factory_type factory )
-        {
-            ll_proto_factory_ = factory;
-        }
-
-        void assign_weak_handler( vtrc::weak_ptr<gpb::Service> serv )
-        {
-            service_sptr lock(serv.lock( ));
-            if( lock ) {
-                const std::string s_name(lock->GetDescriptor( )->full_name( ));
-                vtrc::unique_shared_lock lk(services_lock_);
-                weak_native_services_[s_name] = serv;
-            }
-        }
-
-        void assign_handler( vtrc::shared_ptr<gpb::Service> serv )
-        {
-            assign_handlerw( parent_->wrap_service( serv ) );
-        }
-
-        void assign_handlerw( service_wrapper_sptr serv )
-        {
-            const std::string serv_name( serv->service( )
-                                            ->GetDescriptor( )
-                                            ->full_name( ));
-            vtrc::upgradable_lock lk(services_lock_);
-            service_shared_map::iterator f( hold_services_.find( serv_name ) );
-            if( f != hold_services_.end( ) ) {
-                f->second = serv;
-                upgrade_to_unique ulk(lk);
-                weak_services_[serv_name] = service_wrapper_wptr(serv);
-            } else {
-                upgrade_to_unique ulk(lk);
-                hold_services_.insert( std::make_pair(serv_name, serv) );
-                weak_services_[serv_name] = service_wrapper_wptr(serv);
-            }
-        }
-
-        void assign_weak_handlerw( service_wrapper_wptr serv )
-        {
-            service_wrapper_sptr lock(serv.lock( ));
-            if( lock ) {
-                const std::string s_name(lock->service( )
-                                         ->GetDescriptor( )
-                                         ->full_name( ));
-                vtrc::unique_shared_lock lk(services_lock_);
-                weak_services_[s_name] = serv;
-            }
-        }
-
-        void assign_service_factory( service_factory_type factory )
-        {
-            vtrc::unique_shared_lock lck(factory_lock_);
-            factory_ = factory;
-        }
-
-        service_wrapper_sptr get_handler( const std::string &name )
-        {
-            service_wrapper_sptr result;
-
-            {
-                vtrc::upgradable_lock lk(services_lock_);
-                service_weak_map::iterator f( weak_services_.find( name ) );
-                if( f != weak_services_.end( ) ) {
-                    result = f->second.lock( );
-                    if( !result ) {
-                        vtrc::upgrade_to_unique ulk(lk);
-                        weak_services_.erase( f );
-                    }
-                }
-            }
-
-            if( !result ) {
-                vtrc::upgradable_lock lk(services_lock_);
-                native_service_weak_map::iterator f =
-                        weak_native_services_.find( name );
-                if( f != weak_native_services_.end( ) ) {
-                    service_sptr res = f->second.lock( );
-                    if( !res ) {
-                        vtrc::upgrade_to_unique ulk(lk);
-                        weak_native_services_.erase( f );
-                    } else {
-                        result = parent_->wrap_service( res );
-                    }
-                }
-            }
-
-            if( !result ) {
-                vtrc::shared_lock shl( factory_lock_ );
-                if( factory_ ) {
-                    result = factory_( name );
-                }
-            }
-
-            return result;
-        }
-
-        void erase_rpc_handler( const std::string &name )
-        {
-            vtrc::unique_shared_lock lk(services_lock_);
-
-            service_shared_map::iterator sf( hold_services_.find( name ) );
-            service_weak_map::iterator   wf( weak_services_.find( name ) );
-
-            if( sf != hold_services_.end( ) ) hold_services_.erase( sf );
-            if( wf != weak_services_.end( ) ) weak_services_.erase( wf );
-            weak_native_services_.erase( name );
-        }
-
-        void erase_all_rpc_handlers( )
-        {
-            vtrc::unique_shared_lock lk(services_lock_);
-            hold_services_.clear( );
-            weak_services_.clear( );
-        }
     };
 
     vtrc_client::vtrc_client( VTRC_ASIO::io_service &ios,
                               VTRC_ASIO::io_service &rpc_ios )
-        :impl_(new impl(ios, rpc_ios))
+        :client::base(ios, rpc_ios)
+        ,impl_(new impl)
     {
         impl_->parent_ = this;
     }
 
     vtrc_client::vtrc_client( VTRC_ASIO::io_service &ios )
-        :impl_(new impl(ios, ios))
+        :client::base(ios, ios)
+        ,impl_(new impl)
     {
         impl_->parent_ = this;
     }
@@ -660,54 +473,9 @@ namespace vtrc { namespace client {
         return new_inst;
     }
 
-    vtrc::weak_ptr<vtrc_client> vtrc_client::weak_from_this( )
-    {
-        return vtrc::weak_ptr<vtrc_client>( shared_from_this( ) );
-    }
-
-    vtrc::weak_ptr<vtrc_client const> vtrc_client::weak_from_this( ) const
-    {
-        return vtrc::weak_ptr<vtrc_client const>( shared_from_this( ) );
-    }
-
     vtrc_client::~vtrc_client( )
     {
         delete impl_;
-    }
-
-    common::connection_iface_sptr vtrc_client::connection( )
-    {
-        return impl_->connection( );
-    }
-
-    VTRC_ASIO::io_service &vtrc_client::get_io_service( )
-    {
-        return impl_->ios_;
-    }
-
-    const VTRC_ASIO::io_service &vtrc_client::get_io_service( ) const
-    {
-        return impl_->ios_;
-    }
-
-    VTRC_ASIO::io_service &vtrc_client::get_rpc_service( )
-    {
-        return impl_->rpc_ios_;
-    }
-
-    const VTRC_ASIO::io_service &vtrc_client::get_rpc_service( ) const
-    {
-        return impl_->rpc_ios_;
-    }
-
-    common::rpc_channel *vtrc_client::create_channel( )
-    {
-        return impl_->create_channel( );
-    }
-
-    common::rpc_channel *vtrc_client::create_channel( unsigned flags )
-    {
-        return impl_->create_channel( flags );
     }
 
     void vtrc_client::set_session_key( const std::string &id,
@@ -718,32 +486,12 @@ namespace vtrc { namespace client {
 
     void vtrc_client::set_session_key( const std::string &key )
     {
-        set_session_key( impl_->get_session_id( ), key );
+        impl_->set_session_key( key );
     }
 
-    void vtrc_client::set_session_id( const std::string &id )
-    {
-        impl_->set_session_id( id );
-    }
-
-    const std::string &vtrc_client::get_session_key( ) const
+    std::string vtrc_client::get_session_key( ) const
     {
         return impl_->get_session_key( );
-    }
-
-    const std::string &vtrc_client::get_session_id( ) const
-    {
-        return impl_->get_session_id( );
-    }
-
-    bool vtrc_client::is_key_set(  ) const
-    {
-        return impl_->is_key_set( );
-    }
-
-    const common::call_context *vtrc_client::get_call_context( ) const
-    {
-        return impl_->get_call_context( );
     }
 
     void vtrc_client::connect(const std::string &local_name)
@@ -834,97 +582,6 @@ namespace vtrc { namespace client {
         impl_->async_connect( address, service, tcp_nodelay, closure );
     }
 
-    bool vtrc_client::ready( ) const
-    {
-        return impl_->ready( );
-    }
-
-    void vtrc_client::disconnect( )
-    {
-        impl_->disconnect( );
-    }
-
-    void vtrc_client::assign_rpc_handler( vtrc::shared_ptr<gpb::Service> serv )
-    {
-        impl_->assign_handler( serv );
-    }
-
-    void vtrc_client::assign_weak_rpc_handler(vtrc::weak_ptr<gpb::Service> serv)
-    {
-        impl_->assign_weak_handler( serv );
-    }
-
-    void vtrc_client::assign_rpc_handler( service_wrapper_sptr handler )
-    {
-        impl_->assign_handlerw( handler );
-    }
-
-    void vtrc_client::assign_weak_rpc_handler( service_wrapper_wptr handler)
-    {
-        impl_->assign_weak_handlerw( handler );
-    }
-
-    void vtrc_client::assign_service_factory( service_factory_type factory )
-    {
-        impl_->assign_service_factory( factory );
-    }
-
-    void vtrc_client::assign_call_executor(
-            common::protocol_iface::executor_type exec )
-    {
-        if( exec ) {
-            impl_->exec_ = exec;
-        } else {
-            impl_->set_default_exec( );
-        }
-    }
-
-    common::protocol_iface::executor_type vtrc_client::call_executor( )
-    {
-        return impl_->exec_;
-    }
-
-    void vtrc_client::execute( common::protocol_iface::call_type call )
-    {
-        impl_->exec_( call );
-    }
-
-    void vtrc_client::assign_lowlevel_protocol_factory(
-                                         lowlevel_factory_type factory )
-    {
-        impl_->assign_protocol_factory( factory );
-    }
-
-    lowlevel_factory_type vtrc_client::lowlevel_protocol_factory( )
-    {
-        return impl_->ll_proto_factory_;
-    }
-
-    service_wrapper_sptr vtrc_client::get_rpc_handler( const std::string &name )
-    {
-        return impl_->get_handler( name );
-    }
-
-    void vtrc_client::erase_rpc_handler(vtrc::shared_ptr<gpb::Service> handler)
-    {
-        impl_->erase_rpc_handler( handler->GetDescriptor( )->full_name( ) );
-    }
-
-    void vtrc_client::erase_rpc_handler(const std::string &name)
-    {
-        impl_->erase_rpc_handler( name );
-    }
-
-    void vtrc_client::erase_all_rpc_handlers( )
-    {
-        impl_->erase_all_rpc_handlers( );
-    }
-
-    void  vtrc_client::reset_session_id( )
-    {
-        impl_->reset_session_id( );
-    }
-
     void  vtrc_client::reset_session_key( )
     {
         impl_->reset_session_key( );
@@ -935,16 +592,17 @@ namespace vtrc { namespace client {
         impl_->reset_session_info( );
     }
 
-    common::protocol_iface *vtrc_client::init_protocol(
-                                  common::connection_iface_sptr c )
+    const common::call_context *vtrc_client::get_call_context( )
     {
-        vtrc::unique_ptr<protocol_layer_c> proto
-                (new protocol_layer_c( c.get( ), this, impl_ ));
-        on_connect_( );
-        proto->init( );
-        impl_->connection_ = c;
-        return proto.release( );
+        return common::call_context::get( );
     }
+
+    void vtrc_client::connect( )
+    { }
+
+    void vtrc_client::async_connect( common::system_closure_type )
+    { }
+
 
 }}
 

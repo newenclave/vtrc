@@ -18,7 +18,7 @@ namespace common {
 
 namespace client {
 
-    class   vtrc_client;
+    class   base;
     struct  protocol_signals;
 
     class client_tcp: public common::transport_tcp {
@@ -27,7 +27,7 @@ namespace client {
         impl  *impl_;
 
         client_tcp( VTRC_ASIO::io_service &ios,
-                    vtrc_client *client,
+                    client::base *client,
                     protocol_signals *callbacks,
                     bool tcp_nodelay );
 
@@ -37,8 +37,7 @@ namespace client {
 
         typedef common::lowlevel::protocol_factory_type lowlevel_factory_type;
 
-        static shared_type create ( VTRC_ASIO::io_service &ios,
-                                    vtrc_client *client,
+        static shared_type create ( client::base *client,
                                     protocol_signals *callbacks,
                                     bool tcp_nodelay );
 

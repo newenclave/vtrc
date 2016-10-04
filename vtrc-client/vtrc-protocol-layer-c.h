@@ -15,7 +15,7 @@ namespace rpc { namespace errors {
 }}
 
 namespace client {
-    class vtrc_client;
+    class base;
 }
 
 namespace common {
@@ -55,7 +55,7 @@ namespace client {
     public:
 
         protocol_layer_c( common::connection_iface *connection,
-                          vtrc::client::vtrc_client *client,
+                          vtrc::client::base *client,
                           protocol_signals *callbacks);
         ~protocol_layer_c( );
 

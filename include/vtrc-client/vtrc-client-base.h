@@ -13,6 +13,7 @@
 #include "vtrc-common/vtrc-connection-iface.h"
 #include "vtrc-common/vtrc-rpc-service-wrapper.h"
 #include "vtrc-common/vtrc-protocol-iface.h"
+#include "vtrc-common/vtrc-enviroment.h"
 
 namespace vtrc {
 
@@ -79,6 +80,16 @@ namespace client {
         bool ready( ) const;
         void disconnect( );
 
+    public:
+
+        void  set_session_id ( const std::string &id );
+        const std::string &get_session_id (  ) const;
+        void  reset_session_id( );
+
+
+        common::enviroment &env( );
+        const common::enviroment &env( ) const;
+
     public: //// services
 
         typedef google::protobuf::Service               service_type;
@@ -135,8 +146,11 @@ namespace client {
         void assign_call_executor( executor_type exec );
         executor_type call_executor( );
         void execute( common::protocol_iface::call_type call );
-
     };
+
+    typedef vtrc::shared_ptr<base> base_sptr;
+    typedef vtrc::weak_ptr<base>   base_wptr;
+
 }}
 
 #endif // VTRC_CLIENT_BASE_H

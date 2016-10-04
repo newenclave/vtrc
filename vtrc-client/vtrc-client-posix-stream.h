@@ -17,7 +17,7 @@ namespace common {
 
 namespace client {
 
-    class  vtrc_client;
+    class  base;
     struct protocol_signals;
 
     class client_posixs: public common::transport_posixs {
@@ -27,15 +27,14 @@ namespace client {
         impl  *impl_;
 
         client_posixs( VTRC_ASIO::io_service &ios,
-                       vtrc_client *client ,
+                       client::base *client ,
                        protocol_signals *callbacks);
 
     public:
 
         typedef vtrc::shared_ptr<client_posixs> shared_type;
 
-        static shared_type create ( VTRC_ASIO::io_service &ios,
-                                    vtrc_client *client,
+        static shared_type create ( client::base *client,
                                     protocol_signals *callbacks );
 
         ~client_posixs( );

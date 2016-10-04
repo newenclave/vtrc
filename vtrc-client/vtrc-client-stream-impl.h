@@ -29,7 +29,7 @@ namespace { /// implementation.
         VTRC_ASIO::io_service &ios_;
 
         parent_type             *parent_;
-        vtrc_client             *client_;
+        base                    *client_;
         protocol_signals        *callbacks_;
         common::enviroment       env_;
 
@@ -38,7 +38,7 @@ namespace { /// implementation.
         vtrc::unique_ptr<protocol_layer_c> protocol_;
 
         client_stream_impl( VTRC_ASIO::io_service &ios,
-                            vtrc_client *client, protocol_signals *callbacks,
+                            base *client, protocol_signals *callbacks,
                             size_t read_buffer_size )
             :ios_(ios)
             ,parent_(NULL)
@@ -137,9 +137,9 @@ namespace { /// implementation.
 
         void read_handler( const bsys::error_code &error, size_t bytes,
 //                           const common::connection_iface_sptr /*inst*/,
-                           const vtrc_client_wptr client )
+                           const base_wptr client )
         {
-            vtrc_client_sptr lck(client.lock( ));
+            client::base_sptr lck(client.lock( ));
             if( !lck ) {
                 return;
             }
