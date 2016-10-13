@@ -218,18 +218,18 @@ namespace vtrc { namespace common {
 //                try { /// TODO
                 if( !closed_ ) {
                     stream_->async_write_some(
-                            basio::buffer( data, length ),
-                            write_dispatcher_.wrap(
-                                    vtrc::bind( &this_type::write_handler, this,
-                                        vtrc::placeholders::error,
-                                        vtrc::placeholders::bytes_transferred,
-                                        handler_params(
-                                            length,
-                                            total,
-                                            parent_->shared_from_this( )
-                                        )
+                        basio::buffer( data, length ),
+                        write_dispatcher_.wrap(
+                                vtrc::bind( &this_type::write_handler, this,
+                                    vtrc::placeholders::error,
+                                    vtrc::placeholders::bytes_transferred,
+                                    handler_params(
+                                        length,
+                                        total,
+                                        parent_->shared_from_this( )
                                     )
-                            ));
+                                )
+                        ));
                 }
 //                } catch( const std::exception & ) {
 //                    this->close( );
