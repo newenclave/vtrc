@@ -60,7 +60,9 @@ namespace vtrc { namespace client {
         impl(basio::io_service &io, basio::io_service &rpcio)
             :ios_(&io)
             ,rpc_ios_(&rpcio)
-        { }
+        {
+            set_default_exec( );
+        }
 
         void reset_connection( common::connection_iface_sptr new_conn )
         {
