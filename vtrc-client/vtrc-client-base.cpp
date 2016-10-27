@@ -89,7 +89,7 @@ namespace vtrc { namespace client {
                     connection_->close( );
                 } catch( ... ) { }
             };
-            connection_.reset( );
+            //connection_.reset( );
         }
 
         void set_default_exec(  )
