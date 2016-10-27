@@ -53,11 +53,16 @@ namespace vtrc { namespace client {
         vtrc::shared_mutex              factory_lock_;
 
         executor_type                   exec_;
+        common::enviroment              env_;
+
+        std::string                     session_id_;
 
         impl(basio::io_service &io, basio::io_service &rpcio)
             :ios_(&io)
             ,rpc_ios_(&rpcio)
-        { }
+        {
+            set_default_exec( );
+        }
 
         void reset_connection( common::connection_iface_sptr new_conn )
         {
@@ -90,6 +95,24 @@ namespace vtrc { namespace client {
                 } catch( ... ) { }
             };
             //connection_.reset( );
+        }
+
+        void set_session_id( const std::string &id )
+        {
+            //vtrc::lock_guard<vtrc::mutex> lck(session_info_lock_);
+            session_id_.assign( id );
+        }
+
+        const std::string &get_session_id(  ) const
+        {
+            //vtrc::lock_guard<vtrc::mutex> lck(session_info_lock_);
+            return session_id_;
+        }
+
+        void  reset_session_id( )
+        {
+            //vtrc::lock_guard<vtrc::mutex> lck(session_info_lock_);
+            session_id_.clear( );
         }
 
         void set_default_exec(  )
@@ -324,6 +347,31 @@ namespace vtrc { namespace client {
     void base::disconnect( )
     {
         impl_->disconnect( );
+    }
+
+    void  base::set_session_id ( const std::string &id )
+    {
+        impl_->set_session_id( id );
+    }
+
+    const std::string &base::get_session_id (  ) const
+    {
+        return impl_->get_session_id( );
+    }
+
+    void base::reset_session_id( )
+    {
+        impl_->reset_session_id( );
+    }
+
+    common::enviroment &base::env( )
+    {
+        return impl_->env_;
+    }
+
+    const common::enviroment &base::env( ) const
+    {
+        return impl_->env_;
     }
 
     void base::assign_rpc_handler( vtrc::shared_ptr<gpb::Service> serv )

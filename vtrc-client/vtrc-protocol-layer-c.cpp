@@ -37,7 +37,7 @@ namespace vtrc { namespace client {
     typedef common::lowlevel::protocol_layer_iface
                               lowlevel_protocol_layer_iface;
 
-    lowlevel_protocol_layer_iface *create_default_setup( vtrc_client *c );
+    lowlevel_protocol_layer_iface *create_default_setup( client::base *c );
 
     namespace {
 
@@ -71,14 +71,14 @@ namespace vtrc { namespace client {
 
         common::connection_iface        *connection_;
         protocol_layer_c                *parent_;
-        vtrc_client                     *client_;
+        client::base                    *client_;
         protocol_signals                *callbacks_;
 
         bool                             closed_;
         lowlevel_protocol_layer_iface   *conn_setup_;
         lowlevel_factory_type            ll_factory_;
 
-        impl( common::connection_iface *c, vtrc_client *client,
+        impl( common::connection_iface *c, client::base *client,
               protocol_signals *cb )
             :connection_(c)
             ,parent_(NULL)
@@ -169,9 +169,9 @@ namespace vtrc { namespace client {
             return client_->get_rpc_handler(name);
         }
 
-        void process_call_( vtrc_client_wptr client, lowlevel_unit_sptr llu )
+        void process_call_( base_wptr client, lowlevel_unit_sptr llu )
         {
-            vtrc_client_sptr c(client.lock( ));
+            base_sptr c(client.lock( ));
             if( !c ) {
                 return;
             }
@@ -295,7 +295,7 @@ namespace vtrc { namespace client {
     };
 
     protocol_layer_c::protocol_layer_c( common::connection_iface *connection,
-                                        vtrc::client::vtrc_client *client ,
+                                        vtrc::client::base *client ,
                                         protocol_signals *callbacks)
         :common::protocol_layer(connection, true)
         ,impl_(new impl(connection, client, callbacks))

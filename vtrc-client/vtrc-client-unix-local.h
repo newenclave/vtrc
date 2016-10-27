@@ -19,7 +19,7 @@ namespace common {
 
 namespace client {
 
-    class  vtrc_client;
+    class  base;
     struct protocol_signals;
 
     class client_unix_local: public common::transport_unix_local {
@@ -29,15 +29,14 @@ namespace client {
         impl  *impl_;
 
         client_unix_local(VTRC_ASIO::io_service &ios,
-                          vtrc_client *client ,
+                          client::base *client ,
                           protocol_signals *callbacks);
 
     public:
 
         typedef vtrc::shared_ptr<client_unix_local> shared_type;
 
-        static shared_type create ( VTRC_ASIO::io_service &ios,
-                                    vtrc_client *client,
+        static shared_type create ( client::base *client,
                                     protocol_signals *callbacks );
 
         ~client_unix_local( );

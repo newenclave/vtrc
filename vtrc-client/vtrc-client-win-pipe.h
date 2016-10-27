@@ -22,6 +22,7 @@ namespace common {
 
 namespace client {
 
+	class	base;
     class   vtrc_client;
     struct  protocol_signals;
 
@@ -31,14 +32,13 @@ namespace client {
         impl  *impl_;
 
         client_win_pipe( VTRC_ASIO::io_service &ios,
-                         vtrc_client *client,
+						 client::base *client,
                          protocol_signals *callbacks );
 
     public:
 
         typedef vtrc::shared_ptr<client_win_pipe> shared_type;
-        static shared_type create ( VTRC_ASIO::io_service &ios,
-                                    vtrc_client *client, 
+        static shared_type create ( client::base *client,
                                     protocol_signals *callbacks );
 
         ~client_win_pipe( );

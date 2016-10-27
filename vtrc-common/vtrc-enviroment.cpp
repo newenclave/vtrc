@@ -67,15 +67,28 @@ namespace vtrc { namespace common {
             }
         }
 
+        size_t remove( const std::string &name )
+        {
+            unique_shared_lock l(data_lock_);
+            return data_.erase( name );
+        }
+
+        bool exists( const std::string &name ) const
+        {
+            shared_lock l(data_lock_);
+            data_type::const_iterator f(data_.find(name));
+            return f != data_.end( );
+        }
+
     };
 
     enviroment::enviroment( )
         :impl_(new impl)
-    {}
+    { }
 
     enviroment::enviroment( const enviroment &other )
         :impl_(new impl(*other.impl_))
-    {}
+    { }
 
     enviroment &enviroment::operator = ( const enviroment &other )
     {
@@ -102,6 +115,16 @@ namespace vtrc { namespace common {
                                        const std::string &default_value ) const
     {
         return impl_->get( name, default_value );
+    }
+
+    size_t enviroment::remove( const std::string &name )
+    {
+        return impl_->remove( name );
+    }
+
+    bool enviroment::exists( const std::string &name ) const
+    {
+        return impl_->exists( name );
     }
 
 }}

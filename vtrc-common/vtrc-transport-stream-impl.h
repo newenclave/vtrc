@@ -213,20 +213,24 @@ namespace vtrc { namespace common {
             {
                 DEBUG_LINE(parent_);
 
-                //try { /// TODO
+                //vtrc::lock_guard<vtrc::mutex> lk(close_lock_);
+
+//                try { /// TODO
+                if( !closed_ ) {
                     stream_->async_write_some(
-                            basio::buffer( data, length ),
-                            write_dispatcher_.wrap(
-                                    vtrc::bind( &this_type::write_handler, this,
-                                        vtrc::placeholders::error,
-                                        vtrc::placeholders::bytes_transferred,
-                                        handler_params(
-                                            length,
-                                            total,
-                                            parent_->shared_from_this( )
-                                        )
+                        basio::buffer( data, length ),
+                        write_dispatcher_.wrap(
+                                vtrc::bind( &this_type::write_handler, this,
+                                    vtrc::placeholders::error,
+                                    vtrc::placeholders::bytes_transferred,
+                                    handler_params(
+                                        length,
+                                        total,
+                                        parent_->shared_from_this( )
                                     )
-                            ));
+                                )
+                        ));
+                }
 //                } catch( const std::exception & ) {
 //                    this->close( );
 //                }
