@@ -35,7 +35,7 @@ namespace vtrc { namespace client {
         typedef common::connection_iface_sptr connection_iface_sptr;
     }
 
-    struct base::impl {
+    struct base::impl: public protocol_signals {
 
         basio::io_service              *ios_;
         basio::io_service              *rpc_ios_;
@@ -63,6 +63,29 @@ namespace vtrc { namespace client {
         {
             set_default_exec( );
         }
+
+        /// ============= signals =============== /////
+        void on_init_error(const rpc::errors::container &err,
+                                   const char *message)
+        {
+            parent_->get_on_init_error( )( err, message );
+        }
+
+        void on_connect( )
+        {
+            parent_->get_on_connect( )( );
+        }
+
+        void on_disconnect( )
+        {
+            parent_->get_on_disconnect( )( );
+        }
+
+        void on_ready( bool /*value*/ )
+        {
+            parent_->get_on_ready( )( );
+        }
+        /// ====================================== /////
 
         void reset_connection( common::connection_iface_sptr new_conn )
         {
@@ -284,14 +307,14 @@ namespace vtrc { namespace client {
     common::protocol_iface *base::init_protocol( connection_iface_sptr c )
     {
         /// base!
-//        vtrc::unique_ptr<protocol_layer_c> proto
-//                        ( new protocol_layer_c( c.get( ), this, impl_ ) );
-//        on_connect_( );
-//        proto->init( );
-//        impl_->connection_ = c;
-//        return proto.release( );
-        throw std::runtime_error( "not ready!" );
-        return nullptr;
+        vtrc::unique_ptr<protocol_layer_c> proto
+                        ( new protocol_layer_c( c.get( ), this, impl_ ) );
+        on_connect_( );
+        proto->init( );
+        impl_->connection_ = c;
+        return proto.release( );
+//        throw std::runtime_error( "not ready!" );
+//        return nullptr;
     }
 
     common::connection_iface_sptr base::connection( )
