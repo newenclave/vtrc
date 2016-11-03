@@ -22,7 +22,7 @@ namespace common {
 
 namespace client {
 
-	class	base;
+    class   base;
     class   vtrc_client;
     struct  protocol_signals;
 
@@ -32,7 +32,7 @@ namespace client {
         impl  *impl_;
 
         client_win_pipe( VTRC_ASIO::io_service &ios,
-						 client::base *client,
+                         client::base *client,
                          protocol_signals *callbacks );
 
     public:

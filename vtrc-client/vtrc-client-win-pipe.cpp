@@ -19,7 +19,7 @@ namespace vtrc { namespace client {
     struct client_win_pipe::impl: public super_type  {
 
         impl( VTRC_ASIO::io_service &ios,
-			  client::base *client, protocol_signals *callbacks )
+              client::base *client, protocol_signals *callbacks )
             :super_type(ios, client, callbacks, 4096)
         { }
 
@@ -97,13 +97,12 @@ namespace vtrc { namespace client {
         impl_->set_parent( this );
     }
 
-    vtrc::shared_ptr<client_win_pipe> client_win_pipe::create(
-								 client::base *client,
-                                 protocol_signals *callbacks )
+    vtrc::shared_ptr<client_win_pipe> client_win_pipe::create( client::base *c,
+                                                protocol_signals *callbacks )
     {
         vtrc::shared_ptr<client_win_pipe> new_inst
-                    (new client_win_pipe( client->get_io_service( ), 
-                                          client, callbacks ));
+                    (new client_win_pipe( c->get_io_service( ),
+                                          c, callbacks ));
         new_inst->init( );
         return new_inst;
     }

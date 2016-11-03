@@ -48,7 +48,7 @@
 #define ECRYPT_UNKNOWN
 #elif defined(__sgi)            /* Newer MIPS */
 #define ECRYPT_UNKNOWN
-#else	                        /* Any other processor */
+#else                           /* Any other processor */
 #define ECRYPT_UNKNOWN
 #endif
 
