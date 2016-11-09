@@ -107,7 +107,7 @@ namespace vtrc { namespace client {
     }
 
     void client_tcp::async_connect(const std::string &address,
-                                   unsigned short service,
+                                   unsigned short service, 
                                    common::system_closure_type closure )
     {
         impl_->async_connect( address, service, closure );

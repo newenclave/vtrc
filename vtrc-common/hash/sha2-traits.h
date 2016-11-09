@@ -60,9 +60,15 @@ namespace vtrc { namespace hash {
         }                                                                      \
     }
 
+#if VTRC_OPENSSL_ENABLED
     HASH_TRAIT_DEFINE( SHA256 );
     HASH_TRAIT_DEFINE( SHA384 );
     HASH_TRAIT_DEFINE( SHA512 );
+#else
+    HASH_TRAIT_DEFINE( SHA256i );
+    HASH_TRAIT_DEFINE( SHA384i );
+    HASH_TRAIT_DEFINE( SHA512i );
+#endif
 
 #undef HASH_TRAIT_DEFINE
 
