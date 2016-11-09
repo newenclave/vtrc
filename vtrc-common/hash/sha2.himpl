@@ -105,12 +105,12 @@ typedef unsigned long long u_int64_t;	/* 8-bytes (64-bits) */
 typedef struct _SHA256i_CTX {
 	uint32_t	state[8];
 	uint64_t	bitcount;
-	uint8_t	buffer[SHA256_BLOCK_LENGTH];
+        uint8_t	buffer[SHA256i_BLOCK_LENGTH];
 } SHA256i_CTX;
 typedef struct _SHA512i_CTX {
 	uint64_t	state[8];
 	uint64_t	bitcount[2];
-	uint8_t	buffer[SHA512_BLOCK_LENGTH];
+        uint8_t	buffer[SHA512i_BLOCK_LENGTH];
 } SHA512i_CTX;
 
 #else /* SHA2_USE_INTTYPES_H */
@@ -149,7 +149,7 @@ char* SHA384i_Data(const uint8_t*, size_t, char[SHA384i_DIGEST_STRING_LENGTH]);
 
 void SHA512i_Init(SHA512i_CTX*);
 void SHA512i_Update(SHA512i_CTX*, const uint8_t*, size_t);
-void SHA512i_Final(uint8_t[SHA512_DIGEST_LENGTH], SHA512i_CTX*);
+void SHA512i_Final(uint8_t[SHA512i_DIGEST_LENGTH], SHA512i_CTX*);
 char* SHA512i_End(SHA512i_CTX*, char[SHA512i_DIGEST_STRING_LENGTH]);
 char* SHA512i_Data(const uint8_t*, size_t, char[SHA512i_DIGEST_STRING_LENGTH]);
 
