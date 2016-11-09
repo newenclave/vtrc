@@ -148,9 +148,11 @@ namespace  {
             vtrc::unique_ptr<common::rpc_channel> channel;
 
             if( request->callback( ) ) {
+                std::cout << "Callbacks\n";
                 channel.reset(unicast::create_callback_channel(
                                                        c_sptr, dis_wait ));
             } else {
+                std::cout << "Events\n";
                 channel.reset(unicast::create_event_channel(
                                                         c_sptr, dis_wait ));
             }
@@ -165,6 +167,7 @@ namespace  {
                 req.set_id( i );
                 stub.call_request( &stub_type::event, &req );
             }
+            std::cout << "Sent " << request->count( ) << " messages\n";
 
         }
 

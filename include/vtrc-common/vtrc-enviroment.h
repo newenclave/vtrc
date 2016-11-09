@@ -25,6 +25,9 @@ namespace vtrc { namespace common {
         const std::string get( const std::string &name ) const;
         const std::string get( const std::string &name,
                                const std::string &default_value ) const;
+
+        size_t remove( const std::string &name );
+        bool exists( const std::string &name ) const;
     };
 
 }}

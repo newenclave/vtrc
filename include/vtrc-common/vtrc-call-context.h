@@ -20,11 +20,13 @@ namespace vtrc { namespace common {
         impl  *impl_;
 
     public:
+        /// get context
+        static const call_context *get(  );
+
+    public:
 
         call_context( rpc::lowlevel_unit *lowlevel );
         virtual ~call_context( );
-
-        static const call_context *get(  );
 
         call_context( const call_context &other );
         call_context &operator = ( const call_context &other );
@@ -48,7 +50,7 @@ namespace vtrc { namespace common {
         google::protobuf::Closure       *get_done_closure(  );
         const google::protobuf::Closure *get_done_closure(  ) const;
 
-        const size_t depth( ) const;
+        size_t depth( ) const;
 
         const std::string &channel_data( ) const;
 

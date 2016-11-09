@@ -36,7 +36,7 @@ namespace vtrc { namespace client {
         verify_callback_type            vcb_;
 
         impl( VTRC_ASIO::io_service &ios,
-              vtrc_client *client, protocol_signals *callbacks,
+              client::base *client, protocol_signals *callbacks,
               bool nodelay )
             :super_type(ios, client, callbacks, 4096)
             ,no_delay_(nodelay)
@@ -143,8 +143,8 @@ namespace vtrc { namespace client {
         //return vtrc::make_shared<socket_type>(vtrc::ref(ios), vtrc::ref(ctx));
     }
 
-    client_ssl::client_ssl(VTRC_ASIO::io_service &ios,
-                            vtrc_client *client,
+    client_ssl::client_ssl( VTRC_ASIO::io_service &ios,
+                            client::base *client,
                             vtrc::shared_ptr<bssl::context> ctx,
                             protocol_signals *callbacks,
                             bool tcp_nodelay )
@@ -155,8 +155,7 @@ namespace vtrc { namespace client {
         impl_->set_parent( this );
     }
 
-    vtrc::shared_ptr<client_ssl> client_ssl::create(basio::io_service &ios,
-                                        vtrc_client *client,
+    vtrc::shared_ptr<client_ssl> client_ssl::create( client::base *client,
                                         protocol_signals *callbacks,
                                         const std::string &verify_file,
                                         bool tcp_nodelay)
@@ -165,7 +164,8 @@ namespace vtrc { namespace client {
                 (vtrc::make_shared<bssl::context>(bssl::context::sslv23 ) );
         ctx->load_verify_file( verify_file );
         vtrc::shared_ptr<client_ssl> new_inst
-                    (new client_ssl( ios, client, ctx,
+                    (new client_ssl( client->get_io_service( ),
+                                     client, ctx,
                                      callbacks, tcp_nodelay ));
         new_inst->init( );
         return new_inst;

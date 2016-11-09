@@ -18,7 +18,7 @@ namespace vtrc { namespace client {
     struct client_posixs::impl: public super_type  {
 
         impl( VTRC_ASIO::io_service &ios,
-              vtrc_client *client, protocol_signals *callbacks )
+              client::base *client, protocol_signals *callbacks )
             :super_type(ios, client, callbacks, 4096)
         { }
 
@@ -60,8 +60,8 @@ namespace vtrc { namespace client {
     }
 
     client_posixs::client_posixs( VTRC_ASIO::io_service &ios,
-                                          vtrc_client *client,
-                                          protocol_signals *callbacks )
+                                  client::base *client,
+                                  protocol_signals *callbacks )
         :common::transport_posixs(create_socket(ios))
         ,impl_(new impl(ios, client, callbacks))
     {
@@ -69,12 +69,12 @@ namespace vtrc { namespace client {
     }
 
     vtrc::shared_ptr<client_posixs>
-        client_posixs::create(basio::io_service &ios,
-                                  vtrc_client *client,
-                                  protocol_signals *callbacks )
+        client_posixs::create( client::base *client,
+                               protocol_signals *callbacks )
     {
         vtrc::shared_ptr<client_posixs> new_inst
-                         (new client_posixs( ios, client, callbacks ));
+                         (new client_posixs( client->get_io_service( ),
+                                             client, callbacks ));
         new_inst->init( );
         return new_inst;
     }

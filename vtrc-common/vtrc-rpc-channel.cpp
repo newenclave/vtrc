@@ -71,12 +71,12 @@ namespace vtrc { namespace common  {
 
     struct rpc_channel::impl {
 
-        unsigned direct_type_;
-        unsigned callback_type_;
-        unsigned flags_;
+        unsigned        direct_type_;
+        unsigned        callback_type_;
 
-        vtrc::uint64_t static_target_;
-        bool           accept_callbacks_;
+        vtrc::uint32_t  flags_;
+        vtrc::uint64_t  static_target_;
+        bool            accept_callbacks_;
 
         std::string data_;
 
@@ -93,7 +93,7 @@ namespace vtrc { namespace common  {
             ,accept_callbacks_(false)
             ,error_cb_(get_default_error_cb( ))
             ,chan_error_cb_(get_default_chan_error_cb( ))
-            ,timeout_(30000000) // microseconds
+            ,timeout_(30000000) // microseconds 30 000 000
         {
             const common::call_context *ctx = common::call_context::get( );
             if( ctx ) {
@@ -164,22 +164,22 @@ namespace vtrc { namespace common  {
         impl_->flags_ = flags;
     }
 
-    unsigned rpc_channel::get_flags( ) const
+    vtrc::uint32_t rpc_channel::get_flags( ) const
     {
         return impl_->flags_;
     }
 
-    void rpc_channel::set_flag( unsigned value )
+    void rpc_channel::set_flag( vtrc::uint32_t value )
     {
         impl_->flags_ |= value;
     }
 
-    void rpc_channel::reset_flag( unsigned value )
+    void rpc_channel::reset_flag( vtrc::uint32_t value )
     {
         impl_->flags_ &= (~value);
     }
 
-    vtrc::uint64_t rpc_channel::timeout() const
+    vtrc::uint64_t rpc_channel::timeout( ) const
     {
         return impl_->timeout_;
     }
@@ -208,8 +208,15 @@ namespace vtrc { namespace common  {
                               ->serialize_message( req ) );
         }
 
-        if( mess_type == impl_->callback_type_ ) {
+        if( mess_type == impl_->callback_type_ ) { /// callback
 
+            /// can be made without context
+            if( get_flags( ) & rpc_channel::CONTEXT_NOT_REQUIRE ) {
+                llu.mutable_info( )
+                 ->set_message_flags( rpc::message_info::FLAG_CALLBACK_ALONE );
+            }
+
+            /// we have to have context here
             if( get_flags( ) & rpc_channel::USE_STATIC_CONTEXT ) {
 
                 if( !impl_->accept_callbacks_ ) {

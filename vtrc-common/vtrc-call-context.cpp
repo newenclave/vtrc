@@ -117,7 +117,7 @@ namespace vtrc { namespace common {
         return impl_->done_;
     }
 
-    const size_t call_context::depth( ) const
+    size_t call_context::depth( ) const
     {
         return impl_->depth_;
     }

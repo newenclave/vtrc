@@ -24,7 +24,7 @@ namespace common {
 
 namespace client {
 
-    class   vtrc_client;
+    class   base;
     struct  protocol_signals;
 
     class client_ssl: public common::transport_ssl {
@@ -33,7 +33,7 @@ namespace client {
         impl  *impl_;
 
         client_ssl( VTRC_ASIO::io_service &ios,
-                    vtrc_client *client,
+                    client::base *client,
                     vtrc::shared_ptr<VTRC_ASIO::ssl::context> ctx,
                     protocol_signals *callbacks,
                     bool tcp_nodelay );
@@ -46,8 +46,7 @@ namespace client {
 
         typedef vtrc::shared_ptr<client_ssl> shared_type;
 
-        static shared_type create ( VTRC_ASIO::io_service &ios,
-                                    vtrc_client *client,
+        static shared_type create ( client::base *client,
                                     protocol_signals *callbacks,
                                     const std::string &verify_file,
                                     bool tcp_nodelay );

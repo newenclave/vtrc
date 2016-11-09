@@ -19,7 +19,7 @@
 #include "vtrc-memory.h"
 #include "vtrc-bind.h"
 
-#include "vtrc-client.h"
+#include "vtrc-client-base.h"
 
 #include "vtrc-protocol-layer-c.h"
 
@@ -37,7 +37,8 @@ namespace vtrc { namespace client {
         enum protocol_stage {
              STAGE_HELLO = 1
             ,STAGE_SETUP = 2
-            ,STAGE_READY = 3
+            ,STAGE_ERROR = 3
+            ,STAGE_READY = 4
         };
 
         void default_cb( bs::error_code const & )
@@ -53,10 +54,10 @@ namespace vtrc { namespace client {
 
             bool                        ready_;
             stage_function_type         stage_call_;
-            vtrc_client                *client_;
+            client::base               *client_;
             protocol_stage              stage_;
 
-            iface( vtrc_client *client )
+            iface( client::base *client )
                 :ready_(false)
                 ,client_(client)
                 ,stage_(STAGE_HELLO)
@@ -121,6 +122,10 @@ namespace vtrc { namespace client {
                     stage_call_ = vtrc::bind( &iface::on_trans_setup, this,
                                               vtrc::placeholders::_1 );
                     break;
+                case STAGE_ERROR:
+                    stage_call_ = vtrc::bind( &iface::on_trans_error, this,
+                                              vtrc::placeholders::_1 );
+                    break;
                 case STAGE_READY:
                     stage_call_ = vtrc::bind( &iface::on_server_ready, this,
                                               vtrc::placeholders::_1 );
@@ -161,6 +166,8 @@ namespace vtrc { namespace client {
                 }
             }
 
+            void on_trans_error( const std::string &data ) { }
+
             void on_trans_setup( const std::string &data )
             {
                 using namespace common::transformers;
@@ -187,7 +194,7 @@ namespace vtrc { namespace client {
 
                 tsetup.ParseFromString( capsule.body( ) );
 
-                std::string key(client_->get_session_key( ));
+                std::string key( client_->env( ).get( "session_key" ) );
 
                 std::string s1(tsetup.salt1( ));
                 std::string s2(tsetup.salt2( ));
@@ -197,7 +204,7 @@ namespace vtrc { namespace client {
                 set_transformer( default_cypher::create( key.c_str( ),
                                                               key.size( ) ) );
 
-                key.assign( client_->get_session_key( ) );
+                key.assign( client_->env( ).get( "session_key" ) );
 
                 generate_key_infos( key, s1, s2, key );
 
@@ -240,6 +247,10 @@ namespace vtrc { namespace client {
                         accessor( )->error( capsule.error( ),
                                     "Server is not ready; stage: 'Ready'" );
                     }
+                    //close( );
+                    change_stage( STAGE_ERROR );
+                    accessor( )->close( );
+                    return;
                 }
 
                 rpc::auth::session_setup opts;
@@ -277,7 +288,8 @@ namespace vtrc { namespace client {
                 capsule.set_ready( true );
                 capsule.set_text( "Miten menee?" );
 
-                bool key_set = client_->is_key_set( );
+
+                bool key_set = client_->env( ).exists( "session_key" );
 
                 const unsigned basic_transform = rpc::auth::TRANSFORM_ERSEEFOR;
 
@@ -321,6 +333,7 @@ namespace vtrc { namespace client {
             {
                 std::string data;
                 if( !pop_raw_message( data ) ) {
+                    change_stage( STAGE_ERROR );
                     accessor( )->error(
                                 create_error( rpc::errors::ERR_INTERNAL, "" ),
                                 "Bad hash." );
@@ -343,7 +356,7 @@ namespace vtrc { namespace client {
 
     }
 
-    common::lowlevel::protocol_layer_iface *create_default_setup(vtrc_client *c)
+    common::lowlevel::protocol_layer_iface *create_default_setup( base *c )
     {
         return new iface( c );
     }

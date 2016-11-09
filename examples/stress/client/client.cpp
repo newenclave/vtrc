@@ -346,6 +346,7 @@ int start( const po::variables_map &params )
                                           true, false, payload ));
         }
 
+        //client.reset( );
         start_generate_events(impl, event_count, true, false, payload);
 
         std::cout << "Ok\n";
@@ -371,6 +372,8 @@ int start( const po::variables_map &params )
         }
 
         start_generate_events(impl, event_count, true, true, payload);
+        client->disconnect( );
+        //client.reset( );
 
         std::cout << "Ok\n";
 

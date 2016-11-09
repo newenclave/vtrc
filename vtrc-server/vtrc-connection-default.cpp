@@ -90,7 +90,7 @@ namespace vtrc { namespace server {
 
             void on_init_timeout( const bs::error_code &error )
             {
-                if( !error ) {
+                if( !error && !ready_ ) {
                     /// timeout for client init
                     rpc::auth::init_capsule cap;
                     cap.mutable_error( )->set_code( rpc::errors::ERR_TIMEOUT );
@@ -119,7 +119,7 @@ namespace vtrc { namespace server {
                                common::connection_iface_wptr &inst )
             {
                 common::connection_iface_sptr lcked( inst.lock( ) );
-                ready_ = true;
+                ready_ = false;
                 if( lcked ) {
                     lcked->close( );
                 }
@@ -309,10 +309,6 @@ namespace vtrc { namespace server {
                 set_accessor( pa );
                 switch_to_handshake( );
                 static const std::string data(first_message( ));
-//                ready_ = true;
-//                pa_->ready( true );
-//                cb( VTRC_SYSTEM::error_code( ) );
-//                return;
 
                 const unsigned to = session_opts_.init_timeout( );
 

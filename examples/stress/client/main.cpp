@@ -52,6 +52,11 @@ int main( int argc, char *argv[] )
         return 0;
     }
 
-    return  start( vm );
+    try {
+        return  start( vm );
+    } catch( const std::exception &ex ) {
+        std::cerr << "General error: " << ex.what( ) << "\n";
+    }
+    return 3;
 }
 

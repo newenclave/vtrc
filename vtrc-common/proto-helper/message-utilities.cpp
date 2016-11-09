@@ -72,7 +72,7 @@ namespace vtrc { namespace utilities {
                     VTRC_CAS_REP_EQUAL( CPPTYPE_FLOAT , GetRepeatedFloat,  i );
                     VTRC_CAS_REP_EQUAL( CPPTYPE_DOUBLE, GetRepeatedDouble, i );
                     VTRC_CAS_REP_EQUAL( CPPTYPE_STRING, GetRepeatedString, i );
-                    VTRC_CAS_REP_EQUAL( CPPTYPE_ENUM,	GetRepeatedEnum,   i );
+                    VTRC_CAS_REP_EQUAL( CPPTYPE_ENUM,   GetRepeatedEnum,   i );
                     default:
                         break;
                 }

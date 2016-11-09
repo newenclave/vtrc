@@ -34,10 +34,11 @@ namespace vtrc { namespace common  {
     public:
 
         enum flags {
-             DEFAULT            = 0
-            ,DISABLE_WAIT       = 1
-            ,USE_CONTEXT_CALL   = 1 << 1
-            ,USE_STATIC_CONTEXT = 1 << 2 /// only with USE_CONTEXT_CALL
+             DEFAULT             = 0
+            ,DISABLE_WAIT        = 1
+            ,USE_CONTEXT_CALL    = 1 << 1
+            ,USE_STATIC_CONTEXT  = 1 << 2 /// only with USE_CONTEXT_CALL
+            ,CONTEXT_NOT_REQUIRE = 1 << 3 /// only with USE_CONTEXT_CALL
         };
 
         class scoped_flags {
@@ -45,6 +46,7 @@ namespace vtrc { namespace common  {
             unsigned     old_flags_;
 
 #if VTRC_DISABLE_CXX11
+        private:
             scoped_flags( const scoped_flags & );
             scoped_flags & operator = ( const scoped_flags & );
 #else
@@ -81,10 +83,10 @@ namespace vtrc { namespace common  {
         virtual ~rpc_channel( );
 
         virtual void set_flags( unsigned /*flags*/ );
-        virtual unsigned get_flags( ) const;
+        virtual vtrc::uint32_t get_flags( ) const;
 
-        void set_flag( unsigned );
-        void reset_flag( unsigned );
+        void set_flag( vtrc::uint32_t );
+        void reset_flag( vtrc::uint32_t );
 
         vtrc::uint64_t timeout( ) const;
         void set_timeout( vtrc::uint64_t new_value );

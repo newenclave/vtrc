@@ -54,6 +54,23 @@ namespace vtrc { namespace server {
 
         void def_cb( const VTRC_SYSTEM::error_code & )
         { }
+
+        /// TODO: Copy-Paste
+        bool alone_callback(const lowlevel_unit_sptr &llu)
+        {
+            return llu->info( ).message_flags( ) &
+                   rpc::message_info::FLAG_CALLBACK_ALONE;
+        }
+
+        void fill_error( lowlevel_unit_sptr &llu, unsigned code,
+                         const char *message, bool fatal )
+        {
+            rpc::errors::container *err = llu->mutable_error( );
+            err->set_code( code );
+            err->set_additional( message );
+            err->set_fatal( fatal );
+        }
+
     }
 
     namespace data_queue = common::data_queue;
@@ -229,7 +246,19 @@ namespace vtrc { namespace server {
         void process_insertion( lowlevel_unit_sptr &llu )
         {
             if( 0 == parent_->push_rpc_message( llu->target_id( ), llu ) ) {
-                process_call( llu );
+                if( alone_callback( llu ) ) {
+                    process_call( llu );
+                } else {
+                    if( llu->opt( ).wait( ) ) {
+                        llu->clear_request( );
+                        llu->clear_response( );
+                        llu->clear_call( );
+                        llu->clear_opt( );
+                        fill_error( llu, rpc::errors::ERR_CONTEXT,
+                                    "Context was not found.", false );
+                        parent_->call_rpc_method( *llu );
+                    }
+                }
             }
         }
 

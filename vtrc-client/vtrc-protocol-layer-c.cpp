@@ -37,7 +37,7 @@ namespace vtrc { namespace client {
     typedef common::lowlevel::protocol_layer_iface
                               lowlevel_protocol_layer_iface;
 
-    lowlevel_protocol_layer_iface *create_default_setup( vtrc_client *c );
+    lowlevel_protocol_layer_iface *create_default_setup( client::base *c );
 
     namespace {
 
@@ -46,6 +46,21 @@ namespace vtrc { namespace client {
         typedef vtrc::shared_ptr<gpb::Service> service_str;
 
         //namespace default_cypher = common::transformers::chacha;
+
+        bool alone_callback(const lowlevel_unit_sptr &llu)
+        {
+            return llu->info( ).message_flags( ) &
+                   rpc::message_info::FLAG_CALLBACK_ALONE;
+        }
+
+        void fill_error( lowlevel_unit_sptr &llu, unsigned code,
+                         const char *message, bool fatal )
+        {
+            rpc::errors::container *err = llu->mutable_error( );
+            err->set_code( code );
+            err->set_additional( message );
+            err->set_fatal( fatal );
+        }
 
     }
 
@@ -56,14 +71,14 @@ namespace vtrc { namespace client {
 
         common::connection_iface        *connection_;
         protocol_layer_c                *parent_;
-        vtrc_client                     *client_;
+        client::base                    *client_;
         protocol_signals                *callbacks_;
 
         bool                             closed_;
         lowlevel_protocol_layer_iface   *conn_setup_;
         lowlevel_factory_type            ll_factory_;
 
-        impl( common::connection_iface *c, vtrc_client *client,
+        impl( common::connection_iface *c, client::base *client,
               protocol_signals *cb )
             :connection_(c)
             ,parent_(NULL)
@@ -154,9 +169,9 @@ namespace vtrc { namespace client {
             return client_->get_rpc_handler(name);
         }
 
-        void process_call_( vtrc_client_wptr client, lowlevel_unit_sptr llu )
+        void process_call_( base_wptr client, lowlevel_unit_sptr llu )
         {
-            vtrc_client_sptr c(client.lock( ));
+            base_sptr c(client.lock( ));
             if( !c ) {
                 return;
             }
@@ -191,7 +206,19 @@ namespace vtrc { namespace client {
         void process_insertion( lowlevel_unit_sptr &llu )
         {
             if( 0 == parent_->push_rpc_message( llu->target_id( ), llu ) ) {
-                process_call( llu );
+                if( alone_callback( llu ) ) {
+                    process_call( llu );
+                } else {
+                    if( llu->opt( ).wait( ) ) {
+                        llu->clear_request( );
+                        llu->clear_response( );
+                        llu->clear_call( );
+                        llu->clear_opt( );
+                        fill_error( llu, rpc::errors::ERR_CONTEXT,
+                                    "Context was not found.", false );
+                        parent_->call_rpc_method( *llu );
+                    }
+                }
             }
         }
 
@@ -211,10 +238,8 @@ namespace vtrc { namespace client {
                 if( !check ) {
 
                     llu->Clear( );
-                    rpc::errors::container *err = llu->mutable_error( );
-                    err->set_code( rpc::errors::ERR_PROTOCOL);
-                    err->set_additional("Bad message was received");
-                    err->set_fatal( true );
+                    fill_error( llu, rpc::errors::ERR_PROTOCOL,
+                                "Bad message was received", true );
 
                     parent_->push_rpc_message_all( llu );
                     connection_->close( );
@@ -270,7 +295,7 @@ namespace vtrc { namespace client {
     };
 
     protocol_layer_c::protocol_layer_c( common::connection_iface *connection,
-                                        vtrc::client::vtrc_client *client ,
+                                        vtrc::client::base *client ,
                                         protocol_signals *callbacks)
         :common::protocol_layer(connection, true)
         ,impl_(new impl(connection, client, callbacks))
