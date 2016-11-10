@@ -9,7 +9,7 @@
 #include "vtrc-common/vtrc-transformer-iface.h"
 #include "vtrc-common/vtrc-connection-iface.h"
 
-#include "vtrc-default-lowlevel-protocol.h"
+#include "vtrc-common/vtrc-lowlevel-protocol-default.h"
 
 #include "vtrc-errors.pb.h"
 #include "vtrc-auth.pb.h"
