@@ -20,6 +20,22 @@ message options {
     optional bool       accept_callbacks = 4; //[ default = true ];
 };
 
+message unit_options {
+    optional bool   wait             = 2; //[default = true];
+    optional bool   accept_callbacks = 4; //[default = true];
+    optional bool   accept_response  = 5; //[default = true];
+}
+
+message session_options {
+    optional uint32 max_active_calls    = 1; //[default = 5];      //per user
+    optional uint32 max_message_length  = 2; //[default = 65536];  //per user
+//    optional uint32 max_total_calls     = 3; //[default = 20];
+    optional uint32 max_stack_size      = 4; //[default = 64];     //per user
+    optional uint32 read_buffer_size    = 5; //[default = 4096];   //per user
+    optional uint32 init_timeout        = 6; //[default = 10000];  //millisec
+                                                                   // per user
+}
+
 extend google.protobuf.ServiceOptions {
     optional options service_options = 56001;
 }
