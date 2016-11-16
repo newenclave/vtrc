@@ -40,23 +40,34 @@ endif( )
 # OPENSSL_LIBRARIES - The libraries needed to use OpenSSL
 # OPENSSL_VERSION - This is set to $major.$minor.$revision$path (eg. 0.9.8s)
 
-find_package(OpenSSL)
-
 set(VTRC_OPENSSL_FOUND 0)
 
-if( OPENSSL_FOUND )
-    set( VTRC_OPENSSL_FOUND 1 )
-    #small hack =)
-    set( OPENSSL_INCLUDE_DIRS ${OPENSSL_INCLUDE_DIR} )
-    message("OpenSSL dir: " ${OPENSSL_INCLUDE_DIRS})
+if( VTRC_OPENSSL_ENABLE )
 
-else(OPENSSL_FOUND) 
-    # clean up variables
+    find_package(OpenSSL)
+
+    if( OPENSSL_FOUND )
+        set( VTRC_OPENSSL_FOUND 1 )
+        #small hack =)
+        set( OPENSSL_INCLUDE_DIRS ${OPENSSL_INCLUDE_DIR} )
+        message("OpenSSL dir: " ${OPENSSL_INCLUDE_DIRS})
+
+    else(OPENSSL_FOUND)
+        # clean up variables
+        set(LIB_EAY_LIBRARY)
+        set(SSL_EAY_LIBRARY)
+        set(OPENSSL_LIBRARIES)
+        set(OPENSSL_INCLUDE_DIRS)
+    endif( OPENSSL_FOUND )
+
+else( VTRC_OPENSSL_ENABLE )
+
     set(LIB_EAY_LIBRARY)
     set(SSL_EAY_LIBRARY)
     set(OPENSSL_LIBRARIES)
     set(OPENSSL_INCLUDE_DIRS)
-endif( OPENSSL_FOUND )
+
+endif( VTRC_OPENSSL_ENABLE )
 #######################################################
 
 
