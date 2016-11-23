@@ -10,6 +10,8 @@
 #include "vtrc-bind.h"
 #include "vtrc-stdint.h"
 
+#include "vtrc-common/vtrc-closure.h"
+
 namespace vtrc { namespace common {
 
     namespace basio = VTRC_ASIO;
@@ -23,6 +25,25 @@ namespace vtrc { namespace common {
         basio::io_service::strand   dispatcher_;
         std::vector<std::uint8_t>   data_;
 
+        struct message_holder {
+            std::string                 message_;
+            common::system_closure_type closure_;
+        };
+        typedef vtrc::shared_ptr<message_holder> message_holder_sptr;
+
+        static void default_closure( const bsys::error_code & ) { }
+
+        static
+        message_holder_sptr make_holder( const char *data, size_t length,
+                                         system_closure_type closure )
+        {
+            /// TODO: FIX IT
+            message_holder_sptr mh(vtrc::make_shared<message_holder>());
+            mh->message_.assign( data, data + length );
+            mh->closure_ = closure;
+            return mh;
+        }
+
         dgram_transport_impl( basio::io_service &ios, size_t buflen )
             :sock_(ios)
             ,dispatcher_(ios)
@@ -34,9 +55,11 @@ namespace vtrc { namespace common {
             sock_.close( );
         }
 
-        void write_handler( const bsys::error_code &err, std::size_t len )
+        void write_handler( const bsys::error_code &err, size_t len,
+                            message_holder_sptr mess )
         {
-            on_write( err, len );
+            mess->closure_( err );
+            on_write( err, mess->message_.size( ) );
         }
 
         void read_handler( const bsys::error_code &err, std::size_t len )
@@ -101,10 +124,13 @@ namespace vtrc { namespace common {
                     basio::socket_base::message_flags flags = 0 )
         {
             namespace ph = vtrc::placeholders;
+            message_holder_sptr mh = make_holder( data, len,
+                                                  this_type::default_closure );
             sock_.async_send( basio::buffer(data, len),
                 flags,
                 dispatcher_.wrap(
-                   vtrc::bind( &this_type::write_handler, this, ph::_1, ph::_2 )
+                   vtrc::bind( &this_type::write_handler,
+                               this, ph::_1, ph::_2, mh )
                 ) );
         }
 
@@ -113,10 +139,13 @@ namespace vtrc { namespace common {
                        basio::socket_base::message_flags flags = 0)
         {
             namespace ph = vtrc::placeholders;
+            message_holder_sptr mh = make_holder( data, len,
+                                                  this_type::default_closure );
             sock_.async_send_to( basio::buffer(data, len), to,
                 flags,
                 dispatcher_.wrap(
-                   vtrc::bind( &this_type::write_handler, this, ph::_1, ph::_2 )
+                   vtrc::bind( &this_type::write_handler, this,
+                               ph::_1, ph::_2, mh )
                 ) );
         }
 
