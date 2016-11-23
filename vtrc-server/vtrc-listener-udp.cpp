@@ -273,15 +273,20 @@ namespace vtrc { namespace server { namespace listeners {
     namespace udp {
 
         listener_sptr create( application &app,
-                              const rpc::session_options &opts )
+                              const std::string &address,
+                              unsigned short service )
         {
-
+            return listener_sptr( );
         }
 
-        listener_sptr create( application &app )
+        listener_sptr create( application &app,
+                              const rpc::session_options &opts,
+                              const std::string &address,
+                              unsigned short service )
         {
-
+            return listener_sptr( );
         }
+
     }
 
 

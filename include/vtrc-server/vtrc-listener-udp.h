@@ -11,7 +11,6 @@ namespace vtrc { namespace server {
 
     namespace listeners { namespace udp {
 
-        /// tcp_nodelay sets TCP_NODELAY socket option for every connection
         listener_sptr create( application &app,
                               const std::string &address,
                               unsigned short service );
