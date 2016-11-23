@@ -153,12 +153,20 @@ namespace vtrc { namespace server { namespace listeners {
 
             void add_slave(  )
             {
-                slaves_[0].push_front(acceptor_slave::create( this ));
+                slaves_.begin( )->second.
+                        push_front(acceptor_slave::create( this ));
             }
 
             void start( )
             {
                 ep_.address( ).is_v4( ) ? open_v4( ) : open_v6( );
+                typedef slave_list::iterator itr;
+                slave_list &lst(slaves_.begin( )->second);
+
+                for( itr b(lst.begin( )), e(lst.end()); b != e; ++b ) {
+                    (*b)->start( );
+                }
+
             }
 
             void dec_slave( acceptor_slave *slave )
