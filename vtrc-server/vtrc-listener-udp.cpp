@@ -265,6 +265,23 @@ namespace vtrc { namespace server { namespace listeners {
 
         /////////////////////////////////////////////////////////////////////
 
+        class udp_listener: public server::listener {
+
+        };
+    }
+
+    namespace udp {
+
+        listener_sptr create( application &app,
+                              const rpc::session_options &opts )
+        {
+
+        }
+
+        listener_sptr create( application &app )
+        {
+
+        }
     }
 
 
