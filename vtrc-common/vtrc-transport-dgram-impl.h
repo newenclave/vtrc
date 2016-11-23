@@ -121,11 +121,11 @@ namespace vtrc { namespace common {
         }
 
         void write( const char *data, size_t len,
+                    common::system_closure_type closure,
                     basio::socket_base::message_flags flags = 0 )
         {
             namespace ph = vtrc::placeholders;
-            message_holder_sptr mh = make_holder( data, len,
-                                                  this_type::default_closure );
+            message_holder_sptr mh = make_holder( data, len, closure );
             sock_.async_send( basio::buffer(data, len),
                 flags,
                 dispatcher_.wrap(
@@ -136,11 +136,11 @@ namespace vtrc { namespace common {
 
         void write_to( const char *data, size_t len,
                        const basio::ip::udp::endpoint &to,
+                       common::system_closure_type closure,
                        basio::socket_base::message_flags flags = 0)
         {
             namespace ph = vtrc::placeholders;
-            message_holder_sptr mh = make_holder( data, len,
-                                                  this_type::default_closure );
+            message_holder_sptr mh = make_holder( data, len, closure );
             sock_.async_send_to( basio::buffer(data, len), to,
                 flags,
                 dispatcher_.wrap(

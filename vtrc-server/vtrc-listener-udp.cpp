@@ -1,3 +1,6 @@
+
+#include <sstream>
+
 #include "vtrc-asio.h"
 
 #include "vtrc-application.h"
@@ -27,6 +30,8 @@ namespace vtrc { namespace server { namespace listeners {
 
         struct acceptor_base;
         typedef vtrc::common::delayed_call delayed_call;
+
+        void default_write_closure( const bsys::error_code & ) { }
 
         vtrc::uint64_t ticks_now( )
         {
@@ -60,17 +65,29 @@ namespace vtrc { namespace server { namespace listeners {
                     delayed_call::microseconds(timer_interval) ); /// settings?
             }
 
-            std::string name( ) const       { }
-            const std::string &id( )  const { }
-            void init( )                    { }
-            void close( )                   { }
+            std::string name( ) const
+            {
+                std::ostringstream oss;
+                oss << "udp://"
+                    << endpoint_.address().to_string( )
+                    << ":" << endpoint_.port( );
+                return oss.str( );
+            }
+
+            const std::string &id( ) const { }
+
+            void init( ) { }
+
+            void close( )
+            {
+
+            }
 
             common::native_handle_type native_handle( ) const;
 
-            void write( const char *data, size_t length ) { }
+            void write( const char *data, size_t length );
             void write( const char *data, size_t length,
-                        const common::system_closure_type &success,
-                        bool success_on_send ) { }
+                        const common::system_closure_type &success, bool );
 
             common::protocol_iface &get_protocol( ) { }
             const common::protocol_iface &get_protocol( ) const { }
@@ -255,6 +272,19 @@ namespace vtrc { namespace server { namespace listeners {
                     start_keeper( );
                 }
             }
+        }
+
+        void client_info::write( const char *data, size_t length )
+        {
+            parent_->write_to( data, length, endpoint_,
+                               default_write_closure );
+        }
+
+        void client_info::write( const char *data, size_t length,
+                                 const common::system_closure_type &success,
+                                 bool )
+        {
+            parent_->write_to( data, length, endpoint_, success );
         }
 
         ///////// SLAVE
