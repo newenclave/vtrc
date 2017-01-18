@@ -71,8 +71,12 @@ endif( VTRC_OPENSSL_ENABLE )
 #######################################################
 
 
+
 if( ${VTRC_LINK_TYPE} MATCHES ${VTRC_LINK_TYPE_STATIC} )
+
+if( NOT USE_SHARED_BOOST )
     set(Boost_USE_STATIC_LIBS     ON)
+endif( )
     set(Boost_USE_STATIC_RUNTIME  ON)
 endif( )
 
