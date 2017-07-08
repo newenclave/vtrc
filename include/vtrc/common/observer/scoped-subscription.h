@@ -21,6 +21,8 @@ namespace vtrc { namespace common { namespace observer {
             o.reset( );
         }
 
+        scoped_subscription( const scoped_subscription &o ) = delete;
+
         scoped_subscription &operator = ( scoped_subscription &&o )
         {
             if( this != &o ) {
@@ -40,12 +42,10 @@ namespace vtrc { namespace common { namespace observer {
             unsubscriber_.swap(o.unsubscriber_);
             return *this;
         }
+#else
+    private:
+        scoped_subscription( const scoped_subscription &o );
 #endif
-        scoped_subscription( scoped_subscription &o )
-        {
-            unsubscriber_.swap( o.unsubscriber_ );
-            o.reset( );
-        }
 
         scoped_subscription( )
         { }
