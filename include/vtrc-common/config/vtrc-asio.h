@@ -4,7 +4,7 @@
 
 #include "vtrc-asio-forward.h"
 
-#if ASIO_STANDALONE
+#if defined(ASIO_STANDALONE)
 #   include "asio.hpp"
 #else
 #   include "vtrc-asio-forward.h"

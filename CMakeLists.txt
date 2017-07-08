@@ -96,7 +96,7 @@ if( VTRC_CXX11_ENABLED )
         add_definitions( -DASIO_STANDALONE=1 )
     ########################################
     else( NOT USE_BOOST_ASIO )
-      find_package( Boost 1.53 COMPONENTS
+        find_package( Boost 1.53 COMPONENTS
                         system
                         thread  # for the shared mutexes
                     REQUIRED)
@@ -129,8 +129,8 @@ endif( )
 find_package( Protobuf REQUIRED)
 
 set( VTRC_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include )
-set( VTRC_CONFIG_INCLUDE_DIR ${VTRC_INCLUDE_DIR}/vtrc-common/config
-                             ${VTRC_INCLUDE_DIR}/vtrc-common/ )
+set( VTRC_CONFIG_INCLUDE_DIR ${VTRC_INCLUDE_DIR}/vtrc-common/config )
+set( VTRC_COMMON_INCLUDE_DIR ${VTRC_INCLUDE_DIR}/vtrc-common/ )
 
 configure_file ("${PROJECT_SOURCE_DIR}/vtrc-general-config.h.in"
                 "${VTRC_CONFIG_INCLUDE_DIR}/vtrc-general-config.h" )
@@ -153,6 +153,7 @@ message( "Protocol files' path: " ${VTRC_PROTOCOL_INCLUDE_DIR} )
 
 set( VTRC_INCLUDE_DIRS
      ${VTRC_INCLUDE_DIR}
+     ${VTRC_COMMON_INCLUDE_DIR}
      ${VTRC_CONFIG_INCLUDE_DIR}
      ${VTRC_PROTOCOL_INCLUDE_DIR}
      ${PROTOBUF_INCLUDE_DIRS}

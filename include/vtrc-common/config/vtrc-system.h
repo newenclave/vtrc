@@ -1,7 +1,7 @@
 #ifndef VTRC_SYSTEM_H
 #define VTRC_SYSTEM_H
 
-#if ASIO_STANDALONE
+#if defined(ASIO_STANDALONE)
 #include "asio/error_code.hpp"
 namespace vtrc {
     inline

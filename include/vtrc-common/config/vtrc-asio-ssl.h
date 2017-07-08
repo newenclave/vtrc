@@ -3,7 +3,7 @@
 
 #include "vtrc-asio-forward.h"
 
-#if ASIO_STANDALONE
+#if defined(ASIO_STANDALONE)
 #   include "asio/ssl.hpp"
 #else
 #   include "boost/asio/ssl.hpp"

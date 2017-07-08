@@ -1,7 +1,7 @@
 #ifndef VTRC_SYSTEM_FORWARD_H
 #define VTRC_SYSTEM_FORWARD_H
 
-#if ASIO_STANDALONE
+#if defined(ASIO_STANDALONE)
 #define VTRC_SYSTEM_FORWARD( x ) namespace asio { x }
 #define VTRC_SYSTEM ::asio
 #else
