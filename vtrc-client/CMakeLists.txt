@@ -3,7 +3,7 @@ set( lib_name ${VTRC_CLIENT_LIB_NAME} )
 
 list(APPEND src_dirs
         .
-        ${VTRC_INCLUDE_DIR}/vtrc-client
+        ${VTRC_INCLUDE_DIR}/vtrc/client
     )
 
 foreach( src_dir ${src_dirs} )

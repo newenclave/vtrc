@@ -2,7 +2,7 @@ set( lib_name ${VTRC_SERVER_LIB_NAME} )
 
 list(APPEND src_dirs
         .
-        ${VTRC_INCLUDE_DIR}/vtrc-server
+        ${VTRC_INCLUDE_DIR}/vtrc/server
     )
 
 foreach( src_dir ${src_dirs} )
