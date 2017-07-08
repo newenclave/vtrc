@@ -25,9 +25,9 @@ namespace traits {
 
         template <typename ...Args>
         static
-        void exec( value_type &self, const Args& ...args )
+        void exec( value_type &self, Args&& ...args )
         {
-            self( args... );
+            self( std::forward<Args>(args)... );
         }
 #else
 

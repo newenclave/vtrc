@@ -39,7 +39,7 @@ namespace client {
 
         VTRC_DECLARE_SIGNAL( on_init_error,
                              void( const rpc::errors::container &,
-                                   const char *message ) );
+                                   const char * ) );
 
         VTRC_DECLARE_SIGNAL( on_connect,    void( ) );
 

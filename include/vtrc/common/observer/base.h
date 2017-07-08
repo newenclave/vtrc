@@ -300,7 +300,7 @@ namespace vtrc { namespace common { namespace observer {
 
 #if !VTRC_DISABLE_CXX11
         template <typename ...Args>
-        void operator ( ) ( const Args& ...args )
+        void operator ( ) ( Args&& ...args )
         {
             guard_type l(impl_->list_lock_);
             impl_->splice_added( );
@@ -309,7 +309,7 @@ namespace vtrc { namespace common { namespace observer {
                 if( impl_->is_removed( b->id_ ) ) {
                     b = impl::itr_erase( impl_->list_, b );
                 } else {
-                    slot_traits::exec( b->slot_, args... );
+                    slot_traits::exec( b->slot_, std::forward<Args>(args)... );
                     if( slot_traits::expired( b->slot_ ) ) {
                         b = impl::itr_erase( impl_->list_, b );
                     } else {
