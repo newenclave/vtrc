@@ -6,11 +6,11 @@ list(APPEND src_dirs
         ./hash
         ./proto-helper
         ./crypt/chacha
-        ${VTRC_INCLUDE_DIR}/vtrc-common
-        ${VTRC_INCLUDE_DIR}/vtrc-common/config
-        ${VTRC_INCLUDE_DIR}/vtrc-common/observer
-        ${VTRC_INCLUDE_DIR}/vtrc-common/details
-        ${VTRC_INCLUDE_DIR}/vtrc-common/observer/traits
+        ${VTRC_INCLUDE_DIR}/vtrc/common
+        ${VTRC_INCLUDE_DIR}/vtrc/common/config
+        ${VTRC_INCLUDE_DIR}/vtrc/common/observer
+        ${VTRC_INCLUDE_DIR}/vtrc/common/details
+        ${VTRC_INCLUDE_DIR}/vtrc/common/observer/traits
     )
 
 foreach( src_dir ${src_dirs} )
@@ -20,8 +20,6 @@ foreach( src_dir ${src_dirs} )
 endforeach( )
 
 set( CONFIG_FILES_DIRECTORY ${VTRC_INCLUDE_DIR}/vtrc/common/config )
-
-include_directories( ${VTRC_INCLUDE_DIR}/vtrc/common )
 
 include_directories( ${CONFIG_FILES_DIRECTORY}  )
 
