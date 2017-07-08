@@ -91,9 +91,11 @@ if( VTRC_CXX11_ENABLED )
                          WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
         execute_process( COMMAND "git" "submodule" "update" "asio"
                          WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
-        set(ASIO_STANDALONE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/asio/include" )
 
+        set(ASIO_STANDALONE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/asio/include"
+                                PARENT_SCOPE )
         include_directories( ${ASIO_STANDALONE_DIR} )
+
         set( VTRC_ASIO_STANDALONE 1 PARENT_SCOPE )
         add_definitions( -DASIO_STANDALONE=1 )
     ########################################
