@@ -7,7 +7,7 @@
 
 #include "vtrc-protocol-layer.h"
 
-#include "protocol/vtrc-rpc-lowlevel.pb.h"
+#include "vtrc/common/protocol/vtrc-rpc-lowlevel.pb.h"
 
 namespace vtrc { namespace common {
 

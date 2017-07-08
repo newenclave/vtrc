@@ -4,8 +4,8 @@
 
 #include "vtrc/common/protocol-defaults.h"
 
-#include "protocol/vtrc-rpc-options.pb.h"
-#include "protocol/vtrc-rpc-lowlevel.pb.h"
+#include "vtrc/common/protocol/vtrc-rpc-options.pb.h"
+#include "vtrc/common/protocol/vtrc-rpc-lowlevel.pb.h"
 
 namespace vtrc { namespace common { namespace defaults {
 

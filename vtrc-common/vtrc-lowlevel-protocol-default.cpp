@@ -8,8 +8,8 @@
 #include "google/protobuf/descriptor.h"
 #include "google/protobuf/message.h"
 
-#include "protocol/vtrc-rpc-options.pb.h"
-#include "protocol/vtrc-rpc-lowlevel.pb.h"
+#include "vtrc/common/protocol/vtrc-rpc-options.pb.h"
+#include "vtrc/common/protocol/vtrc-rpc-lowlevel.pb.h"
 
 #include "vtrc-system.h"
 #include "vtrc-bind.h"
