@@ -3,7 +3,9 @@
 #ifdef _WIN32
 
 #include <windows.h>
+
 #include "vtrc-asio.h"
+#include "vtrc-system.h"
 #include "vtrc-client-stream-impl.h"
 #include "vtrc/common/exception.h"
 
@@ -48,7 +50,7 @@ namespace vtrc { namespace client {
                             common::system_closure_type closure )
         {
             connect( address );
-            bsys::error_code ec(0, bsys::get_system_category( ));
+            bsys::error_code ec(0, vtrc::get_system_category( ));
             closure(ec);
         }
 
@@ -77,7 +79,7 @@ namespace vtrc { namespace client {
                             common::system_closure_type closure )
         {
             connect( address );
-            bsys::error_code ec(0, bsys::get_system_category( ));
+            bsys::error_code ec(0, vtrc::get_system_category( ));
             closure(ec);
         }
 
@@ -155,7 +157,7 @@ namespace vtrc { namespace client {
         return impl_->get_protocol( );
     }
 
-    common::enviroment &client_win_pipe::get_enviroment( )
+    common::environment &client_win_pipe::get_environment( )
     {
         return impl_->get_enviroment( );
     }

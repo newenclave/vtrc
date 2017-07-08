@@ -1,6 +1,4 @@
 
-#include "boost/thread/tss.hpp"
-
 #include "google/protobuf/message.h"
 #include "google/protobuf/descriptor.h"
 
@@ -146,7 +144,6 @@ namespace vtrc { namespace common {
         typedef impl this_type;
         typedef protocol_layer parent_type;
         typedef parent_type::call_stack_type                 call_stack_type;
-        typedef boost::thread_specific_ptr<call_stack_type>  call_context_ptr;
 
         connection_iface            *connection_;
         protocol_layer              *parent_;

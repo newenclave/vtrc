@@ -5,8 +5,6 @@
 #include <limits>
 #include "vtrc-stdint.h"
 
-#include "boost/static_assert.hpp"
-
 /*
 size_packer_policy {
 
@@ -29,10 +27,6 @@ namespace vtrc { namespace common { namespace policies {
 
     template <typename SizeType>
     struct fixint_policy {
-    private:
-        BOOST_STATIC_ASSERT(
-            !std::numeric_limits<SizeType>::is_signed
-        );
     public:
 
         typedef SizeType size_type;
@@ -88,10 +82,6 @@ namespace vtrc { namespace common { namespace policies {
     template <typename SizeType>
     struct varint_policy {
 
-    private:
-        BOOST_STATIC_ASSERT(
-            !std::numeric_limits<SizeType>::is_signed
-        );
     public:
 
         typedef SizeType size_type;

@@ -1,5 +1,7 @@
 #include <algorithm>
 
+#if 0
+
 #include "message-utilities.h"
 
 #include "boost/scoped_ptr.hpp"
@@ -261,3 +263,4 @@ namespace vtrc { namespace utilities {
 
 }}
 
+#endif

@@ -4,8 +4,8 @@
 #ifdef _WIN32
 
 #include "vtrc-common/vtrc-transport-win-pipe.h"
-#include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
 
+#include "vtrc/common/lowlevel-protocol-iface.h"
 #include "vtrc/common/closure.h"
 #include "vtrc/common/config/vtrc-memory.h"
 
@@ -59,7 +59,7 @@ namespace client {
 
         common::protocol_layer       &get_protocol( );
         const common::protocol_layer &get_protocol( ) const;
-        common::enviroment           &get_enviroment( );
+        common::environment          &get_environment( );
 
     private:
         void on_close( );

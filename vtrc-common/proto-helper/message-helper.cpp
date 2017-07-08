@@ -1,6 +1,7 @@
 #include <string>
 #include <map>
 
+#if 0
 #include "google/protobuf/descriptor.h"
 #include "google/protobuf/descriptor.pb.h"
 #include "boost/lexical_cast.hpp"
@@ -732,3 +733,4 @@ public:
 
 }}
 
+#endif
