@@ -222,10 +222,12 @@ namespace vtrc { namespace common { namespace observer {
         typedef common::observer::subscription subscription;
         typedef common::observer::scoped_subscription scoped_subscription;
 
+        /// boost::signal compatibility
+        typedef common::observer::subscription connection;
+        typedef common::observer::scoped_subscription scoped_connection;
+
         friend class common::observer::subscription;
         friend class common::observer::scoped_subscription;
-
-        typedef subscription connection;
 
         base( )
             :impl_(vtrc::make_shared<impl>( ))
@@ -267,6 +269,7 @@ namespace vtrc { namespace common { namespace observer {
             return subscription( us );
         }
 
+        /// boost::signal compatibility
         subscription connect( slot_type call )
         {
             return subscribe( call );
@@ -277,6 +280,7 @@ namespace vtrc { namespace common { namespace observer {
             cc.unsubscribe( );
         }
 
+        /// boost::signal compatibility
         void disconnect( subscription &cc )
         {
             unsubscribe( cc );
@@ -287,6 +291,7 @@ namespace vtrc { namespace common { namespace observer {
             impl_->clear( );
         }
 
+        /// boost::signal compatibility
         void disconnect_all_slots(  )
         {
             unsubscribe_all( );
