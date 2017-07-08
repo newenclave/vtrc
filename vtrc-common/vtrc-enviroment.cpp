@@ -1,12 +1,12 @@
 
-#include "vtrc-enviroment.h"
+#include "vtrc/common/environment.h"
 
 #include <map>
 #include "vtrc-mutex.h"
 
 namespace vtrc { namespace common {
 
-    struct enviroment::impl {
+    struct environment::impl {
 
         typedef std::map<std::string, std::string> data_type;
         typedef vtrc::lock_guard<vtrc::mutex> locker_type;
@@ -83,47 +83,47 @@ namespace vtrc { namespace common {
 
     };
 
-    enviroment::enviroment( )
+    environment::environment( )
         :impl_(new impl)
     { }
 
-    enviroment::enviroment( const enviroment &other )
+    environment::environment( const environment &other )
         :impl_(new impl(*other.impl_))
     { }
 
-    enviroment &enviroment::operator = ( const enviroment &other )
+    environment &environment::operator = ( const environment &other )
     {
         impl_->copy_from( *other.impl_ );
         return *this;
     }
 
-    enviroment::~enviroment( )
+    environment::~environment( )
     {
         delete impl_;
     }
 
-    void enviroment::set( const std::string &name, const std::string &value )
+    void environment::set( const std::string &name, const std::string &value )
     {
         impl_->set( name, value );
     }
 
-    const std::string enviroment::get( const std::string &name ) const
+    const std::string environment::get( const std::string &name ) const
     {
         return impl_->get( name );
     }
 
-    const std::string enviroment::get( const std::string &name,
+    const std::string environment::get( const std::string &name,
                                        const std::string &default_value ) const
     {
         return impl_->get( name, default_value );
     }
 
-    size_t enviroment::remove( const std::string &name )
+    size_t environment::remove( const std::string &name )
     {
         return impl_->remove( name );
     }
 
-    bool enviroment::exists( const std::string &name ) const
+    bool environment::exists( const std::string &name ) const
     {
         return impl_->exists( name );
     }

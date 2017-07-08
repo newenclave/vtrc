@@ -4,7 +4,7 @@
 #ifndef  _WIN32
 
 #include "vtrc-transport-iface.h"
-#include "vtrc-common/vtrc-closure.h"
+#include "vtrc/common/closure.h"
 
 #include "vtrc-asio-forward.h"
 #include "vtrc-system.h"

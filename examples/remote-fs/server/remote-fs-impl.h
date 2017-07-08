@@ -1,7 +1,7 @@
 #ifndef REMOTE_FS_IMPL_H
 #define REMOTE_FS_IMPL_H
 
-#include "vtrc-common/vtrc-connection-iface.h"
+#include "vtrc/common/connection-iface.h"
 
 namespace google { namespace protobuf {
     class Service;

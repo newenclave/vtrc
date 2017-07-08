@@ -1,10 +1,10 @@
 #include <stdexcept>
 
 #include "vtrc-stdint.h"
-#include "vtrc-data-queue.h"
 #include "vtrc-sizepack-policy.h"
 
-#include "vtrc-common/vtrc-exception.h"
+#include "vtrc/common/data-queue.h"
+#include "vtrc/common/exception.h"
 
 namespace vtrc { namespace common { namespace data_queue {
 

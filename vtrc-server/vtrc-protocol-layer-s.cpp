@@ -1,24 +1,23 @@
 #include <algorithm>
 #include "vtrc-asio.h"
 
-#include "vtrc-common/vtrc-mutex-typedefs.h"
 #include "vtrc-bind.h"
 #include "vtrc-function.h"
 #include "vtrc-ref.h"
 
 #include "vtrc-protocol-layer-s.h"
 
-#include "vtrc-common/vtrc-monotonic-timer.h"
-#include "vtrc-common/vtrc-data-queue.h"
+#include "vtrc/common/monotonic-timer.h"
+#include "vtrc/common/data-queue.h"
 
 #include "vtrc-transport-iface.h"
 
-#include "vtrc-common/vtrc-rpc-service-wrapper.h"
-#include "vtrc-common/vtrc-exception.h"
+#include "vtrc/common/rpc-service-wrapper.h"
+#include "vtrc/common/exception.h"
 #include "vtrc-common/vtrc-rpc-controller.h"
-#include "vtrc-common/vtrc-call-context.h"
+#include "vtrc/common/call-context.h"
 
-#include "vtrc-application.h"
+#include "vtrc/server/application.h"
 
 #include "vtrc-errors.pb.h"
 #include "vtrc-rpc-lowlevel.pb.h"
@@ -26,8 +25,9 @@
 #include "vtrc-chrono.h"
 #include "vtrc-mutex.h"
 #include "vtrc-atomic.h"
-#include "vtrc-common/vtrc-protocol-accessor-iface.h"
-#include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
+
+#include "vtrc/common/protocol-accessor-iface.h"
+#include "vtrc/common/lowlevel-protocol-iface.h"
 
 namespace vtrc { namespace server {
 

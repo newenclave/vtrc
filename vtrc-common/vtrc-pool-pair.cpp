@@ -1,6 +1,7 @@
 
-#include "vtrc-pool-pair.h"
-#include "vtrc-thread-pool.h"
+#include "vtrc/common/pool-pair.h"
+#include "vtrc/common/thread-pool.h"
+
 #include "vtrc-memory.h"
 
 namespace vtrc { namespace common {

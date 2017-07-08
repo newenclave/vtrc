@@ -1,6 +1,6 @@
 #include <algorithm>
 #include <iostream>
-#include "vtrc-rpc-channel-c.h"
+#include "vtrc/client/rpc-channel-c.h"
 
 #include "google/protobuf/service.h"
 #include "google/protobuf/descriptor.h"
@@ -8,12 +8,12 @@
 #include "vtrc-rpc-lowlevel.pb.h"
 #include "vtrc-rpc-options.pb.h"
 
-#include "vtrc-common/vtrc-connection-iface.h"
-#include "vtrc-common/vtrc-call-context.h"
-#include "vtrc-common/vtrc-protocol-layer.h"
-#include "vtrc-common/vtrc-exception.h"
-#include "vtrc-common/vtrc-closure-holder.h"
+#include "vtrc/common/connection-iface.h"
+#include "vtrc/common/call-context.h"
+#include "vtrc/common/exception.h"
+#include "vtrc/common/closure-holder.h"
 
+#include "vtrc-common/vtrc-protocol-layer.h"
 #include "vtrc-chrono.h"
 
 namespace vtrc { namespace client {

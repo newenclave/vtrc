@@ -1,13 +1,13 @@
 #include <iostream>
 
-#include "vtrc-server/vtrc-application.h"
-#include "vtrc-server/vtrc-listener-tcp.h"
-#include "vtrc-server/vtrc-channels.h"
+#include "vtrc/server/application.h"
+#include "vtrc/server/listener-tcp.h"
+#include "vtrc/server/channels.h"
 
-#include "vtrc-common/vtrc-connection-iface.h"
-#include "vtrc-common/vtrc-closure-holder.h"
-#include "vtrc-common/vtrc-pool-pair.h"
-#include "vtrc-common/vtrc-stub-wrapper.h"
+#include "vtrc/common/connection-iface.h"
+#include "vtrc/common/closure-holder.h"
+#include "vtrc/common/pool-pair.h"
+#include "vtrc/common/stub-wrapper.h"
 
 #include "protocol/hello-events.pb.h"   /// hello protocol
 #include "google/protobuf/descriptor.h" /// for descriptor( )->full_name( )

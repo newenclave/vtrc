@@ -7,13 +7,13 @@
 
 #include "vtrc-asio.h"
 
-#include "vtrc-enviroment.h"
 #include "vtrc-memory.h"
 #include "vtrc-bind.h"
 #include "vtrc-mutex.h"
-#include "vtrc-closure.h"
-
 #include "vtrc-chrono.h"
+
+#include "vtrc/common/closure.h"
+#include "vtrc/common/environment.h"
 
 namespace vtrc { namespace common {
 
@@ -47,7 +47,7 @@ namespace vtrc { namespace common {
             basio::io_service                  &ios_;
             basio::io_service::strand           write_dispatcher_;
 
-            enviroment                          env_;
+            environment                          env_;
 
             parent_type                         *parent_;
             bool                                 closed_;

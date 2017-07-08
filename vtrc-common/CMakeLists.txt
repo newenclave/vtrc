@@ -19,9 +19,9 @@ foreach( src_dir ${src_dirs} )
     list(APPEND lib_src ${headers})
 endforeach( )
 
-set( CONFIG_FILES_DIRECTORY ${VTRC_INCLUDE_DIR}/vtrc-common/config )
+set( CONFIG_FILES_DIRECTORY ${VTRC_INCLUDE_DIR}/vtrc/common/config )
 
-include_directories( ${VTRC_INCLUDE_DIR}/vtrc-common )
+include_directories( ${VTRC_INCLUDE_DIR}/vtrc/common )
 
 include_directories( ${CONFIG_FILES_DIRECTORY}  )
 

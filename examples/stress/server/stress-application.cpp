@@ -4,18 +4,18 @@
 
 #include "vtrc-rpc-lowlevel.pb.h"
 
-#include "vtrc-common/vtrc-pool-pair.h"
-#include "vtrc-common/vtrc-rpc-service-wrapper.h"
-#include "vtrc-common/vtrc-connection-iface.h"
-#include "vtrc-common/vtrc-delayed-call.h"
-#include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
+#include "vtrc/common/pool-pair.h"
+#include "vtrc/common/rpc-service-wrapper.h"
+#include "vtrc/common/connection-iface.h"
+#include "vtrc/common/delayed-call.h"
+#include "vtrc/common/lowlevel-protocol-iface.h"
 
-#include "vtrc-common/vtrc-connection-list.h"
+#include "vtrc/common/connection-list.h"
 
-#include "vtrc-server/vtrc-application.h"
-#include "vtrc-server/vtrc-listener-tcp.h"
-#include "vtrc-server/vtrc-listener-local.h"
-#include "vtrc-server/vtrc-listener.h"
+#include "vtrc/server/application.h"
+#include "vtrc/server/listener-tcp.h"
+#include "vtrc/server/listener-local.h"
+#include "vtrc/server/listener.h"
 
 #include "stress-service-impl.h"
 
@@ -33,10 +33,9 @@
 #include "google/protobuf/service.h"
 #include "google/protobuf/descriptor.h"
 
-#include "vtrc-common/vtrc-delayed-call.h"
-#include "vtrc-common/vtrc-thread-pool.h"
-#include "vtrc-common/vtrc-mutex-typedefs.h"
-#include "vtrc-common/vtrc-closure.h"
+#include "vtrc/common/delayed-call.h"
+#include "vtrc/common/thread-pool.h"
+#include "vtrc/common/closure.h"
 
 namespace stress {
 

@@ -3,18 +3,18 @@
 
 #include "vtrc-asio.h"
 
-#include "vtrc-listener.h"
-#include "vtrc-application.h"
+#include "vtrc/server/listener.h"
+#include "vtrc/server/application.h"
 
 #include "vtrc-ref.h"
 #include "vtrc-bind.h"
 #include "vtrc-thread.h"
 
-#include "vtrc-common/vtrc-connection-iface.h"
-#include "vtrc-common/vtrc-connection-list.h"
-#include "vtrc-common/vtrc-closure.h"
-#include "vtrc-common/vtrc-enviroment.h"
-#include "vtrc-common/vtrc-monotonic-timer.h"
+#include "vtrc/common/connection-iface.h"
+#include "vtrc/common/connection-list.h"
+#include "vtrc/common/closure.h"
+#include "vtrc/common/environment.h"
+#include "vtrc/common/monotonic-timer.h"
 
 #include "vtrc-connection-closure.h"
 

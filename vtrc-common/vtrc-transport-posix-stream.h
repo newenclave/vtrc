@@ -7,7 +7,7 @@
 
 #include "vtrc-asio.h"
 #include "vtrc-memory.h"
-#include "vtrc-common/vtrc-closure.h"
+#include "vtrc/common/closure.h"
 
 VTRC_ASIO_FORWARD( class io_service;)
 

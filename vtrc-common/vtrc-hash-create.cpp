@@ -1,9 +1,10 @@
 #include <algorithm>
 #include <memory.h>
 
-#include "vtrc-hash-iface.h"
 #include "vtrc-stdint.h"
 #include "vtrc-auth.pb.h"
+
+#include "vtrc/common/hash-iface.h"
 
 namespace vtrc { namespace common {  namespace hash {
 

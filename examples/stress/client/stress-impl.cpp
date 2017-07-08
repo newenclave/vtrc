@@ -2,8 +2,8 @@
 
 #include "protocol/stress.pb.h"
 
-#include "vtrc-common/vtrc-stub-wrapper.h"
-#include "vtrc-client/vtrc-client.h"
+#include "vtrc/common/stub-wrapper.h"
+#include "vtrc/client/client.h"
 
 namespace stress {
 

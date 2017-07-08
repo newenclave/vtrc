@@ -3,8 +3,8 @@
 
 #include <string>
 #include "vtrc-common/vtrc-protocol-layer.h"
-#include "vtrc-common/vtrc-closure.h"
-#include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
+#include "vtrc/common/closure.h"
+#include "vtrc/common/lowlevel-protocol-iface.h"
 
 namespace vtrc {
 

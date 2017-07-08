@@ -1,5 +1,5 @@
-include/vtrc-common/protocol
-include/vtrc-common/config/vtrc-general-config.h
+include/vtrc/common/protocol
+include/vtrc/common/config/vtrc-general-config.h
 *.user
 *.autosave
 *.user.*

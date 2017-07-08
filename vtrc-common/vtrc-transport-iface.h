@@ -3,8 +3,8 @@
 
 #include <stdlib.h>
 
-#include "vtrc-common/vtrc-connection-iface.h"
-#include "vtrc-common/vtrc-closure.h"
+#include "vtrc/common/connection-iface.h"
+#include "vtrc/common/closure.h"
 
 #include "vtrc-protocol-layer.h"
 

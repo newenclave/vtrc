@@ -4,7 +4,7 @@
 #ifndef _WIN32
 
 #include "vtrc-common/vtrc-transport-unix-local.h"
-#include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
+#include "vtrc/common/lowlevel-protocol-iface.h"
 #include "vtrc-memory.h"
 
 VTRC_ASIO_FORWARD(
@@ -55,7 +55,7 @@ namespace client {
 
         common::protocol_layer       &get_protocol( );
         const common::protocol_layer &get_protocol( ) const;
-        common::enviroment           &get_enviroment( );
+        common::environment           &get_enviroment( );
 
     private:
         void on_close( );

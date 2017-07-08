@@ -1,13 +1,13 @@
 
 #include "vtrc-asio.h"
 
-#include "vtrc-application.h"
+#include "vtrc/server/application.h"
 
-#include "vtrc-common/vtrc-connection-list.h"
+#include "vtrc/common/connection-list.h"
 
-#include "vtrc-common/vtrc-enviroment.h"
-#include "vtrc-common/vtrc-rpc-service-wrapper.h"
-#include "vtrc-common/vtrc-pool-pair.h"
+#include "vtrc/common/environment.h"
+#include "vtrc/common/rpc-service-wrapper.h"
+#include "vtrc/common/pool-pair.h"
 
 namespace vtrc { namespace server {
 
@@ -25,7 +25,7 @@ namespace vtrc { namespace server {
 
     struct application::impl {
 
-        common::enviroment         env_;
+        common::environment        env_;
         VTRC_ASIO::io_service     *ios_;
         const bool                 own_ios_;
 
@@ -90,7 +90,7 @@ namespace vtrc { namespace server {
             ;;;
         } }
 
-        common::enviroment &get_enviroment( )
+        common::environment &get_enviroment( )
         {
             return env_;
         }
@@ -141,7 +141,7 @@ namespace vtrc { namespace server {
         impl_->stop_all_clients( );
     }
 
-    common::enviroment &application::get_enviroment( )
+    common::environment &application::get_enviroment( )
     {
         return impl_->get_enviroment( );
     }
@@ -156,7 +156,7 @@ namespace vtrc { namespace server {
         return impl_->get_rpc_service( );
     }
 
-    const common::enviroment &application::get_enviroment( )  const
+    const common::environment &application::get_enviroment( )  const
     {
         return impl_->get_enviroment( );
     }

@@ -4,12 +4,12 @@
 
 #include "vtrc-asio.h"
 
-#include "vtrc-thread-pool.h"
-#include "vtrc-mutex-typedefs.h"
 #include "vtrc-mutex.h"
 #include "vtrc-memory.h"
 #include "vtrc-bind.h"
 #include "vtrc-thread.h"
+
+#include "vtrc/common/thread-pool.h"
 
 #if VTRC_DISABLE_CXX11
 

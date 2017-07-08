@@ -1,6 +1,7 @@
-#include "vtrc-server/vtrc-application.h"
-#include "vtrc-server/vtrc-listener-custom.h"
-#include "vtrc-common/vtrc-connection-list.h"
+
+#include "vtrc/server/application.h"
+#include "vtrc/server/listener-custom.h"
+#include "vtrc/common/connection-list.h"
 
 #include "vtrc-protocol-layer-s.h"
 

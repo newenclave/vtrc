@@ -3,7 +3,7 @@
 
 #include "vtrc-memory.h"
 
-#include "vtrc-common/vtrc-rpc-channel.h"
+#include "vtrc/common/rpc-channel.h"
 
 namespace vtrc { namespace client {
     class vtrc_client;

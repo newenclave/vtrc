@@ -13,7 +13,8 @@
 
 #include "vtrc-result-codes.h"
 #include "vtrc-mutex.h"
-#include "vtrc-exception.h"
+
+#include "vtrc/common/exception.h"
 
 namespace vtrc { namespace common {
 

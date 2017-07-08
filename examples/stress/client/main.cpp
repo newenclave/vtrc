@@ -1,8 +1,8 @@
 
 #include <iostream>
 #include "boost/program_options.hpp"
-#include "vtrc-common/vtrc-exception.h"
 #include "google/protobuf/descriptor.h"
+#include "vtrc/common/exception.h"
 
 namespace po = boost::program_options;
 

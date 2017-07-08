@@ -11,6 +11,7 @@ foreach( src_dir ${src_dirs} )
     list(APPEND lib_src ${headers})
 endforeach( )
 
+include_directories( ${VTRC_INCLUDE_DIR}/vtrc/server)
 include_directories( ${VTRC_INCLUDE_DIR}/vtrc-server)
 include_directories( ${VTRC_INCLUDE_DIR}/vtrc-common)
 

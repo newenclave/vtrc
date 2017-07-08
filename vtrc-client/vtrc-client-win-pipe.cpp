@@ -5,7 +5,7 @@
 #include <windows.h>
 #include "vtrc-asio.h"
 #include "vtrc-client-stream-impl.h"
-#include "vtrc-common/vtrc-exception.h"
+#include "vtrc/common/exception.h"
 
 #include "vtrc-errors.pb.h"
 

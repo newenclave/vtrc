@@ -129,8 +129,7 @@ endif( )
 find_package( Protobuf REQUIRED)
 
 set( VTRC_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include )
-set( VTRC_CONFIG_INCLUDE_DIR ${VTRC_INCLUDE_DIR}/vtrc-common/config )
-set( VTRC_COMMON_INCLUDE_DIR ${VTRC_INCLUDE_DIR}/vtrc-common/ )
+set( VTRC_CONFIG_INCLUDE_DIR ${VTRC_INCLUDE_DIR}/vtrc/common/config )
 
 configure_file ("${PROJECT_SOURCE_DIR}/vtrc-general-config.h.in"
                 "${VTRC_CONFIG_INCLUDE_DIR}/vtrc-general-config.h" )
@@ -143,7 +142,7 @@ configure_file ("${PROJECT_SOURCE_DIR}/vtrc-general-config.h.in"
 #
 #
 if( NOT DEFINED VTRC_PROTOCOL_DIR )
-    set( VTRC_PROTOCOL_INCLUDE_DIR ${VTRC_INCLUDE_DIR}/vtrc-common/protocol )
+    set( VTRC_PROTOCOL_INCLUDE_DIR ${VTRC_INCLUDE_DIR}/vtrc/common/protocol )
 else( )
     set( VTRC_PROTOCOL_INCLUDE_DIR ${VTRC_PROTOCOL_DIR} )
 endif( )

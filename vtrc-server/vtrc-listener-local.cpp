@@ -1,4 +1,5 @@
-#include "vtrc-listener-local.h"
+
+#include "vtrc/server/listener-local.h"
 
 namespace vtrc { namespace server {
 
@@ -9,7 +10,7 @@ namespace vtrc { namespace server {
 #ifdef  _WIN32
     namespace win_pipe {
         listener_sptr create( application &app, const std::string &name );
-        listener_sptr create( application &app, 
+        listener_sptr create( application &app,
                               const rpc::session_options &opts,
                               const std::string &name );
     }

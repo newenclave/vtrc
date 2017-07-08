@@ -16,24 +16,23 @@
 #include "vtrc-atomic.h"
 #include "vtrc-mutex.h"
 #include "vtrc-memory.h"
-#include "vtrc-mutex-typedefs.h"
 #include "vtrc-condition-variable.h"
 
 #include "vtrc-protocol-layer.h"
-#include "vtrc-protocol-defaults.h"
+#include "vtrc/common/protocol-defaults.h"
 
-#include "vtrc-data-queue.h"
-#include "vtrc-hash-iface.h"
-#include "vtrc-transformer-iface.h"
+#include "vtrc/common/data-queue.h"
+#include "vtrc/common/hash-iface.h"
+#include "vtrc/common/transformer-iface.h"
 
 #include "vtrc-transport-iface.h"
 
 #include "vtrc-condition-queues.h"
-#include "vtrc-exception.h"
-#include "vtrc-call-context.h"
+#include "vtrc/common/exception.h"
+#include "vtrc/common/call-context.h"
+#include "vtrc/common/random-device.h"
 
 #include "vtrc-rpc-controller.h"
-#include "vtrc-random-device.h"
 
 #include "proto-helper/message-utilities.h"
 

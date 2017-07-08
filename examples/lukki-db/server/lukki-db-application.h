@@ -1,10 +1,11 @@
 #ifndef LUKKI_DB_APPLICATION_H
 #define LUKKI_DB_APPLICATION_H
 
-#include "vtrc-server/vtrc-application.h"
-#include "vtrc-common/vtrc-pool-pair.h"
-#include "vtrc-server/vtrc-listener.h"
-#include "vtrc-common/vtrc-protocol-iface.h"
+#include "vtrc/server/application.h"
+#include "vtrc/server/listener.h"
+
+#include "vtrc/common/pool-pair.h"
+#include "vtrc/common/protocol-iface.h"
 
 #include "vtrc-function.h"
 

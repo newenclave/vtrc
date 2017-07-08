@@ -7,8 +7,8 @@
 #include <sstream>
 
 #include "boost/lexical_cast.hpp"
-#include "vtrc-common/protocol/vtrc-rpc-lowlevel.pb.h"
-#include "vtrc-common/vtrc-rpc-channel.h"
+#include "vtrc/common/protocol/vtrc-rpc-lowlevel.pb.h"
+#include "vtrc/common/rpc-channel.h"
 
 namespace http {
 

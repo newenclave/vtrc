@@ -5,12 +5,12 @@
 #include "vtrc-bind.h"
 #include "vtrc-ref.h"
 
-#include "vtrc-listener.h"
-#include "vtrc-application.h"
+#include "vtrc/server/listener.h"
+#include "vtrc/server/application.h"
 #include "vtrc-protocol-layer-s.h"
 
-#include "vtrc-common/vtrc-enviroment.h"
-#include "vtrc-common/vtrc-exception.h"
+#include "vtrc/common/environment.h"
+#include "vtrc/common/exception.h"
 
 #include "vtrc-rpc-lowlevel.pb.h"
 
@@ -37,7 +37,7 @@ namespace vtrc { namespace server { namespace listeners {
             listener                           &endpoint_;
             application                        &app_;
             basio::io_service                  &ios_;
-            common::enviroment                  env_;
+            common::environment                  env_;
 
             std::vector<char>                   read_buff_;
 
@@ -117,7 +117,7 @@ namespace vtrc { namespace server { namespace listeners {
                 //start_reading( );
             }
 
-            common::enviroment &get_enviroment( )
+            common::environment &get_enviroment( )
             {
                 return env_;
             }
@@ -167,7 +167,7 @@ namespace vtrc { namespace server { namespace listeners {
             void raw_call_local ( vtrc::shared_ptr<rpc::lowlevel_unit> ll_mess,
                                   common::empty_closure_type done )
             {
-                if( !protocol_.get( ) ) {                    
+                if( !protocol_.get( ) ) {
                     vtrc::common::raise(
                                 std::runtime_error( "Not connected." ) );
                     return;

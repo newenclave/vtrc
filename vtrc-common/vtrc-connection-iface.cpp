@@ -1,5 +1,5 @@
 
-#include "vtrc-common/vtrc-connection-iface.h"
+#include "vtrc/common/connection-iface.h"
 #include "vtrc-protocol-layer.h"
 
 #include <sstream>

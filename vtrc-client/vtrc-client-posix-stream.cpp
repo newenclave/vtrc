@@ -5,7 +5,7 @@
 #include "vtrc-asio.h"
 #include "vtrc-system.h"
 #include "vtrc-client-stream-impl.h"
-#include "vtrc-common/vtrc-exception.h"
+#include "vtrc/common/exception.h"
 
 //#include <error.h>
 
@@ -119,7 +119,7 @@ namespace vtrc { namespace client {
     }
 
 
-    common::enviroment &client_posixs::get_enviroment( )
+    common::environment &client_posixs::get_enviroment( )
     {
         return impl_->get_enviroment( );
     }

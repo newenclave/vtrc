@@ -2,8 +2,8 @@
 
 #include "ping-impl.h"
 
-#include "vtrc-common/vtrc-pool-pair.h"
-#include "vtrc-common/vtrc-delayed-call.h"
+#include "vtrc/common/pool-pair.h"
+#include "vtrc/common/delayed-call.h"
 
 #include "vtrc-chrono.h"
 #include "vtrc-bind.h"

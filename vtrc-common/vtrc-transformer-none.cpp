@@ -1,4 +1,5 @@
-#include "vtrc-transformer-iface.h"
+
+#include "vtrc/common/transformer-iface.h"
 
 namespace vtrc { namespace common {
 

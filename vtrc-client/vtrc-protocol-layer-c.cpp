@@ -9,20 +9,21 @@
 #include "vtrc-function.h"
 #include "vtrc-chrono.h"
 
-#include "vtrc-common/vtrc-data-queue.h"
-#include "vtrc-common/vtrc-hash-iface.h"
-#include "vtrc-common/vtrc-transformer-iface.h"
-#include "vtrc-common/vtrc-call-context.h"
-#include "vtrc-common/vtrc-rpc-controller.h"
-#include "vtrc-common/vtrc-random-device.h"
-#include "vtrc-common/vtrc-transport-iface.h"
+#include "vtrc/common/data-queue.h"
+#include "vtrc/common/hash-iface.h"
+#include "vtrc/common/transformer-iface.h"
+#include "vtrc/common/call-context.h"
+#include "vtrc/common/random-device.h"
+#include "vtrc/common/lowlevel-protocol-iface.h"
+#include "vtrc/common/protocol-accessor-iface.h"
 
-#include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
-#include "vtrc-common/vtrc-protocol-accessor-iface.h"
+#include "vtrc-common/vtrc-transport-iface.h"
+#include "vtrc-common/vtrc-rpc-controller.h"
+
 
 #include "vtrc-protocol-layer-c.h"
 
-#include "vtrc-client.h"
+#include "vtrc/client/client.h"
 
 #include "vtrc-auth.pb.h"
 #include "vtrc-rpc-lowlevel.pb.h"

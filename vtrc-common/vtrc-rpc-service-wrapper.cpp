@@ -1,7 +1,7 @@
 #include "google/protobuf/service.h"
 #include "google/protobuf/descriptor.h"
 
-#include "vtrc-rpc-service-wrapper.h"
+#include "vtrc/common/rpc-service-wrapper.h"
 
 namespace vtrc { namespace common {
 

@@ -2,10 +2,11 @@
 
 #include <stdexcept>
 
-#include "vtrc-call-keeper.h"
-#include "vtrc-call-context.h"
 #include "vtrc-protocol-layer.h"
-#include "vtrc-common/vtrc-exception.h"
+
+#include "vtrc/common/call-keeper.h"
+#include "vtrc/common/call-context.h"
+#include "vtrc/common/exception.h"
 
 namespace vtrc { namespace common {
 

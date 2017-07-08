@@ -8,15 +8,13 @@
 
 #include "vtrc-rpc-lowlevel.pb.h"
 
-#include "vtrc-client/vtrc-client.h"
+#include "vtrc/client/client.h"
 
-#include "vtrc-common/vtrc-closure-holder.h"
-#include "vtrc-common/vtrc-call-context.h"
-
+#include "vtrc/common/closure-holder.h"
+#include "vtrc/common/call-context.h"
 
 #include "vtrc-chrono.h"
 #include "vtrc-thread.h"
-
 
 namespace stress {
 

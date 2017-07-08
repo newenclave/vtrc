@@ -5,10 +5,10 @@
 #include "boost/program_options.hpp"
 #include "boost/lexical_cast.hpp"
 
-#include "vtrc-client/vtrc-client.h"
-#include "vtrc-common/vtrc-pool-pair.h"
-#include "vtrc-common/vtrc-exception.h"
-#include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
+#include "vtrc/client/client.h"
+#include "vtrc/common/pool-pair.h"
+#include "vtrc/common/exception.h"
+#include "vtrc/common/lowlevel-protocol-iface.h"
 
 #include "vtrc-condition-variable.h"
 #include "vtrc-mutex.h"
@@ -18,7 +18,7 @@
 #include "protocol/stress.pb.h"
 
 #include "vtrc-chrono.h"
-#include "vtrc-common/vtrc-delayed-call.h"
+#include "vtrc/common/delayed-call.h"
 
 #include "stress-iface.h"
 #include "ping-impl.h"

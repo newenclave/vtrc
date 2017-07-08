@@ -1,10 +1,11 @@
 #include <iostream>
 
-#include "vtrc-transformer-iface.h"
 #include "vtrc-erseefor.h"
-#include "vtrc-random-device.h"
-#include "vtrc-hash-iface.h"
 #include "vtrc-memory.h"
+
+#include "vtrc/common/random-device.h"
+#include "vtrc/common/hash-iface.h"
+#include "vtrc/common/transformer-iface.h"
 
 namespace vtrc { namespace common {
 

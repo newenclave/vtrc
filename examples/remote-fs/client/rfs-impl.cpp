@@ -1,8 +1,8 @@
 #include "rfs-iface.h"
-#include "vtrc-client/vtrc-rpc-channel-c.h"
-#include "vtrc-client/vtrc-client.h"
+#include "vtrc/client/rpc-channel-c.h"
+#include "vtrc/client/client.h"
 
-#include "vtrc-common/vtrc-stub-wrapper.h"
+#include "vtrc/common/stub-wrapper.h"
 
 #include "protocol/remotefs.pb.h"
 

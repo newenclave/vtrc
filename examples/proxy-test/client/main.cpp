@@ -1,16 +1,16 @@
 #include <iostream>
 
-#include "vtrc-client/vtrc-client.h"
-#include "vtrc-common/vtrc-pool-pair.h"
-#include "vtrc-common/vtrc-stub-wrapper.h"
-#include "vtrc-common/vtrc-rpc-channel.h"
-#include "vtrc-common/protocol/vtrc-rpc-lowlevel.pb.h"
+#include "vtrc/client/client.h"
+#include "vtrc/common/pool-pair.h"
+#include "vtrc/common/stub-wrapper.h"
+#include "vtrc/common/rpc-channel.h"
+#include "vtrc/common/protocol/vtrc-rpc-lowlevel.pb.h"
 
 #include "vtrc-thread.h"
 #include "vtrc-memory.h"
 #include "vtrc-chrono.h"
 
-#include "vtrc-common/vtrc-call-context.h"
+#include "vtrc/common/call-context.h"
 
 #include "protocol/client-calls.pb.h"
 #include "protocol/proxy-calls.pb.h"

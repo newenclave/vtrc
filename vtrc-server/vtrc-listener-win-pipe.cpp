@@ -3,19 +3,19 @@
 
 #include "vtrc-asio.h"
 
-#include "vtrc-application.h"
-#include "vtrc-common/vtrc-enviroment.h"
-#include "vtrc-common/vtrc-exception.h"
+#include "vtrc/server/application.h"
+#include "vtrc/common/environment.h"
+#include "vtrc/common/exception.h"
+#include "vtrc/common/connection-list.h"
+
 #include "vtrc-common/vtrc-transport-win-pipe.h"
-#include "vtrc-common/vtrc-connection-list.h"
 
-#include "vtrc-common/vtrc-protocol-accessor-iface.h"
-
-#include "vtrc-rpc-lowlevel.pb.h"
+#include "vtrc/common/protocol-accessor-iface.h"
+#include "vtrc/common/protocol/vtrc-rpc-lowlevel.pb.h"
+#include "vtrc/common/closure.h"
 
 #include "vtrc-connection-impl.h"
 
-#include "vtrc-common/vtrc-closure.h"
 
 namespace vtrc { namespace server { namespace listeners {
 
@@ -91,7 +91,7 @@ namespace {
         bool                           working_;
 
         pipe_listener( application &app,
-                const rpc::session_options &opts, 
+                const rpc::session_options &opts,
                 const std::string &pipe_name,
                 size_t max_inst)
             :listener(app, opts)
@@ -275,7 +275,7 @@ namespace {
 }
 
     namespace win_pipe {
-        listener_sptr create( application &app, 
+        listener_sptr create( application &app,
                               const rpc::session_options &opts,
                               const std::string &name )
         {

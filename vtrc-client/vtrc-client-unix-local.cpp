@@ -102,7 +102,7 @@ namespace vtrc { namespace client {
     }
 
 
-    common::enviroment &client_unix_local::get_enviroment( )
+    common::environment &client_unix_local::get_enviroment( )
     {
         return impl_->get_enviroment( );
     }

@@ -1,7 +1,7 @@
 #include <iostream>
 #include "boost/program_options.hpp"
 
-#include "vtrc-common/vtrc-exception.h"
+#include "vtrc/common/exception.h"
 
 namespace po = boost::program_options;
 

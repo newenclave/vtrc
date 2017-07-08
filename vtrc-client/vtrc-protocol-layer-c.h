@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 #include "vtrc-common/vtrc-protocol-layer.h"
-#include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
+#include "vtrc/common/lowlevel-protocol-iface.h"
 
 #include "vtrc-function.h"
 

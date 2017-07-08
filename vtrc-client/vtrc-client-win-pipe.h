@@ -4,10 +4,10 @@
 #ifdef _WIN32
 
 #include "vtrc-common/vtrc-transport-win-pipe.h"
-#include "vtrc-common/vtrc-closure.h"
 #include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
 
-#include "vtrc-memory.h"
+#include "vtrc/common/closure.h"
+#include "vtrc/common/config/vtrc-memory.h"
 
 VTRC_ASIO_FORWARD(
     class io_service;

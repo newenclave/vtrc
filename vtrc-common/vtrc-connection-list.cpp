@@ -1,8 +1,8 @@
 
 #include <map>
 
-#include "vtrc-connection-list.h"
 #include "vtrc-mutex.h"
+#include "vtrc/common/connection-list.h"
 
 namespace vtrc { namespace common {
 

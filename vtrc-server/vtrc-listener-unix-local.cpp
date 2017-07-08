@@ -2,11 +2,12 @@
 #ifndef  _WIN32
 
 #include "vtrc-asio.h"
-#include "vtrc-common/vtrc-transport-unix-local.h"
-#include "vtrc-common/vtrc-protocol-accessor-iface.h"
 
 #include "vtrc-listener-impl.h"
 #include "vtrc-connection-impl.h"
+
+#include "vtrc-common/vtrc-transport-unix-local.h"
+#include "vtrc/common/protocol-accessor-iface.h"
 
 #include <errno.h>
 

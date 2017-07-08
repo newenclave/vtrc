@@ -1,10 +1,11 @@
 #include <algorithm>
 
-#include "vtrc-transformer-iface.h"
+#include "vtrc/common/transformer-iface.h"
+
 #include "vtrc-auth.pb.h"
 
-#include "vtrc-random-device.h"
-#include "vtrc-hash-iface.h"
+#include "vtrc/common/random-device.h"
+#include "vtrc/common/hash-iface.h"
 
 namespace vtrc { namespace common {
 

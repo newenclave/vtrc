@@ -1,14 +1,14 @@
 #include <algorithm>
 
-#include "vtrc-channels.h"
+#include "vtrc/server/channels.h"
 #include "vtrc-protocol-layer-s.h"
 
-#include "vtrc-common/vtrc-call-context.h"
-#include "vtrc-common/vtrc-exception.h"
-#include "vtrc-common/vtrc-closure-holder.h"
-#include "vtrc-common/vtrc-rpc-channel.h"
-#include "vtrc-common/vtrc-protocol-layer.h"
+#include "vtrc/common/call-context.h"
+#include "vtrc/common/exception.h"
+#include "vtrc/common/closure-holder.h"
+#include "vtrc/common/rpc-channel.h"
 
+#include "vtrc-common/vtrc-protocol-layer.h"
 #include "vtrc-errors.pb.h"
 #include "vtrc-rpc-lowlevel.pb.h"
 #include "vtrc-rpc-options.pb.h"

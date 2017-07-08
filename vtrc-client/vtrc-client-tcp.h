@@ -3,8 +3,8 @@
 
 #include "vtrc-memory.h"
 #include "vtrc-common/vtrc-transport-tcp.h"
-#include "vtrc-common/vtrc-closure.h"
-#include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
+#include "vtrc/common/closure.h"
+#include "vtrc/common/lowlevel-protocol-iface.h"
 
 VTRC_ASIO_FORWARD(
     class io_service;
@@ -59,7 +59,7 @@ namespace client {
         const common::call_context  *get_call_context( ) const;
         common::protocol_layer       &get_protocol( );
         const common::protocol_layer &get_protocol( ) const;
-        common::enviroment           &get_enviroment( );
+        common::environment           &get_enviroment( );
 
     private:
         void on_close( );

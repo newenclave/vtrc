@@ -1,9 +1,9 @@
 #include <iostream>
 #include <algorithm>
 
-#include "vtrc-common/vtrc-protocol-accessor-iface.h"
-#include "vtrc-common/vtrc-protocol-defaults.h"
-#include "vtrc-common/vtrc-lowlevel-protocol-default.h"
+#include "vtrc/common/protocol-accessor-iface.h"
+#include "vtrc/common/protocol-defaults.h"
+#include "vtrc/common/lowlevel-protocol-default.h"
 
 #include "google/protobuf/descriptor.h"
 #include "google/protobuf/message.h"

@@ -7,13 +7,12 @@
 
 #include "boost/filesystem.hpp"
 
-#include "vtrc-common/vtrc-connection-iface.h"
+#include "vtrc/common/connection-iface.h"
 
 #include "google/protobuf/descriptor.h"
-#include "vtrc-common/vtrc-closure-holder.h"
 
-#include "vtrc-common/vtrc-mutex-typedefs.h"
-#include "vtrc-common/vtrc-exception.h"
+#include "vtrc/common/closure-holder.h"
+#include "vtrc/common/exception.h"
 
 #include "vtrc-atomic.h"
 #include "vtrc-mutex.h"

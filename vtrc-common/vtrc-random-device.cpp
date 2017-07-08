@@ -1,5 +1,5 @@
 
-#include "vtrc-random-device.h"
+#include "vtrc/common/random-device.h"
 
 #include "vtrc-random.h"
 

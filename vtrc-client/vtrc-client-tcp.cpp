@@ -134,7 +134,7 @@ namespace vtrc { namespace client {
         return impl_->get_protocol( );
     }
 
-    common::enviroment &client_tcp::get_enviroment( )
+    common::environment &client_tcp::get_enviroment( )
     {
         return impl_->get_enviroment( );
     }

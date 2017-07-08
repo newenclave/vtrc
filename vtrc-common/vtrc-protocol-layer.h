@@ -9,11 +9,11 @@
 #include "vtrc-stdint.h"
 #include "vtrc-system.h"
 
-#include "vtrc-common/vtrc-call-context.h"
-#include "vtrc-common/vtrc-rpc-service-wrapper.h"
-#include "vtrc-common/vtrc-closure.h"
-#include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
-#include "vtrc-common/vtrc-protocol-iface.h"
+#include "vtrc/common/call-context.h"
+#include "vtrc/common/rpc-service-wrapper.h"
+#include "vtrc/common/closure.h"
+#include "vtrc/common/lowlevel-protocol-iface.h"
+#include "vtrc/common/protocol-iface.h"
 
 namespace google { namespace protobuf {
     class Message;

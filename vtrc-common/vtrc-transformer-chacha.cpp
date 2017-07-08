@@ -1,10 +1,10 @@
 #include <iostream>
 #include <algorithm>
 
-#include "vtrc-transformer-iface.h"
-#include "vtrc-random-device.h"
-#include "vtrc-hash-iface.h"
 #include "vtrc-memory.h"
+#include "vtrc/common/transformer-iface.h"
+#include "vtrc/common/random-device.h"
+#include "vtrc/common/hash-iface.h"
 
 #include "crypt/chacha/ecrypt-sync.h"
 

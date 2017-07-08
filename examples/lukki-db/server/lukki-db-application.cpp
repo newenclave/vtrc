@@ -4,15 +4,15 @@
 #include <iostream>
 
 #include "lukki-db-application.h"
-#include "vtrc-common/vtrc-thread-pool.h"
-#include "vtrc-common/vtrc-rpc-service-wrapper.h"
-#include "vtrc-common/vtrc-connection-iface.h"
-#include "vtrc-common/vtrc-closure-holder.h"
+#include "vtrc/common/thread-pool.h"
+#include "vtrc/common/rpc-service-wrapper.h"
+#include "vtrc/common/connection-iface.h"
+#include "vtrc/common/closure-holder.h"
 
-#include "vtrc-common/vtrc-rpc-channel.h"
-#include "vtrc-common/vtrc-stub-wrapper.h"
+#include "vtrc/common/rpc-channel.h"
+#include "vtrc/common/stub-wrapper.h"
 
-#include "vtrc-server/vtrc-channels.h"
+#include "vtrc/server/channels.h"
 
 #include "protocol/lukkidb.pb.h"
 

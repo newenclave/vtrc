@@ -4,14 +4,15 @@
 
 #include "google/protobuf/descriptor.h"
 
-#include "vtrc-client.h"
+#include "vtrc/client/client.h"
+
 #include "vtrc-client-tcp.h"
 #include "vtrc-client-ssl.h"
 #include "vtrc-client-unix-local.h"
 #include "vtrc-client-win-pipe.h"
 #include "vtrc-client-posix-stream.h"
 
-#include "vtrc-rpc-channel-c.h"
+#include "vtrc/client/rpc-channel-c.h"
 #include "vtrc-protocol-layer-c.h"
 
 #include "vtrc-asio.h"
@@ -20,15 +21,14 @@
 #include "vtrc-condition-variable.h"
 #include "vtrc-chrono.h"
 
-#include "vtrc-common/vtrc-exception.h"
-#include "vtrc-common/vtrc-mutex-typedefs.h"
-#include "vtrc-common/vtrc-pool-pair.h"
+#include "vtrc/common/exception.h"
+#include "vtrc/common/pool-pair.h"
 
 #include "vtrc-errors.pb.h"
 
-#include "vtrc-rpc-channel-c.h"
+#include "vtrc/client/rpc-channel-c.h"
 
-#include "vtrc-common/observer/scoped-subscription.h"
+#include "vtrc/common/observer/scoped-subscription.h"
 
 namespace vtrc { namespace client {
 

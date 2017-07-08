@@ -2,8 +2,9 @@
 #include <iostream>
 #include <stdlib.h>
 
-#include "vtrc-call-context.h"
-#include "vtrc-connection-iface.h"
+#include "vtrc/common/call-context.h"
+#include "vtrc/common/connection-iface.h"
+
 #include "vtrc-protocol-layer.h"
 
 #include "protocol/vtrc-rpc-lowlevel.pb.h"

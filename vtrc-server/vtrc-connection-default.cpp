@@ -1,18 +1,18 @@
 
-#include "vtrc-common/vtrc-protocol-accessor-iface.h"
-#include "vtrc-common/vtrc-delayed-call.h"
-#include "vtrc-common/vtrc-hash-iface.h"
-#include "vtrc-common/vtrc-transformer-iface.h"
-#include "vtrc-common/vtrc-connection-iface.h"
+#include "vtrc/common/protocol-accessor-iface.h"
+#include "vtrc/common/delayed-call.h"
+#include "vtrc/common/hash-iface.h"
+#include "vtrc/common/transformer-iface.h"
+#include "vtrc/common/connection-iface.h"
 
-#include "vtrc-common/vtrc-lowlevel-protocol-default.h"
+#include "vtrc/common/lowlevel-protocol-default.h"
 
 #include "vtrc-errors.pb.h"
 #include "vtrc-auth.pb.h"
 #include "vtrc-rpc-lowlevel.pb.h"
 #include "vtrc-function.h"
 
-#include "vtrc-application.h"
+#include "vtrc/server/application.h"
 
 #include "vtrc-memory.h"
 #include "vtrc-bind.h"

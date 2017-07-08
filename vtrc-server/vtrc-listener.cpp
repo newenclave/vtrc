@@ -1,7 +1,8 @@
-#include "vtrc-listener.h"
-#include "vtrc-application.h"
 
-#include "vtrc-common/vtrc-enviroment.h"
+#include "vtrc/server/listener.h"
+#include "vtrc/server/application.h"
+
+#include "vtrc/common/environment.h"
 #include "vtrc-atomic.h"
 #include "vtrc-bind.h"
 
@@ -16,7 +17,7 @@ namespace vtrc { namespace server {
 
     struct listener::impl {
         application              &app_;
-        common::enviroment        env_;
+        common::environment        env_;
         rpc::session_options      opts_;
 
         listener                 *parent_;
@@ -49,7 +50,7 @@ namespace vtrc { namespace server {
         return impl_->app_;
     }
 
-    common::enviroment  &listener::get_enviroment( )
+    common::environment  &listener::get_enviroment( )
     {
         return impl_->env_;
     }

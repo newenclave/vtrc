@@ -2,21 +2,22 @@
 #include <vector>
 #include <iostream>
 
-#include "vtrc-server/vtrc-application.h"
+#include "vtrc/server/application.h"
+
 #include "boost/program_options.hpp"
 #include "boost/algorithm/string.hpp"
 
-#include "vtrc-server/vtrc-application.h"
-#include "vtrc-common/vtrc-pool-pair.h"
+#include "vtrc/server/application.h"
+#include "vtrc/common/pool-pair.h"
 #include "remote-fs-impl.h"
 #include "protocol/remotefs.pb.h"
 
 #include "vtrc-rpc-lowlevel.pb.h"
 
-#include "vtrc-common/vtrc-rpc-service-wrapper.h"
+#include "vtrc/common/rpc-service-wrapper.h"
 
-#include "vtrc-server/vtrc-listener-tcp.h"
-#include "vtrc-server/vtrc-listener-local.h"
+#include "vtrc/server/listener-tcp.h"
+#include "vtrc/server/listener-local.h"
 
 #include "vtrc-bind.h"
 #include "vtrc-ref.h"

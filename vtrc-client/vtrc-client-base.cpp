@@ -1,13 +1,12 @@
 #include <map>
 
-#include "vtrc-client-base.h"
+#include "vtrc/client/client-base.h"
 
 #include "vtrc-asio.h"
 #include "google/protobuf/descriptor.h"
 
-#include "vtrc-rpc-channel-c.h"
+#include "vtrc/client/rpc-channel-c.h"
 #include "vtrc-protocol-layer-c.h"
-#include "vtrc-common/vtrc-mutex-typedefs.h"
 
 #include "vtrc-bind.h"
 #include "vtrc-mutex.h"
@@ -55,7 +54,7 @@ namespace vtrc { namespace client {
         vtrc::mutex                     factory_lock_;
 
         executor_type                   exec_;
-        common::enviroment              env_;
+        common::environment              env_;
 
         std::string                     session_id_;
 
@@ -387,12 +386,12 @@ namespace vtrc { namespace client {
         impl_->reset_session_id( );
     }
 
-    common::enviroment &base::env( )
+    common::environment &base::env( )
     {
         return impl_->env_;
     }
 
-    const common::enviroment &base::env( ) const
+    const common::environment &base::env( ) const
     {
         return impl_->env_;
     }

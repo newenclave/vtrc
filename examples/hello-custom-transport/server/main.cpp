@@ -1,18 +1,18 @@
 #include <iostream>
 #include <stdio.h>
 
-#include "vtrc-server/vtrc-application.h"
-#include "vtrc-server/vtrc-listener-tcp.h"
-#include "vtrc-server/vtrc-listener-ssl.h"
-#include "vtrc-server/vtrc-listener-custom.h"
+#include "vtrc/server/application.h"
+#include "vtrc/server/listener-tcp.h"
+#include "vtrc/server/listener-ssl.h"
+#include "vtrc/server/listener-custom.h"
 
-#include "vtrc-common/vtrc-connection-iface.h"
-#include "vtrc-common/vtrc-closure-holder.h"
-#include "vtrc-common/vtrc-thread-pool.h"
-#include "vtrc-common/vtrc-pool-pair.h"
-#include "vtrc-common/vtrc-closure.h"
-#include "vtrc-common/vtrc-delayed-call.h"
-#include "vtrc-common/vtrc-connection-list.h"
+#include "vtrc/common/connection-iface.h"
+#include "vtrc/common/closure-holder.h"
+#include "vtrc/common/thread-pool.h"
+#include "vtrc/common/pool-pair.h"
+#include "vtrc/common/closure.h"
+#include "vtrc/common/delayed-call.h"
+#include "vtrc/common/connection-list.h"
 
 #include "vtrc-bind.h"
 #include "vtrc-ref.h"
@@ -22,11 +22,11 @@
 #include "google/protobuf/descriptor.h" /// for descriptor( )->full_name( )
 #include "boost/lexical_cast.hpp"
 
-#include "vtrc-common/vtrc-protocol-iface.h"
+#include "vtrc/common/protocol-iface.h"
 
 #include "vtrc-rpc-lowlevel.pb.h"
 
-//#include "vtrc-server/vtrc-protocol-layer.h"
+//#include "vtrc/server/protocol-layer.h"
 
 using namespace vtrc;
 

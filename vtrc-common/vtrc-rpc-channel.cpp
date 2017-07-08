@@ -7,9 +7,10 @@
 #include "vtrc-rpc-lowlevel.pb.h"
 #include "vtrc-rpc-options.pb.h"
 
-#include "vtrc-rpc-channel.h"
+#include "vtrc/common/rpc-channel.h"
+#include "vtrc/common/exception.h"
+
 #include "vtrc-protocol-layer.h"
-#include "vtrc-exception.h"
 
 #include "vtrc-bind.h"
 

@@ -3,14 +3,15 @@
 
 #include "vtrc-asio.h"
 
-#include "vtrc-client.h"
+#include "vtrc/client/client.h"
+
 #include "vtrc-bind.h"
 #include "vtrc-ref.h"
 #include "vtrc-chrono.h"
 
 #include "vtrc-protocol-layer-c.h"
-#include "vtrc-common/vtrc-enviroment.h"
-#include "vtrc-common/vtrc-exception.h"
+#include "vtrc/common/environment.h"
+#include "vtrc/common/exception.h"
 
 namespace vtrc { namespace client {
 
@@ -31,7 +32,7 @@ namespace { /// implementation.
         parent_type             *parent_;
         base                    *client_;
         protocol_signals        *callbacks_;
-        common::enviroment       env_;
+        common::environment       env_;
 
         std::vector<char>        read_buff_;
 
@@ -71,7 +72,7 @@ namespace { /// implementation.
             return parent_->get_socket( );
         }
 
-        common::enviroment &get_enviroment( )
+        common::environment &get_enviroment( )
         {
             return env_;
         }

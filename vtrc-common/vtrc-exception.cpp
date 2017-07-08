@@ -7,7 +7,7 @@
 
 #include "vtrc-system.h"
 
-#include "vtrc-exception.h"
+#include "vtrc/common/exception.h"
 #include "vtrc-errors.pb.h"
 
 namespace vtrc { namespace common {
