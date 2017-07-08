@@ -81,6 +81,7 @@ endif( )
 endif( )
 
 set( Boost_USE_MULTITHREADED   ON)
+set( VTRC_ASIO_STANDALONE 0 )
 
 if( VTRC_CXX11_ENABLED )
 
@@ -93,6 +94,7 @@ if( VTRC_CXX11_ENABLED )
         set(ASIO_STANDALONE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/asio/include" )
 
         include_directories( ${ASIO_STANDALONE_DIR} )
+        set( VTRC_ASIO_STANDALONE 1 )
         add_definitions( -DASIO_STANDALONE=1 )
     ########################################
     else( NOT USE_BOOST_ASIO )
