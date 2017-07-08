@@ -114,6 +114,7 @@ namespace vtrc { namespace common { namespace observer {
         unsubscriber_sptr unsubscriber_;
     };
 
+    /// boost::signal compatibility
     typedef scoped_subscription scoped_connection;
 
 }}}

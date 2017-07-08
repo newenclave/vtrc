@@ -71,6 +71,9 @@ namespace vtrc { namespace common { namespace observer {
         unsubscriber_sptr unsubscriber_;
     };
 
+    /// boost::signal compatibility
+    typedef subscription connection;
+
 }}}
 
 #endif // SUBSCRIPTION_H

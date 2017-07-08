@@ -247,16 +247,15 @@ namespace vtrc { namespace common { namespace observer {
             return *this;
         }
 
-        ~base( ) = default;
 #else
     private:
         base( const base & );
         base& operator = ( const base & );
     public:
 
+#endif
         virtual ~base( )
         { }
-#endif
 
         subscription subscribe( slot_type call )
         {
