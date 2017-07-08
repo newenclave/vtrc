@@ -94,7 +94,7 @@ if( VTRC_CXX11_ENABLED )
 
         set(ASIO_STANDALONE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/asio/include"
                                 PARENT_SCOPE )
-        include_directories( ${ASIO_STANDALONE_DIR} )
+        include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/asio/include" )
 
         set( VTRC_ASIO_STANDALONE 1 PARENT_SCOPE )
         add_definitions( -DASIO_STANDALONE=1 )
