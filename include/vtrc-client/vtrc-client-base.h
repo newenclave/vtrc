@@ -4,7 +4,7 @@
 #include "vtrc-memory.h"
 #include "vtrc-function.h"
 #include "vtrc-asio-forward.h"
-#include "vtrc-system-forward.h"
+#include "vtrc-system.h"
 
 #include "vtrc-common/vtrc-signal-declaration.h"
 #include "vtrc-common/vtrc-pool-pair.h"

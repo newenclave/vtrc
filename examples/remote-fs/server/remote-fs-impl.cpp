@@ -16,6 +16,7 @@
 #include "vtrc-common/vtrc-exception.h"
 
 #include "vtrc-atomic.h"
+#include "vtrc-mutex.h"
 
 namespace {
 
@@ -36,8 +37,10 @@ namespace {
         vtrc::common::connection_iface *connection_;
         vtrc::atomic<gpb::uint32>       handle_index_;
 
-        files_map           files_;
-        vtrc::shared_mutex  files_lock_;
+        files_map    files_;
+        vtrc::mutex  files_lock_;
+
+        typedef vtrc::lock_guard<vtrc::mutex> locker_type;
 
         gpb::uint32 next_index( )
         {
@@ -46,7 +49,7 @@ namespace {
 
         file_ptr file_from_hdl( gpb::uint32 hdl )
         {
-            vtrc::shared_lock sl( files_lock_ );
+            locker_type sl( files_lock_ );
             files_map::iterator f(files_.find( hdl ));
             if( f == files_.end( ) ) {
                 throw vtrc::common::exception(
@@ -76,7 +79,7 @@ namespace {
             file_ptr fnew( f, fclose );
 
             gpb::uint32 hdl(next_index( ));
-            vtrc::unique_shared_lock usl( files_lock_ );
+            locker_type usl( files_lock_ );
             files_.insert( std::make_pair( hdl, fnew ) );
             response->set_value( hdl );
         }
@@ -87,7 +90,7 @@ namespace {
                  ::google::protobuf::Closure* done)
         {
             common::closure_holder holder(done);
-            vtrc::unique_shared_lock usl( files_lock_ );
+            locker_type usl( files_lock_ );
             files_.erase( request->value( ) );
         }
 
@@ -187,11 +190,13 @@ namespace {
         vtrc::common::connection_iface *connection_;
         vtrc::atomic<gpb::uint32>       handle_index_;
 
-        path_map            fs_inst_;
-        vtrc::shared_mutex  fs_inst_lock_;
+        path_map     fs_inst_;
+        vtrc::mutex  fs_inst_lock_;
 
-        iterator_map        iterators_;
-        vtrc::shared_mutex  iterators_lock_;
+        iterator_map iterators_;
+        vtrc::mutex  iterators_lock_;
+
+        typedef vtrc::lock_guard<vtrc::mutex> locker_type;
 
         gpb::uint32 next_index( )
         {
@@ -200,7 +205,7 @@ namespace {
 
         fs::directory_iterator iter_from_request( gpb::uint32 &hdl)
         {
-            vtrc::shared_lock l( iterators_lock_ );
+            locker_type l( iterators_lock_ );
             iterator_map::iterator f(iterators_.find(hdl));
             if( f == iterators_.end( ) ) {
                 throw vtrc::common::exception(
@@ -224,7 +229,7 @@ namespace {
                 /// old path must be used
                 hdl = request->handle( ).value( );
 
-                vtrc::shared_lock l( fs_inst_lock_ );
+                locker_type l( fs_inst_lock_ );
                 path_map::const_iterator f(fs_inst_.find( hdl ));
 
                 if( f == fs_inst_.end( ) ) {
@@ -248,10 +253,9 @@ namespace {
         {
             common::closure_holder holder( done );
             {
-                vtrc::upgradable_lock ul( fs_inst_lock_ );
+                locker_type ul( fs_inst_lock_ );
                 path_map::iterator f( fs_inst_.find( request->value( ) ) );
                 if( f != fs_inst_.end( ) ) {
-                    vtrc::upgrade_to_unique uul( ul );
                     fs_inst_.erase( f );
                     response->set_value( request->value( ) );
                     return;
@@ -259,10 +263,9 @@ namespace {
             }
 
             {
-                vtrc::upgradable_lock ul( iterators_lock_ );
+                locker_type ul( iterators_lock_ );
                 iterator_map::iterator f( iterators_.find( request->value( )));
                 if( f != iterators_.end( ) ) {
-                    vtrc::upgrade_to_unique uul( ul );
                     iterators_.erase( f );
                     response->set_value( request->value( ) );
                 }
@@ -278,7 +281,7 @@ namespace {
             gpb::uint32 hdl;
             fs::path p(path_from_request( request, hdl ));
 
-            vtrc::unique_shared_lock l( fs_inst_lock_ );
+            locker_type l( fs_inst_lock_ );
             fs_inst_.insert( std::make_pair( hdl, p ) );
 
             response->mutable_handle( )->set_value( hdl );
@@ -292,7 +295,7 @@ namespace {
         {
             common::closure_holder holder( done );
 
-            vtrc::upgradable_lock ul( fs_inst_lock_ );
+            locker_type ul( fs_inst_lock_ );
 
             gpb::uint32 hdl(request->handle( ).value( ));
 
@@ -307,7 +310,6 @@ namespace {
             p.normalize( );
 
             /// set new path
-            vtrc::upgrade_to_unique utul( ul );
             f->second = p;
         }
 
@@ -419,7 +421,7 @@ namespace {
             fs::path p(path_from_request( request, hdl ));
             fs::directory_iterator new_iterator(p);
             gpb::uint32 iter_hdl = next_index( );
-            vtrc::unique_shared_lock usl(iterators_lock_);
+            locker_type usl(iterators_lock_);
             iterators_.insert( std::make_pair( iter_hdl, new_iterator ) );
             fill_iter_info(new_iterator, iter_hdl, response);
         }
@@ -434,7 +436,7 @@ namespace {
             fs::directory_iterator iter(iter_from_request( hdl ));
             ++iter;
             fill_iter_info(iter, hdl, response);
-            vtrc::unique_shared_lock usl( iterators_lock_ );
+            locker_type usl( iterators_lock_ );
             iterators_[hdl] = iter;
         }
 
@@ -459,7 +461,7 @@ namespace {
             fs::directory_iterator iter(iter_from_request( hdl ));
             gpb::uint32 new_hdl = next_index( );
             fill_iter_info( iter, hdl, response );
-            vtrc::unique_shared_lock usl(iterators_lock_);
+            locker_type usl(iterators_lock_);
             iterators_.insert( std::make_pair( new_hdl, iter ) );
         }
 

@@ -2,7 +2,7 @@
 #include <map>
 
 #include "vtrc-connection-list.h"
-#include "vtrc-mutex-typedefs.h"
+#include "vtrc-mutex.h"
 
 namespace vtrc { namespace common {
 
@@ -18,12 +18,13 @@ namespace vtrc { namespace common {
 
     struct connection_list::impl {
 
-        client_map_type      clients_;
-        mutable shared_mutex clients_lock_;
+        client_map_type     clients_;
+        mutable vtrc::mutex clients_lock_;
+        typedef vtrc::lock_guard<vtrc::mutex> locker_type;
 
         void clear( )
         {
-            unique_shared_lock l(clients_lock_);
+            locker_type l(clients_lock_);
             clients_.clear( );
         }
 
@@ -35,14 +36,14 @@ namespace vtrc { namespace common {
 
         void store( common::connection_iface_sptr c )
         {
-            unique_shared_lock l(clients_lock_);
+            locker_type l(clients_lock_);
             clients_.insert(std::make_pair(c.get( ), c));
         }
 
         connection_sptr lock( common::connection_iface *c )
         {
             connection_sptr result;
-            shared_lock l(clients_lock_);
+            locker_type l(clients_lock_);
             client_map_type::iterator f( clients_.find( c ) );
             if( f != clients_.end( ) )
                 result = f->second;
@@ -51,10 +52,9 @@ namespace vtrc { namespace common {
 
         void drop ( common::connection_iface *c )
         {
-            upgradable_lock lck(clients_lock_);
+            locker_type lck(clients_lock_);
             client_map_type::iterator f(clients_.find(c));
             if( f != clients_.end( )) {
-                upgrade_to_unique ulck(lck);
                 clients_.erase( f );
             }
         }
@@ -66,7 +66,7 @@ namespace vtrc { namespace common {
 
         size_t foreach_while(client_predic func)
         {
-            shared_lock l(clients_lock_);
+            locker_type l(clients_lock_);
             size_t result = 0;
 
             client_map_type::iterator b(clients_.begin( ));

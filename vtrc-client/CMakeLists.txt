@@ -13,6 +13,7 @@ foreach( src_dir ${src_dirs} )
 endforeach( )
 
 include_directories( ${VTRC_INCLUDE_DIR}/vtrc-client )
+include_directories( ${VTRC_INCLUDE_DIR}/vtrc-common )
 
 add_library(${lib_name} ${VTRC_LINK_TYPE} ${lib_src})
 

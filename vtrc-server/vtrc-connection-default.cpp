@@ -44,7 +44,6 @@ namespace vtrc { namespace server {
             cap.set_ready( true );
 
             hello_mess.add_hash_supported( rpc::auth::HASH_NONE     );
-            hello_mess.add_hash_supported( rpc::auth::HASH_CRC_16   );
             hello_mess.add_hash_supported( rpc::auth::HASH_CRC_32   );
             hello_mess.add_hash_supported( rpc::auth::HASH_SHA2_256 );
 
@@ -316,7 +315,7 @@ namespace vtrc { namespace server {
                 keepalive_calls_.call_from_now(
                             vtrc::bind( &iface::on_init_timeout, this,
                                          vtrc::placeholders::_1 ),
-                            boost::posix_time::milliseconds( to ));
+                            common::delayed_call::milliseconds( to ));
 
             }
 

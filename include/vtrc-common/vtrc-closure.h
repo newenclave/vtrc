@@ -2,9 +2,7 @@
 #define VTRC_CLOSURE_H
 
 #include "vtrc-function.h"
-#include "vtrc-system-forward.h"
-
-VTRC_SYSTEM_FORWARD( class error_code; )
+#include "vtrc-system.h"
 
 namespace google { namespace protobuf {
     class MethodDescriptor;

@@ -1,6 +1,8 @@
+#include <map>
+
 #include "vtrc-client-base.h"
 
-#include "boost/asio/io_service.hpp"
+#include "vtrc-asio.h"
 #include "google/protobuf/descriptor.h"
 
 #include "vtrc-rpc-channel-c.h"
@@ -8,7 +10,7 @@
 #include "vtrc-common/vtrc-mutex-typedefs.h"
 
 #include "vtrc-bind.h"
-
+#include "vtrc-mutex.h"
 
 namespace vtrc { namespace client {
 
@@ -45,17 +47,19 @@ namespace vtrc { namespace client {
         native_service_weak_map         weak_native_services_;
         service_weak_map                weak_services_;
         service_shared_map              hold_services_;
-        vtrc::shared_mutex              services_lock_;
+        vtrc::mutex                     services_lock_;
 
         base::service_factory_type      factory_;
         base::lowlevel_factory_type     ll_proto_factory_;
 
-        vtrc::shared_mutex              factory_lock_;
+        vtrc::mutex                     factory_lock_;
 
         executor_type                   exec_;
         common::enviroment              env_;
 
         std::string                     session_id_;
+
+        typedef vtrc::lock_guard<vtrc::mutex> locker_type;
 
         impl(basio::io_service &io, basio::io_service &rpcio)
             :ios_(&io)
@@ -168,7 +172,7 @@ namespace vtrc { namespace client {
             service_sptr lock(serv.lock( ));
             if( lock ) {
                 const std::string s_name(lock->GetDescriptor( )->full_name( ));
-                vtrc::unique_shared_lock lk(services_lock_);
+                locker_type lk(services_lock_);
                 weak_native_services_[s_name] = serv;
             }
         }
@@ -183,14 +187,12 @@ namespace vtrc { namespace client {
             const std::string serv_name( serv->service( )
                                              ->GetDescriptor( )
                                              ->full_name( ));
-            vtrc::upgradable_lock lk(services_lock_);
+            locker_type lk(services_lock_);
             service_shared_map::iterator f( hold_services_.find( serv_name ) );
             if( f != hold_services_.end( ) ) {
                 f->second = serv;
-                upgrade_to_unique ulk(lk);
                 weak_services_[serv_name] = service_wrapper_wptr(serv);
             } else {
-                upgrade_to_unique ulk(lk);
                 hold_services_.insert( std::make_pair(serv_name, serv) );
                 weak_services_[serv_name] = service_wrapper_wptr(serv);
             }
@@ -203,14 +205,14 @@ namespace vtrc { namespace client {
                 const std::string s_name(lock->service( )
                                              ->GetDescriptor( )
                                              ->full_name( ));
-                vtrc::unique_shared_lock lk(services_lock_);
+                locker_type lk(services_lock_);
                 weak_services_[s_name] = serv;
             }
         }
 
         void assign_service_factory( base::service_factory_type factory )
         {
-            vtrc::unique_shared_lock lck(factory_lock_);
+            locker_type lck(factory_lock_);
             factory_ = factory;
         }
 
@@ -219,12 +221,11 @@ namespace vtrc { namespace client {
             service_wrapper_sptr result;
 
             {
-                vtrc::upgradable_lock lk(services_lock_);
+                locker_type lk(services_lock_);
                 service_weak_map::iterator f( weak_services_.find( name ) );
                 if( f != weak_services_.end( ) ) {
                     result = f->second.lock( );
                     if( !result ) {
-                        vtrc::upgrade_to_unique ulk(lk);
                         weak_services_.erase( f );
                     }
                 }
@@ -233,7 +234,7 @@ namespace vtrc { namespace client {
             // we don't have service here
             // have to find it in the "native map"
             if( !result ) {
-                vtrc::upgradable_lock lk(services_lock_);
+                locker_type lk(services_lock_);
 
                 native_service_weak_map::iterator f =
                                 weak_native_services_.find( name );
@@ -241,7 +242,6 @@ namespace vtrc { namespace client {
                 if( f != weak_native_services_.end( ) ) {
                     service_sptr res = f->second.lock( );
                     if( !res ) {
-                        vtrc::upgrade_to_unique ulk(lk);
                         weak_native_services_.erase( f );
                     } else {
                         result = parent_->wrap_service( res );
@@ -251,7 +251,7 @@ namespace vtrc { namespace client {
 
             // Ok. last chance to get the service is to create it
             if( !result ) {
-                vtrc::shared_lock shl( factory_lock_ );
+                locker_type shl( factory_lock_ );
                 if( factory_ ) {
                     result = factory_( name );
                 }
@@ -262,7 +262,7 @@ namespace vtrc { namespace client {
 
         void erase_rpc_handler( const std::string &name )
         {
-            vtrc::unique_shared_lock lk(services_lock_);
+            locker_type lk(services_lock_);
 
             service_shared_map::iterator sf( hold_services_.find( name ) );
             service_weak_map::iterator   wf( weak_services_.find( name ) );
@@ -274,7 +274,7 @@ namespace vtrc { namespace client {
 
         void erase_all_rpc_handlers( )
         {
-            vtrc::unique_shared_lock lk(services_lock_);
+            locker_type lk(services_lock_);
             hold_services_.clear( );
             weak_services_.clear( );
         }

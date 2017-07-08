@@ -16,7 +16,7 @@
 #include "vtrc-memory.h"
 #include "vtrc-function.h"
 #include "vtrc-asio-forward.h"
-#include "vtrc-system-forward.h"
+#include "vtrc-system.h"
 #include "vtrc-client-base.h"
 
 VTRC_ASIO_FORWARD( class io_service; )
@@ -29,7 +29,6 @@ VTRC_ASIO_FORWARD(
 )
 #endif
 
-VTRC_SYSTEM_FORWARD( class error_code; )
 
 namespace google { namespace protobuf {
     class RpcChannel;

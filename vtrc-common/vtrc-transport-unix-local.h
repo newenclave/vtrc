@@ -7,12 +7,11 @@
 #include "vtrc-common/vtrc-closure.h"
 
 #include "vtrc-asio-forward.h"
-#include "vtrc-system-forward.h"
+#include "vtrc-system.h"
 
 #include "vtrc-asio.h"
 
 VTRC_ASIO_FORWARD( class io_service; )
-VTRC_SYSTEM_FORWARD( class error_code; )
 
 namespace vtrc { namespace common {
 

@@ -24,6 +24,7 @@
 #include "vtrc-rpc-lowlevel.pb.h"
 
 #include "vtrc-chrono.h"
+#include "vtrc-mutex.h"
 #include "vtrc-atomic.h"
 #include "vtrc-common/vtrc-protocol-accessor-iface.h"
 #include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
@@ -82,6 +83,7 @@ namespace vtrc { namespace server {
 
         typedef impl             this_type;
         typedef protocol_layer_s parent_type;
+        typedef vtrc::lock_guard<vtrc::mutex> locker_type;
 
         application                     &app_;
         common::connection_iface        *connection_;
@@ -91,7 +93,7 @@ namespace vtrc { namespace server {
         bool                             closed_;
 
         service_map                      services_;
-        shared_mutex                     services_lock_;
+        vtrc::mutex                      services_lock_;
 
         std::string                      client_id_;
 
@@ -154,7 +156,7 @@ namespace vtrc { namespace server {
 
         common::rpc_service_wrapper_sptr get_service( const std::string &name )
         {
-            upgradable_lock lk( services_lock_ );
+            locker_type lk( services_lock_ );
             common::rpc_service_wrapper_sptr result;
             service_map::iterator f( services_.find( name ) );
 
@@ -163,7 +165,6 @@ namespace vtrc { namespace server {
             } else {
                 result = app_.get_service_by_name( connection_, name );
                 if( result ) {
-                    upgrade_to_unique ulk( lk );
                     services_.insert( std::make_pair( name, result ) );
                 }
             }
@@ -173,13 +174,13 @@ namespace vtrc { namespace server {
 
         void drop_service( const std::string &name )
         {
-            unique_shared_lock _(services_lock_);
+            locker_type _(services_lock_);
             services_.erase( name );
         }
 
         void drop_all_services(  )
         {
-            unique_shared_lock _(services_lock_);
+            locker_type _(services_lock_);
             services_.clear( );
         }
 

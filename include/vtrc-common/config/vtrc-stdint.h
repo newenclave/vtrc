@@ -134,6 +134,8 @@ namespace vtrc {
 
     using std::uintmax_t;
     using std::uintptr_t;
+    using std::size_t;
+
 }
 
 #endif

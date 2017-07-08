@@ -2,16 +2,17 @@
 #include "vtrc-enviroment.h"
 
 #include <map>
-#include "vtrc-mutex-typedefs.h"
+#include "vtrc-mutex.h"
 
 namespace vtrc { namespace common {
 
     struct enviroment::impl {
 
         typedef std::map<std::string, std::string> data_type;
+        typedef vtrc::lock_guard<vtrc::mutex> locker_type;
 
         data_type             data_;
-        mutable shared_mutex  data_lock_;
+        mutable vtrc::mutex   data_lock_;
 
         impl( ) { }
 
@@ -22,7 +23,7 @@ namespace vtrc { namespace common {
 
         void get_data( data_type &out ) const
         {
-            shared_lock l(data_lock_);
+            locker_type l(data_lock_);
             data_type tmp(data_);
             out.swap( tmp );
         }
@@ -32,13 +33,13 @@ namespace vtrc { namespace common {
             data_type tmp;
             other_data.get_data( tmp );
 
-            unique_shared_lock l(data_lock_);
+            locker_type l(data_lock_);
             data_.swap( tmp );
         }
 
         void set( const std::string &name, const std::string &value )
         {
-            unique_shared_lock l(data_lock_);
+            locker_type l(data_lock_);
 
             data_type::iterator f(data_.find(name));
 
@@ -58,7 +59,7 @@ namespace vtrc { namespace common {
         const std::string get( const std::string &name,
                                const std::string &default_value ) const
         {
-            shared_lock l(data_lock_);
+            locker_type l(data_lock_);
             data_type::const_iterator f(data_.find(name));
             if( f == data_.end( ) ) {
                 return default_value;
@@ -69,13 +70,13 @@ namespace vtrc { namespace common {
 
         size_t remove( const std::string &name )
         {
-            unique_shared_lock l(data_lock_);
+            locker_type l(data_lock_);
             return data_.erase( name );
         }
 
         bool exists( const std::string &name ) const
         {
-            shared_lock l(data_lock_);
+            locker_type l(data_lock_);
             data_type::const_iterator f(data_.find(name));
             return f != data_.end( );
         }

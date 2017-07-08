@@ -8,6 +8,9 @@ list(APPEND src_dirs
         ./crypt/chacha
         ${VTRC_INCLUDE_DIR}/vtrc-common
         ${VTRC_INCLUDE_DIR}/vtrc-common/config
+        ${VTRC_INCLUDE_DIR}/vtrc-common/observer
+        ${VTRC_INCLUDE_DIR}/vtrc-common/details
+        ${VTRC_INCLUDE_DIR}/vtrc-common/observer/traits
     )
 
 foreach( src_dir ${src_dirs} )

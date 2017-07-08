@@ -6,6 +6,7 @@
 
 namespace vtrc { namespace common { namespace timer {
 
+#if 0
     struct monotonic_traits {
 
         typedef boost::posix_time::milliseconds milliseconds;
@@ -52,7 +53,19 @@ namespace vtrc { namespace common { namespace timer {
 
     typedef  VTRC_ASIO::basic_deadline_timer< vtrc::chrono::steady_clock,
                                              monotonic_traits > monotonic;
+#else
 
+struct monotonic_traits {
+    typedef vtrc::chrono::milliseconds milliseconds;
+    typedef vtrc::chrono::microseconds microseconds;
+    typedef vtrc::chrono::seconds      seconds;
+    typedef vtrc::chrono::minutes      minutes;
+    typedef vtrc::chrono::hours        hours;
+};
+typedef vtrc::chrono::steady_clock clock_type;
+typedef VTRC_ASIO::basic_waitable_timer<clock_type> monotonic;
+
+#endif
 }}}
 
 #endif // VTRCMONOTONICTIMER_H

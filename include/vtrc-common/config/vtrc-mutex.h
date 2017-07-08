@@ -26,4 +26,12 @@ namespace vtrc {
 
 #endif
 
+namespace vtrc {
+    struct dummy_mutex {
+        void lock( ) { }
+        void unlock( ) { }
+        bool try_lock( ) { return true; }
+    };
+}
+
 #endif // VTRC_MUTEX_H

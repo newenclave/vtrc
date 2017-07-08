@@ -1,5 +1,6 @@
 #include <map>
 #include <string>
+#include <list>
 #include <iostream>
 
 #include "lukki-db-application.h"
@@ -306,10 +307,10 @@ namespace lukki_db {
     }
 
     class svc_wrapper: public common::rpc_service_wrapper {
-        boost::asio::io_service::strand &dispatch_;
+        VTRC_ASIO::io_service::strand &dispatch_;
         common::connection_iface_wptr cl_;
     public:
-        svc_wrapper( boost::asio::io_service::strand &dispatch,
+        svc_wrapper( VTRC_ASIO::io_service::strand &dispatch,
                      common::connection_iface_wptr cl,
                      common::rpc_service_wrapper::service_type *svc )
             :common::rpc_service_wrapper(svc)

@@ -84,10 +84,23 @@ set( Boost_USE_MULTITHREADED   ON)
 
 if( VTRC_CXX11_ENABLED )
 
-    find_package( Boost 1.53 COMPONENTS
+    if( NOT USE_BOOST_ASIO )
+    ################ ASIO ##################
+        execute_process( COMMAND "git" "submodule" "init"
+                         WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
+        execute_process( COMMAND "git" "submodule" "update" "asio"
+                         WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
+        set(ASIO_STANDALONE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/asio/include" )
+
+        include_directories( ${ASIO_STANDALONE_DIR} )
+        add_definitions( -DASIO_STANDALONE=1 )
+    ########################################
+    else( NOT USE_BOOST_ASIO )
+      find_package( Boost 1.53 COMPONENTS
                         system
                         thread  # for the shared mutexes
-                  REQUIRED)
+                    REQUIRED)
+    endif( NOT USE_BOOST_ASIO )
 
     set( VTRC_DISABLE_CXX11 0 )
 
@@ -116,7 +129,8 @@ endif( )
 find_package( Protobuf REQUIRED)
 
 set( VTRC_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include )
-set( VTRC_CONFIG_INCLUDE_DIR ${VTRC_INCLUDE_DIR}/vtrc-common/config )
+set( VTRC_CONFIG_INCLUDE_DIR ${VTRC_INCLUDE_DIR}/vtrc-common/config
+                             ${VTRC_INCLUDE_DIR}/vtrc-common/ )
 
 configure_file ("${PROJECT_SOURCE_DIR}/vtrc-general-config.h.in"
                 "${VTRC_CONFIG_INCLUDE_DIR}/vtrc-general-config.h" )

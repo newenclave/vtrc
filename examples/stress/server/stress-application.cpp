@@ -28,6 +28,7 @@
 #include "vtrc-atomic.h"
 #include "vtrc-thread.h"
 #include "vtrc-asio.h"
+#include "vtrc-mutex.h"
 
 #include "google/protobuf/service.h"
 #include "google/protobuf/descriptor.h"
@@ -175,11 +176,13 @@ namespace stress {
         vtrc::atomic<unsigned>              next_id_;
         common::thread_pool                 timer_pool_;
         delayed_map                         map_;
-        vtrc::shared_mutex                  map_lock_;
+        vtrc::mutex                         map_lock_;
 
         bool                                dumb_proto_;
 
         delayed_call                        counter_timer_;
+
+        typedef vtrc::lock_guard<vtrc::mutex> locker_type;
 
         impl( unsigned io_threads )
             :pp_(io_threads)
@@ -475,7 +478,7 @@ namespace stress {
         call_cb_pair p( std::make_pair( md, cb ) );
         impl_->start_timer( p, id, microseconds );
 
-        vtrc::unique_shared_lock usl(impl_->map_lock_);
+        impl::locker_type usl(impl_->map_lock_);
         impl_->map_.insert( std::make_pair( id, p ) );
 
         std::cout << "Add timer " << id << " success\n";
@@ -485,7 +488,7 @@ namespace stress {
 
     void application::del_timer_event( unsigned id )
     {
-        vtrc::shared_lock usl(impl_->map_lock_);
+        impl::locker_type usl(impl_->map_lock_);
         delayed_map::iterator f( impl_->map_.find( id ));
         if( f != impl_->map_.end( ) ) {
             f->second.first->cancel( );

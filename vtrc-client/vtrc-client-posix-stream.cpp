@@ -3,6 +3,7 @@
 #ifndef _WIN32
 
 #include "vtrc-asio.h"
+#include "vtrc-system.h"
 #include "vtrc-client-stream-impl.h"
 #include "vtrc-common/vtrc-exception.h"
 
@@ -28,7 +29,7 @@ namespace vtrc { namespace client {
             fd_type fd = open( address.c_str( ), flags | O_NONBLOCK, mode );
             if( -1 == fd ) {
                 VTRC_SYSTEM::error_code ec( errno,
-                                            VTRC_SYSTEM::get_posix_category( ));
+                                            VTRC_SYSTEM::system_category( ));
                 common::raise( std::runtime_error( ec.message( ) ) );
                 return;
             }
@@ -45,7 +46,7 @@ namespace vtrc { namespace client {
             fd_type fd = open( address.c_str( ), flags | O_NONBLOCK, mode );
             if( -1 == fd ) {
                 VTRC_SYSTEM::error_code ec( errno,
-                                            VTRC_SYSTEM::get_posix_category( ));
+                                            VTRC_SYSTEM::system_category( ));
                 closure( ec );
                 return;
             }

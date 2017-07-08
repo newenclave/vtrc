@@ -28,12 +28,14 @@
 
 #include "vtrc-rpc-channel-c.h"
 
+#include "vtrc-common/observer/scoped-subscription.h"
+
 namespace vtrc { namespace client {
 
     namespace basio = VTRC_ASIO;
     namespace bsys  = VTRC_SYSTEM;
     namespace gpb   = google::protobuf;
-    namespace bs2   = boost::signals2;
+    namespace bs2   = vtrc::common::observer;
     namespace ph    = vtrc::placeholders;
 
     namespace {
@@ -64,7 +66,7 @@ namespace vtrc { namespace client {
         native_service_weak_map         weak_native_services_;
         service_weak_map                weak_services_;
         service_shared_map              hold_services_;
-        vtrc::shared_mutex              services_lock_;
+        //vtrc::mutex                     services_lock_;
 
         std::string                     session_key_;
         std::string                     session_id_;

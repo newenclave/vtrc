@@ -6,6 +6,7 @@
 
 #include "vtrc-thread-pool.h"
 #include "vtrc-mutex-typedefs.h"
+#include "vtrc-mutex.h"
 #include "vtrc-memory.h"
 #include "vtrc-bind.h"
 #include "vtrc-thread.h"
@@ -113,6 +114,8 @@ namespace vtrc { namespace common {
 
     struct thread_pool::impl {
 
+        typedef vtrc::lock_guard<vtrc::mutex> locker_type;
+
         basio::io_service       *ios_;
         basio::io_service::work *wrk_;
         bool                     own_ios_;
@@ -120,7 +123,7 @@ namespace vtrc { namespace common {
         thread_set_type          threads_;
         thread_set_type          stopped_threads_;
 
-        mutable shared_mutex     threads_lock_;
+        mutable vtrc::mutex      threads_lock_;
 
         thread_pool::exception_handler exception_;
         thread_pool::thread_decorator  decorator_;
@@ -159,7 +162,7 @@ namespace vtrc { namespace common {
             while( count-- ) {
                 tmp.push_back(create_thread( ));
             }
-            unique_shared_lock lck(threads_lock_);
+            locker_type lck(threads_lock_);
             threads_.insert( tmp.begin( ), tmp.end( ) );
             stopped_threads_.clear( );
         }
@@ -167,7 +170,7 @@ namespace vtrc { namespace common {
         void inc( )
         {
             thread_context::shared_type n(create_thread( ));
-            unique_shared_lock lck( threads_lock_ );
+            locker_type lck( threads_lock_ );
             threads_.insert( n );
             stopped_threads_.clear( );
         }
@@ -191,7 +194,7 @@ namespace vtrc { namespace common {
 
         size_t size( ) const
         {
-            shared_lock lck(threads_lock_);
+            locker_type lck(threads_lock_);
             return threads_.size( );
         }
 
@@ -206,7 +209,7 @@ namespace vtrc { namespace common {
             thread_set_type tmp;
             {
                 /// own threads
-                unique_shared_lock lck(threads_lock_);
+                locker_type lck(threads_lock_);
                 tmp.swap( threads_ );
             }
 
@@ -217,7 +220,7 @@ namespace vtrc { namespace common {
             }
 
             /// clean stopped
-            unique_shared_lock lck(threads_lock_);
+            locker_type lck(threads_lock_);
             stopped_threads_.clear( );
         }
 
@@ -228,13 +231,13 @@ namespace vtrc { namespace common {
             wrk_ = NULL;
 
             ios_->stop( );
-            unique_shared_lock lck(threads_lock_);
+            locker_type lck(threads_lock_);
             stopped_threads_.clear( );
         }
 
         void move_to_stopped( thread_context::shared_type &thread )
         {
-            unique_shared_lock lck(threads_lock_);
+            locker_type lck(threads_lock_);
 
             stopped_threads_.insert( thread );
             threads_.erase( thread );

@@ -9,7 +9,7 @@
 #include "vtrc-common/vtrc-lowlevel-protocol-iface.h"
 
 #include "vtrc-memory.h"
-#include "vtrc-system-forward.h"
+#include "vtrc-system.h"
 #include "vtrc-common/vtrc-handle.h"
 
 namespace google { namespace protobuf {
@@ -20,8 +20,6 @@ namespace vtrc { namespace rpc {
     class session_options;
     class lowlevel_unit;
 }}
-
-VTRC_SYSTEM_FORWARD( class error_code; )
 
 namespace vtrc {
 

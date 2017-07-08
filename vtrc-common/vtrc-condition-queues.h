@@ -2,6 +2,8 @@
 #define VTRC_CONDITION_QUEUES_H
 
 #include <deque>
+#include <map>
+
 #include "vtrc-condition-variable.h"
 #include "vtrc-memory.h"
 #include "vtrc-bind.h"
@@ -10,7 +12,7 @@
 #include "vtrc-chrono.h"
 
 #include "vtrc-result-codes.h"
-#include "vtrc-mutex-typedefs.h"
+#include "vtrc-mutex.h"
 #include "vtrc-exception.h"
 
 namespace vtrc { namespace common {
@@ -18,8 +20,9 @@ namespace vtrc { namespace common {
     template <typename KeyType, typename QueueValueType>
     class condition_queues {
 
-        typedef condition_queues                this_type;
-        typedef vtrc::shared_mutex              mutex_type;
+
+        typedef condition_queues         this_type;
+        typedef vtrc::mutex              mutex_type;
 
         typedef vtrc::unique_lock<vtrc::mutex>  unique_lock;
 
@@ -104,7 +107,7 @@ namespace vtrc { namespace common {
 
             hold_value_type_sptr value;
             {
-                vtrc::shared_lock lck(lock_);
+                unique_lock lck(lock_);
                 value = value_at_key( key );
             }
 
@@ -123,7 +126,7 @@ namespace vtrc { namespace common {
 
             hold_value_type_sptr value;
             {
-                vtrc::shared_lock lck(lock_);
+                unique_lock lck(lock_);
                 value = value_at_key( key );
             }
 
@@ -150,7 +153,7 @@ namespace vtrc { namespace common {
 
             hold_value_type_sptr value;
             {
-                vtrc::shared_lock lck(lock_);
+                unique_lock lck(lock_);
                 value = value_at_key( key );
             }
 
@@ -209,39 +212,36 @@ namespace vtrc { namespace common {
 
         size_t size( ) const
         {
-            vtrc::shared_lock lck(lock_);
+            unique_lock lck(lock_);
             return store_.size( );
         }
 
         size_t queue_size( const key_type &key ) const
         {
-            vtrc::shared_lock lck(lock_);
+            unique_lock lck(lock_);
             return value_at_key(key)->data_.size( );
         }
 
         void add_queue( const key_type &key )
         {
-            vtrc::unique_shared_lock lck(lock_);
+            unique_lock lck(lock_);
             store_.insert( std::make_pair( key,
                                       vtrc::make_shared<hold_value_type>( ) ));
         }
 
         void erase_queue( const key_type &key )
         {
-            vtrc::upgradable_lock lck(lock_);
+            unique_lock lck(lock_);
             typename map_type::iterator f(store_.find( key ));
             if( f != store_.end( ) ) {
-
                 cancel_value( *(f->second) );
-
-                vtrc::upgrade_to_unique ulck(lck);
                 store_.erase( f );
             }
         }
 
         void erase_all(  )
         {
-            vtrc::unique_shared_lock lck(lock_);
+            unique_lock lck(lock_);
             for(typename map_type::iterator b(store_.begin()), e(store_.end());
                                             b!=e; ++b)
             {
@@ -252,7 +252,7 @@ namespace vtrc { namespace common {
 
         void cancel_all( )
         {
-            vtrc::shared_lock lck(lock_);
+            unique_lock lck(lock_);
             typedef typename map_type::iterator iter_type;
             for( iter_type b(store_.begin( )), e(store_.end( )); b!=e; ++b ) {
                 cancel_value( *(b->second) );
@@ -261,14 +261,14 @@ namespace vtrc { namespace common {
 
         void cancel( const key_type &key )
         {
-            vtrc::shared_lock lck(lock_);
+            unique_lock lck(lock_);
             typename map_type::iterator f(at( key ));
             cancel_value( *(f->second) );
         }
 
         void write_queue( const key_type &key, const queue_value_type &data )
         {
-            vtrc::shared_lock lck(lock_);
+            unique_lock lck(lock_);
             typename map_type::iterator f(at( key ));
             push_value_data( *(f->second), data );
         }
@@ -283,7 +283,7 @@ namespace vtrc { namespace common {
 
         size_t write_all( const queue_value_type &data )
         {
-            vtrc::shared_lock lck(lock_);
+            unique_lock lck(lock_);
             size_t count = 0;
             std::for_each( store_.begin( ), store_.end( ),
                            vtrc::bind( this_type::write_all_impl,
@@ -299,7 +299,7 @@ namespace vtrc { namespace common {
 
             hold_value_type_sptr value;
             {
-                vtrc::shared_lock lck(lock_);
+                unique_lock lck(lock_);
                 value = value_by_key( key );
             }
 
@@ -312,7 +312,7 @@ namespace vtrc { namespace common {
 
         void write_queue( const key_type &key, const queue_type &data )
         {
-            vtrc::shared_lock lck(lock_);
+            unique_lock lck(lock_);
             hold_value_type_sptr value(value_at_key( key ));
 
             unique_lock vlck(value->lock_);
@@ -347,7 +347,7 @@ namespace vtrc { namespace common {
 
         bool queue_exists( const key_type &key ) const
         {
-            vtrc::shared_lock lck(lock_);
+            unique_lock lck(lock_);
             return store_.find( key ) != store_.end( );
         }
 

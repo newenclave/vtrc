@@ -1,6 +1,6 @@
 set( lib_name ${VTRC_SERVER_LIB_NAME} )
 
-list(APPEND src_dirs 
+list(APPEND src_dirs
         .
         ${VTRC_INCLUDE_DIR}/vtrc-server
     )
@@ -12,21 +12,22 @@ foreach( src_dir ${src_dirs} )
 endforeach( )
 
 include_directories( ${VTRC_INCLUDE_DIR}/vtrc-server)
+include_directories( ${VTRC_INCLUDE_DIR}/vtrc-common)
 
 add_library(${lib_name} ${VTRC_LINK_TYPE} ${lib_src})
 
-list(APPEND dependencies  
+list(APPEND dependencies
     ${VTRC_COMMON_LIB_NAME}
 )
 
 message( "-- Seting up dependencies for " ${lib_name} )
 foreach( dep ${dependencies} )
-    
+
     message( "\tAdd dependence: " ${dep} )
-    
+
     add_dependencies(       ${lib_name} ${dep}      )
     add_definitions(        ${${dep}_DEFINITIONS}   )
-    include_directories(    ${${dep}_INCLUDE_DIRS}  )    
+    include_directories(    ${${dep}_INCLUDE_DIRS}  )
 endforeach(dep)
 
 set_target_properties(${lib_name}
