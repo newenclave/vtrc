@@ -5,6 +5,12 @@
 
 namespace vtrc { namespace common { namespace details {
 
+#if VTRC_DISABLE_CXX11
+#define VTRC_NULL NULL
+#else
+#define VTRC_NULL nullptr
+#endif
+
     //// NOT STL LIST!!!
     template <typename T>
     class list {
@@ -14,8 +20,8 @@ namespace vtrc { namespace common { namespace details {
             node *next_;
             T data_;
             node( const T &data )
-                :prev_(NULL)
-                ,next_(NULL)
+                :prev_(VTRC_NULL)
+                ,next_(VTRC_NULL)
                 ,data_(data)
             { }
 
@@ -121,7 +127,7 @@ namespace vtrc { namespace common { namespace details {
 
             operator bool ( ) const
             {
-                return node_ != NULL;
+                return node_ != VTRC_NULL;
             }
         };
 
@@ -152,14 +158,14 @@ namespace vtrc { namespace common { namespace details {
     public:
 
         list( )
-            :front_(NULL)
-            ,back_(NULL)
+            :front_(VTRC_NULL)
+            ,back_(VTRC_NULL)
             ,size_(0)
         { }
 
         list( const list &other )
-            :front_(NULL)
-            ,back_(NULL)
+            :front_(VTRC_NULL)
+            ,back_(VTRC_NULL)
             ,size_(0)
         {
             list l(other.begin( ), other.end( ));
@@ -168,8 +174,8 @@ namespace vtrc { namespace common { namespace details {
 
         template <typename Itr>
         list( Itr begin, Itr end )
-            :front_(NULL)
-            ,back_(NULL)
+            :front_(VTRC_NULL)
+            ,back_(VTRC_NULL)
             ,size_(0)
         {
             list l;
@@ -192,7 +198,7 @@ namespace vtrc { namespace common { namespace details {
                 delete p;
                 p = tmp;
             }
-            front_ = back_ = NULL;
+            front_ = back_ = VTRC_NULL;
         }
 
         iterator begin( )
@@ -207,7 +213,7 @@ namespace vtrc { namespace common { namespace details {
 
         iterator end( )
         {
-            return iterator(NULL);
+            return iterator(VTRC_NULL);
         }
 
         iterator rend( )
@@ -241,7 +247,7 @@ namespace vtrc { namespace common { namespace details {
         void splice_back( list<T> &other )
         {
             if( &other != this ) {
-                if( front_ == NULL ) {
+                if( front_ == VTRC_NULL ) {
                     front_ = other.front_;
                     back_  = other.back_;
                 } else if( other.front_ ) {
@@ -249,7 +255,7 @@ namespace vtrc { namespace common { namespace details {
                     other.front_->prev_ = back_;
                     back_               = other.back_;
                 }
-                other.front_ = other.back_= NULL;
+                other.front_ = other.back_= VTRC_NULL;
                 size_       += other.size( );
                 other.size_  = 0;
             }
