@@ -133,6 +133,7 @@ endif( )
 find_package( Protobuf REQUIRED)
 
 set( VTRC_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include )
+set( VTRC_LIB_DIR ${PROJECT_SOURCE_DIR}/lib )
 set( VTRC_CONFIG_INCLUDE_DIR ${VTRC_INCLUDE_DIR}/vtrc/common/config )
 
 configure_file ("${PROJECT_SOURCE_DIR}/vtrc-general-config.h.in"
@@ -156,6 +157,7 @@ message( "Protocol files' path: " ${VTRC_PROTOCOL_INCLUDE_DIR} )
 
 set( VTRC_INCLUDE_DIRS
      ${VTRC_INCLUDE_DIR}
+     ${VTRC_LIB_DIR}
      ${VTRC_COMMON_INCLUDE_DIR}
      ${VTRC_CONFIG_INCLUDE_DIR}
      ${VTRC_PROTOCOL_INCLUDE_DIR}
@@ -195,9 +197,9 @@ set( VTRC_COMMON_LIB_NAME vtrc_common )
 set( VTRC_SERVER_LIB_NAME vtrc_server )
 set( VTRC_CLIENT_LIB_NAME vtrc_client )
 
-add_subdirectory(vtrc-common)
-add_subdirectory(vtrc-server)
-add_subdirectory(vtrc-client)
+add_subdirectory(lib/vtrc/common)
+add_subdirectory(lib/vtrc/server)
+add_subdirectory(lib/vtrc/client)
 
 if(WITH_EXAMPLES)
     #add_subdirectory(examples/calculator)
