@@ -96,7 +96,7 @@ if( VTRC_CXX11_ENABLED )
                                 PARENT_SCOPE )
         include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/asio/include" )
 
-        set( VTRC_ASIO_STANDALONE 1 PARENT_SCOPE )
+        set( VTRC_ASIO_STANDALONE 1 )
         add_definitions( -DASIO_STANDALONE=1 )
     ########################################
     else( NOT USE_BOOST_ASIO )
