@@ -24,9 +24,9 @@ if( VTRC_CXX11_ENABLED )
     find_package( Boost 1.50 COMPONENTS
                     system
                     thread
-																				chrono
-																				date_time
-																				regex
+                                        chrono
+                                        date_time
+                                        regex
                   REQUIRED)
 
 else( )
@@ -41,7 +41,7 @@ endif( )
 
 find_package( Protobuf REQUIRED)
 
-include_directories( ${VTRC_INCLUDE_DIRS} )
+include_directories( ${VTRC_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} )
 
 add_subdirectory(protocol)
 add_subdirectory(client)
