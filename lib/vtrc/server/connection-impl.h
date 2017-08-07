@@ -158,7 +158,7 @@ namespace vtrc { namespace server { namespace listeners {
                 return protocol_->get_call_context( );
             }
 
-            void success_closure( const rpc::errors::container &cont,
+            void success_closure( const rpc::errors::container & /*cont*/,
                                   common::empty_closure_type &done )
             {
                 done( );

@@ -20,7 +20,6 @@
 
 #include "protocol/hello.pb.h"          /// hello protocol
 #include "google/protobuf/descriptor.h" /// for descriptor( )->full_name( )
-#include "boost/lexical_cast.hpp"
 
 #include "vtrc/common/protocol-iface.h"
 

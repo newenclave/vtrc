@@ -8,7 +8,7 @@
 #include "vtrc/common/exception.h"
 #include "vtrc/common/connection-list.h"
 
-#include "vtrc/common/transport-win-pipe.h"
+#include "vtrc/common/transport/win_pipe.h"
 
 #include "vtrc/common/protocol-accessor-iface.h"
 #include "vtrc/common/protocol/vtrc-rpc-lowlevel.pb.h"
