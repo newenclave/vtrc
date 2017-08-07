@@ -6,7 +6,7 @@
 
 #include "vtrc-asio.h"
 #include "vtrc-system.h"
-#include "vtrc/client/stream_impl.h"
+#include "vtrc/client/stream_impl.h" 
 #include "vtrc/common/exception.h"
 
 #include "vtrc-errors.pb.h"
