@@ -3,7 +3,7 @@
 
 #ifdef _WIN32
 
-#include "vtrc/common/transport-win-pipe.h"
+#include "vtrc/common/transport/win_pipe.h"
 
 #include "vtrc/common/lowlevel-protocol-iface.h"
 #include "vtrc/common/closure.h"
