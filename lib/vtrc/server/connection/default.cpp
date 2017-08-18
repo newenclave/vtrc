@@ -1,7 +1,7 @@
 
 #include "vtrc/common/protocol/accessor-iface.h"
 #include "vtrc/common/delayed-call.h"
-#include "vtrc/common/hash-iface.h"
+#include "vtrc/common/hash/iface.h"
 #include "vtrc/common/transformer-iface.h"
 #include "vtrc/common/connection-iface.h"
 

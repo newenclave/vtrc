@@ -20,7 +20,7 @@
 #include "vtrc/common/defaults.h"
 
 #include "vtrc/common/data-queue.h"
-#include "vtrc/common/hash-iface.h"
+#include "vtrc/common/hash/iface.h"
 #include "vtrc/common/transformer-iface.h"
 
 #include "vtrc/common/transport/iface.h"

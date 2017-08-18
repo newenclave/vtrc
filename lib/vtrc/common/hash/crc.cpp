@@ -1,7 +1,7 @@
 
 #include <memory.h>
 
-#include "vtrc/common/hash-iface.h"
+#include "vtrc/common/hash/iface.h"
 #include "vtrc/common/hash/crc32-impl.h"
 
 namespace vtrc { namespace common {  namespace hash {

@@ -1,5 +1,5 @@
 
-#include "vtrc/common/hash-iface.h"
+#include "vtrc/common/hash/iface.h"
 
 namespace vtrc { namespace common {  namespace hash {
 

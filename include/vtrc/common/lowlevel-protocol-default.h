@@ -2,7 +2,7 @@
 #define VTRC_DEFAULT_LOWLEVEL_PROTOCOL_H
 
 #include "vtrc/common/lowlevel-protocol-iface.h"
-#include "vtrc/common/hash-iface.h"
+#include "vtrc/common/hash/iface.h"
 #include "vtrc/common/transformer-iface.h"
 #include "vtrc/common/data-queue.h"
 

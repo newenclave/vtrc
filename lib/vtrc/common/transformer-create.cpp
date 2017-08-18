@@ -5,7 +5,7 @@
 #include "vtrc-auth.pb.h"
 
 #include "vtrc/common/random-device.h"
-#include "vtrc/common/hash-iface.h"
+#include "vtrc/common/hash/iface.h"
 
 namespace vtrc { namespace common {
 
