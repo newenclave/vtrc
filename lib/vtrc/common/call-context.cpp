@@ -20,6 +20,8 @@ namespace vtrc { namespace common {
         bool                        impersonated_;
         google::protobuf::Closure  *done_;
         size_t                      depth_;
+
+        explicit
         impl(lowlevel_unit *llu)
             :llu_(llu)
             ,parent_context_(NULL)
@@ -27,9 +29,6 @@ namespace vtrc { namespace common {
             ,impersonated_(false)
             ,done_(NULL)
             ,depth_(1)
-        { }
-
-        ~impl( )
         { }
     };
 

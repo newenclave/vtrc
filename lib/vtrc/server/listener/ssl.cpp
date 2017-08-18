@@ -11,14 +11,10 @@
 #include "vtrc/server/listener/ssl.h"
 #include "vtrc/server/listener/impl.h"
 
-#include "vtrc/server/connection-impl.h"
+#include "vtrc/server/connection/impl.h"
 
 #include "vtrc-memory.h"
 #include "vtrc-ref.h"
-
-//
-//
-//
 
 namespace vtrc { namespace server { namespace listeners {
 

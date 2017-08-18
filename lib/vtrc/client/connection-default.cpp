@@ -10,9 +10,9 @@
 #include "vtrc/common/connection-iface.h"
 #include "vtrc/common/lowlevel-protocol-default.h"
 
-#include "vtrc-errors.pb.h"
-#include "vtrc-auth.pb.h"
-#include "vtrc-rpc-lowlevel.pb.h"
+#include "vtrc/common/protocol/vtrc-errors.pb.h"
+#include "vtrc/common/protocol/vtrc-auth.pb.h"
+#include "vtrc/common/protocol/vtrc-rpc-lowlevel.pb.h"
 #include "vtrc-function.h"
 
 #include "vtrc-memory.h"

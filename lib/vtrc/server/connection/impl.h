@@ -16,7 +16,7 @@
 
 #include <memory>
 
-#include "vtrc/server/connection-closure.h"
+#include "vtrc/server/connection/closure.h"
 
 namespace vtrc { namespace server { namespace listeners {
 

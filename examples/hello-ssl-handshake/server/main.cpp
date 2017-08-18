@@ -1,16 +1,16 @@
 #include <iostream>
 
-#include "vtrc-server/vtrc-application.h"
-#include "vtrc-server/vtrc-listener-tcp.h"
-#include "vtrc-server/vtrc-listener-ssl.h"
+#include "vtrc/server/application.h"
+#include "vtrc/server/listener/tcp.h"
+#include "vtrc/server/listener/ssl.h"
 
-#include "vtrc-common/vtrc-connection-iface.h"
-#include "vtrc-common/vtrc-closure-holder.h"
-#include "vtrc-common/vtrc-thread-pool.h"
-#include "vtrc-common/vtrc-closure.h"
-#include "vtrc-common/vtrc-delayed-call.h"
-#include "vtrc-common/vtrc-exception.h"
-#include "vtrc-common/vtrc-random-device.h"
+#include "vtrc/common/connection-iface.h"
+#include "vtrc/common/closure-holder.h"
+#include "vtrc/common/thread-pool.h"
+#include "vtrc/common/closure.h"
+#include "vtrc/common/delayed-call.h"
+#include "vtrc/common/exception.h"
+#include "vtrc/common/random-device.h"
 
 #include "protocol/hello.pb.h"          /// hello protocol
 #include "google/protobuf/descriptor.h" /// for descriptor( )->full_name( )

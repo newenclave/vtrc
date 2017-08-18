@@ -1,8 +1,8 @@
 #include <iostream>
 
 #include "vtrc/server/application.h"
-#include "vtrc/server/listener-tcp.h"
-#include "vtrc/server/listener-ssl.h"
+#include "vtrc/server/listener/tcp.h"
+#include "vtrc/server/listener/ssl.h"
 
 #include "vtrc/common/connection-iface.h"
 #include "vtrc/common/closure-holder.h"

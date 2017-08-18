@@ -1,10 +1,10 @@
-#include "vtrc/client/unix_local.h"
+#include "vtrc/client/unix-local.h"
 
 #ifndef _WIN32
 
 #include "vtrc-asio.h"
 
-#include "vtrc/client/stream_impl.h"
+#include "vtrc/client/stream-impl.h"
 
 namespace vtrc { namespace client {
 

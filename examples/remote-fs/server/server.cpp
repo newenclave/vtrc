@@ -16,8 +16,8 @@
 
 #include "vtrc/common/rpc-service-wrapper.h"
 
-#include "vtrc/server/listener-tcp.h"
-#include "vtrc/server/listener-local.h"
+#include "vtrc/server/listener/tcp.h"
+#include "vtrc/server/listener/local.h"
 
 #include "vtrc-bind.h"
 #include "vtrc-ref.h"

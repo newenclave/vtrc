@@ -10,8 +10,8 @@
 #include "vtrc/common/pool-pair.h"
 #include "vtrc/common/rpc-service-wrapper.h"
 
-#include "vtrc/server/listener-tcp.h"
-#include "vtrc/server/listener-local.h"
+#include "vtrc/server/listener/tcp.h"
+#include "vtrc/server/listener/local.h"
 
 #include "lukki-db-application.h"
 

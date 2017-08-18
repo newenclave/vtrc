@@ -4,10 +4,10 @@
 #define NOMINMAX // fckng Windows
 #endif
 
-#include "vtrc-client/vtrc-client.h"
-#include "vtrc-common/vtrc-thread-pool.h"
-#include "vtrc-common/vtrc-stub-wrapper.h"
-#include "vtrc-common/vtrc-random-device.h"
+#include "vtrc/client/client.h"
+#include "vtrc/common/thread-pool.h"
+#include "vtrc/common/stub-wrapper.h"
+#include "vtrc/common/random-device.h"
 
 #include "protocol/hello.pb.h"
 

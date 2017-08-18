@@ -5,7 +5,7 @@
 #include "vtrc/server/listener.h"
 
 #include "vtrc/common/pool-pair.h"
-#include "vtrc/common/protocol-iface.h"
+#include "vtrc/common/protocol/iface.h"
 
 #include "vtrc-function.h"
 

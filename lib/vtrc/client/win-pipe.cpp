@@ -1,4 +1,4 @@
-#include "vtrc/client/win_pipe.h"
+#include "vtrc/client/win-pipe.h"
 
 #ifdef _WIN32
 
@@ -6,7 +6,7 @@
 
 #include "vtrc-asio.h"
 #include "vtrc-system.h"
-#include "vtrc/client/stream_impl.h" 
+#include "vtrc/client/stream-impl.h"
 #include "vtrc/common/exception.h"
 
 #include "vtrc-errors.pb.h"

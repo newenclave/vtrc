@@ -3,7 +3,7 @@
 #include "vtrc/common/protocol/accessor-iface.h"
 
 #include "vtrc/server/listener/impl.h"
-#include "vtrc/server/connection-impl.h"
+#include "vtrc/server/connection/impl.h"
 
 namespace vtrc { namespace server { namespace listeners {
 

@@ -4,8 +4,6 @@
 #include "vtrc/common/observer/simple.h"
 
 #include "vtrc-mutex.h"
-
-//#define VTRC_PP_CONCAT( a, b ) a ## b
 #include "vtrc/common/observer/simple.h"
 
 #define VTRC_DECLARE_SIGNAL_COMMON( Access, Name, SigType, MutexType ) \
@@ -30,12 +28,12 @@
 
 #define VTRC_DECLARE_SIGNAL_SAFE(   Name, SigType )             \
         VTRC_DECLARE_SIGNAL_COMMON( protected, Name, SigType,   \
-                                    vtrc::mutex )
+                                    vtrc::recursive_mutex )
 
 // ====== UNSAFE
 #define VTRC_DECLARE_SIGNAL_UNSAFE( Name, SigType )             \
         VTRC_DECLARE_SIGNAL_COMMON( protected, Name, SigType,   \
-                                     vtrc::dummy_mutex)
+                                    vtrc::dummy_mutex)
 
 #define VTRC_DECLARE_SIGNAL VTRC_DECLARE_SIGNAL_SAFE
 

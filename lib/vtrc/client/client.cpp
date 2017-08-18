@@ -8,9 +8,9 @@
 
 #include "vtrc/client/tcp.h"
 #include "vtrc/client/ssl.h"
-#include "vtrc/client/unix_local.h"
-#include "vtrc/client/win_pipe.h"
-#include "vtrc/client/posix_stream.h"
+#include "vtrc/client/unix-local.h"
+#include "vtrc/client/win-pipe.h"
+#include "vtrc/client/posix-stream.h"
 
 #include "vtrc/client/rpc-channel-c.h"
 #include "vtrc/client/protocol-layer-c.h"

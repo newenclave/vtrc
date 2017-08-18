@@ -8,6 +8,7 @@
 
 #include "vtrc/server/listener.h"
 #include "vtrc-function.h"
+#include "vtrc-asio-ssl.h"
 
 namespace boost { namespace asio { namespace ssl {
     class context;

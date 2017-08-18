@@ -13,8 +13,8 @@
 #include "vtrc/common/connection-list.h"
 
 #include "vtrc/server/application.h"
-#include "vtrc/server/listener-tcp.h"
-#include "vtrc/server/listener-local.h"
+#include "vtrc/server/listener/tcp.h"
+#include "vtrc/server/listener/local.h"
 #include "vtrc/server/listener.h"
 
 #include "stress-service-impl.h"

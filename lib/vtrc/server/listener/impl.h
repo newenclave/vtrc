@@ -16,7 +16,7 @@
 #include "vtrc/common/environment.h"
 #include "vtrc/common/monotonic-timer.h"
 
-#include "vtrc/server/connection-closure.h"
+#include "vtrc/server/connection/closure.h"
 
 namespace vtrc { namespace server { namespace listeners {
 

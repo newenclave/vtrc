@@ -6,10 +6,12 @@
 #if VTRC_DISABLE_CXX11
 
 #include "boost/thread/mutex.hpp"
+#include "boost/thread/recursive_mutex.hpp"
 #include "boost/thread/locks.hpp"
 
 namespace vtrc {
     using boost::mutex;
+    using boost::recursive_mutex;
     using boost::unique_lock;
     using boost::lock_guard;
 }
@@ -20,6 +22,7 @@ namespace vtrc {
 
 namespace vtrc {
     using std::mutex;
+    using std::recursive_mutex;
     using std::unique_lock;
     using std::lock_guard;
 }

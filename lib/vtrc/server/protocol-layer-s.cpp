@@ -19,8 +19,8 @@
 
 #include "vtrc/server/application.h"
 
-#include "vtrc-errors.pb.h"
-#include "vtrc-rpc-lowlevel.pb.h"
+#include "vtrc/common/protocol/vtrc-errors.pb.h"
+#include "vtrc/common/protocol/vtrc-rpc-lowlevel.pb.h"
 
 #include "vtrc-chrono.h"
 #include "vtrc-mutex.h"

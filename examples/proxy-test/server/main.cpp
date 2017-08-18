@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "vtrc/server/application.h"
-#include "vtrc/server/listener-tcp.h"
+#include "vtrc/server/listener/tcp.h"
 #include "vtrc/server/channels.h"
 
 #include "vtrc/common/connection-iface.h"

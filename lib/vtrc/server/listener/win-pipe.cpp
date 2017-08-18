@@ -14,7 +14,7 @@
 #include "vtrc/common/protocol/vtrc-rpc-lowlevel.pb.h"
 #include "vtrc/common/closure.h"
 
-#include "vtrc/server/connection-impl.h"
+#include "vtrc/server/connection/impl.h"
 
 namespace vtrc { namespace server { namespace listeners {
 

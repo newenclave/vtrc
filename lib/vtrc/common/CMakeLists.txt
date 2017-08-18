@@ -150,7 +150,7 @@ set( ${lib_name}_POTOBUF_IMPORT_DIR
 set( ${lib_name}_INCLUDE_DIRS
      ${CMAKE_CURRENT_SOURCE_DIR}
      ${${lib_name}_PROTOBUF_FILES_DIR}
-     ${${lib_name}_PROTOBUF_FILES_OUTPUT}
+     #${${lib_name}_PROTOBUF_FILES_OUTPUT}
      ${CONFIG_FILES_DIRECTORY}
      ${Boost_INCLUDE_DIRS}
      ${PROTOBUF_INCLUDE_DIRS}

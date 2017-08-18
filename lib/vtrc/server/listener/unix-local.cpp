@@ -4,7 +4,7 @@
 #include "vtrc-asio.h"
 
 #include "vtrc/server/listener/impl.h"
-#include "vtrc/server/connection-impl.h"
+#include "vtrc/server/connection/impl.h"
 
 #include "vtrc/common/transport/unix_local.h"
 #include "vtrc/common/protocol/accessor-iface.h"

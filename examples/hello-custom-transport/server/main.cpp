@@ -2,9 +2,9 @@
 #include <stdio.h>
 
 #include "vtrc/server/application.h"
-#include "vtrc/server/listener-tcp.h"
-#include "vtrc/server/listener-ssl.h"
-#include "vtrc/server/listener-custom.h"
+#include "vtrc/server/listener/tcp.h"
+#include "vtrc/server/listener/ssl.h"
+#include "vtrc/server/listener/custom.h"
 
 #include "vtrc/common/connection-iface.h"
 #include "vtrc/common/closure-holder.h"
@@ -21,7 +21,7 @@
 #include "protocol/hello.pb.h"          /// hello protocol
 #include "google/protobuf/descriptor.h" /// for descriptor( )->full_name( )
 
-#include "vtrc/common/protocol-iface.h"
+#include "vtrc/common/protocol/iface.h"
 
 #include "vtrc-rpc-lowlevel.pb.h"
 
