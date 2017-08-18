@@ -7,7 +7,7 @@
 #include "vtrc/server/connection-impl.h"
 
 #include "vtrc/common/transport/unix_local.h"
-#include "vtrc/common/protocol-accessor-iface.h"
+#include "vtrc/common/protocol/accessor-iface.h"
 
 #include <errno.h>
 

@@ -6,8 +6,8 @@
 #if VTRC_OPENSSL_ENABLED
 
 #include "vtrc-memory.h"
-#include "vtrc-common/vtrc-transport-ssl.h"
-#include "vtrc-common/vtrc-closure.h"
+#include "vtrc/common/transport/ssl.h"
+#include "vtrc/common/closure.h"
 
 VTRC_ASIO_FORWARD(
     class io_service;
@@ -70,7 +70,7 @@ namespace client {
         const common::call_context      *get_call_context( ) const;
         common::protocol_layer          &get_protocol( );
         const common::protocol_layer    &get_protocol( ) const;
-        common::enviroment              &get_enviroment( );
+        common::environment             &get_enviroment( );
 
     private:
 

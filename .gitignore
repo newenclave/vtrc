@@ -1,4 +1,5 @@
-include/vtrc/common/protocol
+include/vtrc/common/protocol/*.pb.*
+include/vtrc/common/protocol/*.proto
 include/vtrc/common/config/vtrc-general-config.h
 *.user
 *.autosave

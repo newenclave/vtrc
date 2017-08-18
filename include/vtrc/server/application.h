@@ -2,8 +2,8 @@
 #define VTRC_APPLICATION_IFACE_H
 
 #include "vtrc/common/rpc-service-wrapper.h"
-#include "vtrc/common/protocol-defaults.h"
-#include "vtrc/common/protocol-iface.h"
+#include "vtrc/common/protocol/iface.h"
+#include "vtrc/common/defaults.h"
 
 #include "vtrc-asio-forward.h"
 #include "vtrc-function.h"

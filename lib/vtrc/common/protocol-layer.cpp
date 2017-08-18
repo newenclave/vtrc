@@ -17,7 +17,7 @@
 #include "vtrc-condition-variable.h"
 
 #include "vtrc/common/protocol-layer.h"
-#include "vtrc/common/protocol-defaults.h"
+#include "vtrc/common/defaults.h"
 
 #include "vtrc/common/data-queue.h"
 #include "vtrc/common/hash-iface.h"

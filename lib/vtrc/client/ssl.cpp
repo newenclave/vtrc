@@ -6,7 +6,7 @@
 
 #include "vtrc-asio.h"
 
-#include "vtrc-client-stream-impl.h"
+#include "vtrc/client/stream_impl.h"
 
 namespace vtrc { namespace client {
 
@@ -216,9 +216,9 @@ namespace vtrc { namespace client {
     }
 
 
-    common::enviroment &client_ssl::get_enviroment( )
+    common::environment &client_ssl::get_enviroment( )
     {
-        return impl_->get_enviroment( );
+        return impl_->get_environment( );
     }
 
     void client_ssl::on_close( )

@@ -3,7 +3,7 @@
 
 #include "vtrc-asio.h"
 
-#include "vtrc/common/protocol-accessor-iface.h"
+#include "vtrc/common/protocol/accessor-iface.h"
 #include "vtrc/common/delayed-call.h"
 #include "vtrc/common/hash-iface.h"
 #include "vtrc/common/transformer-iface.h"
@@ -18,7 +18,7 @@
 #include "vtrc-memory.h"
 #include "vtrc-bind.h"
 
-#include "vtrc/client/client-base.h"
+#include "vtrc/client/base.h"
 
 #include "vtrc/client/protocol-layer-c.h"
 

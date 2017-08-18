@@ -5,7 +5,8 @@
 
 #include "vtrc/common/signal-declaration.h"
 #include "vtrc/common/closure.h"
-#include "vtrc/common/protocol-defaults.h"
+#include "vtrc/common/defaults.h"
+
 #include "vtrc/common/lowlevel-protocol-iface.h"
 #include "vtrc/common/handle.h"
 

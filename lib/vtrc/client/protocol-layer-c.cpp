@@ -14,8 +14,9 @@
 #include "vtrc/common/transformer-iface.h"
 #include "vtrc/common/call-context.h"
 #include "vtrc/common/random-device.h"
+#include "vtrc/common/protocol/accessor-iface.h"
+
 #include "vtrc/common/lowlevel-protocol-iface.h"
-#include "vtrc/common/protocol-accessor-iface.h"
 
 #include "vtrc/common/transport/iface.h"
 #include "vtrc/common/rpc-controller.h"

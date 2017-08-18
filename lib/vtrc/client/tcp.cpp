@@ -134,7 +134,7 @@ namespace vtrc { namespace client {
 
     common::environment &client_tcp::get_enviroment( )
     {
-        return impl_->get_enviroment( );
+        return impl_->get_environment( );
     }
 
     void client_tcp::on_close( )

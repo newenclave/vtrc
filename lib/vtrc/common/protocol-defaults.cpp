@@ -2,7 +2,7 @@
 #include <algorithm> // std::min std::max
 #endif
 
-#include "vtrc/common/protocol-defaults.h"
+#include "vtrc/common/defaults.h"
 
 #include "vtrc/common/protocol/vtrc-rpc-options.pb.h"
 #include "vtrc/common/protocol/vtrc-rpc-lowlevel.pb.h"

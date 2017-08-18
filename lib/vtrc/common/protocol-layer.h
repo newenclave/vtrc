@@ -13,7 +13,7 @@
 #include "vtrc/common/rpc-service-wrapper.h"
 #include "vtrc/common/closure.h"
 #include "vtrc/common/lowlevel-protocol-iface.h"
-#include "vtrc/common/protocol-iface.h"
+#include "vtrc/common/protocol/iface.h"
 
 namespace google { namespace protobuf {
     class Message;

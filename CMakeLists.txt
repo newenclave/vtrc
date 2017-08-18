@@ -67,6 +67,8 @@ else( VTRC_OPENSSL_ENABLE )
     set(OPENSSL_LIBRARIES)
     set(OPENSSL_INCLUDE_DIRS)
 
+    add_definitions( -DVTRC_OPENSSL_ENABLED=1 )
+
 endif( VTRC_OPENSSL_ENABLE )
 #######################################################
 
@@ -107,6 +109,7 @@ if( VTRC_CXX11_ENABLED )
     endif( NOT USE_BOOST_ASIO )
 
     set( VTRC_DISABLE_CXX11 0 )
+    add_definitions( -DVTRC_DISABLE_CXX11=0 )
 
     get_cmd_cxx11( VTRC_CXX_CMD )
     get_compiler_thread_local( VTRC_THREAD_LOCAL )
@@ -126,6 +129,7 @@ else( )
                   REQUIRED)
 
     set( VTRC_DISABLE_CXX11 1 )
+    add_definitions( -DVTRC_DISABLE_CXX11=1 )
 
 endif( )
 

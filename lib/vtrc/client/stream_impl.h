@@ -72,7 +72,7 @@ namespace { /// implementation.
             return parent_->get_socket( );
         }
 
-        common::environment &get_enviroment( )
+        common::environment &get_environment( )
         {
             return env_;
         }

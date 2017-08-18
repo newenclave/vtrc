@@ -26,8 +26,6 @@
 
 #include "vtrc-errors.pb.h"
 
-#include "vtrc/client/rpc-channel-c.h"
-
 #include "vtrc/common/observer/scoped-subscription.h"
 
 namespace vtrc { namespace client {

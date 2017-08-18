@@ -1,6 +1,6 @@
 
 #include "vtrc/common/transport/tcp.h"
-#include "vtrc/common/protocol-accessor-iface.h"
+#include "vtrc/common/protocol/accessor-iface.h"
 
 #include "vtrc/server/listener/impl.h"
 #include "vtrc/server/connection-impl.h"

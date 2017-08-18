@@ -6,16 +6,16 @@
 #if VTRC_OPENSSL_ENABLED
 
 #include "vtrc-asio-ssl.h"
-#include "vtrc-transport-iface.h"
+#include "vtrc/common/transport/iface.h"
 
 #include "vtrc-asio.h"
 #include "vtrc-system-forward.h"
 
 #include "vtrc-memory.h"
 
-#include "vtrc-common/vtrc-closure.h"
+#include "vtrc/common/closure.h"
 
-VTRC_SYSTEM_FORWARD( class error_code; )
+//VTRC_SYSTEM_FORWARD( class error_code; )
 
 namespace vtrc { namespace common {
 

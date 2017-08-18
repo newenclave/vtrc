@@ -26,7 +26,7 @@
 #include "vtrc-mutex.h"
 #include "vtrc-atomic.h"
 
-#include "vtrc/common/protocol-accessor-iface.h"
+#include "vtrc/common/protocol/accessor-iface.h"
 #include "vtrc/common/lowlevel-protocol-iface.h"
 
 namespace vtrc { namespace server {

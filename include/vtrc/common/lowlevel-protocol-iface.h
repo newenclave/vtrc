@@ -6,7 +6,7 @@
 #include "vtrc-function.h"
 
 #include "vtrc/common/closure.h"
-#include "vtrc/common/protocol-accessor-iface.h"
+#include "vtrc/common/protocol/accessor-iface.h"
 
 namespace google { namespace protobuf {
     class MessageLite;

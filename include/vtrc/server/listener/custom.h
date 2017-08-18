@@ -3,8 +3,8 @@
 
 #include <string>
 
+#include "vtrc/common/protocol/iface.h"
 #include "vtrc/server/listener.h"
-#include "vtrc/common/protocol-iface.h"
 #include "vtrc-general-config.h"
 
 namespace vtrc { namespace rpc {

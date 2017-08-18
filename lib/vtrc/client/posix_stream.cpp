@@ -121,7 +121,7 @@ namespace vtrc { namespace client {
 
     common::environment &client_posixs::get_enviroment( )
     {
-        return impl_->get_enviroment( );
+        return impl_->get_environment( );
     }
 
     void client_posixs::on_close( )

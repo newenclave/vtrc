@@ -7,8 +7,8 @@
 #include "vtrc/common/connection-iface.h"
 #include "vtrc/common/closure-holder.h"
 #include "vtrc/common/lowlevel-protocol-iface.h"
-#include "vtrc/common/protocol-iface.h"
 #include "vtrc/common/rpc-service-wrapper.h"
+#include "vtrc/common/protocol/iface.h"
 
 #include "vtrc/common/closure.h"
 #include "vtrc/common/rpc-channel.h"
@@ -18,7 +18,7 @@
 #include "vtrc-asio-forward.h"
 #include "vtrc-system.h"
 
-#include "vtrc/client/client-base.h"
+#include "vtrc/client/base.h"
 
 VTRC_ASIO_FORWARD( class io_service; )
 

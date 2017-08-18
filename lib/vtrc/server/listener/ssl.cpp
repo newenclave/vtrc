@@ -4,13 +4,14 @@
 
 #include <iostream>
 
-#include "vtrc-common/vtrc-transport-ssl.h"
-#include "vtrc-common/vtrc-protocol-accessor-iface.h"
-#include "vtrc-common/vtrc-delayed-call.h"
+#include "vtrc/common/transport/ssl.h"
+#include "vtrc/common/protocol/accessor-iface.h"
+#include "vtrc/common/delayed-call.h"
 
-#include "vtrc-listener-ssl.h"
-#include "vtrc-listener-impl.h"
-#include "vtrc-connection-impl.h"
+#include "vtrc/server/listener/ssl.h"
+#include "vtrc/server/listener/impl.h"
+
+#include "vtrc/server/connection-impl.h"
 
 #include "vtrc-memory.h"
 #include "vtrc-ref.h"
@@ -106,7 +107,7 @@ namespace vtrc { namespace server { namespace listeners {
                 keepalive_calls_.call_from_now(
                             vtrc::bind( &this_type::on_init_timeout, this,
                                         ph::error ),
-                            boost::posix_time::seconds( 5 ));
+                            vtrc::chrono::seconds( 5 ));
 
                 get_socket( ).async_handshake( bssl::stream_base::server,
                     vtrc::bind( &this_type::ssl_handshake_handler, this,

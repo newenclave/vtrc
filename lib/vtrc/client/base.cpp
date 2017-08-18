@@ -1,6 +1,6 @@
 #include <map>
 
-#include "vtrc/client/client-base.h"
+#include "vtrc/client/base.h"
 
 #include "vtrc-asio.h"
 #include "google/protobuf/descriptor.h"

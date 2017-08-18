@@ -4,6 +4,7 @@ list(APPEND src_dirs
         .
         ./listener
         ${VTRC_INCLUDE_DIR}/vtrc/server
+        ${VTRC_INCLUDE_DIR}/vtrc/server/listener
     )
 
 foreach( src_dir ${src_dirs} )

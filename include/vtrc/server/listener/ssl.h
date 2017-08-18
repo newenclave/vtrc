@@ -6,7 +6,7 @@
 
 #include <string>
 
-#include "vtrc-listener.h"
+#include "vtrc/server/listener.h"
 #include "vtrc-function.h"
 
 namespace boost { namespace asio { namespace ssl {

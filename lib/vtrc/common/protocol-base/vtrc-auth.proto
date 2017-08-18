@@ -1,6 +1,6 @@
 
 import "vtrc-errors.proto";
-import "vtrc-rpc-lowlevel.proto";
+// import "vtrc-rpc-lowlevel.proto";
 import "vtrc-rpc-options.proto";
 
 //option optimize_for = LITE_RUNTIME;

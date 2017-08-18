@@ -104,7 +104,7 @@ namespace vtrc { namespace client {
 
     common::environment &client_unix_local::get_enviroment( )
     {
-        return impl_->get_enviroment( );
+        return impl_->get_environment( );
     }
 
     void client_unix_local::on_close( )
