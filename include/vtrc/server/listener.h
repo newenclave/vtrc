@@ -63,7 +63,7 @@ namespace server {
     public:
 
         application                      &get_application( );
-        common::environment               &get_enviroment( );
+        common::environment              &get_enviroment( );
         const rpc::session_options       &get_options( ) const;
         size_t clients_count( ) const;
 

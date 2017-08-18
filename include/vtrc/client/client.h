@@ -142,7 +142,7 @@ namespace client {
         }
 #else
         template <typename Conn, typename ...Args >
-        vtrc::shared_ptr<Conn> assign( Args && ... args )
+        vtrc::shared_ptr<Conn> assign( Args&& ...args )
         {
             vtrc::shared_ptr<Conn> n =
                     Conn::create( std::forward<Args>( args )... );

@@ -77,9 +77,10 @@ namespace vtrc { namespace server {
         }
 #else
         template <typename Conn, typename ...Args >
-        vtrc::shared_ptr<Conn> accept( Args && ... args )
+        vtrc::shared_ptr<Conn> accept( Args&& ...args )
         {
-            vtrc::shared_ptr<Conn> n = Conn::create( args... );
+            vtrc::shared_ptr<Conn> n =
+                    Conn::create( std::forward<Args>(args)... );
             n->set_protocol( init_protocol( n ) );
             return n;
         }
