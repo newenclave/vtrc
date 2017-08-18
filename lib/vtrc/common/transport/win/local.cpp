@@ -5,7 +5,7 @@
 #ifdef _WIN32
 
 #include <windows.h>
-#include "vtrc/common/transport/stream_impl.h"
+#include "vtrc/common/transport/stream-impl.h"
 
 namespace vtrc { namespace common {
 
