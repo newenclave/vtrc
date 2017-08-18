@@ -3,6 +3,8 @@ set( lib_name ${VTRC_CLIENT_LIB_NAME} )
 
 list(APPEND src_dirs
         .
+        ./unix
+        ./win
         ${VTRC_INCLUDE_DIR}/vtrc/client
     )
 

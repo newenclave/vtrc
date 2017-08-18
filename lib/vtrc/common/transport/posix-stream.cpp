@@ -3,10 +3,10 @@
 
 #include <iostream>
 
-#include "vtrc/common/transport/posix_stream.h"
+#include "vtrc/common/transport/posix-stream.h"
 
 #include "vtrc/common/protocol-layer.h"
-#include "vtrc/common/transport/stream_impl.h"
+#include "vtrc/common/transport/stream-impl.h"
 
 namespace vtrc { namespace common {
 

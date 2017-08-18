@@ -1,4 +1,4 @@
-#include "vtrc/client/win-pipe.h"
+#include "vtrc/client/win/local.h"
 
 #ifdef _WIN32
 

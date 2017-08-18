@@ -7,6 +7,8 @@ list(APPEND src_dirs
         ./proto-helper
         ./crypt/chacha
         ./transport
+        ./transport/unix
+        ./transport/win
         ${VTRC_INCLUDE_DIR}/vtrc/common
         ${VTRC_INCLUDE_DIR}/vtrc/common/config
         ${VTRC_INCLUDE_DIR}/vtrc/common/observer

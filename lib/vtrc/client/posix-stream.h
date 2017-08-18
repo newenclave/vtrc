@@ -3,7 +3,7 @@
 
 #ifndef _WIN32
 
-#include "vtrc/common/transport/posix_stream.h"
+#include "vtrc/common/transport/posix-stream.h"
 #include "vtrc/common/lowlevel-protocol-iface.h"
 #include "vtrc-memory.h"
 

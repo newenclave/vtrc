@@ -1,9 +1,9 @@
-#include "vtrc/common/transport/unix_local.h"
+#include "vtrc/common/transport/unix/local.h"
 
 #ifndef  _WIN32
 
 #include "vtrc/common/protocol-layer.h"
-#include "vtrc/common/transport/stream_impl.h"
+#include "vtrc/common/transport/stream-impl.h"
 
 namespace vtrc { namespace common {
 
