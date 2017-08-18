@@ -51,15 +51,15 @@ namespace vtrc { namespace client {
 
             typedef common::lowlevel::default_protocol parent_type;
 
-            bool                        ready_;
             stage_function_type         stage_call_;
             client::base               *client_;
             protocol_stage              stage_;
+            bool                        ready_;
 
             iface( client::base *client )
-                :ready_(false)
-                ,client_(client)
+                :client_(client)
                 ,stage_(STAGE_HELLO)
+                ,ready_(false)
             {
 
             }
