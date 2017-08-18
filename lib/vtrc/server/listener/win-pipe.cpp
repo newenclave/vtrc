@@ -10,7 +10,7 @@
 
 #include "vtrc/common/transport/win_pipe.h"
 
-#include "vtrc/common/protocol-accessor-iface.h"
+#include "vtrc/common/protocol/accessor-iface.h"
 #include "vtrc/common/protocol/vtrc-rpc-lowlevel.pb.h"
 #include "vtrc/common/closure.h"
 

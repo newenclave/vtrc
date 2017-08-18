@@ -159,7 +159,7 @@ namespace vtrc { namespace client {
 
     common::environment &client_win_pipe::get_environment( )
     {
-        return impl_->get_enviroment( );
+        return impl_->get_environment( );
     }
 
     bool client_win_pipe::active( ) const
