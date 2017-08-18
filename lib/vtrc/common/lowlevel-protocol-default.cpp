@@ -48,7 +48,7 @@ namespace vtrc { namespace common { namespace lowlevel {
         ,hash_checker_(common::hash::create_default( ))
         ,transformer_(common::transformers::none::create( ))
         ,revertor_(common::transformers::none::create( ))
-        ,pa_(NULL)
+        ,pa_(VTRC_NULL)
 
     {
         rpc::session_options opts = defaults::session_options( );
@@ -134,7 +134,7 @@ namespace vtrc { namespace common { namespace lowlevel {
          * message =  message_header + <transform( message )>
         **/
         transformer_->transform( body );
-//            transformer_->transform( body.empty( ) ? NULL : &body[0],
+//            transformer_->transform( body.empty( ) ? VTRC_NULL : &body[0],
 //                                     body.size( ) );
 
         result.append( body.begin( ), body.end( ) );
@@ -191,7 +191,7 @@ namespace vtrc { namespace common { namespace lowlevel {
 
         /// revert message
         revertor_->transform( data );
-//            revertor_->transform( data.empty( ) ? NULL : &data[0],
+//            revertor_->transform( data.empty( ) ? VTRC_NULL : &data[0],
 //                                  data.size( ) );
         /// check hash
         bool checked = check_message( data );
@@ -212,7 +212,7 @@ namespace vtrc { namespace common { namespace lowlevel {
         /// revert message
         revertor_->transform( data );
 //        std::cout << "Pop: " << data << "\n";
-//            revertor_->transform( data.empty( ) ? NULL : &data[0],
+//            revertor_->transform( data.empty( ) ? VTRC_NULL : &data[0],
 //                                  data.size( ) );
 
         /// check hash
@@ -335,7 +335,7 @@ void process_data( const char *data, size_t length )
 
         //queue_->append( &next_data[0], next_data.size( ));
 
-        queue_->append( next_data.empty( ) ? NULL : &next_data[0],
+        queue_->append( next_data.empty( ) ? VTRC_NULL : &next_data[0],
                         next_data.size( ) );
         queue_->process( );
 
@@ -352,7 +352,7 @@ bool raw_pop( std::string &result )
 
     /// revert message
     revertor_->transform( data );
-//            revertor_->transform( data.empty( ) ? NULL : &data[0],
+//            revertor_->transform( data.empty( ) ? VTRC_NULL : &data[0],
 //                                  data.size( ) );
 
     /// check hash

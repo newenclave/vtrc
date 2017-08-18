@@ -62,7 +62,7 @@ namespace vtrc { namespace common {
                 :stream_(s)
                 ,ios_(stream_->get_io_service( ))
                 ,write_dispatcher_(ios_)
-                ,parent_(NULL)
+                ,parent_(VTRC_NULL)
                 ,closed_(false)
                 ,name_(n)
             { }

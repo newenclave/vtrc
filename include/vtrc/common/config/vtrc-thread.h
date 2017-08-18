@@ -3,7 +3,6 @@
 
 #include "vtrc-general-config.h"
 
-
 #if VTRC_DISABLE_CXX11
 
 #include "boost/thread.hpp"

@@ -7,6 +7,7 @@
 
 #include "vtrc-asio-forward.h"
 #include "vtrc-system.h"
+#include "vtrc-cxx11.h"
 
 #include "vtrc/common/closure.h"
 #include "vtrc/common/lowlevel-protocol-iface.h"
@@ -28,7 +29,7 @@ namespace vtrc { namespace common {
     struct connection_iface: public enable_shared_from_this<connection_iface> {
 
         connection_iface( )
-            :user_data_(NULL)
+            :user_data_(VTRC_NULL)
         { }
 
         virtual ~connection_iface( ) { }
@@ -112,7 +113,7 @@ namespace vtrc { namespace common {
     protected:
 
         connection_empty( )
-            :protocol_(NULL)
+            :protocol_(VTRC_NULL)
         { }
 
     public:
@@ -146,7 +147,7 @@ namespace vtrc { namespace common {
         virtual common::native_handle_type native_handle( ) const
         {
             common::native_handle_type res;
-            res.value.ptr_ = NULL;
+            res.value.ptr_ = VTRC_NULL;
             return res;
         }
 

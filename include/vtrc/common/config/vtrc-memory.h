@@ -16,6 +16,7 @@
 #endif
 
 #include "vtrc-general-config.h"
+#include "vtrc-cxx11.h"
 
 #if VTRC_DISABLE_CXX11
 
@@ -136,7 +137,7 @@ namespace vtrc {
 
     public:
 
-        explicit ptr_keeper( T *p = NULL ) // throws( )
+        explicit ptr_keeper( T *p = nullptr ) noexcept
             :ptr_( p )
         { }
 
@@ -153,7 +154,7 @@ namespace vtrc {
         T *release(  )
         {
             T *t = ptr_;
-            ptr_ = NULL;
+            ptr_ = nullptr;
             return t;
         }
     };

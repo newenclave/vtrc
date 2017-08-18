@@ -2,6 +2,7 @@
 #define VTRC_STUB_WRAPPER_H
 
 #include "vtrc-memory.h"
+#include "vtrc-cxx11.h"
 
 namespace google { namespace protobuf {
     class RpcChannel;
@@ -73,7 +74,7 @@ namespace vtrc { namespace common {
         }
 
         stub_wrapper(channel_type *channel, bool own_channel = false)
-            :channel_holder_(own_channel ? channel : NULL)
+            :channel_holder_(own_channel ? channel : VTRC_NULL)
             ,channel_(channel)
             ,stub_(channel_)
         { }
@@ -98,28 +99,28 @@ namespace vtrc { namespace common {
         template <typename StubFuncType, typename ReqType, typename ResType>
         void call( StubFuncType func, const ReqType *request, ResType *response)
         {
-            (stub_.*func)(NULL, request, response, NULL);
+            (stub_.*func)(VTRC_NULL, request, response, VTRC_NULL);
         }
 
         /// call(  )
         template <typename StubFuncType>
         void call( StubFuncType func )
         {
-            (stub_.*func)(NULL, NULL, NULL, NULL);
+            (stub_.*func)(VTRC_NULL, VTRC_NULL, VTRC_NULL, VTRC_NULL);
         }
 
         /// call( request ) send request. Don't need response
         template <typename StubFuncType, typename RequestType>
         void call_request( StubFuncType func, const RequestType *request)
         {
-            (stub_.*func)(NULL, request, NULL, NULL);
+            (stub_.*func)(VTRC_NULL, request, VTRC_NULL, VTRC_NULL);
         }
 
         /// call( response ) send empty request and get response
         template <typename StubFuncType, typename ResponseType>
         void call_response( StubFuncType func, ResponseType *response )
         {
-            (stub_.*func)(NULL, NULL, response, NULL);
+            (stub_.*func)(VTRC_NULL, VTRC_NULL, response, VTRC_NULL);
         }
 
     };

@@ -5,6 +5,7 @@
 #include "vtrc/common/environment.h"
 #include "vtrc-atomic.h"
 #include "vtrc-bind.h"
+#include "vtrc-cxx11.h"
 
 #include "vtrc-rpc-lowlevel.pb.h"
 
@@ -29,7 +30,7 @@ namespace vtrc { namespace server {
             :app_(app)
             ,env_(app_.get_enviroment( ))
             ,opts_(opts)
-            ,parent_(NULL)
+            ,parent_(VTRC_NULL)
             ,client_count_(0)
         { }
     };

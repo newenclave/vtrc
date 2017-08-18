@@ -12,6 +12,7 @@
 
 #include "vtrc-memory.h"
 #include "vtrc-system.h"
+#include "vtrc-cxx11.h"
 
 namespace google { namespace protobuf {
     class MethodDescriptor;
@@ -86,7 +87,7 @@ namespace server {
         virtual native_handle_type native_handle( ) const
         {
             native_handle_type res;
-            res.value.ptr_ = NULL;
+            res.value.ptr_ = VTRC_NULL;
             return res;
         }
 

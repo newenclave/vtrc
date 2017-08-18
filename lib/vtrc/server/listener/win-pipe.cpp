@@ -2,6 +2,7 @@
 #ifdef _WIN32
 
 #include "vtrc-asio.h"
+#include "vtrc-cxx11.h"
 
 #include "vtrc/server/application.h"
 #include "vtrc/common/environment.h"
@@ -140,7 +141,7 @@ namespace {
                                           SECURITY_DESCRIPTOR_REVISION );
 
             SetSecurityDescriptorDacl( &secdesc, TRUE,
-                                       static_cast<PACL>(NULL), FALSE );
+                                       static_cast<PACL>(VTRC_NULL), FALSE );
 
             secarttr.nLength              = sizeof(SECURITY_ATTRIBUTES);
             secarttr.bInheritHandle       = FALSE;

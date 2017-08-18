@@ -130,7 +130,7 @@ namespace vtrc { namespace common  {
 //            llu->set_request( request->SerializeAsString( ) );
 //        }
 
-        llu->mutable_opt( )->set_accept_response( response != NULL );
+        llu->mutable_opt( )->set_accept_response( response != VTRC_NULL );
 
         return llu;
     }

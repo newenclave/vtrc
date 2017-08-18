@@ -40,7 +40,7 @@ namespace vtrc { namespace common {
         const call_context *get_call_context( ) const
         {
             return stack_.empty( )
-                    ? NULL
+                    ? VTRC_NULL
                     : stack_.front( ).get( );
         }
 

@@ -3,6 +3,7 @@
 
 #include "google/protobuf/stubs/common.h"
 #include "vtrc-memory.h"
+#include "vtrc-cxx11.h"
 
 namespace vtrc { namespace common {
 
@@ -28,7 +29,7 @@ namespace vtrc { namespace common {
         google::protobuf::Closure *release( )
         {
             google::protobuf::Closure *old = done_;
-            done_ =  NULL;
+            done_ =  VTRC_NULL;
             return old;
         }
 

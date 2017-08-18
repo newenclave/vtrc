@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <string>
 #include "vtrc/common/noexcept.h"
+#include "vtrc/common/config/vtrc-cxx11.h"
 
 //namespace vtrc { namespace rpc { namespace errors {
 //    class error_container;
@@ -35,7 +36,7 @@ namespace vtrc { namespace common {
                    const std::string &additional );
         exception( unsigned code, const std::string &additional );
 
-        virtual ~exception( ) throw ( );
+        virtual ~exception( );
 
         const char *additional( ) const;
         unsigned    code( )       const;

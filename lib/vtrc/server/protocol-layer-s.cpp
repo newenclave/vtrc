@@ -106,11 +106,11 @@ namespace vtrc { namespace server {
             :app_(a)
             ,connection_(c)
             ,keeper_(c->weak_from_this( ))
-            ,parent_(NULL)
+            ,parent_(VTRC_NULL)
             ,ready_(false)
             ,closed_(false)
             ,current_calls_(0)
-            ,conn_setup_(NULL)
+            ,conn_setup_(VTRC_NULL)
             ,ll_factory_(&common::lowlevel::dummy::create)
         { }
 

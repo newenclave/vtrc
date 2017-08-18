@@ -20,6 +20,7 @@
 #include "vtrc-ref.h"
 #include "vtrc-condition-variable.h"
 #include "vtrc-chrono.h"
+#include "vtrc-cxx11.h"
 
 #include "vtrc/common/exception.h"
 #include "vtrc/common/pool-pair.h"
@@ -72,7 +73,7 @@ namespace vtrc { namespace client {
         //vtrc::mutex                     session_info_lock_;
 
         impl( )
-            :parent_(NULL)
+            :parent_(VTRC_NULL)
             ,key_set_(false)
         { }
 

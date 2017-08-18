@@ -205,7 +205,7 @@ VTRC_STATIC_DEFINE_NAME_TYPE_CALLS(
             if( fld ) return fld;
             fld = descriptor()->FindFieldByCamelcaseName( name );
             if( fld ) return fld;
-            return NULL;
+            return VTRC_NULL;
         }
 
         const field_desc_type *field_by_name( const std::string &name ) const
@@ -214,7 +214,7 @@ VTRC_STATIC_DEFINE_NAME_TYPE_CALLS(
                      const field_desc_type *
                     >::const_iterator f(fields_map_.find( name ));
             if( f != fields_map_.end( ) ) return f->second;
-            return NULL;
+            return VTRC_NULL;
         }
 
         bool is_set( const field_desc_type *fld ) const

@@ -228,7 +228,7 @@ namespace vtrc { namespace common {
         {
 
             delete wrk_;
-            wrk_ = NULL;
+            wrk_ = VTRC_NULL;
 
             ios_->stop( );
             locker_type lck(threads_lock_);
@@ -292,7 +292,7 @@ namespace vtrc { namespace common {
 
         bool attach( thread_pool::thread_decorator td )
         {
-            return run_impl( NULL, td );
+            return run_impl( VTRC_NULL, td );
         }
 
     };

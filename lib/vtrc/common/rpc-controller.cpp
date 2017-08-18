@@ -15,14 +15,14 @@ namespace vtrc { namespace common {
         impl( )
             :failed_(false)
             ,canceled_(false)
-            ,cancel_cl_(NULL)
+            ,cancel_cl_(VTRC_NULL)
         { }
 
         void reset( )
         {
             failed_      = false;
             canceled_    = false;
-            cancel_cl_   = NULL;
+            cancel_cl_   = VTRC_NULL;
             error_string_.clear( );
         }
     };

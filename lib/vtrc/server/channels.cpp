@@ -51,7 +51,7 @@ namespace vtrc { namespace server {
 
             bool alive( ) const
             {
-                return client_.lock( ) != NULL;
+                return client_.lock( ) != VTRC_NULL;
             }
 
             bool disable_wait( ) const
@@ -72,7 +72,7 @@ namespace vtrc { namespace server {
             {
                 common::connection_iface_sptr clnt (client_.lock( ));
 
-                if( clnt.get( ) == NULL ) {
+                if( clnt.get( ) == VTRC_NULL ) {
                     get_channel_error_callback( )( "Connection lost" );
                     return lowlevel_unit_sptr( );
                 }
@@ -105,7 +105,7 @@ namespace vtrc { namespace server {
                 lowlevel_unit_sptr llu = create_lowlevel( met, req, res );
 
                 common::connection_iface_sptr clnt (client_.lock( ));
-                if( clnt.get( ) == NULL ) {
+                if( clnt.get( ) == VTRC_NULL ) {
                     get_channel_error_callback( )( "Connection lost" );
                     return lowlevel_unit_sptr( );
                 }
@@ -137,7 +137,7 @@ namespace vtrc { namespace server {
                 common::closure_holder        done_holder(done);
                 common::connection_iface_sptr clnt (client_.lock( ));
 
-                if( clnt.get( ) == NULL ) {
+                if( clnt.get( ) == VTRC_NULL ) {
                     if( controller ) {
                         controller->SetFailed( "Connection lost" );
                     }
@@ -202,7 +202,7 @@ namespace vtrc { namespace server {
 
             bool alive( ) const
             {
-                return clients_.lock( ) != NULL;
+                return clients_.lock( ) != VTRC_NULL;
             }
 
             unsigned get_flags( ) const

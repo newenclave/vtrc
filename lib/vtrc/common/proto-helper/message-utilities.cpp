@@ -249,7 +249,7 @@ namespace vtrc { namespace utilities {
             if( !has_already ) to.GetReflection()->ClearField(&to, fld);
         }
 
-        return NULL;
+        return VTRC_NULL;
     }
 
     void merge_messages( gpb::Message &to,

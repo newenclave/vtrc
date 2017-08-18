@@ -181,7 +181,7 @@ namespace vtrc { namespace common { namespace data_queue {
 
             std::string *process_one( )
             {
-                std::string *result = NULL;
+                std::string *result = VTRC_NULL;
                 typedef SizePackPolicy SPP;
 
                 plain_data_type &data(plain_data( ));

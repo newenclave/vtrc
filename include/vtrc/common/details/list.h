@@ -2,14 +2,9 @@
 #define VTRC_COMMON_DETAILS_LIST_H
 
 #include "vtrc/common/config/vtrc-stdint.h"
+#include "vtrc/common/config/vtrc-cxx11.h"
 
 namespace vtrc { namespace common { namespace details {
-
-#if VTRC_DISABLE_CXX11
-#define VTRC_NULL NULL
-#else
-#define VTRC_NULL nullptr
-#endif
 
     //// NOT STL LIST!!!
     template <typename T>

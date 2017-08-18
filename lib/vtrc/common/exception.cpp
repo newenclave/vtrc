@@ -81,7 +81,7 @@ namespace vtrc { namespace common {
         ,additional_(additional)
     { }
 
-    exception::~exception( ) throw ( )
+    exception::~exception( )
     { }
 
     const char *exception::additional( ) const

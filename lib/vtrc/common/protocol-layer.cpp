@@ -90,12 +90,12 @@ namespace vtrc { namespace common {
             gpb::Closure                           *proto_closure_;
 
             closure_holder_type( )
-                :proto_closure_(NULL)
+                :proto_closure_(VTRC_NULL)
             { }
 
             void call_internal( )
             {
-                if( NULL != internal_closure_.get( ) && (*internal_closure_)) {
+                if( internal_closure_.get( ) && (*internal_closure_)) {
                     connection_iface_sptr lck(connection_.lock( ));
                     if( lck  )  {
                         (*internal_closure_)( llu_->error( ) );
@@ -161,7 +161,7 @@ namespace vtrc { namespace common {
 
         impl( connection_iface *c, bool odd, const rpc::session_options &opts )
             :connection_(c)
-            ,parent_(NULL)
+            ,parent_(VTRC_NULL)
             ,rpc_index_(odd ? 101 : 100)
             ,ready_(false)
             ,session_opts_(opts)
@@ -194,7 +194,7 @@ namespace vtrc { namespace common {
             return s_call_context.get( );
         }
 
-        static void context_reset( call_stack_type *new_inst = NULL )
+        static void context_reset( call_stack_type *new_inst = VTRC_NULL )
         {
             s_call_context.reset( new_inst );
         }
@@ -204,7 +204,7 @@ namespace vtrc { namespace common {
             return s_call_context;
         }
 
-        static void context_reset( call_stack_type *new_inst = NULL )
+        static void context_reset( call_stack_type *new_inst = VTRC_NULL )
         {
             if( s_call_context ) {
                 delete s_call_context;
@@ -292,7 +292,7 @@ namespace vtrc { namespace common {
         static
         void check_create_stack( )
         {
-            if( NULL == context_get( ) ) {
+            if( VTRC_NULL == context_get( ) ) {
                 //std::cout << "Stack is empty!\n";
                 context_reset( new call_stack_type );
             }
@@ -349,7 +349,7 @@ namespace vtrc { namespace common {
             typedef call_stack_type::const_iterator iter;
 
             call_stack_type tmp;
-            call_context *last(NULL);
+            call_context *last(VTRC_NULL);
 
             for( iter b(src.begin( )), e(src.end( )); b!=e; ++b ) {
                 tmp.push_back( clone_context( *(*b) ) );
@@ -364,7 +364,7 @@ namespace vtrc { namespace common {
         static
         void copy_call_stack( call_stack_type &other )
         {
-            if( NULL == context_get( ) ) {
+            if( VTRC_NULL == context_get( ) ) {
                 other.clear( );
             } else {
                 clone_stack( *context_get( ), other );
@@ -376,7 +376,7 @@ namespace vtrc { namespace common {
         {
             return context_get( ) && !context_get( )->empty( )
                     ? context_get( )->front( ).get( )
-                    : NULL;
+                    : VTRC_NULL;
         }
 
         static
@@ -384,7 +384,7 @@ namespace vtrc { namespace common {
         {
             return (context_get( ) && !context_get( )->empty( ))
                     ? context_get( )->front( ).get( )
-                    : NULL;
+                    : VTRC_NULL;
         }
 
         size_t push_rpc_message(vtrc::uint64_t slot_id, lowlevel_unit_sptr mess)
@@ -580,7 +580,7 @@ namespace vtrc { namespace common {
 
             if( holder->proto_closure_ ) {
                 delete holder->proto_closure_;
-                holder->proto_closure_ = NULL;
+                holder->proto_closure_ = VTRC_NULL;
             } else {
                 return;
             }
@@ -596,7 +596,7 @@ namespace vtrc { namespace common {
                 //wait ? closure_done( holder ) : closure_fake( holder );
             } else {
                 const common::call_context *cc = common::call_context::get( );
-                if( NULL == cc ) { // ok we are not in the context!
+                if( VTRC_NULL == cc ) { // ok we are not in the context!
                                    // we have to send answer back to the client;
 #if VTRC_DISABLE_CXX11
                     holder->controller_->SetFailed(

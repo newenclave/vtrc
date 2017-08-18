@@ -24,10 +24,10 @@ namespace vtrc { namespace common {
         explicit
         impl(lowlevel_unit *llu)
             :llu_(llu)
-            ,parent_context_(NULL)
-            ,opts_(NULL)
+            ,parent_context_(VTRC_NULL)
+            ,opts_(VTRC_NULL)
             ,impersonated_(false)
-            ,done_(NULL)
+            ,done_(VTRC_NULL)
             ,depth_(1)
         { }
     };

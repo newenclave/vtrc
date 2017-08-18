@@ -47,7 +47,7 @@ namespace vtrc { namespace client {
 
         impl(vtrc::shared_ptr<common::connection_iface> c)
             :connection_(c)
-            ,parent_(NULL)
+            ,parent_(VTRC_NULL)
             ,accept_callbacks_(false)
             ,target_id_(0)
         {
@@ -82,7 +82,7 @@ namespace vtrc { namespace client {
 
         bool alive( ) const
         {
-            return connection_.lock( ) != NULL;
+            return connection_.lock( ) != VTRC_NULL;
         }
 
         common::protocol_iface &get_protocol(common::connection_iface_sptr &clk)
@@ -100,7 +100,7 @@ namespace vtrc { namespace client {
             common::closure_holder done_holder(done);
             common::connection_iface_sptr clk(connection_.lock( ));
 
-            if( clk.get( ) == NULL ) {
+            if( clk.get( ) == VTRC_NULL ) {
                 if( controller ) {
                     controller->SetFailed( "Connection lost" );
                 }
@@ -143,7 +143,7 @@ namespace vtrc { namespace client {
         {
             common::connection_iface_sptr clk(connection_.lock( ));
 
-            if( clk.get( ) == NULL ) {
+            if( clk.get( ) == VTRC_NULL ) {
                 parent_->get_channel_error_callback( )( "Connection lost" );
                 return lowlevel_unit_sptr( );
             }
@@ -178,7 +178,7 @@ namespace vtrc { namespace client {
 
             common::connection_iface_sptr clk(connection_.lock( ));
 
-            if( clk.get( ) == NULL ) {
+            if( clk.get( ) == VTRC_NULL ) {
                 parent_->get_channel_error_callback( )( "Connection lost" );
                 return rpc_channel::lowlevel_unit_sptr( );
             }

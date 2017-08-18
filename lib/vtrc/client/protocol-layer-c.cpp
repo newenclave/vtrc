@@ -82,11 +82,11 @@ namespace vtrc { namespace client {
         impl( common::connection_iface *c, client::base *client,
               protocol_signals *cb )
             :connection_(c)
-            ,parent_(NULL)
+            ,parent_(VTRC_NULL)
             ,client_(client)
             ,callbacks_(cb)
             ,closed_(false)
-            ,conn_setup_(NULL)
+            ,conn_setup_(VTRC_NULL)
         { }
 
         protocol_layer_c::lowlevel_factory_type create_default_factory( )
