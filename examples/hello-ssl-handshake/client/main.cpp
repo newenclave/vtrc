@@ -82,7 +82,7 @@ int verify_callback( X509_STORE_CTX *x509, void */*p*/ )
 class my_ssl_wrapper: public ssl_wrapper_client {
 public:
     my_ssl_wrapper( )
-        :ssl_wrapper_client(SSLv23_client_method())
+        :ssl_wrapper_client(TLSv1_2_client_method( ))
     { }
 private:
     void init_context( )

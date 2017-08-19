@@ -165,7 +165,7 @@ namespace vtrc { namespace client {
                 }
             }
 
-            void on_trans_error( const std::string &data ) { }
+            void on_trans_error( const std::string & /*data*/ ) { }
 
             void on_trans_setup( const std::string &data )
             {

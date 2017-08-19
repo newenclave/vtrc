@@ -57,6 +57,7 @@ if( VTRC_OPENSSL_ENABLE )
         set(LIB_EAY_LIBRARY)
         set(SSL_EAY_LIBRARY)
         set(OPENSSL_LIBRARIES)
+
         set(OPENSSL_INCLUDE_DIRS)
     endif( OPENSSL_FOUND )
 
@@ -67,7 +68,7 @@ else( VTRC_OPENSSL_ENABLE )
     set(OPENSSL_LIBRARIES)
     set(OPENSSL_INCLUDE_DIRS)
 
-    add_definitions( -DVTRC_OPENSSL_ENABLED=1 )
+    # add_definitions( -DVTRC_OPENSSL_ENABLED=1 )
 
 endif( VTRC_OPENSSL_ENABLE )
 #######################################################
