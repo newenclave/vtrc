@@ -1,8 +1,8 @@
 #ifndef VTRC_CHANNELS_H
 #define VTRC_CHANNELS_H
 
-#include "vtrc-common/vtrc-rpc-channel.h"
-#include "vtrc-common/vtrc-connection-iface.h"
+#include "vtrc/common/rpc-channel.h"
+#include "vtrc/common/connection-iface.h"
 
 namespace vtrc { namespace client { namespace channels {
 

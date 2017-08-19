@@ -92,6 +92,9 @@ namespace client {
 
     public: //// services
 
+        typedef vtrc::shared_ptr<base> sptr;
+        typedef vtrc::weak_ptr<base>   wptr;
+
         typedef google::protobuf::Service               service_type;
         typedef vtrc::shared_ptr<service_type>          service_sptr;
         typedef vtrc::weak_ptr<service_type>            service_wptr;
@@ -148,8 +151,8 @@ namespace client {
         void execute( common::protocol_iface::call_type call );
     };
 
-    typedef vtrc::shared_ptr<base> base_sptr;
-    typedef vtrc::weak_ptr<base>   base_wptr;
+    typedef base::sptr base_sptr;
+    typedef base::wptr base_wptr;
 
 }}
 

@@ -39,14 +39,14 @@ namespace vtrc { namespace client {
 
     namespace {
 
-        typedef vtrc::weak_ptr<gpb::Service>    service_wptr;
-        typedef vtrc::shared_ptr<gpb::Service>  service_sptr;
+        typedef vtrc::weak_ptr<gpb::Service>        service_wptr;
+        typedef vtrc::shared_ptr<gpb::Service>      service_sptr;
 
-        typedef vtrc::shared_ptr<gpb::RpcChannel>  channel_sptr;
+        typedef vtrc::shared_ptr<gpb::RpcChannel>   channel_sptr;
 
-        typedef vtrc_client::service_wrapper_type service_wrapper_type;
-        typedef vtrc_client::service_wrapper_wptr service_wrapper_wptr;
-        typedef vtrc_client::service_wrapper_sptr service_wrapper_sptr;
+        typedef vtrc_client::service_wrapper_type   service_wrapper_type;
+        typedef vtrc_client::service_wrapper_wptr   service_wrapper_wptr;
+        typedef vtrc_client::service_wrapper_sptr   service_wrapper_sptr;
 
         typedef std::map<std::string, service_wptr> native_service_weak_map;
         typedef std::map<std::string, service_wrapper_wptr> service_weak_map;
@@ -139,7 +139,6 @@ namespace vtrc { namespace client {
             parent_->reset_session_id( );
             reset_session_key( );
         }
-
 
         template<typename ClientType>
         vtrc::shared_ptr<ClientType> create_client(  )

@@ -54,7 +54,7 @@ namespace vtrc { namespace client {
         vtrc::mutex                     factory_lock_;
 
         executor_type                   exec_;
-        common::environment              env_;
+        common::environment             env_;
 
         std::string                     session_id_;
 
