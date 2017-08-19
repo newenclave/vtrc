@@ -275,8 +275,7 @@ namespace vtrc { namespace client {
             vtrc::condition_variable cond;
             vtrc::mutex              cond_lock;
 
-            bs2::scoped_connection rc(
-                        parent_->on_ready_connect(
+            bs2::scoped_connection rc( parent_->on_ready_connect(
                             vtrc::bind( impl::on_ready_s, &cond ) ) );
 
             bs2::scoped_connection fc( parent_->on_init_error_connect(
@@ -316,8 +315,8 @@ namespace vtrc { namespace client {
             vtrc::shared_ptr<client_tcp>
                             new_client(create_client_tcp(tcp_nodelay));
 
-            connect_impl(vtrc::bind( &client_tcp::connect, new_client,
-                                     address, service));
+            connect_impl( vtrc::bind( &client_tcp::connect, new_client,
+                                      address, service ) );
             if( tcp_nodelay ) {
                 new_client->set_no_delay( true );
             }
@@ -370,7 +369,7 @@ namespace vtrc { namespace client {
                 parent_->get_on_connect( )( );
             } else {
                 rpc::errors::container errc;
-                errc.set_code( err.value( ) );
+                errc.set_code( static_cast<vtrc::uint32_t>( err.value( ) ) );
                 errc.set_category( rpc::errors::CATEGORY_SYSTEM );
                 errc.set_fatal( true );
                 errc.set_additional( err.message( ) );
