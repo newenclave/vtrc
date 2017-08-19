@@ -45,8 +45,8 @@ namespace vtrc { namespace common { namespace observer {
 #else
     private:
         scoped_subscription( const scoped_subscription &o );
+    public:
 #endif
-
         scoped_subscription( )
         { }
 
