@@ -27,9 +27,6 @@ namespace vtrc {
     using std::int_least32_t;
     using std::int_least64_t;
 
-    using std::intmax_t;
-    using std::intptr_t;
-
     using std::uint8_t;
     using std::uint16_t;
     using std::uint32_t;
@@ -45,6 +42,8 @@ namespace vtrc {
     using std::uint_least32_t;
     using std::uint_least64_t;
 
+    using std::intmax_t;
+    using std::intptr_t;
     using std::uintmax_t;
     using std::uintptr_t;
 }
@@ -88,7 +87,10 @@ namespace vtrc {
 #endif
 
     using boost::intmax_t;
+    using boost::intptr_t;
     using boost::uintmax_t;
+    using boost::uintptr_t;
+
 }
 
 #endif
@@ -114,9 +116,6 @@ namespace vtrc {
     using std::int_least32_t;
     using std::int_least64_t;
 
-    using std::intmax_t;
-    using std::intptr_t;
-
     using std::uint8_t;
     using std::uint16_t;
     using std::uint32_t;
@@ -132,8 +131,11 @@ namespace vtrc {
     using std::uint_least32_t;
     using std::uint_least64_t;
 
+    using std::intmax_t;
+    using std::intptr_t;
     using std::uintmax_t;
     using std::uintptr_t;
+
     using std::size_t;
 
 }
