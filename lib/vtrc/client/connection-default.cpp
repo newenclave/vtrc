@@ -6,7 +6,7 @@
 #include "vtrc/common/protocol/accessor-iface.h"
 #include "vtrc/common/delayed-call.h"
 #include "vtrc/common/hash/iface.h"
-#include "vtrc/common/transformer-iface.h"
+#include "vtrc/common/transformer/iface.h"
 #include "vtrc/common/connection-iface.h"
 #include "vtrc/common/lowlevel-protocol-default.h"
 
@@ -31,7 +31,7 @@ namespace vtrc { namespace client {
     namespace {
 
         const unsigned default_hash_value = rpc::auth::HASH_CRC_32;
-        namespace default_cypher = common::transformers::chacha;
+        namespace default_cypher = common::transformer::chacha;
 
         enum protocol_stage {
              STAGE_HELLO = 1
@@ -169,7 +169,7 @@ namespace vtrc { namespace client {
 
             void on_trans_setup( const std::string &data )
             {
-                using namespace common::transformers;
+                using namespace common::transformer;
 
                 rpc::auth::init_capsule capsule;
                 bool check = capsule.ParseFromString( data );

@@ -14,6 +14,7 @@ list(APPEND src_dirs
         ${VTRC_INCLUDE_DIR}/vtrc/common/observer
         ${VTRC_INCLUDE_DIR}/vtrc/common/details
         ${VTRC_INCLUDE_DIR}/vtrc/common/hash
+        ${VTRC_INCLUDE_DIR}/vtrc/common/transformer
         ${VTRC_INCLUDE_DIR}/vtrc/common/observer/traits
     )
 

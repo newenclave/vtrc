@@ -11,7 +11,7 @@
 
 #include "vtrc/common/data-queue.h"
 #include "vtrc/common/hash/iface.h"
-#include "vtrc/common/transformer-iface.h"
+#include "vtrc/common/transformer/iface.h"
 #include "vtrc/common/call-context.h"
 #include "vtrc/common/random-device.h"
 #include "vtrc/common/protocol/accessor-iface.h"

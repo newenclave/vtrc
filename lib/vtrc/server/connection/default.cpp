@@ -2,7 +2,7 @@
 #include "vtrc/common/protocol/accessor-iface.h"
 #include "vtrc/common/delayed-call.h"
 #include "vtrc/common/hash/iface.h"
-#include "vtrc/common/transformer-iface.h"
+#include "vtrc/common/transformer/iface.h"
 #include "vtrc/common/connection-iface.h"
 
 #include "vtrc/common/lowlevel-protocol-default.h"
@@ -32,7 +32,7 @@ namespace vtrc { namespace server {
         void default_cb( bs::error_code const & )
         { }
 
-        namespace default_cypher = common::transformers::chacha;
+        namespace default_cypher = common::transformer::chacha;
 
         typedef vtrc::function<void (const std::string &)> stage_function_type;
 
@@ -160,7 +160,7 @@ namespace vtrc { namespace server {
 
             void on_client_transformer( const std::string &data )
             {
-                using namespace common::transformers;
+                using namespace common::transformer;
                 rpc::auth::init_capsule capsule;
 
                 if(!capsule.ParseFromString( data )) {
@@ -196,7 +196,7 @@ namespace vtrc { namespace server {
 
             void setup_transformer( unsigned id )
             {
-                using namespace common::transformers;
+                using namespace common::transformer;
 
                 rpc::auth::init_capsule capsule;
 

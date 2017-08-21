@@ -46,8 +46,8 @@ namespace vtrc { namespace common { namespace lowlevel {
     default_protocol::default_protocol( )
         :hash_maker_(common::hash::create_default( ))
         ,hash_checker_(common::hash::create_default( ))
-        ,transformer_(common::transformers::none::create( ))
-        ,revertor_(common::transformers::none::create( ))
+        ,transformer_(common::transformer::none::create( ))
+        ,revertor_(common::transformer::none::create( ))
         ,pa_(VTRC_NULL)
 
     {
@@ -60,12 +60,12 @@ namespace vtrc { namespace common { namespace lowlevel {
         //std::cout << "Destroyed!\n";
     }
 
-    void default_protocol::set_transformer( transformer_iface *ti )
+    void default_protocol::set_transformer( transformer::iface *ti )
     {
         transformer_.reset( ti );
     }
 
-    void default_protocol::set_revertor( transformer_iface *ti )
+    void default_protocol::set_revertor( transformer::iface *ti )
     {
         revertor_.reset( ti );
     }

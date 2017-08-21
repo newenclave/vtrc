@@ -2,7 +2,7 @@
 #include <algorithm>
 
 #include "vtrc-memory.h"
-#include "vtrc/common/transformer-iface.h"
+#include "vtrc/common/transformer/iface.h"
 #include "vtrc/common/random-device.h"
 #include "vtrc/common/hash/iface.h"
 
@@ -12,7 +12,7 @@ namespace vtrc { namespace common {
 
     namespace {
 
-        struct transformer_chacha: public transformer_iface {
+        struct transformer_chacha: public transformer::iface {
 
             ECRYPT_ctx ctx_;
 
@@ -57,8 +57,8 @@ namespace vtrc { namespace common {
 
     }
 
-    namespace transformers { namespace chacha {
-        transformer_iface *create( const char *transform_key, size_t length )
+    namespace transformer { namespace chacha {
+        transformer::iface *create( const char *transform_key, size_t length )
         {
             return new transformer_chacha( transform_key, length );
         }

@@ -1,6 +1,6 @@
 #include <algorithm>
 
-#include "vtrc/common/transformer-iface.h"
+#include "vtrc/common/transformer/iface.h"
 
 #include "vtrc-auth.pb.h"
 
@@ -9,7 +9,7 @@
 
 namespace vtrc { namespace common {
 
-    namespace transformers {
+    namespace transformer {
 
         /**
           *   keys for basic authentication;
@@ -54,9 +54,9 @@ namespace vtrc { namespace common {
             s2.swap( ts2 );
         }
 
-        transformer_iface *create( unsigned id, const char *key, size_t length)
+        transformer::iface *create( unsigned id, const char *key, size_t length)
         {
-            transformer_iface *trans = VTRC_NULL;
+            transformer::iface *trans = VTRC_NULL;
             switch ( id ) {
             case rpc::auth::TRANSFORM_ERSEEFOR:
                 trans = erseefor::create( key, length );

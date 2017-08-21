@@ -5,7 +5,7 @@
 
 #include "vtrc/common/random-device.h"
 #include "vtrc/common/hash/iface.h"
-#include "vtrc/common/transformer-iface.h"
+#include "vtrc/common/transformer/iface.h"
 
 namespace vtrc { namespace common {
 
@@ -13,7 +13,7 @@ namespace vtrc { namespace common {
 
         static const size_t drop_key_init = 3072;
 
-        struct transformer_erseefor: public transformer_iface {
+        struct transformer_erseefor: public transformer::iface {
 
             crypt::erseefor   crypt_;
 
@@ -35,8 +35,8 @@ namespace vtrc { namespace common {
 
     }
 
-    namespace transformers { namespace erseefor {
-        transformer_iface *create( const char *transform_key, size_t length )
+    namespace transformer { namespace erseefor {
+        transformer::iface *create( const char *transform_key, size_t length )
         {
             return new transformer_erseefor( transform_key, length );
         }

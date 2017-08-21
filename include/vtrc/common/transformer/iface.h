@@ -8,34 +8,35 @@
 
 namespace vtrc { namespace common {
 
-    struct transformer_iface {
 
-        typedef vtrc::shared_ptr<transformer_iface> sptr;
+    namespace transformer {
 
-        virtual ~transformer_iface( ) { }
+        struct iface {
 
-        /// [in, out]
-        virtual void transform( std::string &in_out_data ) = 0;
+            typedef vtrc::shared_ptr<iface> sptr;
+            typedef vtrc::unique_ptr<iface> uptr;
 
-        //virtual void transform( char *data, size_t length ) = 0;
-    };
+            virtual ~iface( ) { }
 
-    typedef transformer_iface::sptr transformer_iface_sptr;
+            /// [in, out]
+            virtual void transform( std::string &in_out_data ) = 0;
 
-    namespace transformers {
+            //virtual void transform( char *data, size_t length ) = 0;
+        };
+
         namespace none {
-            transformer_iface *create( );
+            iface *create( );
         }
 
         namespace erseefor {
-            transformer_iface *create( const char *key, size_t length);
+            iface *create( const char *key, size_t length);
         }
 
         namespace chacha {
-            transformer_iface *create( const char *key, size_t length);
+            iface *create( const char *key, size_t length);
         }
 
-        transformer_iface *create( unsigned id, const char *key, size_t length);
+        iface *create( unsigned id, const char *key, size_t length);
 
         void generate_key_infos( const std::string &key,
                                  std::string &s1, std::string &s2,

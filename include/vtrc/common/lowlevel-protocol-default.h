@@ -3,7 +3,7 @@
 
 #include "vtrc/common/lowlevel-protocol-iface.h"
 #include "vtrc/common/hash/iface.h"
-#include "vtrc/common/transformer-iface.h"
+#include "vtrc/common/transformer/iface.h"
 #include "vtrc/common/data-queue.h"
 
 #include "vtrc-memory.h"
@@ -14,8 +14,8 @@ namespace vtrc {  namespace common { namespace lowlevel {
 
         hash::iface::uptr                        hash_maker_;
         hash::iface::uptr                        hash_checker_;
-        vtrc::unique_ptr<transformer_iface>      transformer_;
-        vtrc::unique_ptr<transformer_iface>      revertor_;
+        transformer::iface::uptr                 transformer_;
+        transformer::iface::uptr                 revertor_;
         vtrc::unique_ptr<data_queue::queue_base> queue_;
         vtrc::function<void(void)>               process_stage_;
 
@@ -28,8 +28,8 @@ namespace vtrc {  namespace common { namespace lowlevel {
         virtual void close( );
         virtual void do_handshake( );
 
-        void set_transformer( transformer_iface *ti );
-        void set_revertor( transformer_iface *ti );
+        void set_transformer( transformer::iface *ti );
+        void set_revertor( transformer::iface *ti );
         void set_hash_maker( hash::iface *hi );
         void set_hash_checker( hash::iface *hi );
 
