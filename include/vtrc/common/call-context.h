@@ -2,6 +2,7 @@
 #define VTRC_CALL_CONTEXT_H
 
 #include "vtrc/common/connection-iface.h"
+#include "vtrc/common/config/vtrc-cxx11.h"
 
 namespace vtrc { namespace rpc {
     class lowlevel_unit;

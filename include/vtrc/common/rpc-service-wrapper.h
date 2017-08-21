@@ -19,8 +19,7 @@ namespace vtrc { namespace common {
         struct impl;
         impl  *impl_;
 
-        rpc_service_wrapper( );
-        VTRC_DISABLE_COPY( rpc_service_wrapper );
+        VTRC_DISABLE_COPY_DEFAULT( rpc_service_wrapper );
 
     public:
 

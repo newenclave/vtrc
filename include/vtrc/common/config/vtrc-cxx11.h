@@ -3,6 +3,7 @@
 #include "vtrc-general-config.h"
 
 #if VTRC_DISABLE_CXX11
+
 #define VTRC_NULL       NULL
 #define VTRC_NOEXCEPT
 
@@ -10,6 +11,10 @@
     private: \
         ClassName( const ClassName & );\
         ClassName& operator = ( const ClassName & )
+
+#define VTRC_DISABLE_COPY_DEFAULT(ClassName) \
+    VTRC_DISABLE_COPY(ClassName);            \
+    ClassName( )
 
 #else
 
@@ -19,6 +24,11 @@
     public: \
         ClassName( const ClassName & ) = delete; \
         ClassName& operator = ( const ClassName & ) = delete
+
+#define VTRC_DISABLE_COPY_DEFAULT(ClassName) \
+    VTRC_DISABLE_COPY(ClassName);            \
+    ClassName( ) = delete
+
 #endif
 
 

@@ -12,8 +12,7 @@ namespace vtrc { namespace common {
         impl  *impl_;
 
         connection_list( );
-        connection_list( const connection_list & );
-        connection_list& operator = ( const connection_list & );
+        VTRC_DISABLE_COPY( connection_list );
 
     public:
 
