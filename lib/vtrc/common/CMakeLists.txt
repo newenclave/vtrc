@@ -6,6 +6,7 @@ list(APPEND src_dirs
         ./hash
         ./proto-helper
         ./crypt/chacha
+        ./transformer
         ./transport
         ./transport/unix
         ./transport/win

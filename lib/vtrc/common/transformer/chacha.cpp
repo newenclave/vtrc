@@ -6,7 +6,7 @@
 #include "vtrc/common/random-device.h"
 #include "vtrc/common/hash/iface.h"
 
-#include "crypt/chacha/ecrypt-sync.h"
+#include "vtrc/common/crypt/chacha/ecrypt-sync.h"
 
 namespace vtrc { namespace common {
 

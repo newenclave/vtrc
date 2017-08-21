@@ -2,6 +2,7 @@
 #define VTRC_CONNECTION_CLOSURE_H
 
 #include "vtrc-function.h"
+#include "vtrc/common/connection-iface.h"
 
 namespace vtrc { namespace server {
 
