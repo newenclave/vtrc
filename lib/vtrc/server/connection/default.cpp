@@ -266,10 +266,10 @@ namespace vtrc { namespace server {
                 rpc::auth::client_selection cs;
                 cs.ParseFromString( capsule.body( ) );
 
-                vtrc::ptr_keeper<common::hash_iface> new_checker (
+                vtrc::ptr_keeper<common::hash::iface> new_checker (
                             common::hash::create_by_index( cs.hash( ) ) );
 
-                vtrc::ptr_keeper<common::hash_iface> new_maker(
+                vtrc::ptr_keeper<common::hash::iface> new_maker(
                             common::hash::create_by_index( cs.hash( ) ) );
 
                 if( !new_maker.get( ) || !new_checker.get( ) ) {

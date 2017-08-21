@@ -70,12 +70,12 @@ namespace vtrc { namespace common { namespace lowlevel {
         revertor_.reset( ti );
     }
 
-    void default_protocol::set_hash_maker( hash_iface *hi )
+    void default_protocol::set_hash_maker( hash::iface *hi )
     {
         hash_maker_.reset( hi );
     }
 
-    void default_protocol::set_hash_checker( hash_iface *hi )
+    void default_protocol::set_hash_checker( hash::iface *hi )
     {
         hash_checker_.reset( hi );
     }
@@ -121,7 +121,7 @@ namespace vtrc { namespace common { namespace lowlevel {
         /**
          * message_header = <packed_size(data_length + hash_length)>
         **/
-        const size_t body_len = len + hash_maker_->hash_size( );
+        const size_t body_len = len + hash_maker_->size( );
         std::string result( spns::pack_size( body_len ));
 
         /** here is:
@@ -171,7 +171,7 @@ namespace vtrc { namespace common { namespace lowlevel {
 
     bool default_protocol::check_message( const std::string &mess )
     {
-        const size_t hash_length = hash_checker_->hash_size( );
+        const size_t hash_length = hash_checker_->size( );
         const size_t diff_len    = mess.size( ) - hash_length;
 
         bool result = false;
@@ -219,7 +219,7 @@ namespace vtrc { namespace common { namespace lowlevel {
         bool checked = check_message( data );
         //std::cout << "Checked: " << checked << "\n";
         if( checked ) {
-            const size_t hash_length = hash_checker_->hash_size( );
+            const size_t hash_length = hash_checker_->size( );
             result.assign( data.c_str( ) + hash_length,
                            data.size( )  - hash_length );
         }
@@ -233,7 +233,7 @@ namespace vtrc { namespace common { namespace lowlevel {
     bool default_protocol::parse_raw_message(const std::string &mess,
                                             google::protobuf::Message &out )
     {
-        const size_t hash_length = hash_checker_->hash_size( );
+        const size_t hash_length = hash_checker_->size( );
         return out.ParseFromArray( mess.c_str( ) + hash_length,
                                    mess.size( )  - hash_length );
     }

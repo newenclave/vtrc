@@ -8,11 +8,11 @@ namespace vtrc { namespace common {  namespace hash {
     namespace {
 
         template <typename HashTraits>
-        struct hasher_sha: public hash_iface {
+        struct hasher_sha: public iface {
 
             typedef vtrc::uint8_t ubyte;
 
-            size_t hash_size( ) const
+            size_t size( ) const
             {
                 return HashTraits::digest_length;
             }
@@ -58,12 +58,12 @@ namespace vtrc { namespace common {  namespace hash {
 
     namespace sha2 {
 #if VTRC_OPENSSL_ENABLED
-        hash_iface *create256( )
+        iface *create256( )
         {
             return new hasher_sha<vtrc::hash::hash_SHA256_traits>;
         }
 
-        hash_iface *create512( )
+        iface *create512( )
         {
             return new hasher_sha<vtrc::hash::hash_SHA512_traits>;
         }

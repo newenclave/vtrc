@@ -11,10 +11,10 @@ namespace vtrc { namespace common {  namespace hash {
 
     namespace gpb = google::protobuf;
 
-    hash_iface *create_by_index( unsigned var )
+    iface *create_by_index( unsigned var )
     {
         namespace auth = vtrc::rpc::auth;
-        hash_iface *result = VTRC_NULL;
+        iface *result = VTRC_NULL;
         switch( var ) {
         case auth::HASH_NONE:
             result = none::create( );
@@ -29,7 +29,7 @@ namespace vtrc { namespace common {  namespace hash {
         return result;
     }
 
-    hash_iface *create_default( )
+    iface *create_default( )
     {
         static const unsigned def_hasher =
                 vtrc::rpc::auth::client_selection::default_instance( ).hash( );

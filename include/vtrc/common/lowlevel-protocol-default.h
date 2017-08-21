@@ -12,8 +12,8 @@ namespace vtrc {  namespace common { namespace lowlevel {
 
     class default_protocol: public protocol_layer_iface {
 
-        vtrc::unique_ptr<hash_iface>             hash_maker_;
-        vtrc::unique_ptr<hash_iface>             hash_checker_;
+        hash::iface::uptr                        hash_maker_;
+        hash::iface::uptr                        hash_checker_;
         vtrc::unique_ptr<transformer_iface>      transformer_;
         vtrc::unique_ptr<transformer_iface>      revertor_;
         vtrc::unique_ptr<data_queue::queue_base> queue_;
@@ -30,8 +30,8 @@ namespace vtrc {  namespace common { namespace lowlevel {
 
         void set_transformer( transformer_iface *ti );
         void set_revertor( transformer_iface *ti );
-        void set_hash_maker( hash_iface *hi );
-        void set_hash_checker( hash_iface *hi );
+        void set_hash_maker( hash::iface *hi );
+        void set_hash_checker( hash::iface *hi );
 
         default_protocol( );
         ~default_protocol( );

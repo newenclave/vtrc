@@ -6,42 +6,44 @@
 #include "vtrc-stdint.h"
 
 namespace vtrc { namespace common {
-    struct hash_iface {
-        virtual ~hash_iface( ) { }
-
-        virtual size_t hash_size( ) const = 0;
-
-        virtual std::string get_data_hash(const void *data,
-                                          size_t length) const = 0;
-
-        virtual void get_data_hash(const void *data, size_t length,
-                                         void *result_hash ) const = 0;
-
-        virtual bool check_data_hash( const void *data, size_t length,
-                                      const void *hash) const = 0;
-    };
-
-    typedef vtrc::shared_ptr<hash_iface> hash_iface_sptr;
-    typedef vtrc::unique_ptr<hash_iface> hash_iface_uptr;
 
     namespace hash {
 
+        struct iface {
+
+            typedef vtrc::shared_ptr<iface> sptr;
+            typedef vtrc::unique_ptr<iface> uptr;
+
+            virtual ~iface( ) { }
+
+            virtual size_t size( ) const = 0;
+
+            virtual std::string get_data_hash( const void *data,
+                                               size_t length) const = 0;
+
+            virtual void get_data_hash(const void *data, size_t length,
+                                             void *result_hash ) const = 0;
+
+            virtual bool check_data_hash( const void *data, size_t length,
+                                          const void *hash) const = 0;
+        };
+
         namespace  none {
-            hash_iface *create( );
+            iface *create( );
         }
 
         namespace sha2 {
-            hash_iface *create256( );
-            hash_iface *create384( );
-            hash_iface *create512( );
+            iface *create256( );
+            iface *create384( );
+            iface *create512( );
         }
 
         namespace crc {
-            hash_iface *create32( );
+            iface *create32( );
         }
 
-        hash_iface *create_by_index( unsigned var );
-        hash_iface *create_default( );
+        iface *create_by_index( unsigned var );
+        iface *create_default( );
 
     }
 

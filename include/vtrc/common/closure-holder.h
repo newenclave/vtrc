@@ -3,7 +3,6 @@
 
 #include "google/protobuf/stubs/common.h"
 #include "vtrc-memory.h"
-#include "vtrc-cxx11.h"
 
 namespace vtrc { namespace common {
 

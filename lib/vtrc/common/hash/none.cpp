@@ -5,9 +5,9 @@ namespace vtrc { namespace common {  namespace hash {
 
     namespace {
 
-        struct hasher_none: public hash_iface {
+        struct hasher_none: public iface {
 
-            size_t hash_size( ) const
+            size_t size( ) const
             {
                 return 0;
             }
@@ -37,7 +37,7 @@ namespace vtrc { namespace common {  namespace hash {
     }
 
     namespace none {
-        hash_iface *create( )
+        iface *create( )
         {
             return new hasher_none;
         }

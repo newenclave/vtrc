@@ -17,18 +17,18 @@ namespace vtrc { namespace common {
         lowlevel_unit              *llu_;
         call_context               *parent_context_;
         const rpc::options         *opts_;
-        bool                        impersonated_;
         google::protobuf::Closure  *done_;
         size_t                      depth_;
+        bool                        impersonated_;
 
         explicit
         impl(lowlevel_unit *llu)
             :llu_(llu)
             ,parent_context_(VTRC_NULL)
             ,opts_(VTRC_NULL)
-            ,impersonated_(false)
             ,done_(VTRC_NULL)
             ,depth_(1)
+            ,impersonated_(false)
         { }
     };
 
