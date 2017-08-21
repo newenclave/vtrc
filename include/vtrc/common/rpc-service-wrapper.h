@@ -20,8 +20,7 @@ namespace vtrc { namespace common {
         impl  *impl_;
 
         rpc_service_wrapper( );
-        rpc_service_wrapper &operator = (const rpc_service_wrapper &);
-        rpc_service_wrapper (const rpc_service_wrapper &);
+        VTRC_DISABLE_COPY( rpc_service_wrapper );
 
     public:
 
