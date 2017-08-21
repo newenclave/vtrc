@@ -73,7 +73,7 @@ namespace vtrc { namespace common {
     typedef vtrc::function<protocol_layer_iface *( )> protocol_factory_type;
 
     namespace dummy {
-        protocol_layer_iface *create( ); /// do nothing
+        protocol_layer_iface *create( ); /// default_protocol does nothing
     }
 
     }
