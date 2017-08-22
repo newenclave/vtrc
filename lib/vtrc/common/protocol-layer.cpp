@@ -182,7 +182,7 @@ namespace vtrc { namespace common {
             case  WAIT_RESULT_TIMEOUT:
                 parent_->raise_error( rpc::errors::ERR_TIMEOUT );
                 break;
-            default:
+            case WAIT_RESULT_SUCCESS:
                 break;
             }
         }
