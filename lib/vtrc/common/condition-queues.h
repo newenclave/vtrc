@@ -3,6 +3,7 @@
 
 #include <deque>
 #include <map>
+#include <algorithm>
 
 #include "vtrc-condition-variable.h"
 #include "vtrc-memory.h"
