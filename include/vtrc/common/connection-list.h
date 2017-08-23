@@ -16,6 +16,8 @@ namespace vtrc { namespace common {
 
     public:
 
+        typedef vtrc::shared_ptr<connection_list> sptr;
+
         typedef vtrc::function <
                 bool (common::connection_iface_sptr)
         > client_predic;

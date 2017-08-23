@@ -27,43 +27,44 @@ namespace vtrc { namespace server {
 
         common::environment        env_;
         VTRC_ASIO::io_service     *ios_;
-        const bool                 own_ios_;
-
         VTRC_ASIO::io_service     *rpc_ios_;
+
+
+        common::connection_list::sptr clients_;
+
+        service_factory_type       factory_;
+
+        const bool                 own_ios_;
         const bool                 own_rpc_ios_;
-
-        vtrc::shared_ptr<common::connection_list> clients_;
-
-        service_factory_type        factory_;
 
         impl( const impl & );
         impl & operator = ( const impl & );
 
         impl( )
             :ios_(new VTRC_ASIO::io_service)
-            ,own_ios_(true)
             ,rpc_ios_(ios_)
-            ,own_rpc_ios_(false)
             ,clients_(common::connection_list::create( ))
             ,factory_(&default_factory)
+            ,own_ios_(true)
+            ,own_rpc_ios_(false)
         { }
 
         impl( VTRC_ASIO::io_service *ios )
             :ios_(ios)
-            ,own_ios_(false)
             ,rpc_ios_(ios)
-            ,own_rpc_ios_(false)
             ,clients_(common::connection_list::create( ))
             ,factory_(&default_factory)
+            ,own_ios_(false)
+            ,own_rpc_ios_(false)
         { }
 
         impl( VTRC_ASIO::io_service *ios, VTRC_ASIO::io_service *rpc_ios )
             :ios_(ios)
-            ,own_ios_(false)
             ,rpc_ios_(rpc_ios)
-            ,own_rpc_ios_(false)
             ,clients_(common::connection_list::create( ))
             ,factory_(&default_factory)
+            ,own_ios_(false)
+            ,own_rpc_ios_(false)
         { }
 
         static bool close_all_connection( common::connection_iface_sptr next )
@@ -83,8 +84,8 @@ namespace vtrc { namespace server {
             stop_all_clients( );
             clients_->clear( );
 
-            if( own_ios_ )     delete ios_;
-            if( own_rpc_ios_ ) delete rpc_ios_;
+            if( own_ios_ )     { delete ios_;     }
+            if( own_rpc_ios_ ) { delete rpc_ios_; }
 
         } catch ( ... ) {
             ;;;
@@ -105,7 +106,7 @@ namespace vtrc { namespace server {
             return *rpc_ios_;
         }
 
-        vtrc::shared_ptr<common::connection_list> get_clients( )
+        common::connection_list::sptr get_clients( )
         {
             return clients_;
         }
