@@ -14,6 +14,7 @@ project(vtrc)
 include( cxx11_check.cmake )
 
 set( VTRC_CXX11_ENABLED 0 )
+set( VTRC_OPENSSL_ENABLE 0 )
 # set( VTRC_DISABLE_CXX11 1 )
 
 if( NOT VTRC_DISABLE_CXX11 )

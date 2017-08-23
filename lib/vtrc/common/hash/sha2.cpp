@@ -68,17 +68,17 @@ namespace vtrc { namespace common {  namespace hash {
             return new hasher_sha<vtrc::hash::hash_SHA512_traits>;
         }
 #else
-        hash_iface *create256( )
+        hash::iface *create256( )
         {
             return new hasher_sha<vtrc::hash::hash_SHA256i_traits>;
         }
 
-        hash_iface *create348( )
+        hash::iface *create348( )
         {
             return new hasher_sha<vtrc::hash::hash_SHA384i_traits>;
         }
 
-        hash_iface *create512( )
+        hash::iface *create512( )
         {
             return new hasher_sha<vtrc::hash::hash_SHA512i_traits>;
         }
