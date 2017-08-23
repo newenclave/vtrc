@@ -14,6 +14,7 @@
 
 #include "vtrc/common/closure.h"
 #include "vtrc/common/environment.h"
+#include "vtrc/common/connection-iface.h"
 
 namespace vtrc { namespace common {
 
@@ -43,9 +44,9 @@ namespace vtrc { namespace common {
 
             typedef vtrc::shared_ptr<message_holder> message_holder_sptr;
 
-            vtrc::shared_ptr<stream_type>       stream_;
-            basio::io_service                  &ios_;
-            basio::io_service::strand           write_dispatcher_;
+            vtrc::shared_ptr<stream_type>        stream_;
+            basio::io_service                   &ios_;
+            basio::io_service::strand            write_dispatcher_;
 
             environment                          env_;
 

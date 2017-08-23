@@ -430,7 +430,6 @@ namespace vtrc { namespace common {
 //            raise_wait_error( qwr );
         }
 
-
 //        void wait_call_slot( vtrc::uint64_t slot_id, vtrc::uint64_t microsec)
 //        {
 //            wait_result_codes qwr = rpc_queue_.wait_queue( slot_id,

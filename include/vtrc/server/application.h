@@ -34,9 +34,11 @@ namespace vtrc {
 
 namespace server {
 
-    typedef vtrc::function<
-        vtrc::shared_ptr<google::protobuf::Service> ( common::connection_iface*,
-                                                      const std::string & )
+    typedef google::protobuf::Service service_type;
+    typedef vtrc::shared_ptr<service_type> service_type_sptr;
+
+    typedef vtrc::function <
+        service_type_sptr ( common::connection_iface*, const std::string & )
     > service_factory_type;
 
     class application {
@@ -60,11 +62,11 @@ namespace server {
 
         void stop_all_clients( );
 
-        common::environment          &get_enviroment ( );
+        common::environment         &get_enviroment ( );
         VTRC_ASIO::io_service       &get_io_service ( );
         VTRC_ASIO::io_service       &get_rpc_service( );
 
-        const common::environment    &get_enviroment ( ) const;
+        const common::environment   &get_enviroment ( ) const;
         const VTRC_ASIO::io_service &get_io_service ( ) const;
         const VTRC_ASIO::io_service &get_rpc_service( ) const;
 

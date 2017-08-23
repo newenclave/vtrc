@@ -52,7 +52,6 @@ namespace server {
         VTRC_DECLARE_SIGNAL( on_stop_connection,
                              void ( common::connection_iface * ) );
 
-
     protected:
 
         listener( application & app, const rpc::session_options &opts );
