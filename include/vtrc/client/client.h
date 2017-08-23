@@ -80,16 +80,19 @@ namespace client {
 
     public:
 
+        typedef vtrc::shared_ptr<vtrc_client> sprt;
+
         virtual ~vtrc_client( );
 
         static
-        vtrc::shared_ptr<vtrc_client> create( VTRC_ASIO::io_service &ios );
+        sprt create( VTRC_ASIO::io_service &ios );
 
         static
-        vtrc::shared_ptr<vtrc_client> create( VTRC_ASIO::io_service &ios,
-                                              VTRC_ASIO::io_service &rpc_ios );
+        sprt create( common::pool_pair &pool );
+
         static
-        vtrc::shared_ptr<vtrc_client> create( common::pool_pair &pool );
+        sprt create( VTRC_ASIO::io_service &ios,
+                     VTRC_ASIO::io_service &rpc_ios );
 
     public:
 
