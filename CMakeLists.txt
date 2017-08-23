@@ -14,7 +14,7 @@ project(vtrc)
 include( cxx11_check.cmake )
 
 set( VTRC_CXX11_ENABLED 0 )
-set( VTRC_OPENSSL_ENABLE 0 )
+# set( VTRC_OPENSSL_ENABLE 0 )
 # set( VTRC_DISABLE_CXX11 1 )
 
 if( NOT VTRC_DISABLE_CXX11 )
@@ -75,8 +75,6 @@ else( VTRC_OPENSSL_ENABLE )
 endif( VTRC_OPENSSL_ENABLE )
 #######################################################
 
-
-
 if( ${VTRC_LINK_TYPE} MATCHES ${VTRC_LINK_TYPE_STATIC} )
 
 if( NOT USE_SHARED_BOOST )
@@ -107,7 +105,6 @@ if( VTRC_CXX11_ENABLED )
     else( NOT USE_BOOST_ASIO )
         find_package( Boost 1.53 COMPONENTS
                         system
-                        thread  # for the shared mutexes
                     REQUIRED)
     endif( NOT USE_BOOST_ASIO )
 

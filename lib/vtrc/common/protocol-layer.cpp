@@ -148,8 +148,8 @@ namespace vtrc { namespace common {
         rpc_queue_type               rpc_queue_;
         vtrc::atomic<vtrc::uint64_t> rpc_index_;
 #if 0
-        options_map_type             options_map_;
-        mutable vtrc::shared_mutex   options_map_lock_;
+        options_map_type      options_map_;
+        mutable vtrc::mutex   options_map_lock_;
 #endif
 
         rpc::session_options         session_opts_;
