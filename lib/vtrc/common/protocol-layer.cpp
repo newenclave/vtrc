@@ -9,12 +9,11 @@
 #undef GetMessage // fix GetMessageW/GetMessageA
 #endif
 
-#include "vtrc-thread.h"
-
-#include "vtrc-atomic.h"
-#include "vtrc-mutex.h"
-#include "vtrc-memory.h"
-#include "vtrc-condition-variable.h"
+#include "vtrc/common/config/vtrc-thread.h"
+#include "vtrc/common/config/vtrc-atomic.h"
+#include "vtrc/common/config/vtrc-mutex.h"
+#include "vtrc/common/config/vtrc-memory.h"
+#include "vtrc/common/config/vtrc-condition-variable.h"
 
 #include "vtrc/common/protocol-layer.h"
 #include "vtrc/common/defaults.h"
@@ -32,11 +31,9 @@
 
 #include "vtrc/common/rpc-controller.h"
 
-#include "proto-helper/message-utilities.h"
-
-#include "vtrc-rpc-lowlevel.pb.h"
-#include "vtrc-rpc-options.pb.h"
-#include "vtrc-errors.pb.h"
+#include "vtrc/common/protocol/vtrc-rpc-lowlevel.pb.h"
+#include "vtrc/common/protocol/vtrc-rpc-options.pb.h"
+#include "vtrc/common/protocol/vtrc-errors.pb.h"
 
 namespace vtrc { namespace common {
 
@@ -154,18 +151,19 @@ namespace vtrc { namespace common {
         options_map_type             options_map_;
         mutable vtrc::shared_mutex   options_map_lock_;
 #endif
-        bool                         ready_;
 
         rpc::session_options         session_opts_;
         lowlevel_protocol_layer      ll_processor_;
+
+        bool                         ready_;
 
         impl( connection_iface *c, bool odd, const rpc::session_options &opts )
             :connection_(c)
             ,parent_(VTRC_NULL)
             ,rpc_index_(odd ? 101 : 100)
-            ,ready_(false)
             ,session_opts_(opts)
             ,ll_processor_(lowlevel::dummy::create( ))
+            ,ready_(false)
         { }
 
         ~impl( )
@@ -463,45 +461,11 @@ namespace vtrc { namespace common {
             return rpc_queue_.queue_exists( slot_id );
         }
 
-        const rpc::options *get_method_options(
-                                    const gpb::MethodDescriptor * /*method*/ )
+        const rpc::options *get_method_options( const gpb::MethodDescriptor * )
         {
             namespace defs = common::defaults;
             static const rpc::options defaults( defs::method_options( ) );
-
             return &defaults;
-
-#if 0
-            upgradable_lock lck(options_map_lock_);
-
-            // TODO: think if we need it!
-            options_map_type::const_iterator f(options_map_.find(method));
-
-            vtrc::shared_ptr<rpc::options> result;
-
-            if( f == options_map_.end( ) ) {
-
-                const rpc::options &serv (
-                        method->service( )->options( )
-                            .GetExtension( rpc::service_options ));
-
-                const rpc::options &meth (
-                        method->options( )
-                            .GetExtension( rpc::method_options ));
-
-                result = vtrc::make_shared<rpc::options>( serv );
-                utilities::merge_messages( *result, defaults );
-                utilities::merge_messages( *result, meth );
-
-                upgrade_to_unique ulck( lck );
-                options_map_.insert( std::make_pair( method, result ) );
-
-            } else {
-                result = f->second;
-            }
-
-            return result.get( );
-#endif
         }
 
         void erase_all_slots(  )
