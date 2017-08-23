@@ -279,6 +279,12 @@ namespace vtrc { namespace client {
         }
     };
 
+    base::~base( )
+    {
+        delete impl_;
+    }
+
+
     base::base( VTRC_ASIO::io_service &ios )
         :impl_(new impl(ios, ios))
     {

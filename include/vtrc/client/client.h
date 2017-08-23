@@ -13,10 +13,10 @@
 #include "vtrc/common/closure.h"
 #include "vtrc/common/rpc-channel.h"
 
-#include "vtrc-memory.h"
-#include "vtrc-function.h"
-#include "vtrc-asio-forward.h"
-#include "vtrc-system.h"
+#include "vtrc/common/config/vtrc-memory.h"
+#include "vtrc/common/config/vtrc-function.h"
+#include "vtrc/common/config/vtrc-asio-forward.h"
+#include "vtrc/common/config/vtrc-system.h"
 
 #include "vtrc/client/base.h"
 
@@ -80,7 +80,7 @@ namespace client {
 
     public:
 
-        ~vtrc_client( );
+        virtual ~vtrc_client( );
 
         static
         vtrc::shared_ptr<vtrc_client> create( VTRC_ASIO::io_service &ios );

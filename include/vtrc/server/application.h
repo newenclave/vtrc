@@ -5,8 +5,9 @@
 #include "vtrc/common/protocol/iface.h"
 #include "vtrc/common/defaults.h"
 
-#include "vtrc-asio-forward.h"
-#include "vtrc-function.h"
+#include "vtrc/common/config/vtrc-asio-forward.h"
+#include "vtrc/common/config/vtrc-function.h"
+#include "vtrc/common/config/vtrc-cxx11.h"
 
 VTRC_ASIO_FORWARD( class io_service; )
 
@@ -47,8 +48,7 @@ namespace server {
         friend struct  impl;
         impl          *impl_;
 
-        application( const application & );
-        application& operator = ( const application & );
+        VTRC_DISABLE_COPY( application );
 
     public:
 

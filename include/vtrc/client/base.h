@@ -1,10 +1,10 @@
 #ifndef VTRC_CLIENT_BASE_H
 #define VTRC_CLIENT_BASE_H
 
-#include "vtrc-memory.h"
-#include "vtrc-function.h"
-#include "vtrc-asio-forward.h"
-#include "vtrc-system.h"
+#include "vtrc/common/config/vtrc-memory.h"
+#include "vtrc/common/config/vtrc-function.h"
+#include "vtrc/common/config/vtrc-asio-forward.h"
+#include "vtrc/common/config/vtrc-system.h"
 
 #include "vtrc/common/signal-declaration.h"
 #include "vtrc/common/pool-pair.h"
@@ -34,8 +34,9 @@ namespace client {
         friend struct impl;
         impl         *impl_;
 
-        base( const base &other );
-        base & operator = ( const base &other );
+        VTRC_DISABLE_COPY( base );
+
+    private:
 
         VTRC_DECLARE_SIGNAL( on_init_error,
                              void( const rpc::errors::container &,
@@ -56,6 +57,8 @@ namespace client {
         common::protocol_iface *init_protocol(common::connection_iface_sptr c );
 
     public:
+
+        virtual ~base( );
 
         virtual void connect( ) = 0;
         virtual void async_connect( common::system_closure_type ) = 0;
