@@ -1,9 +1,9 @@
 #ifndef VTRC_TRANSPORT_STREAM_IMPL_H
 #define VTRC_TRANSPORT_STREAM_IMPL_H
 
-
 #include <deque>
 #include <string>
+#include <iostream>
 
 #include "vtrc-asio.h"
 
@@ -40,6 +40,10 @@ namespace vtrc { namespace common {
                 message_holder( )
                     :on_send_(false)
                 { }
+
+                ~message_holder( )
+                { }
+
             };
 
             typedef vtrc::shared_ptr<message_holder> message_holder_sptr;
@@ -207,6 +211,9 @@ namespace vtrc { namespace common {
                     :length_(length)
                     ,total_(total)
                     ,inst_(inst)
+                { }
+
+                ~handler_params( )
                 { }
             };
 

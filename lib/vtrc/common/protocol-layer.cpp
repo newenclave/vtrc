@@ -88,7 +88,8 @@ namespace vtrc { namespace common {
 
             closure_holder_type( )
                 :proto_closure_(VTRC_NULL)
-            { }
+            {
+            }
 
             void call_internal( )
             {
