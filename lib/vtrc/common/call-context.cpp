@@ -30,6 +30,9 @@ namespace vtrc { namespace common {
             ,depth_(1)
             ,impersonated_(false)
         { }
+
+        ~impl( )
+        { }
     };
 
     call_context::call_context( lowlevel_unit *lowlevel )
