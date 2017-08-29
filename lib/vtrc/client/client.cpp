@@ -34,7 +34,7 @@ namespace vtrc { namespace client {
     namespace basio = VTRC_ASIO;
     namespace bsys  = VTRC_SYSTEM;
     namespace gpb   = google::protobuf;
-    namespace bs2   = vtrc::common::observer;
+    namespace osrv  = vtrc::common::observer;
     namespace ph    = vtrc::placeholders;
 
     namespace {
@@ -67,14 +67,8 @@ namespace vtrc { namespace client {
         service_shared_map              hold_services_;
         //vtrc::mutex                     services_lock_;
 
-        std::string                     session_key_;
-        std::string                     session_id_;
-        bool                            key_set_;
-        //vtrc::mutex                     session_info_lock_;
-
         impl( )
             :parent_(VTRC_NULL)
-            ,key_set_(false)
         { }
 
 
@@ -275,10 +269,10 @@ namespace vtrc { namespace client {
             vtrc::condition_variable cond;
             vtrc::mutex              cond_lock;
 
-            bs2::scoped_connection rc( parent_->on_ready_connect(
+            osrv::scoped_connection rc( parent_->on_ready_connect(
                             vtrc::bind( impl::on_ready_s, &cond ) ) );
 
-            bs2::scoped_connection fc( parent_->on_init_error_connect(
+            osrv::scoped_connection fc( parent_->on_init_error_connect(
                             vtrc::bind( impl::on_init_error_s,
                                         &failed, &failed_message,
                                         &cond, ph::_1, ph::_2 )) );
