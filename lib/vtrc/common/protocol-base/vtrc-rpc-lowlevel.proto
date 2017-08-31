@@ -1,3 +1,4 @@
+syntax = "proto2";
 
 import "vtrc-errors.proto";
 import "vtrc-rpc-options.proto";
