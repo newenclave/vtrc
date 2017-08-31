@@ -29,7 +29,11 @@ namespace vtrc { namespace common {
         typedef google::protobuf::Message           message_type;
         typedef rpc::lowlevel_unit                  lowlevel_unit;
 
-        virtual ~protocol_layer_iface( ) { }
+        typedef vtrc::shared_ptr<protocol_layer_iface>  sptr;
+        typedef vtrc::unique_ptr<protocol_layer_iface>  uptr;
+
+        virtual
+        ~protocol_layer_iface( ) { }
 
         /// init current protocol
         virtual
