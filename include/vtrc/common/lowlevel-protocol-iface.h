@@ -32,40 +32,51 @@ namespace vtrc { namespace common {
         virtual ~protocol_layer_iface( ) { }
 
         /// init current protocol
-        virtual void init( protocol_accessor *pa,
-                           system_closure_type ready_for_read ) = 0;
+        virtual
+        void init( protocol_accessor *pa, system_closure_type read_ready ) = 0;
 
         /// connection is closing
-        virtual void close( ) = 0;
+        virtual
+        void close( ) = 0;
 
         /// configure session
-        virtual void configure( const rpc::session_options & ) { }
+        virtual
+        void configure( const rpc::session_options & ) { }
 
         /// serialize lowlevel message; threads!
-        virtual std::string serialize_lowlevel( const lowlevel_unit &mess ) = 0;
+        virtual
+        std::string serialize_lowlevel( const lowlevel_unit &mess ) = 0;
 
         /// pack lowlevel message; non threads!
-        virtual void pack_message( std::string & /*mess*/ ) { }
+        virtual
+        void pack_message( std::string & /*mess*/ ) { }
 
         /// accept portion os the data and unpuck message is exists
-        virtual void process_data( const char *data, size_t length ) = 0;
+        virtual
+        void process_data( const char *data, size_t length ) = 0;
 
         /// ready messages count
-        virtual size_t queue_size( ) const = 0;
+        virtual
+        size_t queue_size( ) const = 0;
 
         /// get and pop next message
-        virtual bool pop_proto_message( rpc::lowlevel_unit &result ) = 0;
+        virtual
+        bool pop_proto_message( rpc::lowlevel_unit &result ) = 0;
 
         /// serialize message request or response
         /// SerializeAsString as default
-        virtual std::string serialize_message( const message_type *m );
+        virtual
+        std::string serialize_message( const message_type *m );
 
         /// parse request or response
         /// ParseFromString as default
-        virtual void parse_message( const std::string &data, message_type *m );
+        virtual
+        void parse_message( const std::string &data, message_type *m );
 
-        virtual std::string service_id( const message_descriptor_type *desc );
-        virtual std::string method_id ( const message_descriptor_type *desc );
+        virtual
+        std::string service_id( const message_descriptor_type *desc );
+        virtual
+        std::string method_id ( const message_descriptor_type *desc );
     };
 
     typedef vtrc::shared_ptr<protocol_layer_iface> protocol_layer_sptr;
