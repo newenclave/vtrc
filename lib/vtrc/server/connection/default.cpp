@@ -1,9 +1,12 @@
 
 #include "vtrc/common/protocol/accessor-iface.h"
-#include "vtrc/common/delayed-call.h"
 #include "vtrc/common/hash/iface.h"
 #include "vtrc/common/transformer/iface.h"
 #include "vtrc/common/connection-iface.h"
+
+//#include "vtrc/common/delayed-call.h"
+#include "vtrc/common/timers/once.h"
+#include "vtrc/common/timers/types.h"
 
 #include "vtrc/common/lowlevel-protocol-default.h"
 
@@ -35,6 +38,7 @@ namespace vtrc { namespace server {
         namespace default_cypher = common::transformer::chacha;
 
         typedef vtrc::function<void (const std::string &)> stage_function_type;
+        typedef common::timers::once delayed_call;
 
         std::string first_message( )
         {
@@ -61,7 +65,7 @@ namespace vtrc { namespace server {
 
             application               &app_;
             bool                       ready_;
-            common::delayed_call       keepalive_calls_;
+            delayed_call               keepalive_calls_;
             stage_function_type        stage_function_;
             std::string                client_id_;
             rpc::session_options       session_opts_;
@@ -312,10 +316,10 @@ namespace vtrc { namespace server {
                 const unsigned to = session_opts_.init_timeout( );
 
                 accessor( )->write( data, cb, true );
-                keepalive_calls_.call_from_now(
+                keepalive_calls_.call(
                             vtrc::bind( &iface::on_init_timeout, this,
                                          vtrc::placeholders::_1 ),
-                            common::delayed_call::milliseconds( to ));
+                            common::timers::milliseconds( to ));
 
             }
 

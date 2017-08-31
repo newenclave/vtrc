@@ -6,7 +6,9 @@
 
 #include "vtrc/common/transport/ssl.h"
 #include "vtrc/common/protocol/accessor-iface.h"
-#include "vtrc/common/delayed-call.h"
+
+#include "vtrc/common/timers/once.h"
+//#include "vtrc/common/delayed-call.h"
 
 #include "vtrc/server/listener/ssl.h"
 #include "vtrc/server/listener/impl.h"
@@ -30,11 +32,13 @@ namespace vtrc { namespace server { namespace listeners {
         typedef connection_impl<connection_type>       connection_impl_type;
         typedef connection_type::socket_type  socket_type;
 
+        typedef common::timers::once delayed_call;
+
         struct commection_impl: public connection_impl_type {
 
             typedef commection_impl this_type;
             std::string             name_;
-            common::delayed_call    keepalive_calls_;
+            delayed_call            keepalive_calls_;
 
             commection_impl( listener &listen,
                                   vtrc::shared_ptr<socket_type> sock,
@@ -100,7 +104,7 @@ namespace vtrc { namespace server { namespace listeners {
             {
                 namespace ph = vtrc::placeholders;
 
-                keepalive_calls_.call_from_now(
+                keepalive_calls_.call(
                             vtrc::bind( &this_type::on_init_timeout, this,
                                         ph::error ),
                             vtrc::chrono::seconds( 5 ));

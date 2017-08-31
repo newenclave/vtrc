@@ -7,6 +7,7 @@ VTRC_ASIO_FORWARD(
     class io_service;
 )
 
+#if 0
 namespace vtrc { namespace common {
 
     class delayed_call {
@@ -50,5 +51,7 @@ namespace vtrc { namespace common {
     };
 
 }}
+
+#endif
 
 #endif // VTRCDELAYEDCALL_H

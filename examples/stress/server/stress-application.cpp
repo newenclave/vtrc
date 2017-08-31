@@ -7,7 +7,10 @@
 #include "vtrc/common/pool-pair.h"
 #include "vtrc/common/rpc-service-wrapper.h"
 #include "vtrc/common/connection-iface.h"
-#include "vtrc/common/delayed-call.h"
+
+#include "vtrc/common/timers/once.h"
+#include "vtrc/common/timers/types.h"
+
 #include "vtrc/common/lowlevel-protocol-iface.h"
 
 #include "vtrc/common/connection-list.h"
@@ -45,7 +48,7 @@ namespace stress {
     namespace basio = VTRC_ASIO;
     namespace bsys  = VTRC_SYSTEM;
 
-    typedef vtrc::common::delayed_call            delayed_call;
+    typedef vtrc::common::timers::once            delayed_call;
     typedef vtrc::shared_ptr<delayed_call>        delayed_call_sptr;
 
     typedef std::pair<
@@ -166,7 +169,7 @@ namespace stress {
         std::vector<server::listener_sptr>  listeners_;
 
         vtrc::atomic<size_t>                counter_;
-        common::delayed_call                retry_timer_;
+        delayed_call                        retry_timer_;
 
         unsigned                            accept_errors_;
         unsigned                            max_clients_;
@@ -217,10 +220,10 @@ namespace stress {
         void start_counter_timer( vtrc::uint64_t last )
         {
             namespace ph = vtrc::placeholders;
-            counter_timer_.call_from_now(
+            counter_timer_.call(
                         vtrc::bind( &impl::counter_timer_handler,
                                     this, ph::_1, last),
-                        common::delayed_call::seconds( 1 ) );
+                        common::timers::seconds( 1 ) );
         }
 
         void counter_timer_handler( const bsys::error_code &err,
@@ -245,12 +248,12 @@ namespace stress {
             }
         }
 
-        typedef common::timer::monotonic_traits::microseconds microseconds;
-        typedef common::timer::monotonic_traits::milliseconds milliseconds;
+        typedef common::timers::microseconds microseconds;
+        typedef common::timers::milliseconds milliseconds;
 
         void start_timer( call_cb_pair &tc, unsigned id,  unsigned microsec )
         {
-            tc.first->call_from_now(
+            tc.first->call(
                         vtrc::bind( &impl::timer_handler, this,
                                     vtrc::placeholders::error,
                                     id, microsec, tc ),
@@ -280,7 +283,7 @@ namespace stress {
 
         void start_retry_accept( server::listener_sptr l, unsigned rto )
         {
-            retry_timer_.call_from_now(
+            retry_timer_.call(
                 vtrc::bind( &impl::retry_timer_handler, this,
                             l, rto, vtrc::placeholders::_1 ),
                             milliseconds( rto ));

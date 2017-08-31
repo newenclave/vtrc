@@ -156,7 +156,7 @@ int main( int argc, const char **argv )
 
     try {
 
-        vtrc::common::delayed_call dc(tp.get_io_service( ));
+        //vtrc::common::delayed_call dc(tp.get_io_service( ));
 
         vtrc::shared_ptr<server::listener>
                 tcp( server::listeners::tcp::create( app, address, port ) );
