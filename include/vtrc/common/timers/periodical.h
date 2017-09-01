@@ -15,8 +15,11 @@ namespace vtrc { namespace common {  namespace timers {
     class  periodical {
 
     public:
-        typedef VTRC_SYSTEM::error_code         error_code;
+        typedef VTRC_SYSTEM::error_code error_code;
+        typedef VTRC_ASIO::io_service   io_service;
+
     private:
+
         typedef chrono::steady_clock::duration  duration_type;
 
         typedef vtrc::function<void (const error_code &)> hdl_type;
@@ -54,7 +57,7 @@ namespace vtrc { namespace common {  namespace timers {
 
     public:
 
-        periodical( VTRC_ASIO::io_service &ios )
+        periodical( io_service &ios )
             :timer_(ios)
             ,enabled_(false)
         { }

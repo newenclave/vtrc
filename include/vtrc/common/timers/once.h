@@ -16,8 +16,9 @@ namespace vtrc { namespace common {  namespace timers {
     public:
 
         typedef VTRC_SYSTEM::error_code error_code;
+        typedef VTRC_ASIO::io_service   io_service;
 
-        once( VTRC_ASIO::io_service &ios )
+        once( io_service &ios )
             :timer_(ios)
         { }
 
