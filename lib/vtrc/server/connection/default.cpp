@@ -64,17 +64,17 @@ namespace vtrc { namespace server {
             typedef common::lowlevel::default_protocol parent_type;
 
             application               &app_;
-            bool                       ready_;
             delayed_call               keepalive_calls_;
             stage_function_type        stage_function_;
             std::string                client_id_;
             rpc::session_options       session_opts_;
+            bool                       ready_;
 
             iface( application &a, const rpc::session_options &opts )
                 :app_(a)
-                ,ready_(false)
                 ,keepalive_calls_(a.get_io_service( ))
                 ,session_opts_(opts)
+                ,ready_(false)
             {
                 stage_function_ =
                         vtrc::bind( &iface::on_client_selection, this,
