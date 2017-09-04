@@ -7,7 +7,6 @@ VTRC_ASIO_FORWARD(
     class io_service;
 )
 
-#if 0
 namespace vtrc { namespace common {
 
     class delayed_call {
@@ -48,10 +47,15 @@ namespace vtrc { namespace common {
             timer_.async_wait( f );
         }
 
+        template <typename FuncType, typename TimerType>
+        void call( FuncType f, const TimerType &tt )
+        {
+            timer_.expires_from_now( tt );
+            timer_.async_wait( f );
+        }
+
     };
 
 }}
-
-#endif
 
 #endif // VTRCDELAYEDCALL_H

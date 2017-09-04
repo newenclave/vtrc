@@ -10,9 +10,9 @@
 #include "vtrc-function.h"
 #include "vtrc-asio-ssl.h"
 
-namespace boost { namespace asio { namespace ssl {
-    class context;
-}}}
+//namespace boost { namespace asio { namespace ssl {
+//    class context;
+//}}}
 
 namespace vtrc { namespace server {
 
