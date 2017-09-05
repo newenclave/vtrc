@@ -1,9 +1,9 @@
 syntax = "proto2";
 
 import "vtrc-errors.proto";
-// import "vtrc-rpc-lowlevel.proto";
 import "vtrc-rpc-options.proto";
 
+// import "vtrc-rpc-lowlevel.proto";
 //option optimize_for = LITE_RUNTIME;
 
 package vtrc.rpc.auth;

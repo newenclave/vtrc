@@ -15,11 +15,10 @@ namespace vtrc { namespace server {
         namespace gpb = google::protobuf;
         static
         vtrc::shared_ptr<gpb::Service>
-        default_factory( common::connection_iface *, const std::string & )
+        default_factory ( common::connection_iface *, const std::string & )
         {
             return vtrc::shared_ptr<gpb::Service>( );
         }
-
         typedef common::protocol_iface::call_type call_type;
     }
 
@@ -28,7 +27,6 @@ namespace vtrc { namespace server {
         common::environment        env_;
         VTRC_ASIO::io_service     *ios_;
         VTRC_ASIO::io_service     *rpc_ios_;
-
 
         common::connection_list::sptr clients_;
 
