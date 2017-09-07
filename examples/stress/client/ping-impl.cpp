@@ -66,10 +66,14 @@ namespace stress {
         time_point stop = chrono::high_resolution_clock::now( );
         size_t to = cast( stop - start );
 
-        std::cout << "Avarage: "
-                  << ( res / counter )
-                  << " (" << (to / counter) << ") "
-                  << " microseconds\n";
+        if( counter ) {
+            std::cout << "Avarage: "
+                      << ( res / counter )
+                      << " (" << (to / counter) << ") "
+                      << " microseconds\n";
+        } else {
+            std::cout << "Nothing to show\n";
+        }
     }
 
 }
