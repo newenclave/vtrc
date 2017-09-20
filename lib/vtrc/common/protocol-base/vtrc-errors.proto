@@ -18,21 +18,21 @@ enum error_category {
 
 enum errors_numbers { // CATEGORY_INTERNAL
                       // linux error codes using I am
-    ERR_NO_ERROR      =   0 [(description) = "No error"];
-    ERR_PERMISSION    =   1 [(description) = "Operation not permitted"];
-    ERR_NOT_FOUND     =   2 [(description) = "Object was not found"];
-    ERR_IO            =   5 [(description) = "I/O error"];
-    ERR_BAD_FILE      =   9 [(description) = "Bad file number"];
-    ERR_ACCESS        =  13 [(description) = "Permission denied"];
-    ERR_BUSY          =  16 [(description) = "Device or resource busy"];
-    ERR_INVALID_VALUE =  22 [(description) = "Invalid value"];
-    ERR_NO_FUNC       =  38 [(description) = "Function not implemented"];
-    ERR_NO_DATA       =  61 [(description) = "No data available"];
-    ERR_TIMEOUT       =  62 [(description) = "Timeout"];
-    ERR_COMM          =  70 [(description) = "Communication error on send"];
-    ERR_PROTOCOL      =  71 [(description) = "Protocol error"];
-    ERR_MESSAGE_SIZE  =  90 [(description) = "Message is too long"];
-    ERR_CANCELED      = 125 [(description) = "Operation canceled"];
+    ERR_NO_ERROR        =    0 [(description) = "No error"];
+    ERR_PERMISSION      =    1 [(description) = "Operation not permitted"];
+    ERR_NOT_FOUND       =    2 [(description) = "Object was not found"];
+    ERR_IO              =    5 [(description) = "I/O error"];
+    ERR_BAD_FILE        =    9 [(description) = "Bad file number"];
+    ERR_ACCESS          =   13 [(description) = "Permission denied"];
+    ERR_BUSY            =   16 [(description) = "Device or resource busy"];
+    ERR_INVALID_VALUE   =   22 [(description) = "Invalid value"];
+    ERR_NO_FUNC         =   38 [(description) = "Function not implemented"];
+    ERR_NO_DATA         =   61 [(description) = "No data available"];
+    ERR_TIMEOUT         =   62 [(description) = "Timeout"];
+    ERR_COMM            =   70 [(description) = "Communication error on send"];
+    ERR_PROTOCOL        =   71 [(description) = "Protocol error"];
+    ERR_MESSAGE_SIZE    =   90 [(description) = "Message is too long"];
+    ERR_CANCELED        =  125 [(description) = "Operation canceled"];
 
     ERR_UNKNOWN         = 1000 [(description) = "Unknown error"];
     ERR_CALL_FAILED     = 1001 [(description) = "Call failed"];
