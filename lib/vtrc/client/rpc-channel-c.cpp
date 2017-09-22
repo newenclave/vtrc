@@ -42,14 +42,14 @@ namespace vtrc { namespace client {
         vtrc::weak_ptr<common::connection_iface> connection_;
 
         rpc_channel_c *parent_;
-        bool           accept_callbacks_;
         vtrc::uint64_t target_id_;
+        bool           accept_callbacks_;
 
         impl(vtrc::shared_ptr<common::connection_iface> c)
             :connection_(c)
             ,parent_(VTRC_NULL)
-            ,accept_callbacks_(false)
             ,target_id_(0)
+            ,accept_callbacks_(false)
         {
             const common::call_context *cc(common::call_context::get( ));
             if( cc && can_accept_callbacks( cc ) ) {
